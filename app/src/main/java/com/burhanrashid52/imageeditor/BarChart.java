@@ -105,21 +105,5 @@ public class BarChart extends View {
             columnLeft = columnRight + barSpacing;
             columnRight = columnLeft + columnWidth;
         }
-
-       /* float colLeft = mGridLeft;
-        float barWidth = mWidth - spacing * 10 - mPadding * 2;
-        Log.e("Draw", "Col : " + colLeft + "\nWidth : " + barWidth);
-        //Draw Bars
-        for (int i = 0; i < mData.size(); i++) {
-            Float percentage = mData.get(i);
-            float barHeight = mHeight - ((mHeight * percentage) / 100);
-            Log.e("Draw", "Height : " + barHeight);
-            float colRight = colLeft + barHeight;
-            Log.e("Draw", "Col Right: " + colRight);
-            canvas.drawRect(colLeft, barHeight, colRight, mGridBottom, mBarPaint);
-            colLeft += colRight;
-            Log.e("Draw", "Col Left: " + colLeft);
-        }*/
-
     }
 }

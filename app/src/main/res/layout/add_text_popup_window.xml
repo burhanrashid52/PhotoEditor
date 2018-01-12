@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#B3000000"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/add_text_done_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/rounded_border_text_view"
+        android:padding="10dp"
+        android:text="Done"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/add_text_edit_text"
+        style="@style/EditText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/add_text_color_picker_relative_layout"
+        android:layout_below="@+id/add_text_done_tv"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="textMultiLine"
+        android:textSize="40sp" />
+
+    <RelativeLayout
+        android:id="@+id/add_text_color_picker_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_text_color_picker_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:background="@android:color/black"
+            tools:listitem="@layout/color_picker_item_list" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
