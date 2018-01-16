@@ -1,5 +1,6 @@
 package com.ahmedadeltito.photoeditorsdk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
+    public static final String TAG = PhotoEditorSDK.class.getSimpleName();
     private Context context;
     private RelativeLayout parentView;
     private ImageView imageView;
@@ -34,6 +36,9 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     private List<View> addedViews;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
     private View addTextRootView;
+    private boolean isTextPinchZoomable;
+    boolean isbackground = false;
+
 
     private PhotoEditorSDK(PhotoEditorSDKBuilder photoEditorSDKBuilder) {
         this.context = photoEditorSDKBuilder.context;
@@ -41,6 +46,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         this.imageView = photoEditorSDKBuilder.imageView;
         this.deleteView = photoEditorSDKBuilder.deleteView;
         this.brushDrawingView = photoEditorSDKBuilder.brushDrawingView;
+        this.isTextPinchZoomable = photoEditorSDKBuilder.isTextPinchZoomable;
         addedViews = new ArrayList<>();
     }
 
@@ -51,8 +57,13 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         imageView.setImageBitmap(desiredImage);
         imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT));
-        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener);
+        MultiTouchListener multiTouchListener = new MultiTouchListener(
+                deleteView,
+                parentView,
+                this.imageView,
+                isTextPinchZoomable,
+                onPhotoEditorSDKListener
+        );
         multiTouchListener.setOnMultiTouchListener(this);
         imageRootView.setOnTouchListener(multiTouchListener);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -64,18 +75,48 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
             onPhotoEditorSDKListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void addText(String text, int colorCodeTextView) {
+        isbackground = true;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
-        TextView addTextView = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
-        addTextView.setGravity(Gravity.CENTER);
-        addTextView.setText(text);
-        if (colorCodeTextView != -1)
-            addTextView.setTextColor(colorCodeTextView);
-        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener);
+        final TextView textInputTv = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
+        final ImageView imgClose = (ImageView) addTextRootView.findViewById(R.id.imgClose);
+
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewUndo(addTextRootView);
+            }
+        });
+
+        textInputTv.setGravity(Gravity.CENTER);
+        textInputTv.setText(text);
+        textInputTv.setTextColor(colorCodeTextView);
+        MultiTouchListener multiTouchListener = new MultiTouchListener(
+                deleteView,
+                parentView,
+                this.imageView,
+                isTextPinchZoomable,
+                onPhotoEditorSDKListener);
         multiTouchListener.setOnMultiTouchListener(this);
+        textInputTv.setBackgroundResource(R.drawable.rounded_border_tv);
+        multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
+            @Override
+            public void onClick() {
+                textInputTv.setBackgroundResource(isbackground ? 0 : R.drawable.rounded_border_tv);
+                imgClose.setVisibility(isbackground ? View.GONE : View.VISIBLE);
+                isbackground = !isbackground;
+            }
+
+            @Override
+            public void onLongClick() {
+
+            }
+        });
+
         addTextRootView.setOnTouchListener(multiTouchListener);
+
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -92,8 +133,12 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         emojiTextView.setTypeface(emojiFont);
         emojiTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         emojiTextView.setText(convertEmoji(emojiName));
-        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener);
+        MultiTouchListener multiTouchListener = new MultiTouchListener(
+                deleteView,
+                parentView,
+                this.imageView,
+                isTextPinchZoomable,
+                onPhotoEditorSDKListener);
         multiTouchListener.setOnMultiTouchListener(this);
         emojiRootView.setOnTouchListener(multiTouchListener);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -280,32 +325,39 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         private ImageView imageView;
         private View deleteView;
         private BrushDrawingView brushDrawingView;
+        //By Default pinch zoom on text is enabled
+        private boolean isTextPinchZoomable = true;
 
         public PhotoEditorSDKBuilder(Context context) {
             this.context = context;
         }
 
-        public PhotoEditorSDKBuilder parentView(RelativeLayout parentView) {
+        public PhotoEditorSDKBuilder setParentView(RelativeLayout parentView) {
             this.parentView = parentView;
             return this;
         }
 
-        public PhotoEditorSDKBuilder childView(ImageView imageView) {
+        public PhotoEditorSDKBuilder setChildView(ImageView imageView) {
             this.imageView = imageView;
             return this;
         }
 
-        public PhotoEditorSDKBuilder deleteView(View deleteView) {
+        public PhotoEditorSDKBuilder setDeleteView(View deleteView) {
             this.deleteView = deleteView;
             return this;
         }
 
-        public PhotoEditorSDKBuilder brushDrawingView(BrushDrawingView brushDrawingView) {
+        public PhotoEditorSDKBuilder setPinchTextScalable(boolean isTextPinchZoomable) {
+            this.isTextPinchZoomable = isTextPinchZoomable;
+            return this;
+        }
+
+        public PhotoEditorSDKBuilder setBrushDrawingView(BrushDrawingView brushDrawingView) {
             this.brushDrawingView = brushDrawingView;
             return this;
         }
 
-        public PhotoEditorSDK buildPhotoEditorSDK() {
+        public PhotoEditorSDK build() {
             return new PhotoEditorSDK(this);
         }
     }

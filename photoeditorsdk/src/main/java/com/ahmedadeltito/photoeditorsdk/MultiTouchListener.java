@@ -2,6 +2,7 @@ package com.ahmedadeltito.photoeditorsdk;
 
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 class MultiTouchListener implements OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;
+    private final GestureDetector mGestureListener;
     private boolean isRotateEnabled = true;
     private boolean isTranslateEnabled = true;
     private boolean isScaleEnabled = true;
@@ -28,17 +30,26 @@ class MultiTouchListener implements OnTouchListener {
     private RelativeLayout parentView;
 
     private OnMultiTouchListener onMultiTouchListener;
+    private OnGestureControl mOnGestureControl;
+    private boolean mIsTextPinchZoomable;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
     MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
-                       ImageView photoEditImageView, OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
+                       ImageView photoEditImageView, boolean isTextPinchZoomable,
+                       OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
+        mIsTextPinchZoomable = isTextPinchZoomable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
+        mGestureListener = new GestureDetector(new GestureListener());
         this.deleteView = deleteView;
         this.parentView = parentView;
         this.photoEditImageView = photoEditImageView;
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
-        outRect = new Rect(deleteView.getLeft(), deleteView.getTop(),
-                deleteView.getRight(), deleteView.getBottom());
+        if (deleteView != null) {
+            outRect = new Rect(deleteView.getLeft(), deleteView.getTop(),
+                    deleteView.getRight(), deleteView.getBottom());
+        } else {
+            outRect = new Rect(0, 0, 0, 0);
+        }
     }
 
     private static float adjustAngle(float degrees) {
@@ -95,6 +106,7 @@ class MultiTouchListener implements OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         mScaleGestureDetector.onTouchEvent(view, event);
+        mGestureListener.onTouchEvent(event);
 
         if (!isTranslateEnabled) {
             return true;
@@ -133,13 +145,15 @@ class MultiTouchListener implements OnTouchListener {
                 break;
             case MotionEvent.ACTION_UP:
                 mActivePointerId = INVALID_POINTER_ID;
-                if (isViewInBounds(deleteView, x, y)) {
+                if (deleteView != null && isViewInBounds(deleteView, x, y)) {
                     if (onMultiTouchListener != null)
                         onMultiTouchListener.onRemoveViewListener(view);
                 } else if (!isViewInBounds(photoEditImageView, x, y)) {
                     view.animate().translationY(0).translationY(0);
                 }
-                deleteView.setVisibility(View.GONE);
+                if (deleteView != null) {
+                    deleteView.setVisibility(View.GONE);
+                }
                 firePhotoEditorSDKListener(view, false);
                 float mCurrentCancelX = event.getRawX();
                 float mCurrentCancelY = event.getRawY();
@@ -167,7 +181,6 @@ class MultiTouchListener implements OnTouchListener {
                 }
                 break;
         }
-
         return true;
     }
 
@@ -205,7 +218,7 @@ class MultiTouchListener implements OnTouchListener {
         return outRect.contains(x, y);
     }
 
-    public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
+    void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
         this.onMultiTouchListener = onMultiTouchListener;
     }
 
@@ -220,7 +233,7 @@ class MultiTouchListener implements OnTouchListener {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
             mPrevSpanVector.set(detector.getCurrentSpanVector());
-            return true;
+            return mIsTextPinchZoomable;
         }
 
         @Override
@@ -235,7 +248,7 @@ class MultiTouchListener implements OnTouchListener {
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
             move(view, info);
-            return false;
+            return !mIsTextPinchZoomable;
         }
     }
 
@@ -254,5 +267,25 @@ class MultiTouchListener implements OnTouchListener {
         void onEditTextClickListener(String text, int colorCode);
 
         void onRemoveViewListener(View removedView);
+    }
+
+    interface OnGestureControl {
+        void onClick();
+
+        void onLongClick();
+    }
+
+    void setOnGestureControl(OnGestureControl onGestureControl) {
+        mOnGestureControl = onGestureControl;
+    }
+
+    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (mOnGestureControl != null) {
+                mOnGestureControl.onClick();
+            }
+            return true;
+        }
     }
 }

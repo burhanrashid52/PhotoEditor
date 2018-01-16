@@ -2,6 +2,7 @@ package com.burhanrashid52.imageeditor;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,11 +45,12 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
         setSupportActionBar(mToolbar);
 
         mPhotoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(this)
-                .parentView(mParentImgSource) // add parent image view
-                .childView(mSourceImage) // add the desired image view
-                .deleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
-                .brushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
-                .buildPhotoEditorSDK(); // build photo editor sdk
+                .setParentView(mParentImgSource) // add parent image view
+                .setChildView(mSourceImage) // add the desired image view
+          //      .setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
+                .setBrushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
+                .setPinchTextScalable(false) // set flag to make text scalable when pinch
+                .build(); // build photo editor sdk
 
         mPhotoEditorSDK.setOnPhotoEditorSDKListener(this);
     }
@@ -125,7 +127,16 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
                 break;
 
             case R.id.btnText:
-                openAddTextPopupWindow("", -1);
+                TextEditorDialogFragment textEditorDialogFragment =
+                        TextEditorDialogFragment.show(this,
+                                "Hello",
+                                ContextCompat.getColor(this, R.color.white));
+                textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
+                    @Override
+                    public void onDone(String inputText, int colorCode) {
+                        mPhotoEditorSDK.addText(inputText, colorCode);
+                    }
+                });
                 break;
 
             case R.id.btnUndo:
@@ -157,48 +168,5 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
             }
         });
         mRvColor.setAdapter(colorPickerAdapter);
-    }
-
-    private void openAddTextPopupWindow(final String text, int colorCode) {
-        mColorCodeTextView = colorCode;
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View addTextPopupWindowRootView = inflater.inflate(R.layout.add_text_popup_window, null);
-        final EditText addTextEditText = addTextPopupWindowRootView.findViewById(R.id.add_text_edit_text);
-        TextView addTextDoneTextView = addTextPopupWindowRootView.findViewById(R.id.add_text_done_tv);
-        RecyclerView addTextColorPickerRecyclerView = addTextPopupWindowRootView.findViewById(R.id.add_text_color_picker_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        addTextColorPickerRecyclerView.setLayoutManager(layoutManager);
-        addTextColorPickerRecyclerView.setHasFixedSize(true);
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(this);
-        colorPickerAdapter.setOnColorPickerClickListener(new ColorPickerAdapter.OnColorPickerClickListener() {
-            @Override
-            public void onColorPickerClickListener(int colorCode) {
-                addTextEditText.setTextColor(colorCode);
-                mColorCodeTextView = colorCode;
-            }
-        });
-        addTextColorPickerRecyclerView.setAdapter(colorPickerAdapter);
-        if (!TextUtils.isEmpty(text)) {
-            addTextEditText.setText(text);
-            addTextEditText.setTextColor(colorCode == -1 ? getResources().getColor(R.color.white) : colorCode);
-        }
-        final PopupWindow pop = new PopupWindow(this);
-        pop.setContentView(addTextPopupWindowRootView);
-        pop.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        pop.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
-        pop.setFocusable(true);
-        pop.setBackgroundDrawable(null);
-        pop.showAtLocation(addTextPopupWindowRootView, Gravity.TOP, 0, 0);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        addTextDoneTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPhotoEditorSDK.addText(addTextEditText.getText().toString(), mColorCodeTextView);
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                pop.dismiss();
-            }
-        });
     }
 }
