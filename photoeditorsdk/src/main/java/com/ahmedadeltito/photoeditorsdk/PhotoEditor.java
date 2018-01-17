@@ -25,9 +25,9 @@ import java.util.List;
  * Created by Ahmed Adel on 02/06/2017.
  */
 
-public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, BrushViewChangeListener {
+public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, BrushViewChangeListener {
 
-    public static final String TAG = PhotoEditorSDK.class.getSimpleName();
+    public static final String TAG = PhotoEditor.class.getSimpleName();
     private Context context;
     private RelativeLayout parentView;
     private ImageView imageView;
@@ -35,18 +35,18 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
     private BrushDrawingView brushDrawingView;
     private List<View> addedViews;
     private List<View> redoViews;
-    private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
+    private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
     private boolean mIsbackground = false;
 
 
-    private PhotoEditorSDK(PhotoEditorSDKBuilder photoEditorSDKBuilder) {
-        this.context = photoEditorSDKBuilder.context;
-        this.parentView = photoEditorSDKBuilder.parentView;
-        this.imageView = photoEditorSDKBuilder.imageView;
-        this.deleteView = photoEditorSDKBuilder.deleteView;
-        this.brushDrawingView = photoEditorSDKBuilder.brushDrawingView;
-        this.isTextPinchZoomable = photoEditorSDKBuilder.isTextPinchZoomable;
+    private PhotoEditor(PhotoEditorBuilder photoEditorBuilder) {
+        this.context = photoEditorBuilder.context;
+        this.parentView = photoEditorBuilder.parentView;
+        this.imageView = photoEditorBuilder.imageView;
+        this.deleteView = photoEditorBuilder.deleteView;
+        this.brushDrawingView = photoEditorBuilder.brushDrawingView;
+        this.isTextPinchZoomable = photoEditorBuilder.isTextPinchZoomable;
         brushDrawingView.setBrushViewChangeListener(this);
         addedViews = new ArrayList<>();
         redoViews = new ArrayList<>();
@@ -64,7 +64,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
                 parentView,
                 this.imageView,
                 isTextPinchZoomable,
-                onPhotoEditorSDKListener
+                mOnPhotoEditorListener
         );
         multiTouchListener.setOnMultiTouchListener(this);
         imageRootView.setOnTouchListener(multiTouchListener);
@@ -73,8 +73,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(imageRootView, params);
         addedViews.add(imageRootView);
-        if (onPhotoEditorSDKListener != null)
-            onPhotoEditorSDKListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
+        if (mOnPhotoEditorListener != null)
+            mOnPhotoEditorListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -100,7 +100,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
                 parentView,
                 this.imageView,
                 isTextPinchZoomable,
-                onPhotoEditorSDKListener);
+                mOnPhotoEditorListener);
         multiTouchListener.setOnMultiTouchListener(this);
         textInputTv.setBackgroundResource(R.drawable.rounded_border_tv);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
@@ -115,8 +115,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
             public void onLongClick() {
                 String textInput = textInputTv.getText().toString();
                 int currentTextColor = textInputTv.getCurrentTextColor();
-                if (onPhotoEditorSDKListener != null) {
-                    onPhotoEditorSDKListener.onEditTextChangeListener(addTextRootView, textInput, currentTextColor);
+                if (mOnPhotoEditorListener != null) {
+                    mOnPhotoEditorListener.onEditTextChangeListener(addTextRootView, textInput, currentTextColor);
                 }
             }
         });
@@ -128,8 +128,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(addTextRootView, params);
         addedViews.add(addTextRootView);
-        if (onPhotoEditorSDKListener != null)
-            onPhotoEditorSDKListener.onAddViewListener(ViewType.TEXT, addedViews.size());
+        if (mOnPhotoEditorListener != null)
+            mOnPhotoEditorListener.onAddViewListener(ViewType.TEXT, addedViews.size());
     }
 
     /**
@@ -162,7 +162,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
                 parentView,
                 this.imageView,
                 isTextPinchZoomable,
-                onPhotoEditorSDKListener);
+                mOnPhotoEditorListener);
         multiTouchListener.setOnMultiTouchListener(this);
         emojiRootView.setOnTouchListener(multiTouchListener);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -170,8 +170,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(emojiRootView, params);
         addedViews.add(emojiRootView);
-        if (onPhotoEditorSDKListener != null)
-            onPhotoEditorSDKListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
+        if (mOnPhotoEditorListener != null)
+            mOnPhotoEditorListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
     }
 
     public void setBrushDrawingMode(boolean brushDrawingMode) {
@@ -212,9 +212,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
     }
 
     public float getEraserSize() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getEraserSize();
-        return 0;
+        return brushDrawingView != null ? brushDrawingView.getEraserSize() : 0;
     }
 
     public float getBrushSize() {
@@ -237,8 +235,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
     public void viewUndo() {
         if (addedViews.size() > 0) {
             parentView.removeView(addedViews.remove(addedViews.size() - 1));
-            if (onPhotoEditorSDKListener != null)
-                onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+            if (mOnPhotoEditorListener != null)
+                mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
         }
     }
 
@@ -248,8 +246,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
                 parentView.removeView(removedView);
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
-                if (onPhotoEditorSDKListener != null)
-                    onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+                if (mOnPhotoEditorListener != null)
+                    mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
             }
         }
     }
@@ -264,8 +262,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
                 parentView.removeView(removeView);
                 redoViews.add(removeView);
             }
-            if (onPhotoEditorSDKListener != null) {
-                onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+            if (mOnPhotoEditorListener != null) {
+                mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
             }
         }
         return addedViews.size() != 0;
@@ -370,8 +368,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
         return new String(Character.toChars(unicode));
     }
 
-    public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
-        this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
+    public void setOnPhotoEditorListener(OnPhotoEditorListener onPhotoEditorListener) {
+        this.mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
     @Override
@@ -393,8 +391,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
             redoViews.remove(redoViews.size() - 1);
         }
         addedViews.add(brushDrawingView);
-        if (onPhotoEditorSDKListener != null) {
-            onPhotoEditorSDKListener.onAddViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+        if (mOnPhotoEditorListener != null) {
+            mOnPhotoEditorListener.onAddViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
 
@@ -407,12 +405,12 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
             }
             redoViews.add(removeView);
         }
-        if (onPhotoEditorSDKListener != null) {
-            onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+        if (mOnPhotoEditorListener != null) {
+            mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
         }
     }
 
-    public static class PhotoEditorSDKBuilder {
+    public static class PhotoEditorBuilder {
 
         private Context context;
         private RelativeLayout parentView;
@@ -422,37 +420,37 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, 
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
 
-        public PhotoEditorSDKBuilder(Context context) {
+        public PhotoEditorBuilder(Context context) {
             this.context = context;
         }
 
-        public PhotoEditorSDKBuilder setParentView(RelativeLayout parentView) {
+        public PhotoEditorBuilder setParentView(RelativeLayout parentView) {
             this.parentView = parentView;
             return this;
         }
 
-        public PhotoEditorSDKBuilder setChildView(ImageView imageView) {
+        public PhotoEditorBuilder setChildView(ImageView imageView) {
             this.imageView = imageView;
             return this;
         }
 
-        public PhotoEditorSDKBuilder setDeleteView(View deleteView) {
+        public PhotoEditorBuilder setDeleteView(View deleteView) {
             this.deleteView = deleteView;
             return this;
         }
 
-        public PhotoEditorSDKBuilder setPinchTextScalable(boolean isTextPinchZoomable) {
+        public PhotoEditorBuilder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
             return this;
         }
 
-        public PhotoEditorSDKBuilder setBrushDrawingView(BrushDrawingView brushDrawingView) {
+        public PhotoEditorBuilder setBrushDrawingView(BrushDrawingView brushDrawingView) {
             this.brushDrawingView = brushDrawingView;
             return this;
         }
 
-        public PhotoEditorSDK build() {
-            return new PhotoEditorSDK(this);
+        public PhotoEditor build() {
+            return new PhotoEditor(this);
         }
     }
 }

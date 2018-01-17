@@ -6,7 +6,7 @@ import android.view.View;
  * Created by Ahmed Adel on 02/06/2017.
  */
 
-public interface OnPhotoEditorSDKListener {
+public interface OnPhotoEditorListener {
 
     void onEditTextChangeListener(View rootView, String text, int colorCode);
 

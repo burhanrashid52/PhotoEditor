@@ -6,7 +6,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,18 +32,18 @@ class MultiTouchListener implements OnTouchListener {
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl mOnGestureControl;
     private boolean mIsTextPinchZoomable;
-    private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
+    private OnPhotoEditorListener mOnPhotoEditorListener;
 
     MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
                        ImageView photoEditImageView, boolean isTextPinchZoomable,
-                       OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
+                       OnPhotoEditorListener onPhotoEditorListener) {
         mIsTextPinchZoomable = isTextPinchZoomable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
         this.deleteView = deleteView;
         this.parentView = parentView;
         this.photoEditImageView = photoEditImageView;
-        this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
+        this.mOnPhotoEditorListener = onPhotoEditorListener;
         if (deleteView != null) {
             outRect = new Rect(deleteView.getLeft(), deleteView.getTop(),
                     deleteView.getRight(), deleteView.getBottom());
@@ -165,8 +164,8 @@ class MultiTouchListener implements OnTouchListener {
                             onMultiTouchListener.onEditTextClickListener(
                                     text.getText().toString(), text.getCurrentTextColor());
                         }
-                        if (onPhotoEditorSDKListener != null) {
-                            onPhotoEditorSDKListener.onEditTextChangeListener(
+                        if (mOnPhotoEditorListener != null) {
+                            mOnPhotoEditorListener.onEditTextChangeListener(
                                     text.getText().toString(), text.getCurrentTextColor());
                         }
                     }
@@ -189,26 +188,26 @@ class MultiTouchListener implements OnTouchListener {
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
         if (view instanceof TextView) {
             if (onMultiTouchListener != null) {
-                if (onPhotoEditorSDKListener != null) {
+                if (mOnPhotoEditorListener != null) {
                     if (isStart)
-                        onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.TEXT);
+                        mOnPhotoEditorListener.onStartViewChangeListener(ViewType.TEXT);
                     else
-                        onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.TEXT);
+                        mOnPhotoEditorListener.onStopViewChangeListener(ViewType.TEXT);
                 }
             } else {
-                if (onPhotoEditorSDKListener != null) {
+                if (mOnPhotoEditorListener != null) {
                     if (isStart)
-                        onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.EMOJI);
+                        mOnPhotoEditorListener.onStartViewChangeListener(ViewType.EMOJI);
                     else
-                        onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.EMOJI);
+                        mOnPhotoEditorListener.onStopViewChangeListener(ViewType.EMOJI);
                 }
             }
         } else {
-            if (onPhotoEditorSDKListener != null) {
+            if (mOnPhotoEditorListener != null) {
                 if (isStart)
-                    onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.IMAGE);
+                    mOnPhotoEditorListener.onStartViewChangeListener(ViewType.IMAGE);
                 else
-                    onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.IMAGE);
+                    mOnPhotoEditorListener.onStopViewChangeListener(ViewType.IMAGE);
             }
         }
     }

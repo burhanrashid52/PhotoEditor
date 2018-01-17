@@ -41,7 +41,7 @@ public class BrushDrawingView extends View {
     private static final float TOUCH_TOLERANCE = 4;
 
     private BrushViewChangeListener mBrushViewChangeListener;
-    //private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
+    //private OnPhotoEditorListener onPhotoEditorSDKListener;
 
     public BrushDrawingView(Context context) {
         this(context, null);
@@ -148,7 +148,7 @@ public class BrushDrawingView extends View {
         invalidate();
     }
 
-    /*public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
+    /*public void setOnPhotoEditorListener(OnPhotoEditorListener onPhotoEditorSDKListener) {
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
     }*/
 

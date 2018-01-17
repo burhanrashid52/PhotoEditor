@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,19 +17,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
-import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
-import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
+import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorListener;
+import com.ahmedadeltito.photoeditorsdk.PhotoEditor;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKListener, View.OnClickListener {
+public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener, View.OnClickListener {
 
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
-    private PhotoEditorSDK mPhotoEditorSDK;
+    private PhotoEditor mPhotoEditor;
     private RelativeLayout mParentImgSource, mDeleteLayout;
     private BrushDrawingView mBrushDrawingView;
     private ImageView mSourceImage;
@@ -70,7 +68,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
         initViews();
         setSupportActionBar(mToolbar);
 
-        mPhotoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(this)
+        mPhotoEditor = new PhotoEditor.PhotoEditorBuilder(this)
                 .setParentView(mParentImgSource) // add parent image view
                 .setChildView(mSourceImage) // add the desired image view
                 //.setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
@@ -78,12 +76,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
                 .setPinchTextScalable(false) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
 
-        mPhotoEditorSDK.setOnPhotoEditorSDKListener(this);
+        mPhotoEditor.setOnPhotoEditorListener(this);
 
-        List<Integer> defaultProvidedColors = ColorPickerAdapter.getDefaultColors(this);
+        //For testing only
+        /*List<Integer> defaultProvidedColors = ColorPickerAdapter.getDefaultColors(this);
         for (int i = 0; i < 4; i++) {
-            mPhotoEditorSDK.addText("Text " + i, defaultProvidedColors.get(i + 1));
-        }
+            mPhotoEditor.addText("Text " + i, defaultProvidedColors.get(i + 1));
+        }*/
     }
 
     private void initViews() {
@@ -126,7 +125,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
             public void onDone(String inputText, int colorCode) {
-                mPhotoEditorSDK.editText(rootView, inputText, colorCode);
+                mPhotoEditor.editText(rootView, inputText, colorCode);
             }
         });
     }
@@ -153,17 +152,17 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
 
     @Override
     public void onClick(View view) {
-        boolean isEnabled = !mPhotoEditorSDK.getBrushDrawableMode();
+        boolean isEnabled = !mPhotoEditor.getBrushDrawableMode();
         switch (view.getId()) {
             case R.id.btnPencil:
                 if (isEnabled) {
-                    mPhotoEditorSDK.setOpacity(100);
-                    mPhotoEditorSDK.setBrushSize(25);
+                    mPhotoEditor.setOpacity(100);
+                    mPhotoEditor.setBrushSize(25);
                 }
                 updateBrushDrawingView(isEnabled);
                 break;
             case R.id.btnEraser:
-                mPhotoEditorSDK.brushEraser();
+                mPhotoEditor.brushEraser();
                 break;
 
             case R.id.btnText:
@@ -174,23 +173,23 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
                     public void onDone(String inputText, int colorCode) {
-                        mPhotoEditorSDK.addText(inputText, colorCode);
+                        mPhotoEditor.addText(inputText, colorCode);
                     }
                 });
                 break;
 
             case R.id.btnUndo:
-                mPhotoEditorSDK.undo();
+                mPhotoEditor.undo();
                 break;
 
             case R.id.btnRedo:
-                mPhotoEditorSDK.redo();
+                mPhotoEditor.redo();
                 break;
 
             case R.id.btnHighlighter:
                 if (isEnabled) {
-                    mPhotoEditorSDK.setOpacity(50);
-                    mPhotoEditorSDK.setBrushSize(25);
+                    mPhotoEditor.setOpacity(50);
+                    mPhotoEditor.setBrushSize(25);
                 }
                 updateBrushDrawingView(isEnabled);
                 break;
@@ -211,7 +210,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                     String imageName = "IMG_" + timeStamp + ".jpg";
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("imagePath", mPhotoEditorSDK.saveImage("PhotoEditorSDK", imageName));
+                    returnIntent.putExtra("imagePath", mPhotoEditor.saveImage("PhotoEditor", imageName));
                     setResult(Activity.RESULT_OK, returnIntent);
                     //  finish();
                 }
@@ -221,13 +220,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKL
     }
 
     private void updateBrushDrawingView(boolean brushDrawingMode) {
-        mPhotoEditorSDK.setBrushDrawingMode(brushDrawingMode);
+        mPhotoEditor.setBrushDrawingMode(brushDrawingMode);
         mRvColor.setVisibility(brushDrawingMode ? View.VISIBLE : View.GONE);
         ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(this);
         colorPickerAdapter.setOnColorPickerClickListener(new ColorPickerAdapter.OnColorPickerClickListener() {
             @Override
             public void onColorPickerClickListener(int colorCode) {
-                mPhotoEditorSDK.setBrushColor(colorCode);
+                mPhotoEditor.setBrushColor(colorCode);
             }
         });
         mRvColor.setAdapter(colorPickerAdapter);
