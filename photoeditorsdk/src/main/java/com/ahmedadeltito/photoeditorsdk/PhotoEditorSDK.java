@@ -25,7 +25,7 @@ import java.util.List;
  * Created by Ahmed Adel on 02/06/2017.
  */
 
-public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
+public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener, BrushViewChangeListener {
 
     public static final String TAG = PhotoEditorSDK.class.getSimpleName();
     private Context context;
@@ -47,7 +47,9 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         this.deleteView = photoEditorSDKBuilder.deleteView;
         this.brushDrawingView = photoEditorSDKBuilder.brushDrawingView;
         this.isTextPinchZoomable = photoEditorSDKBuilder.isTextPinchZoomable;
+        brushDrawingView.setBrushViewChangeListener(this);
         addedViews = new ArrayList<>();
+        redoViews = new ArrayList<>();
     }
 
     public void addImage(Bitmap desiredImage) {
@@ -245,6 +247,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
             if (addedViews.contains(removedView)) {
                 parentView.removeView(removedView);
                 addedViews.remove(removedView);
+                redoViews.add(removedView);
                 if (onPhotoEditorSDKListener != null)
                     onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
             }
@@ -252,11 +255,34 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
 
     public boolean undo() {
-        return brushDrawingView != null && brushDrawingView.undo();
+        if (addedViews.size() > 0) {
+            View removeView = addedViews.get(addedViews.size() - 1);
+            if (removeView instanceof BrushDrawingView) {
+                return brushDrawingView != null && brushDrawingView.undo();
+            } else {
+                addedViews.remove(addedViews.size() - 1);
+                parentView.removeView(removeView);
+                redoViews.add(removeView);
+            }
+            if (onPhotoEditorSDKListener != null) {
+                onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+            }
+        }
+        return addedViews.size() != 0;
     }
 
     public boolean redo() {
-        return brushDrawingView != null && brushDrawingView.redo();
+        if (redoViews.size() > 0) {
+            View redoView = redoViews.get(redoViews.size() - 1);
+            if (redoView instanceof BrushDrawingView) {
+                return brushDrawingView != null && brushDrawingView.redo();
+            } else {
+                redoViews.remove(redoViews.size() - 1);
+                parentView.addView(redoView);
+                addedViews.add(redoView);
+            }
+        }
+        return redoViews.size() != 0;
     }
 
     public void clearBrushAllViews() {
@@ -273,6 +299,10 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
 
     public String saveImage(String folderName, String imageName) {
+
+        parentView.setDrawingCacheEnabled(false);
+        clearTextHelper();
+
         String selectedOutputPath = "";
         if (isSDCARDMounted()) {
             File mediaStorageDir = new File(
@@ -302,6 +332,24 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         return selectedOutputPath;
     }
 
+
+    /**
+     * Remove all helper boxes from text
+     */
+    private void clearTextHelper() {
+        for (int i = 0; i < parentView.getChildCount(); i++) {
+            View childAt = parentView.getChildAt(i);
+            TextView txtInput = childAt.findViewById(R.id.photo_editor_sdk_text_tv);
+            if (txtInput != null) {
+                txtInput.setBackgroundResource(0);
+            }
+            ImageView imgClose = childAt.findViewById(R.id.imgClose);
+            if (imgClose != null) {
+                imgClose.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private boolean isSDCARDMounted() {
         String status = Environment.getExternalStorageState();
         return status.equals(Environment.MEDIA_MOUNTED);
@@ -324,7 +372,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
     public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
-        brushDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener);
     }
 
     @Override
@@ -337,7 +384,32 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
     @Override
     public void onRemoveViewListener(View removedView) {
-        viewUndo(removedView);
+        //viewUndo(removedView);
+    }
+
+    @Override
+    public void onViewAdd(BrushDrawingView brushDrawingView) {
+        if (redoViews.size() > 0) {
+            redoViews.remove(redoViews.size() - 1);
+        }
+        addedViews.add(brushDrawingView);
+        if (onPhotoEditorSDKListener != null) {
+            onPhotoEditorSDKListener.onAddViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+        }
+    }
+
+    @Override
+    public void onViewRemoved(BrushDrawingView brushDrawingView) {
+        if (addedViews.size() > 0) {
+            View removeView = addedViews.remove(addedViews.size() - 1);
+            if (!(removeView instanceof BrushDrawingView)) {
+                parentView.removeView(removeView);
+            }
+            redoViews.add(removeView);
+        }
+        if (onPhotoEditorSDKListener != null) {
+            onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+        }
     }
 
     public static class PhotoEditorSDKBuilder {

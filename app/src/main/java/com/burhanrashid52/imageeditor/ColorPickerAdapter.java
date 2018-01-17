@@ -35,7 +35,7 @@ public class ColorPickerAdapter extends RecyclerView.Adapter<ColorPickerAdapter.
     }
 
     ColorPickerAdapter(@NonNull Context context) {
-        this(context, getDefaultProvidedColors(context));
+        this(context, getDefaultColors(context));
         this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
@@ -102,7 +102,7 @@ public class ColorPickerAdapter extends RecyclerView.Adapter<ColorPickerAdapter.
         void onColorPickerClickListener(int colorCode);
     }
 
-    private static List<Integer> getDefaultProvidedColors(Context context) {
+    public static List<Integer> getDefaultColors(Context context) {
         ArrayList<Integer> colorPickerColors = new ArrayList<>();
         colorPickerColors.add(ContextCompat.getColor(context, R.color.black));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.blue_color_picker));

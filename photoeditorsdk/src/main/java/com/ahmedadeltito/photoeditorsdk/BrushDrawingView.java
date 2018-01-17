@@ -40,7 +40,8 @@ public class BrushDrawingView extends View {
     private float mTouchX, mTouchY;
     private static final float TOUCH_TOLERANCE = 4;
 
-    private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
+    private BrushViewChangeListener mBrushViewChangeListener;
+    //private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
     public BrushDrawingView(Context context) {
         this(context, null);
@@ -147,8 +148,12 @@ public class BrushDrawingView extends View {
         invalidate();
     }
 
-    public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
+    /*public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
+    }*/
+
+    public void setBrushViewChangeListener(BrushViewChangeListener brushViewChangeListener) {
+        mBrushViewChangeListener = brushViewChangeListener;
     }
 
     @Override
@@ -175,16 +180,16 @@ public class BrushDrawingView extends View {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     touchStart(touchX, touchY);
-                    if (onPhotoEditorSDKListener != null)
-                        onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);
+                  /*  if (onPhotoEditorSDKListener != null)
+                        onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);*/
                     break;
                 case MotionEvent.ACTION_MOVE:
                     touchMove(touchX, touchY);
                     break;
                 case MotionEvent.ACTION_UP:
                     touchUp();
-                    if (onPhotoEditorSDKListener != null)
-                        onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);
+                   /* if (onPhotoEditorSDKListener != null)
+                        onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);*/
                     break;
             }
             invalidate();
@@ -217,6 +222,9 @@ public class BrushDrawingView extends View {
             mRedoLinePaths.add(mLinePaths.remove(mLinePaths.size() - 1));
             invalidate();
         }
+        if (mBrushViewChangeListener != null) {
+            mBrushViewChangeListener.onViewRemoved(this);
+        }
         return mLinePaths.size() != 0;
     }
 
@@ -224,6 +232,9 @@ public class BrushDrawingView extends View {
         if (mRedoLinePaths.size() > 0) {
             mLinePaths.add(mRedoLinePaths.remove(mRedoLinePaths.size() - 1));
             invalidate();
+        }
+        if (mBrushViewChangeListener != null) {
+            mBrushViewChangeListener.onViewAdd(this);
         }
         return mRedoLinePaths.size() != 0;
     }
@@ -254,5 +265,8 @@ public class BrushDrawingView extends View {
         // kill this so we don't double draw
         mLinePaths.add(new LinePath(mPath, mDrawPaint));
         mPath = new Path();
+        if (mBrushViewChangeListener != null) {
+            mBrushViewChangeListener.onViewAdd(this);
+        }
     }
 }

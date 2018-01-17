@@ -1,11 +1,17 @@
 package com.burhanrashid52.imageeditor;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,8 +22,14 @@ import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
 
-public class EditImageActivity extends AppCompatActivity implements OnPhotoEditorSDKListener, View.OnClickListener {
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+public class EditImageActivity extends BaseActivity implements OnPhotoEditorSDKListener, View.OnClickListener {
+
+    public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private PhotoEditorSDK mPhotoEditorSDK;
     private RelativeLayout mParentImgSource, mDeleteLayout;
     private BrushDrawingView mBrushDrawingView;
@@ -25,6 +37,31 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
     private RecyclerView mRvColor;
     private Toolbar mToolbar;
     private Button btnPencil, btnEraser, btnHighlighter, btnUndo, btnRedo, btnText;
+
+
+    /**
+     * launch editor with multiple image
+     *
+     * @param context
+     * @param imagesPath
+     */
+    public static void launch(Context context, ArrayList<String> imagesPath) {
+        Intent starter = new Intent(context, EditImageActivity.class);
+        starter.putExtra(EXTRA_IMAGE_PATHS, imagesPath);
+        context.startActivity(starter);
+    }
+
+    /**
+     * launch editor with single image
+     *
+     * @param context
+     * @param imagePath
+     */
+    public static void launch(Context context, String imagePath) {
+        ArrayList<String> imagePaths = new ArrayList<>();
+        imagePaths.add(imagePath);
+        launch(context, imagePaths);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +79,11 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
                 .build(); // build photo editor sdk
 
         mPhotoEditorSDK.setOnPhotoEditorSDKListener(this);
+
+        List<Integer> defaultProvidedColors = ColorPickerAdapter.getDefaultColors(this);
+        for (int i = 0; i < 4; i++) {
+            mPhotoEditorSDK.addText("Text " + i, defaultProvidedColors.get(i + 1));
+        }
     }
 
     private void initViews() {
@@ -153,6 +195,29 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
                 updateBrushDrawingView(isEnabled);
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.save_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String imageName = "IMG_" + timeStamp + ".jpg";
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("imagePath", mPhotoEditorSDK.saveImage("PhotoEditorSDK", imageName));
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    //  finish();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateBrushDrawingView(boolean brushDrawingMode) {
