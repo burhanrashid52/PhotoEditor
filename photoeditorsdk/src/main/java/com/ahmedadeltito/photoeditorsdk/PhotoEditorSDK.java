@@ -34,10 +34,10 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     private View deleteView;
     private BrushDrawingView brushDrawingView;
     private List<View> addedViews;
+    private List<View> redoViews;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
-    private View addTextRootView;
     private boolean isTextPinchZoomable;
-    boolean isbackground = false;
+    private boolean mIsbackground = false;
 
 
     private PhotoEditorSDK(PhotoEditorSDKBuilder photoEditorSDKBuilder) {
@@ -53,7 +53,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     public void addImage(Bitmap desiredImage) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View imageRootView = inflater.inflate(R.layout.photo_editor_sdk_image_item_list, null);
-        ImageView imageView = (ImageView) imageRootView.findViewById(R.id.photo_editor_sdk_image_iv);
+        ImageView imageView = imageRootView.findViewById(R.id.photo_editor_sdk_image_iv);
         imageView.setImageBitmap(desiredImage);
         imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT));
@@ -76,12 +76,12 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(String text, int colorCodeTextView) {
-        isbackground = true;
+    public void addText(String text, final int colorCodeTextView) {
+        mIsbackground = true;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
-        final TextView textInputTv = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
-        final ImageView imgClose = (ImageView) addTextRootView.findViewById(R.id.imgClose);
+        final View addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
+        final TextView textInputTv = addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
+        final ImageView imgClose = addTextRootView.findViewById(R.id.imgClose);
 
         imgClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,14 +104,18 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                textInputTv.setBackgroundResource(isbackground ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isbackground ? View.GONE : View.VISIBLE);
-                isbackground = !isbackground;
+                textInputTv.setBackgroundResource(mIsbackground ? 0 : R.drawable.rounded_border_tv);
+                imgClose.setVisibility(mIsbackground ? View.GONE : View.VISIBLE);
+                mIsbackground = !mIsbackground;
             }
 
             @Override
             public void onLongClick() {
-
+                String textInput = textInputTv.getText().toString();
+                int currentTextColor = textInputTv.getCurrentTextColor();
+                if (onPhotoEditorSDKListener != null) {
+                    onPhotoEditorSDKListener.onEditTextChangeListener(addTextRootView, textInput, currentTextColor);
+                }
             }
         });
 
@@ -126,10 +130,28 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
             onPhotoEditorSDKListener.onAddViewListener(ViewType.TEXT, addedViews.size());
     }
 
+    /**
+     * This will update the text and color on provided view
+     *
+     * @param view      root view where text view is a child
+     * @param inputText text to update textview
+     * @param colorCode color to update on textview
+     */
+    public void editText(View view, String inputText, int colorCode) {
+        TextView inputTextView = view.findViewById(R.id.photo_editor_sdk_text_tv);
+        if (inputTextView != null && addedViews.contains(view)) {
+            inputTextView.setText(inputText);
+            inputTextView.setTextColor(colorCode);
+            parentView.updateViewLayout(view, view.getLayoutParams());
+            int i = addedViews.indexOf(view);
+            if (i > -1) addedViews.set(i, view);
+        }
+    }
+
     public void addEmoji(String emojiName, Typeface emojiFont) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View emojiRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
-        TextView emojiTextView = (TextView) emojiRootView.findViewById(R.id.photo_editor_sdk_text_tv);
+        TextView emojiTextView = emojiRootView.findViewById(R.id.photo_editor_sdk_text_tv);
         emojiTextView.setTypeface(emojiFont);
         emojiTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         emojiTextView.setText(convertEmoji(emojiName));
@@ -258,12 +280,12 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
             // Create a storage directory if it does not exist
             if (!mediaStorageDir.exists()) {
                 if (!mediaStorageDir.mkdirs()) {
-                    Log.d("PhotoEditorSDK", "Failed to create directory");
+                    Log.d(TAG, "Failed to create directory");
                 }
             }
             // Create a media file name
             selectedOutputPath = mediaStorageDir.getPath() + File.separator + imageName;
-            Log.d("PhotoEditorSDK", "selected camera path " + selectedOutputPath);
+            Log.d(TAG, "selected camera path " + selectedOutputPath);
             File file = new File(selectedOutputPath);
             try {
                 FileOutputStream out = new FileOutputStream(file);
@@ -286,7 +308,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
 
     private String convertEmoji(String emoji) {
-        String returnedEmoji = "";
+        String returnedEmoji;
         try {
             int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
             returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
@@ -307,10 +329,10 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
     @Override
     public void onEditTextClickListener(String text, int colorCode) {
-        if (addTextRootView != null) {
+       /* if (addTextRootView != null) {
             parentView.removeView(addTextRootView);
             addedViews.remove(addTextRootView);
-        }
+        }*/
     }
 
     @Override

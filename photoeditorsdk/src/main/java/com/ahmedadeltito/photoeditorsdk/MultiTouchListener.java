@@ -6,6 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -155,20 +156,21 @@ class MultiTouchListener implements OnTouchListener {
                     deleteView.setVisibility(View.GONE);
                 }
                 firePhotoEditorSDKListener(view, false);
-                float mCurrentCancelX = event.getRawX();
+               /* float mCurrentCancelX = event.getRawX();
                 float mCurrentCancelY = event.getRawY();
                 if (mCurrentCancelX == mPrevRawX || mCurrentCancelY == mPrevRawY) {
-                    if (view instanceof TextView) {
+                    if (view instanceof FrameLayout) {
+                        TextView text = (TextView) ((FrameLayout) view).getChildAt(1);
                         if (onMultiTouchListener != null) {
                             onMultiTouchListener.onEditTextClickListener(
-                                    ((TextView) view).getText().toString(), ((TextView) view).getCurrentTextColor());
+                                    text.getText().toString(), text.getCurrentTextColor());
                         }
                         if (onPhotoEditorSDKListener != null) {
                             onPhotoEditorSDKListener.onEditTextChangeListener(
-                                    ((TextView) view).getText().toString(), ((TextView) view).getCurrentTextColor());
+                                    text.getText().toString(), text.getCurrentTextColor());
                         }
                     }
-                }
+                }*/
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 int pointerIndexPointerUp = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -286,6 +288,14 @@ class MultiTouchListener implements OnTouchListener {
                 mOnGestureControl.onClick();
             }
             return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            if (mOnGestureControl != null) {
+                mOnGestureControl.onLongClick();
+            }
         }
     }
 }

@@ -1,24 +1,15 @@
 package com.burhanrashid52.imageeditor;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
 import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
@@ -28,14 +19,12 @@ import com.ahmedadeltito.photoeditorsdk.ViewType;
 public class EditImageActivity extends AppCompatActivity implements OnPhotoEditorSDKListener, View.OnClickListener {
 
     private PhotoEditorSDK mPhotoEditorSDK;
-    private RelativeLayout mParentImgSource;
-    private RelativeLayout mDeleteLayout;
+    private RelativeLayout mParentImgSource, mDeleteLayout;
     private BrushDrawingView mBrushDrawingView;
     private ImageView mSourceImage;
     private RecyclerView mRvColor;
     private Toolbar mToolbar;
     private Button btnPencil, btnEraser, btnHighlighter, btnUndo, btnRedo, btnText;
-    private int mColorCodeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +36,7 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
         mPhotoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(this)
                 .setParentView(mParentImgSource) // add parent image view
                 .setChildView(mSourceImage) // add the desired image view
-          //      .setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
+                //.setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
                 .setBrushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
                 .setPinchTextScalable(false) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
@@ -87,8 +76,17 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
     }
 
     @Override
-    public void onEditTextChangeListener(String text, int colorCode) {
-
+    public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
+        TextEditorDialogFragment textEditorDialogFragment =
+                TextEditorDialogFragment.show(this,
+                        text,
+                        colorCode);
+        textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
+            @Override
+            public void onDone(String inputText, int colorCode) {
+                mPhotoEditorSDK.editText(rootView, inputText, colorCode);
+            }
+        });
     }
 
     @Override
@@ -129,7 +127,7 @@ public class EditImageActivity extends AppCompatActivity implements OnPhotoEdito
             case R.id.btnText:
                 TextEditorDialogFragment textEditorDialogFragment =
                         TextEditorDialogFragment.show(this,
-                                "Hello",
+                                "Burhanuddin",
                                 ContextCompat.getColor(this, R.color.white));
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
