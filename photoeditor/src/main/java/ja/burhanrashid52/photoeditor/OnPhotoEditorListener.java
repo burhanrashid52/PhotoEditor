@@ -1,9 +1,9 @@
-package com.ahmedadeltito.photoeditorsdk;
+package ja.burhanrashid52.photoeditor;
 
 import android.view.View;
 
 /**
- * Created by Ahmed Adel on 02/06/2017.
+ * Created by Burhanuddin Rashid on 18/01/2017.
  */
 
 public interface OnPhotoEditorListener {

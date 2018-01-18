@@ -1,4 +1,4 @@
-package com.ahmedadeltito.photoeditorsdk;
+package ja.burhanrashid52.photoeditor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

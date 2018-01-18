@@ -1,4 +1,4 @@
-package com.ahmedadeltito.photoeditorsdk;
+package ja.burhanrashid52.photoeditor;
 
 /**
  * Created by Burhanuddin Rashid on 1/17/2018.

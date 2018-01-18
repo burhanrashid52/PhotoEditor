@@ -96,37 +96,14 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="60dp" />
 
-    <RelativeLayout
+    <ja.burhanrashid52.photoeditor.PhotoEditorView
         android:id="@+id/parentImgSource"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="Source image to edit"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText">
-
-        <ImageView
-            android:id="@+id/imgSource"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/got" />
-
-        <com.ahmedadeltito.photoeditorsdk.BrushDrawingView
-            android:id="@+id/brushDrawing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imgSource"
-            android:layout_alignTop="@+id/imgSource"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/delete_rl"
@@ -164,14 +141,14 @@
         android:layout_alignParentTop="true"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="4dp"
-        tools:listitem="@layout/color_picker_item_list"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        android:orientation="horizontal"
-        tools:background="@android:color/black"
         android:layout_marginStart="4dp"
+        android:orientation="horizontal"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@+id/parentImgSource"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:background="@android:color/black"
+        tools:listitem="@layout/color_picker_item_list" />
 
 
 </android.support.constraint.ConstraintLayout>

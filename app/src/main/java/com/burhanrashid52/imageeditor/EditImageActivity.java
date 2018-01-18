@@ -14,12 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
-import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorListener;
-import com.ahmedadeltito.photoeditorsdk.PhotoEditor;
-import com.ahmedadeltito.photoeditorsdk.ViewType;
+import ja.burhanrashid52.photoeditor.BrushDrawingView;
+import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.ViewType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private PhotoEditor mPhotoEditor;
-    private RelativeLayout mParentImgSource, mDeleteLayout;
+    private PhotoEditorView mParentImgSource, mDeleteLayout;
     private BrushDrawingView mBrushDrawingView;
     private ImageView mSourceImage;
     private RecyclerView mRvColor;
@@ -68,11 +68,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         initViews();
         setSupportActionBar(mToolbar);
 
-        mPhotoEditor = new PhotoEditor.PhotoEditorBuilder(this)
-                .setParentView(mParentImgSource) // add parent image view
-                .setChildView(mSourceImage) // add the desired image view
+        mParentImgSource.getImageSource().setImageResource(R.drawable.got_test);
+
+        mPhotoEditor = new PhotoEditor.Builder(this, mParentImgSource)
+                //     .setParentView(mParentImgSource) // add parent image view
+                //      .setChildView(mSourceImage) // add the desired image view
                 //.setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
-                .setBrushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
+                //       .setBrushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
                 .setPinchTextScalable(false) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
 
@@ -88,7 +90,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private void initViews() {
         mToolbar = findViewById(R.id.toolbar);
         mParentImgSource = findViewById(R.id.parentImgSource);
-        mDeleteLayout = findViewById(R.id.delete_rl);
+        //  mDeleteLayout = findViewById(R.id.delete_rl);
         mBrushDrawingView = findViewById(R.id.brushDrawing);
         mSourceImage = findViewById(R.id.imgSource);
 

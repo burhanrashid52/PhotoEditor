@@ -1,4 +1,4 @@
-package com.ahmedadeltito.photoeditorsdk;
+package ja.burhanrashid52.photoeditor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,13 +16,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Ahmed Adel on 02/06/2017.
+ * Created by Burhanuddin Rashid on 18/01/2017.
  */
 
 public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, BrushViewChangeListener {
@@ -40,13 +41,13 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
     private boolean mIsbackground = false;
 
 
-    private PhotoEditor(PhotoEditorBuilder photoEditorBuilder) {
-        this.context = photoEditorBuilder.context;
-        this.parentView = photoEditorBuilder.parentView;
-        this.imageView = photoEditorBuilder.imageView;
-        this.deleteView = photoEditorBuilder.deleteView;
-        this.brushDrawingView = photoEditorBuilder.brushDrawingView;
-        this.isTextPinchZoomable = photoEditorBuilder.isTextPinchZoomable;
+    private PhotoEditor(Builder builder) {
+        this.context = builder.context;
+        this.parentView = builder.parentView;
+        this.imageView = builder.imageView;
+        this.deleteView = builder.deleteView;
+        this.brushDrawingView = builder.brushDrawingView;
+        this.isTextPinchZoomable = builder.isTextPinchZoomable;
         brushDrawingView.setBrushViewChangeListener(this);
         addedViews = new ArrayList<>();
         redoViews = new ArrayList<>();
@@ -410,7 +411,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         }
     }
 
-    public static class PhotoEditorBuilder {
+    public static class Builder {
 
         private Context context;
         private RelativeLayout parentView;
@@ -420,31 +421,34 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
 
-        public PhotoEditorBuilder(Context context) {
+        public Builder(Context context, PhotoEditorView photoEditorView) {
             this.context = context;
+            parentView = photoEditorView.getParentLayout();
+            imageView = photoEditorView.getImageSource();
+            brushDrawingView = photoEditorView.getBrushDrawingView();
         }
 
-        public PhotoEditorBuilder setParentView(RelativeLayout parentView) {
+        Builder setParentView(RelativeLayout parentView) {
             this.parentView = parentView;
             return this;
         }
 
-        public PhotoEditorBuilder setChildView(ImageView imageView) {
+        Builder setChildView(ImageView imageView) {
             this.imageView = imageView;
             return this;
         }
 
-        public PhotoEditorBuilder setDeleteView(View deleteView) {
+        public Builder setDeleteView(View deleteView) {
             this.deleteView = deleteView;
             return this;
         }
 
-        public PhotoEditorBuilder setPinchTextScalable(boolean isTextPinchZoomable) {
+        public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
             return this;
         }
 
-        public PhotoEditorBuilder setBrushDrawingView(BrushDrawingView brushDrawingView) {
+        Builder setBrushDrawingView(BrushDrawingView brushDrawingView) {
             this.brushDrawingView = brushDrawingView;
             return this;
         }

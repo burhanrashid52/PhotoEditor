@@ -1,4 +1,4 @@
-package com.ahmedadeltito.photoeditorsdk;
+package ja.burhanrashid52.photoeditor;
 
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * Created by Burhanuddin Rashid on 18/01/2017.
+ */
 class MultiTouchListener implements OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;

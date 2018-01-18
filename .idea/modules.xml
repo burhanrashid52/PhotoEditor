@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ImageEditorAndroid.iml" filepath="$PROJECT_DIR$/ImageEditorAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/photoeditorsdk/photoeditorsdk.iml" filepath="$PROJECT_DIR$/photoeditorsdk/photoeditorsdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/photoeditor/photoeditorsdk.iml" filepath="$PROJECT_DIR$/photoeditor/photoeditorsdk.iml" />
     </modules>
   </component>
 </project>

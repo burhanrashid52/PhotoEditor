@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentImgSource"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:contentDescription="Source image to edit"
+    tools:ignore="HardcodedText">
+
+    <ImageView
+        android:id="@+id/imgSource"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/cities" />
+
+    <ja.burhanrashid52.photoeditor.BrushDrawingView
+        android:id="@+id/brushDrawing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imgSource"
+        android:layout_alignTop="@+id/imgSource"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
