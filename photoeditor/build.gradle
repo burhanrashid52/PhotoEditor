@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
 ext {
-    bintrayRepo = 'PhotoEditor'
+    bintrayRepo = 'maven'
     bintrayName = 'photoeditor'
 
     publishedGroupId = 'ja.burhanrashid52'
@@ -13,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
     gitUrl = 'https://github.com/burhanrashid52/PhotoEditor/issues'
 
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.2'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'

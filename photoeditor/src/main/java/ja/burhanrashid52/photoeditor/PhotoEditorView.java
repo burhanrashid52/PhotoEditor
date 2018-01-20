@@ -49,6 +49,7 @@ public class PhotoEditorView extends FrameLayout {
         addView(rootView);
     }
 
+    //Get Imageview
     public ImageView getImageSource() {
         return mImgSource;
     }
