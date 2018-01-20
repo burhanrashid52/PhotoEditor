@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * Created by Burhanuddin Rashid on 1/17/2018.
@@ -29,6 +31,11 @@ public class BaseActivity extends AppCompatActivity {
 
     public void isPermissionGranted(boolean isGranted, String permission) {
 
+    }
+
+    public void makeFullScreen() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override

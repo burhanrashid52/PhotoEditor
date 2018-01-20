@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,11 +26,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private PhotoEditor mPhotoEditor;
-    private PhotoEditorView mParentImgSource, mDeleteLayout;
+    private PhotoEditorView mPhotoEditorView, mDeleteLayout;
     private BrushDrawingView mBrushDrawingView;
     private ImageView mSourceImage;
     private RecyclerView mRvColor;
-    private Toolbar mToolbar;
     private Button btnPencil, btnEraser, btnUndo, btnRedo, btnText;
     private PropertiesBSFragment mPropertiesBSFragment;
 
@@ -63,16 +61,16 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        makeFullScreen();
         setContentView(R.layout.activity_edit_image);
         initViews();
-        setSupportActionBar(mToolbar);
         mPropertiesBSFragment = new PropertiesBSFragment();
         mPropertiesBSFragment.setPropertiesChangeListener(this);
 
-        mParentImgSource.getImageSource().setImageResource(R.drawable.got);
+        mPhotoEditorView.getImageSource().setImageResource(R.drawable.got);
 
-        mPhotoEditor = new PhotoEditor.Builder(this, mParentImgSource)
-                .setPinchTextScalable(true) // set flag to make text scalable when pinch
+        mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
+                .setPinchTextScalable(false) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
@@ -85,8 +83,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     private void initViews() {
-        mToolbar = findViewById(R.id.toolbar);
-        mParentImgSource = findViewById(R.id.parentImgSource);
+        mPhotoEditorView = findViewById(R.id.photoEditorView);
         //  mDeleteLayout = findViewById(R.id.delete_rl);
         mBrushDrawingView = findViewById(R.id.brushDrawing);
         mSourceImage = findViewById(R.id.imgSource);
