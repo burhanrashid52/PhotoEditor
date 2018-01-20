@@ -48,7 +48,7 @@ public class ColorPickerAdapter extends RecyclerView.Adapter<ColorPickerAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        buildColorPickerView(holder.colorPickerView, colorPickerColors.get(position));
+        holder.colorPickerView.setBackgroundColor(colorPickerColors.get(position));
     }
 
     @Override
@@ -104,12 +104,12 @@ public class ColorPickerAdapter extends RecyclerView.Adapter<ColorPickerAdapter.
 
     public static List<Integer> getDefaultColors(Context context) {
         ArrayList<Integer> colorPickerColors = new ArrayList<>();
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.black));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.blue_color_picker));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.brown_color_picker));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.green_color_picker));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.orange_color_picker));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.red_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.black));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.red_orange_color_picker));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.sky_blue_color_picker));
         colorPickerColors.add(ContextCompat.getColor(context, R.color.violet_color_picker));

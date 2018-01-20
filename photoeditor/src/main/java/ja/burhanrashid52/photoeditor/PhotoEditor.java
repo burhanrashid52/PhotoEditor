@@ -1,12 +1,16 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
+import android.support.annotation.RequiresPermission;
+import android.support.annotation.UiThread;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,7 +32,7 @@ import java.util.List;
 
 public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, BrushViewChangeListener {
 
-    public static final String TAG = PhotoEditor.class.getSimpleName();
+    private static final String TAG = PhotoEditor.class.getSimpleName();
     private Context context;
     private RelativeLayout parentView;
     private ImageView imageView;
@@ -38,7 +42,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
     private List<View> redoViews;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
-    private boolean mIsbackground = false;
+    private boolean mIsBackground = false;
 
 
     private PhotoEditor(Builder builder) {
@@ -53,7 +57,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         redoViews = new ArrayList<>();
     }
 
-    public void addImage(Bitmap desiredImage) {
+    /*private void addImage(Bitmap desiredImage) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View imageRootView = inflater.inflate(R.layout.photo_editor_sdk_image_item_list, null);
         ImageView imageView = imageRootView.findViewById(R.id.photo_editor_sdk_image_iv);
@@ -76,11 +80,11 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         addedViews.add(imageRootView);
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
-    }
+    }*/
 
     @SuppressLint("ClickableViewAccessibility")
     public void addText(String text, final int colorCodeTextView) {
-        mIsbackground = true;
+        mIsBackground = true;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
         final TextView textInputTv = addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
@@ -107,9 +111,9 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                textInputTv.setBackgroundResource(mIsbackground ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(mIsbackground ? View.GONE : View.VISIBLE);
-                mIsbackground = !mIsbackground;
+                textInputTv.setBackgroundResource(mIsBackground ? 0 : R.drawable.rounded_border_tv);
+                imgClose.setVisibility(mIsBackground ? View.GONE : View.VISIBLE);
+                mIsBackground = !mIsBackground;
             }
 
             @Override
@@ -151,7 +155,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         }
     }
 
-    public void addEmoji(String emojiName, Typeface emojiFont) {
+    /*public void addEmoji(String emojiName, Typeface emojiFont) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View emojiRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
         TextView emojiTextView = emojiRootView.findViewById(R.id.photo_editor_sdk_text_tv);
@@ -173,7 +177,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         addedViews.add(emojiRootView);
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
-    }
+    }*/
 
     public void setBrushDrawingMode(boolean brushDrawingMode) {
         if (brushDrawingView != null)
@@ -284,7 +288,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         return redoViews.size() != 0;
     }
 
-    public void clearBrushAllViews() {
+    private void clearBrushAllViews() {
         if (brushDrawingView != null)
             brushDrawingView.clearAll();
     }
@@ -293,49 +297,19 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         for (int i = 0; i < addedViews.size(); i++) {
             parentView.removeView(addedViews.get(i));
         }
-        if (brushDrawingView != null)
-            brushDrawingView.clearAll();
-    }
-
-    public String saveImage(String folderName, String imageName) {
-
-        parentView.setDrawingCacheEnabled(false);
-        clearTextHelper();
-
-        String selectedOutputPath = "";
-        if (isSDCARDMounted()) {
-            File mediaStorageDir = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), folderName);
-            // Create a storage directory if it does not exist
-            if (!mediaStorageDir.exists()) {
-                if (!mediaStorageDir.mkdirs()) {
-                    Log.d(TAG, "Failed to create directory");
-                }
-            }
-            // Create a media file name
-            selectedOutputPath = mediaStorageDir.getPath() + File.separator + imageName;
-            Log.d(TAG, "selected camera path " + selectedOutputPath);
-            File file = new File(selectedOutputPath);
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                if (parentView != null) {
-                    parentView.setDrawingCacheEnabled(true);
-                    parentView.getDrawingCache().compress(Bitmap.CompressFormat.JPEG, 80, out);
-                }
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (addedViews.contains(brushDrawingView)) {
+            parentView.addView(brushDrawingView);
         }
-        return selectedOutputPath;
+        addedViews.clear();
+        redoViews.clear();
+        clearBrushAllViews();
     }
-
 
     /**
      * Remove all helper boxes from text
      */
-    private void clearTextHelper() {
+    @UiThread
+    private void clearTextHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
             TextView txtInput = childAt.findViewById(R.id.photo_editor_sdk_text_tv);
@@ -346,6 +320,31 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
             if (imgClose != null) {
                 imgClose.setVisibility(View.GONE);
             }
+        }
+    }
+
+
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveImage(String imagePath) {
+        Log.d(TAG, "Image Path: " + imagePath);
+
+        clearTextHelperBox();
+        parentView.setDrawingCacheEnabled(false);
+        // Create a media file name
+        File file = new File(imagePath);
+        try {
+            FileOutputStream out = new FileOutputStream(file, false);
+            if (parentView != null) {
+                parentView.setDrawingCacheEnabled(true);
+                Bitmap drawingCache = parentView.getDrawingCache();
+                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+            }
+            out.flush();
+            out.close();
+            Log.d(TAG, "Filed Saved Successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "Failed to save File");
         }
     }
 
@@ -371,6 +370,10 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
 
     public void setOnPhotoEditorListener(OnPhotoEditorListener onPhotoEditorListener) {
         this.mOnPhotoEditorListener = onPhotoEditorListener;
+    }
+
+    public boolean isCacheEmpty() {
+        return addedViews.size() == 0 && redoViews.size() == 0;
     }
 
     @Override

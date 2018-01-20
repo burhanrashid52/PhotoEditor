@@ -144,7 +144,11 @@ public class BrushDrawingView extends View {
     }
 
     void clearAll() {
-        mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        mLinePaths.clear();
+        mRedoLinePaths.clear();
+        if (mDrawCanvas != null) {
+            mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        }
         invalidate();
     }
 

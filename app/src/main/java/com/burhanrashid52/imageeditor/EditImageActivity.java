@@ -1,7 +1,7 @@
 package com.burhanrashid52.imageeditor;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,11 +21,9 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.ViewType;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener, View.OnClickListener {
+public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener, View.OnClickListener, Properties {
 
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private PhotoEditor mPhotoEditor;
@@ -34,7 +32,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private ImageView mSourceImage;
     private RecyclerView mRvColor;
     private Toolbar mToolbar;
-    private Button btnPencil, btnEraser, btnHighlighter, btnUndo, btnRedo, btnText;
+    private Button btnPencil, btnEraser, btnUndo, btnRedo, btnText;
+    private PropertiesBSFragment mPropertiesBSFragment;
 
 
     /**
@@ -67,15 +66,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         setContentView(R.layout.activity_edit_image);
         initViews();
         setSupportActionBar(mToolbar);
+        mPropertiesBSFragment = new PropertiesBSFragment();
+        mPropertiesBSFragment.setPropertiesChangeListener(this);
 
-        mParentImgSource.getImageSource().setImageResource(R.drawable.got_test);
+        mParentImgSource.getImageSource().setImageResource(R.drawable.got);
 
         mPhotoEditor = new PhotoEditor.Builder(this, mParentImgSource)
-                //     .setParentView(mParentImgSource) // add parent image view
-                //      .setChildView(mSourceImage) // add the desired image view
-                //.setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
-                //       .setBrushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
-                .setPinchTextScalable(false) // set flag to make text scalable when pinch
+                .setPinchTextScalable(true) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
@@ -101,9 +98,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         btnPencil = findViewById(R.id.btnPencil);
         btnPencil.setOnClickListener(this);
-
-        btnHighlighter = findViewById(R.id.btnHighlighter);
-        btnHighlighter.setOnClickListener(this);
 
         btnText = findViewById(R.id.btnText);
         btnText.setOnClickListener(this);
@@ -157,11 +151,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         boolean isEnabled = !mPhotoEditor.getBrushDrawableMode();
         switch (view.getId()) {
             case R.id.btnPencil:
-                if (isEnabled) {
-                    mPhotoEditor.setOpacity(100);
-                    mPhotoEditor.setBrushSize(25);
-                }
-                updateBrushDrawingView(isEnabled);
+                mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
                 break;
             case R.id.btnEraser:
                 mPhotoEditor.brushEraser();
@@ -187,14 +177,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case R.id.btnRedo:
                 mPhotoEditor.redo();
                 break;
-
-            case R.id.btnHighlighter:
-                if (isEnabled) {
-                    mPhotoEditor.setOpacity(50);
-                    mPhotoEditor.setBrushSize(25);
-                }
-                updateBrushDrawingView(isEnabled);
-                break;
         }
     }
 
@@ -204,17 +186,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         return true;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
                 if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                    String imageName = "IMG_" + timeStamp + ".jpg";
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("imagePath", mPhotoEditor.saveImage("PhotoEditor", imageName));
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    //  finish();
+                    mPhotoEditor.saveImage("");
                 }
                 break;
         }
@@ -232,5 +210,20 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             }
         });
         mRvColor.setAdapter(colorPickerAdapter);
+    }
+
+    @Override
+    public void onColorChanged(int colorCode) {
+        mPhotoEditor.setBrushColor(colorCode);
+    }
+
+    @Override
+    public void onOpacityChanged(int opacity) {
+        mPhotoEditor.setOpacity(opacity);
+    }
+
+    @Override
+    public void onBrushSizeChanged(int brushSize) {
+        mPhotoEditor.setBrushSize(brushSize);
     }
 }
