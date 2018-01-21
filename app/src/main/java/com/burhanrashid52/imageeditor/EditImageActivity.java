@@ -4,15 +4,20 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import ja.burhanrashid52.photoeditor.BrushDrawingView;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
@@ -20,18 +25,19 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.ViewType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener, View.OnClickListener, Properties {
 
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
+    private static final int CAMERA_REQUEST = 52;
+    private static final int PICK_REQUEST = 53;
     private PhotoEditor mPhotoEditor;
-    private PhotoEditorView mPhotoEditorView, mDeleteLayout;
-    private BrushDrawingView mBrushDrawingView;
-    private ImageView mSourceImage;
-    private RecyclerView mRvColor;
-    private Button btnPencil, btnEraser, btnUndo, btnRedo, btnText;
+    private PhotoEditorView mPhotoEditorView;
     private PropertiesBSFragment mPropertiesBSFragment;
+    private EmojiBSFragment mEmojiBSFragment;
+    private TextView mTxtCurrenTool;
 
 
     /**
@@ -65,9 +71,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         setContentView(R.layout.activity_edit_image);
         initViews();
         mPropertiesBSFragment = new PropertiesBSFragment();
+        mEmojiBSFragment = new EmojiBSFragment();
         mPropertiesBSFragment.setPropertiesChangeListener(this);
-
-        mPhotoEditorView.getImageSource().setImageResource(R.drawable.got);
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(false) // set flag to make text scalable when pinch
@@ -83,30 +88,37 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     private void initViews() {
+        ImageView imgPencil, imgEraser, imgUndo, imgRedo, imgText, imgCamera, imgGallery, imgSticker, imgEmo;
+
         mPhotoEditorView = findViewById(R.id.photoEditorView);
-        //  mDeleteLayout = findViewById(R.id.delete_rl);
-        mBrushDrawingView = findViewById(R.id.brushDrawing);
-        mSourceImage = findViewById(R.id.imgSource);
+        mTxtCurrenTool = findViewById(R.id.txtCurrentTool);
 
-        mRvColor = findViewById(R.id.rvColors);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mRvColor.setLayoutManager(layoutManager);
-        mRvColor.setHasFixedSize(true);
+        imgEmo = findViewById(R.id.imgEmoji);
+        imgEmo.setOnClickListener(this);
 
-        btnPencil = findViewById(R.id.btnPencil);
-        btnPencil.setOnClickListener(this);
+        imgSticker = findViewById(R.id.imgSticker);
+        imgSticker.setOnClickListener(this);
 
-        btnText = findViewById(R.id.btnText);
-        btnText.setOnClickListener(this);
+        imgPencil = findViewById(R.id.imgPencil);
+        imgPencil.setOnClickListener(this);
 
-        btnEraser = findViewById(R.id.btnEraser);
-        btnEraser.setOnClickListener(this);
+        imgText = findViewById(R.id.imgText);
+        imgText.setOnClickListener(this);
 
-        btnUndo = findViewById(R.id.btnUndo);
-        btnUndo.setOnClickListener(this);
+        imgEraser = findViewById(R.id.btnEraser);
+        imgEraser.setOnClickListener(this);
 
-        btnRedo = findViewById(R.id.btnRedo);
-        btnRedo.setOnClickListener(this);
+        imgUndo = findViewById(R.id.imgUndo);
+        imgUndo.setOnClickListener(this);
+
+        imgRedo = findViewById(R.id.imgRedo);
+        imgRedo.setOnClickListener(this);
+
+        imgCamera = findViewById(R.id.imgCamera);
+        imgCamera.setOnClickListener(this);
+
+        imgGallery = findViewById(R.id.imgGallery);
+        imgGallery.setOnClickListener(this);
     }
 
     @Override
@@ -145,16 +157,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onClick(View view) {
-        boolean isEnabled = !mPhotoEditor.getBrushDrawableMode();
         switch (view.getId()) {
-            case R.id.btnPencil:
+            case R.id.imgPencil:
                 mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
                 break;
             case R.id.btnEraser:
                 mPhotoEditor.brushEraser();
                 break;
-
-            case R.id.btnText:
+            case R.id.imgText:
                 TextEditorDialogFragment textEditorDialogFragment =
                         TextEditorDialogFragment.show(this,
                                 "Burhanuddin",
@@ -167,46 +177,57 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 });
                 break;
 
-            case R.id.btnUndo:
+            case R.id.imgUndo:
                 mPhotoEditor.undo();
                 break;
 
-            case R.id.btnRedo:
+            case R.id.imgRedo:
                 mPhotoEditor.redo();
                 break;
-        }
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.save_menu, menu);
-        return true;
-    }
+            case R.id.imgSticker:
+                mPhotoEditor.addImage(BitmapFactory.decodeResource(getResources(), R.drawable.got));
+                break;
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    mPhotoEditor.saveImage("");
-                }
+            case R.id.imgEmoji:
+                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
+                break;
+
+            case R.id.imgCamera:
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                break;
+
+            case R.id.imgGallery:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
                 break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    private void updateBrushDrawingView(boolean brushDrawingMode) {
-        mPhotoEditor.setBrushDrawingMode(brushDrawingMode);
-        mRvColor.setVisibility(brushDrawingMode ? View.VISIBLE : View.GONE);
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(this);
-        colorPickerAdapter.setOnColorPickerClickListener(new ColorPickerAdapter.OnColorPickerClickListener() {
-            @Override
-            public void onColorPickerClickListener(int colorCode) {
-                mPhotoEditor.setBrushColor(colorCode);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case CAMERA_REQUEST:
+                    mPhotoEditor.clearAllViews();
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    mPhotoEditorView.getImageSource().setImageBitmap(photo);
+                    break;
+                case PICK_REQUEST:
+                    try {
+                        mPhotoEditor.clearAllViews();
+                        Uri uri = data.getData();
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        mPhotoEditorView.getImageSource().setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
-        });
-        mRvColor.setAdapter(colorPickerAdapter);
+        }
     }
 
     @Override

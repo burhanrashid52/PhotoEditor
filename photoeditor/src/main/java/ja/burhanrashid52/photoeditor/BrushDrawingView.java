@@ -41,7 +41,6 @@ public class BrushDrawingView extends View {
     private static final float TOUCH_TOLERANCE = 4;
 
     private BrushViewChangeListener mBrushViewChangeListener;
-    //private OnPhotoEditorListener onPhotoEditorSDKListener;
 
     public BrushDrawingView(Context context) {
         this(context, null);
@@ -90,6 +89,7 @@ public class BrushDrawingView extends View {
     void brushEraser() {
         mDrawPaint.setStrokeWidth(mBrushEraserSize);
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        setBrushDrawingMode(true);
     }
 
     void setBrushDrawingMode(boolean brushDrawMode) {
@@ -102,10 +102,7 @@ public class BrushDrawingView extends View {
 
     void setOpacity(@IntRange(from = 0, to = 255) int opacity) {
         this.mOpacity = opacity;
-        if (mBrushDrawMode) {
-            this.setVisibility(View.VISIBLE);
-            refreshBrushDrawing();
-        }
+        setBrushDrawingMode(true);
     }
 
     boolean getBrushDrawingMode() {
@@ -114,21 +111,22 @@ public class BrushDrawingView extends View {
 
     void setBrushSize(float size) {
         mBrushSize = size;
-        refreshBrushDrawing();
+        setBrushDrawingMode(true);
     }
 
     void setBrushColor(@ColorInt int color) {
         mDrawPaint.setColor(color);
-        refreshBrushDrawing();
+        setBrushDrawingMode(true);
     }
 
     void setBrushEraserSize(float brushEraserSize) {
         this.mBrushEraserSize = brushEraserSize;
+        setBrushDrawingMode(true);
     }
 
     void setBrushEraserColor(@ColorInt int color) {
         mDrawPaint.setColor(color);
-        refreshBrushDrawing();
+        setBrushDrawingMode(true);
     }
 
     float getEraserSize() {
@@ -151,10 +149,6 @@ public class BrushDrawingView extends View {
         }
         invalidate();
     }
-
-    /*public void setOnPhotoEditorListener(OnPhotoEditorListener onPhotoEditorSDKListener) {
-        this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
-    }*/
 
     public void setBrushViewChangeListener(BrushViewChangeListener brushViewChangeListener) {
         mBrushViewChangeListener = brushViewChangeListener;

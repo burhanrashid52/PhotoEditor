@@ -1,6 +1,5 @@
 package com.burhanrashid52.imageeditor;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;

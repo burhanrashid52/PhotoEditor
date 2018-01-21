@@ -11,6 +11,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,7 +58,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         redoViews = new ArrayList<>();
     }
 
-    /*private void addImage(Bitmap desiredImage) {
+    public void addImage(Bitmap desiredImage) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View imageRootView = inflater.inflate(R.layout.photo_editor_sdk_image_item_list, null);
         ImageView imageView = imageRootView.findViewById(R.id.photo_editor_sdk_image_iv);
@@ -80,11 +81,12 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         addedViews.add(imageRootView);
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
-    }*/
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     public void addText(String text, final int colorCodeTextView) {
         mIsBackground = true;
+        brushDrawingView.setBrushDrawingMode(false);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
         final TextView textInputTv = addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
@@ -146,7 +148,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
      */
     public void editText(View view, String inputText, int colorCode) {
         TextView inputTextView = view.findViewById(R.id.photo_editor_sdk_text_tv);
-        if (inputTextView != null && addedViews.contains(view)) {
+        if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
             inputTextView.setTextColor(colorCode);
             parentView.updateViewLayout(view, view.getLayoutParams());
@@ -155,13 +157,13 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         }
     }
 
-    /*public void addEmoji(String emojiName, Typeface emojiFont) {
+    public void addEmoji(String emojiName, Typeface emojiFont) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View emojiRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
         TextView emojiTextView = emojiRootView.findViewById(R.id.photo_editor_sdk_text_tv);
         emojiTextView.setTypeface(emojiFont);
         emojiTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        emojiTextView.setText(convertEmoji(emojiName));
+    //    emojiTextView.setText(convertEmoji(emojiName));
         MultiTouchListener multiTouchListener = new MultiTouchListener(
                 deleteView,
                 parentView,
@@ -177,7 +179,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         addedViews.add(emojiRootView);
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
-    }*/
+    }
 
     public void setBrushDrawingMode(boolean brushDrawingMode) {
         if (brushDrawingView != null)
