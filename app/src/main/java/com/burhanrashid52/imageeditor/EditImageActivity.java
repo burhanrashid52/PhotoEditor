@@ -5,11 +5,18 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.text.emoji.EmojiCompat;
+import android.support.text.emoji.FontRequestEmojiCompatConfig;
+import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
+import android.support.v4.provider.FontRequest;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +36,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         EmojiBSFragment.EmojiListener,
         StickerBSFragment.StickerListener {
 
+    private static final String TAG = EditImageActivity.class.getSimpleName();
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
@@ -72,6 +80,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         setContentView(R.layout.activity_edit_image);
         initViews();
 
+        setUpEmojiCompact();
+
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond _wonderland.ttf");
 
         mPropertiesBSFragment = new PropertiesBSFragment();
@@ -92,6 +102,35 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         for (int i = 0; i < 4; i++) {
             mPhotoEditor.addText("Text " + i, defaultProvidedColors.get(i + 1));
         }*/
+    }
+
+    private void setUpEmojiCompact() {
+        FontRequest fontRequest = new FontRequest(
+                "com.google.android.gms.fonts",
+                "com.google.android.gms",
+                "Noto Color Emoji Compat",
+                R.array.com_google_android_gms_fonts_certs);
+
+        EmojiCompat.Config config = new FontRequestEmojiCompatConfig(this, fontRequest)
+                .setReplaceAll(true)
+            //    .setEmojiSpanIndicatorEnabled(true)
+           //     .setEmojiSpanIndicatorColor(Color.GREEN)
+                .registerInitCallback(new EmojiCompat.InitCallback() {
+                    @Override
+                    public void onInitialized() {
+                        super.onInitialized();
+                        Log.e(TAG, "Success");
+                    }
+
+                    @Override
+                    public void onFailed(@Nullable Throwable throwable) {
+                        super.onFailed(throwable);
+                        Log.e(TAG, "onFailed: " + throwable.getMessage());
+                    }
+                });
+
+        BundledEmojiCompatConfig bundledEmojiCompatConfig = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
     }
 
     private void initViews() {

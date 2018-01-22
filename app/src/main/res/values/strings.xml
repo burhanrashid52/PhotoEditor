@@ -16,8 +16,8 @@
     <string-array name="photo_editor_emoji">
 
         <!-- Smiles -->
-        <item>u+1f604</item>
-        <item>u+1f603</item>
+        <item>0x1f604</item>
+        <item>0x1f603</item>
         <item>u+1f600</item>
         <item>u+1f60a</item>
         <item>u+263a</item>
