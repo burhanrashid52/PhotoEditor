@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">Photo Editor</string>
     <string name="title_activity_edit_image">Edit Image</string>
+    <string name="label_brush">Brush</string>
+    <string name="label_emoji">Emoji</string>
+    <string name="label_sticker">Sticker</string>
+    <string name="label_eraser">Eraser</string>
+    <string name="label_text">Text</string>
+
+
+    <integer-array name="photo_editor_image">
+        <item>@drawable/aa</item>
+        <item>@drawable/bb</item>
+    </integer-array>
 
     <string-array name="photo_editor_emoji">
 

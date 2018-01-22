@@ -19,6 +19,14 @@ public class PropertiesBSFragment extends BottomSheetDialogFragment implements S
 
     private Properties mProperties;
 
+    public interface Properties {
+        void onColorChanged(int colorCode);
+
+        void onOpacityChanged(int opacity);
+
+        void onBrushSizeChanged(int brushSize);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

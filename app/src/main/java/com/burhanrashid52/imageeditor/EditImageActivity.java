@@ -5,30 +5,29 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.content.ContextCompat;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ja.burhanrashid52.photoeditor.BrushDrawingView;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.ViewType;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener, View.OnClickListener, Properties {
+public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
+        View.OnClickListener,
+        PropertiesBSFragment.Properties,
+        EmojiBSFragment.EmojiListener,
+        StickerBSFragment.StickerListener {
 
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private static final int CAMERA_REQUEST = 52;
@@ -37,7 +36,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private PhotoEditorView mPhotoEditorView;
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
-    private TextView mTxtCurrenTool;
+    private StickerBSFragment mStickerBSFragment;
+    private TextView mTxtCurrentTool;
+    private Typeface mWonderFont;
 
 
     /**
@@ -70,12 +71,18 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
         initViews();
+
+        mWonderFont = Typeface.createFromAsset(getAssets(), "beyond _wonderland.ttf");
+
         mPropertiesBSFragment = new PropertiesBSFragment();
         mEmojiBSFragment = new EmojiBSFragment();
+        mStickerBSFragment = new StickerBSFragment();
+        mStickerBSFragment.setStickerListener(this);
+        mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
-                .setPinchTextScalable(false) // set flag to make text scalable when pinch
+                .setPinchTextScalable(true) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
@@ -88,10 +95,19 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     private void initViews() {
-        ImageView imgPencil, imgEraser, imgUndo, imgRedo, imgText, imgCamera, imgGallery, imgSticker, imgEmo;
+        ImageView imgPencil;
+        ImageView imgEraser;
+        ImageView imgUndo;
+        ImageView imgRedo;
+        ImageView imgText;
+        ImageView imgCamera;
+        ImageView imgGallery;
+        ImageView imgSticker;
+        ImageView imgEmo;
+        ImageView imgSave;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
-        mTxtCurrenTool = findViewById(R.id.txtCurrentTool);
+        mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
 
         imgEmo = findViewById(R.id.imgEmoji);
         imgEmo.setOnClickListener(this);
@@ -119,18 +135,20 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgGallery = findViewById(R.id.imgGallery);
         imgGallery.setOnClickListener(this);
+
+        imgSave = findViewById(R.id.imgSave);
+        imgSave.setOnClickListener(this);
     }
 
     @Override
     public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
         TextEditorDialogFragment textEditorDialogFragment =
-                TextEditorDialogFragment.show(this,
-                        text,
-                        colorCode);
+                TextEditorDialogFragment.show(this, text, colorCode);
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
             public void onDone(String inputText, int colorCode) {
                 mPhotoEditor.editText(rootView, inputText, colorCode);
+                mTxtCurrentTool.setText(R.string.label_text);
             }
         });
     }
@@ -155,6 +173,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -163,16 +182,15 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
             case R.id.btnEraser:
                 mPhotoEditor.brushEraser();
+                mTxtCurrentTool.setText(R.string.label_eraser);
                 break;
             case R.id.imgText:
-                TextEditorDialogFragment textEditorDialogFragment =
-                        TextEditorDialogFragment.show(this,
-                                "Burhanuddin",
-                                ContextCompat.getColor(this, R.color.white));
+                TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
                     public void onDone(String inputText, int colorCode) {
                         mPhotoEditor.addText(inputText, colorCode);
+                        mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });
                 break;
@@ -185,8 +203,22 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 mPhotoEditor.redo();
                 break;
 
+            case R.id.imgSave:
+                if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    File file = new File(Environment.getExternalStorageDirectory()
+                            + File.separator + ""
+                            + System.currentTimeMillis() + ".png");
+                    try {
+                        file.createNewFile();
+                        mPhotoEditor.saveImage(file.getAbsolutePath());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
             case R.id.imgSticker:
-                mPhotoEditor.addImage(BitmapFactory.decodeResource(getResources(), R.drawable.got));
+                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
                 break;
 
             case R.id.imgEmoji:
@@ -233,15 +265,31 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onColorChanged(int colorCode) {
         mPhotoEditor.setBrushColor(colorCode);
+        mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onOpacityChanged(int opacity) {
         mPhotoEditor.setOpacity(opacity);
+        mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
         mPhotoEditor.setBrushSize(brushSize);
+        mTxtCurrentTool.setText(R.string.label_brush);
+    }
+
+    @Override
+    public void onEmojiClick(String emojiUnicode) {
+        mPhotoEditor.addEmoji(emojiUnicode);
+        mTxtCurrentTool.setText(R.string.label_emoji);
+
+    }
+
+    @Override
+    public void onStickerClick(Bitmap bitmap) {
+        mPhotoEditor.addImage(bitmap);
+        mTxtCurrentTool.setText(R.string.label_sticker);
     }
 }

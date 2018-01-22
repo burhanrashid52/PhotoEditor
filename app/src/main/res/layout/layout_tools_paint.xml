@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Brush"
+        android:text="@string/label_brush"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/imgPencil"
         app:layout_constraintStart_toStartOf="@+id/imgPencil"

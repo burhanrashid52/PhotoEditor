@@ -25,4 +25,5 @@ dependencies {
     implementation 'com.android.support:design:27.0.2'
     //   compile 'ja.burhanrashid52:photoeditor:0.0.2'
     implementation project(':photoeditor')
+    implementation 'com.android.support:cardview-v7:27.0.2'
 }
