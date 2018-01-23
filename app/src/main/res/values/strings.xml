@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">ImageEditor</string>
-    <string name="title_activity_edit_image">Edit Image</string>
+    <string name="app_name">Photo Editor</string>
+    <string name="label_brush">Brush</string>
+    <string name="label_emoji">Emoji</string>
+    <string name="label_sticker">Sticker</string>
+    <string name="label_eraser">Eraser</string>
+    <string name="label_text">Text</string>
 </resources>

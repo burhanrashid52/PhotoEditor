@@ -1,172 +1,325 @@
 package com.burhanrashid52.imageeditor;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
-import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
-import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
-import com.ahmedadeltito.photoeditorsdk.ViewType;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
-public class EditImageActivity extends AppCompatActivity implements OnPhotoEditorSDKListener, View.OnClickListener {
+import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.ViewType;
 
-    private PhotoEditorSDK mPhotoEditorSDK;
-    private RelativeLayout mParentImgSource;
-    private RelativeLayout mDeleteLayout;
-    private BrushDrawingView mBrushDrawingView;
-    private ImageView mSourceImage;
-    private RecyclerView mRvColor;
-    private Toolbar mToolbar;
-    private Button btnPencil, btnEraser, btnHighlighter, btnUndo, btnRedo, btnText;
-    private int mColorCodeTextView;
+public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
+        View.OnClickListener,
+        PropertiesBSFragment.Properties,
+        EmojiBSFragment.EmojiListener,
+        StickerBSFragment.StickerListener {
+
+    private static final String TAG = EditImageActivity.class.getSimpleName();
+    public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
+    private static final int CAMERA_REQUEST = 52;
+    private static final int PICK_REQUEST = 53;
+    private PhotoEditor mPhotoEditor;
+    private PhotoEditorView mPhotoEditorView;
+    private PropertiesBSFragment mPropertiesBSFragment;
+    private EmojiBSFragment mEmojiBSFragment;
+    private StickerBSFragment mStickerBSFragment;
+    private TextView mTxtCurrentTool;
+    private Typeface mWonderFont;
+
+
+    /**
+     * launch editor with multiple image
+     *
+     * @param context
+     * @param imagesPath
+     */
+    public static void launch(Context context, ArrayList<String> imagesPath) {
+        Intent starter = new Intent(context, EditImageActivity.class);
+        starter.putExtra(EXTRA_IMAGE_PATHS, imagesPath);
+        context.startActivity(starter);
+    }
+
+    /**
+     * launch editor with single image
+     *
+     * @param context
+     * @param imagePath
+     */
+    public static void launch(Context context, String imagePath) {
+        ArrayList<String> imagePaths = new ArrayList<>();
+        imagePaths.add(imagePath);
+        launch(context, imagePaths);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        makeFullScreen();
         setContentView(R.layout.activity_edit_image);
-        initViews();
-        setSupportActionBar(mToolbar);
 
-        mPhotoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(this)
-                .setParentView(mParentImgSource) // add parent image view
-                .setChildView(mSourceImage) // add the desired image view
-          //      .setDeleteView(mDeleteLayout) // add the deleted view that will appear during the movement of the views
-                .setBrushDrawingView(mBrushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
-                .setPinchTextScalable(false) // set flag to make text scalable when pinch
+        initViews();
+
+        mWonderFont = Typeface.createFromAsset(getAssets(), "beyond _wonderland.ttf");
+
+        mPropertiesBSFragment = new PropertiesBSFragment();
+        mEmojiBSFragment = new EmojiBSFragment();
+        mStickerBSFragment = new StickerBSFragment();
+        mStickerBSFragment.setStickerListener(this);
+        mEmojiBSFragment.setEmojiListener(this);
+        mPropertiesBSFragment.setPropertiesChangeListener(this);
+
+        mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
+                .setPinchTextScalable(true) // set flag to make text scalable when pinch
                 .build(); // build photo editor sdk
 
-        mPhotoEditorSDK.setOnPhotoEditorSDKListener(this);
+        mPhotoEditor.setOnPhotoEditorListener(this);
+
+        //For testing only
+        /*List<Integer> defaultProvidedColors = ColorPickerAdapter.getDefaultColors(this);
+        for (int i = 0; i < 4; i++) {
+            mPhotoEditor.addText("Text " + i, defaultProvidedColors.get(i + 1));
+        }*/
     }
 
     private void initViews() {
-        mToolbar = findViewById(R.id.toolbar);
-        mParentImgSource = findViewById(R.id.parentImgSource);
-        mDeleteLayout = findViewById(R.id.delete_rl);
-        mBrushDrawingView = findViewById(R.id.brushDrawing);
-        mSourceImage = findViewById(R.id.imgSource);
+        ImageView imgPencil;
+        ImageView imgEraser;
+        ImageView imgUndo;
+        ImageView imgRedo;
+        ImageView imgText;
+        ImageView imgCamera;
+        ImageView imgGallery;
+        ImageView imgSticker;
+        ImageView imgEmo;
+        ImageView imgSave;
 
-        mRvColor = findViewById(R.id.rvColors);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mRvColor.setLayoutManager(layoutManager);
-        mRvColor.setHasFixedSize(true);
+        mPhotoEditorView = findViewById(R.id.photoEditorView);
+        mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
 
-        btnPencil = findViewById(R.id.btnPencil);
-        btnPencil.setOnClickListener(this);
+        imgEmo = findViewById(R.id.imgEmoji);
+        imgEmo.setOnClickListener(this);
 
-        btnHighlighter = findViewById(R.id.btnHighlighter);
-        btnHighlighter.setOnClickListener(this);
+        imgSticker = findViewById(R.id.imgSticker);
+        imgSticker.setOnClickListener(this);
 
-        btnText = findViewById(R.id.btnText);
-        btnText.setOnClickListener(this);
+        imgPencil = findViewById(R.id.imgPencil);
+        imgPencil.setOnClickListener(this);
 
-        btnEraser = findViewById(R.id.btnEraser);
-        btnEraser.setOnClickListener(this);
+        imgText = findViewById(R.id.imgText);
+        imgText.setOnClickListener(this);
 
-        btnUndo = findViewById(R.id.btnUndo);
-        btnUndo.setOnClickListener(this);
+        imgEraser = findViewById(R.id.btnEraser);
+        imgEraser.setOnClickListener(this);
 
-        btnRedo = findViewById(R.id.btnRedo);
-        btnRedo.setOnClickListener(this);
+        imgUndo = findViewById(R.id.imgUndo);
+        imgUndo.setOnClickListener(this);
+
+        imgRedo = findViewById(R.id.imgRedo);
+        imgRedo.setOnClickListener(this);
+
+        imgCamera = findViewById(R.id.imgCamera);
+        imgCamera.setOnClickListener(this);
+
+        imgGallery = findViewById(R.id.imgGallery);
+        imgGallery.setOnClickListener(this);
+
+        imgSave = findViewById(R.id.imgSave);
+        imgSave.setOnClickListener(this);
     }
 
     @Override
-    public void onEditTextChangeListener(String text, int colorCode) {
-
+    public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
+        TextEditorDialogFragment textEditorDialogFragment =
+                TextEditorDialogFragment.show(this, text, colorCode);
+        textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
+            @Override
+            public void onDone(String inputText, int colorCode) {
+                mPhotoEditor.editText(rootView, inputText, colorCode);
+                mTxtCurrentTool.setText(R.string.label_text);
+            }
+        });
     }
 
     @Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-
+        Log.d(TAG, "onAddViewListener() called with: viewType = [" + viewType + "], numberOfAddedViews = [" + numberOfAddedViews + "]");
     }
 
     @Override
     public void onRemoveViewListener(int numberOfAddedViews) {
-
+        Log.d(TAG, "onRemoveViewListener() called with: numberOfAddedViews = [" + numberOfAddedViews + "]");
     }
 
     @Override
     public void onStartViewChangeListener(ViewType viewType) {
-
+        Log.d(TAG, "onStartViewChangeListener() called with: viewType = [" + viewType + "]");
     }
 
     @Override
     public void onStopViewChangeListener(ViewType viewType) {
-
+        Log.d(TAG, "onStopViewChangeListener() called with: viewType = [" + viewType + "]");
     }
 
     @Override
     public void onClick(View view) {
-        boolean isEnabled = !mPhotoEditorSDK.getBrushDrawableMode();
         switch (view.getId()) {
-            case R.id.btnPencil:
-                if (isEnabled) {
-                    mPhotoEditorSDK.setOpacity(100);
-                    mPhotoEditorSDK.setBrushSize(25);
-                }
-                updateBrushDrawingView(isEnabled);
+            case R.id.imgPencil:
+                mPhotoEditor.setBrushDrawingMode(true);
+                mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
                 break;
             case R.id.btnEraser:
-                mPhotoEditorSDK.brushEraser();
+                mPhotoEditor.brushEraser();
+                mTxtCurrentTool.setText(R.string.label_eraser);
                 break;
-
-            case R.id.btnText:
-                TextEditorDialogFragment textEditorDialogFragment =
-                        TextEditorDialogFragment.show(this,
-                                "Hello",
-                                ContextCompat.getColor(this, R.color.white));
+            case R.id.imgText:
+                TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
                     public void onDone(String inputText, int colorCode) {
-                        mPhotoEditorSDK.addText(inputText, colorCode);
+                        mPhotoEditor.addText(inputText, colorCode);
+                        mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });
                 break;
 
-            case R.id.btnUndo:
-                mPhotoEditorSDK.undo();
+            case R.id.imgUndo:
+                mPhotoEditor.undo();
                 break;
 
-            case R.id.btnRedo:
-                mPhotoEditorSDK.redo();
+            case R.id.imgRedo:
+                mPhotoEditor.redo();
                 break;
 
-            case R.id.btnHighlighter:
-                if (isEnabled) {
-                    mPhotoEditorSDK.setOpacity(50);
-                    mPhotoEditorSDK.setBrushSize(25);
-                }
-                updateBrushDrawingView(isEnabled);
+            case R.id.imgSave:
+                saveImage();
+                break;
+
+            case R.id.imgSticker:
+                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
+                break;
+
+            case R.id.imgEmoji:
+                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
+                break;
+
+            case R.id.imgCamera:
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                break;
+
+            case R.id.imgGallery:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
                 break;
         }
     }
 
-    private void updateBrushDrawingView(boolean brushDrawingMode) {
-        mPhotoEditorSDK.setBrushDrawingMode(brushDrawingMode);
-        mRvColor.setVisibility(brushDrawingMode ? View.VISIBLE : View.GONE);
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(this);
-        colorPickerAdapter.setOnColorPickerClickListener(new ColorPickerAdapter.OnColorPickerClickListener() {
-            @Override
-            public void onColorPickerClickListener(int colorCode) {
-                mPhotoEditorSDK.setBrushColor(colorCode);
+    @SuppressLint("MissingPermission")
+    private void saveImage() {
+        if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            showLoading("Saving...");
+            File file = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + ""
+                    + System.currentTimeMillis() + ".png");
+            try {
+                file.createNewFile();
+                mPhotoEditor.saveImage(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                        hideLoading();
+                        showSnackbar("Image Saved Successfully");
+                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        hideLoading();
+                        showSnackbar("Failed to save Image");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
-        mRvColor.setAdapter(colorPickerAdapter);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case CAMERA_REQUEST:
+                    mPhotoEditor.clearAllViews();
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    mPhotoEditorView.getSource().setImageBitmap(photo);
+                    break;
+                case PICK_REQUEST:
+                    try {
+                        mPhotoEditor.clearAllViews();
+                        Uri uri = data.getData();
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        mPhotoEditorView.getSource().setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onColorChanged(int colorCode) {
+        mPhotoEditor.setBrushColor(colorCode);
+        mTxtCurrentTool.setText(R.string.label_brush);
+    }
+
+    @Override
+    public void onOpacityChanged(int opacity) {
+        mPhotoEditor.setOpacity(opacity);
+        mTxtCurrentTool.setText(R.string.label_brush);
+    }
+
+    @Override
+    public void onBrushSizeChanged(int brushSize) {
+        mPhotoEditor.setBrushSize(brushSize);
+        mTxtCurrentTool.setText(R.string.label_brush);
+    }
+
+    @Override
+    public void onEmojiClick(String emojiUnicode) {
+        mPhotoEditor.addEmoji(emojiUnicode);
+        mTxtCurrentTool.setText(R.string.label_emoji);
+
+    }
+
+    @Override
+    public void onStickerClick(Bitmap bitmap) {
+        mPhotoEditor.addImage(bitmap);
+        mTxtCurrentTool.setText(R.string.label_sticker);
+    }
+
+    @Override
+    public void isPermissionGranted(boolean isGranted, String permission) {
+        if (isGranted) {
+            saveImage();
+        }
     }
 }
