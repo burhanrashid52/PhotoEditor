@@ -2,7 +2,7 @@ package ja.burhanrashid52.photoeditor;
 
 import android.graphics.PointF;
 
-public class Vector2D extends PointF {
+ class Vector2D extends PointF {
 
     public Vector2D() {
         super();

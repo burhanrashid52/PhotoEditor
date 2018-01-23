@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -12,6 +13,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
+import android.support.text.emoji.EmojiCompat;
+import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
+import android.support.text.emoji.widget.EmojiTextView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 
 import java.io.File;
@@ -33,7 +36,7 @@ import java.util.List;
  * Created by Burhanuddin Rashid on 18/01/2017.
  */
 
-public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, BrushViewChangeListener {
+public class PhotoEditor implements BrushViewChangeListener {
 
     private static final String TAG = PhotoEditor.class.getSimpleName();
     private final LayoutInflater mLayoutInflater;
@@ -48,6 +51,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private EmojiCompat.Config mEmojiConfig;
 
 
     private PhotoEditor(Builder builder) {
@@ -59,8 +63,10 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
+        this.mEmojiConfig = builder.emojiConfig;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
+        EmojiCompat.init(mEmojiConfig);
         addedViews = new ArrayList<>();
         redoViews = new ArrayList<>();
     }
@@ -104,7 +110,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
     public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
-        final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
+        final EmojiTextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
         final ImageView imgClose = textRootView.findViewById(R.id.imgPhotoEditorClose);
         final FrameLayout frmBorder = textRootView.findViewById(R.id.frmBorder);
 
@@ -151,7 +157,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
      * @param colorCode    color to update on textview
      */
     public void editText(View view, Typeface textTypeface, String inputText, int colorCode) {
-        TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
+        EmojiTextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
         if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
             if (textTypeface != null) {
@@ -171,7 +177,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         final View emojiRootView = getLayout(ViewType.EMOJI);
-        final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
+        final EmojiTextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
         final FrameLayout frmBorder = emojiRootView.findViewById(R.id.frmBorder);
         final ImageView imgClose = emojiRootView.findViewById(R.id.imgPhotoEditorClose);
 
@@ -179,7 +185,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
             emojiTextView.setTypeface(emojiTypeface);
         }
         emojiTextView.setTextSize(56);
-        emojiTextView.setText(convertEmoji(emojiName));
+        emojiTextView.setText(emojiName);
         MultiTouchListener multiTouchListener = getMultiTouchListener();
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
@@ -228,7 +234,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
                 isTextPinchZoomable,
                 mOnPhotoEditorListener);
 
-        multiTouchListener.setOnMultiTouchListener(this);
+        //multiTouchListener.setOnMultiTouchListener(this);
 
         return multiTouchListener;
     }
@@ -244,7 +250,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         switch (viewType) {
             case TEXT:
                 rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_text, null);
-                TextView txtText = rootView.findViewById(R.id.tvPhotoEditorText);
+                EmojiTextView txtText = rootView.findViewById(R.id.tvPhotoEditorText);
                 if (txtText != null && mDefaultTextTypeface != null) {
                     txtText.setGravity(Gravity.CENTER);
                     if (mDefaultEmojiTypeface != null) {
@@ -257,7 +263,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
                 break;
             case EMOJI:
                 rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_text, null);
-                TextView txtTextEmoji = rootView.findViewById(R.id.tvPhotoEditorText);
+                EmojiTextView txtTextEmoji = rootView.findViewById(R.id.tvPhotoEditorText);
                 if (txtTextEmoji != null) {
                     if (mDefaultEmojiTypeface != null) {
                         txtTextEmoji.setTypeface(mDefaultEmojiTypeface);
@@ -430,29 +436,60 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         }
     }
 
+    public interface OnSaveListener {
+        void onSuccess(@NonNull String imagePath);
 
+        void onFailure(@NonNull Exception exception);
+    }
+
+    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void saveImage(String imagePath) {
+    public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
+        new AsyncTask<String, String, Exception>() {
 
-        clearTextHelperBox();
-        parentView.setDrawingCacheEnabled(false);
-        // Create a media file name
-        File file = new File(imagePath);
-        try {
-            FileOutputStream out = new FileOutputStream(file, false);
-            if (parentView != null) {
-                parentView.setDrawingCacheEnabled(true);
-                Bitmap drawingCache = parentView.getDrawingCache();
-                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                clearTextHelperBox();
+                parentView.setDrawingCacheEnabled(false);
             }
-            out.flush();
-            out.close();
-            Log.d(TAG, "Filed Saved Successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(TAG, "Failed to save File");
-        }
+
+            @SuppressLint("MissingPermission")
+            @Override
+            protected Exception doInBackground(String... strings) {
+                // Create a media file name
+                File file = new File(imagePath);
+                try {
+                    FileOutputStream out = new FileOutputStream(file, false);
+                    if (parentView != null) {
+                        parentView.setDrawingCacheEnabled(true);
+                        Bitmap drawingCache = parentView.getDrawingCache();
+                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    }
+                    out.flush();
+                    out.close();
+                    Log.d(TAG, "Filed Saved Successfully");
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "Failed to save File");
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                super.onPostExecute(e);
+                if (e == null) {
+                    clearAllViews();
+                    onSaveListener.onSuccess(imagePath);
+                } else {
+                    onSaveListener.onFailure(e);
+                }
+            }
+
+        }.execute();
     }
 
     private boolean isSDCARDMounted() {
@@ -460,7 +497,7 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         return status.equals(Environment.MEDIA_MOUNTED);
     }
 
-    private String convertEmoji(String emoji) {
+    private static String convertEmoji(String emoji) {
         String returnedEmoji;
         try {
             int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
@@ -471,30 +508,23 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         return returnedEmoji;
     }
 
-    private String getEmojiByUnicode(int unicode) {
+    private static String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
     }
 
-    public void setOnPhotoEditorListener(OnPhotoEditorListener onPhotoEditorListener) {
+    public void setOnPhotoEditorListener(@NonNull OnPhotoEditorListener onPhotoEditorListener) {
         this.mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
+    /**
+     * Check if any changes made need to save
+     *
+     * @return true is nothing is there to change
+     */
     public boolean isCacheEmpty() {
         return addedViews.size() == 0 && redoViews.size() == 0;
     }
 
-    @Override
-    public void onEditTextClickListener(String text, int colorCode) {
-       /* if (addTextRootView != null) {
-            parentView.removeView(addTextRootView);
-            addedViews.remove(addTextRootView);
-        }*/
-    }
-
-    @Override
-    public void onRemoveViewListener(View removedView) {
-        //viewUndo(removedView);
-    }
 
     @Override
     public void onViewAdd(BrushDrawingView brushDrawingView) {
@@ -521,6 +551,20 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         }
     }
 
+    @Override
+    public void onStartDrawing() {
+        if (mOnPhotoEditorListener != null) {
+            mOnPhotoEditorListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);
+        }
+    }
+
+    @Override
+    public void onStopDrawing() {
+        if (mOnPhotoEditorListener != null) {
+            mOnPhotoEditorListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);
+        }
+    }
+
     public static class Builder {
 
         private Context context;
@@ -530,13 +574,14 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
         private BrushDrawingView brushDrawingView;
         private Typeface textTypeface;
         private Typeface emojiTypeface;
+        private EmojiCompat.Config emojiConfig;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
 
         public Builder(Context context, PhotoEditorView photoEditorView) {
             this.context = context;
-            parentView = photoEditorView.getParentLayout();
-            imageView = photoEditorView.getImageSource();
+            parentView = photoEditorView;
+            imageView = photoEditorView.getSource();
             brushDrawingView = photoEditorView.getBrushDrawingView();
         }
 
@@ -560,13 +605,18 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
             return this;
         }
 
-        public Builder setDefaultEmojiTypeface(Typeface emojiTypeface) {
+        Builder setDefaultEmojiTypeface(Typeface emojiTypeface) {
             this.emojiTypeface = emojiTypeface;
             return this;
         }
 
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
+            return this;
+        }
+
+        public Builder setEmojiConfig(EmojiCompat.Config emojiConfig) {
+            this.emojiConfig = emojiConfig;
             return this;
         }
 
@@ -577,9 +627,25 @@ public class PhotoEditor implements MultiTouchListener.OnMultiTouchListener, Bru
 
         public PhotoEditor build() {
             if (emojiTypeface == null) {
-                emojiTypeface = Typeface.createFromAsset(context.getAssets(), "emojione-android.ttf");
+                //emojiTypeface = Typeface.createFromAsset(context.getAssets(), "emojione-android.ttf");
+            }
+            if (emojiConfig == null) {
+                emojiConfig = new BundledEmojiCompatConfig(context);
             }
             return new PhotoEditor(this);
         }
+    }
+
+    public static ArrayList<String> getEmojis(Context context) {
+        ArrayList<String> convertedEmojiList = new ArrayList<>();
+        String[] emojiList = context.getResources().getStringArray(R.array.photo_editor_emoji);
+        for (String emojiUnicode : emojiList) {
+            convertedEmojiList.add(convertEmoji(emojiUnicode));
+        }
+        return convertedEmojiList;
+    }
+
+    public void setEmojiConfig(EmojiCompat.Config emojiConfig) {
+        EmojiCompat.init(emojiConfig);
     }
 }

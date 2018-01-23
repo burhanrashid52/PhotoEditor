@@ -5,17 +5,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
-import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
-import android.support.v4.provider.FontRequest;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -78,9 +73,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         super.onCreate(savedInstanceState);
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
-        initViews();
 
-        setUpEmojiCompact();
+        initViews();
 
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond _wonderland.ttf");
 
@@ -102,35 +96,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         for (int i = 0; i < 4; i++) {
             mPhotoEditor.addText("Text " + i, defaultProvidedColors.get(i + 1));
         }*/
-    }
-
-    private void setUpEmojiCompact() {
-        FontRequest fontRequest = new FontRequest(
-                "com.google.android.gms.fonts",
-                "com.google.android.gms",
-                "Noto Color Emoji Compat",
-                R.array.com_google_android_gms_fonts_certs);
-
-        EmojiCompat.Config config = new FontRequestEmojiCompatConfig(this, fontRequest)
-                .setReplaceAll(true)
-            //    .setEmojiSpanIndicatorEnabled(true)
-           //     .setEmojiSpanIndicatorColor(Color.GREEN)
-                .registerInitCallback(new EmojiCompat.InitCallback() {
-                    @Override
-                    public void onInitialized() {
-                        super.onInitialized();
-                        Log.e(TAG, "Success");
-                    }
-
-                    @Override
-                    public void onFailed(@Nullable Throwable throwable) {
-                        super.onFailed(throwable);
-                        Log.e(TAG, "onFailed: " + throwable.getMessage());
-                    }
-                });
-
-        BundledEmojiCompatConfig bundledEmojiCompatConfig = new BundledEmojiCompatConfig(this);
-        EmojiCompat.init(config);
     }
 
     private void initViews() {
@@ -194,29 +159,29 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-
+        Log.d(TAG, "onAddViewListener() called with: viewType = [" + viewType + "], numberOfAddedViews = [" + numberOfAddedViews + "]");
     }
 
     @Override
     public void onRemoveViewListener(int numberOfAddedViews) {
-
+        Log.d(TAG, "onRemoveViewListener() called with: numberOfAddedViews = [" + numberOfAddedViews + "]");
     }
 
     @Override
     public void onStartViewChangeListener(ViewType viewType) {
-
+        Log.d(TAG, "onStartViewChangeListener() called with: viewType = [" + viewType + "]");
     }
 
     @Override
     public void onStopViewChangeListener(ViewType viewType) {
-
+        Log.d(TAG, "onStopViewChangeListener() called with: viewType = [" + viewType + "]");
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgPencil:
+                mPhotoEditor.setBrushDrawingMode(true);
                 mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
                 break;
             case R.id.btnEraser:
@@ -243,17 +208,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
 
             case R.id.imgSave:
-                if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    File file = new File(Environment.getExternalStorageDirectory()
-                            + File.separator + ""
-                            + System.currentTimeMillis() + ".png");
-                    try {
-                        file.createNewFile();
-                        mPhotoEditor.saveImage(file.getAbsolutePath());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                saveImage();
                 break;
 
             case R.id.imgSticker:
@@ -278,6 +233,35 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private void saveImage() {
+        if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            showLoading("Saving...");
+            File file = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + ""
+                    + System.currentTimeMillis() + ".png");
+            try {
+                file.createNewFile();
+                mPhotoEditor.saveImage(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                        hideLoading();
+                        showSnackbar("Image Saved Successfully");
+                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        hideLoading();
+                        showSnackbar("Failed to save Image");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -285,14 +269,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 case CAMERA_REQUEST:
                     mPhotoEditor.clearAllViews();
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
-                    mPhotoEditorView.getImageSource().setImageBitmap(photo);
+                    mPhotoEditorView.getSource().setImageBitmap(photo);
                     break;
                 case PICK_REQUEST:
                     try {
                         mPhotoEditor.clearAllViews();
                         Uri uri = data.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                        mPhotoEditorView.getImageSource().setImageBitmap(bitmap);
+                        mPhotoEditorView.getSource().setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -330,5 +314,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onStickerClick(Bitmap bitmap) {
         mPhotoEditor.addImage(bitmap);
         mTxtCurrentTool.setText(R.string.label_sticker);
+    }
+
+    @Override
+    public void isPermissionGranted(boolean isGranted, String permission) {
+        if (isGranted) {
+            saveImage();
+        }
     }
 }

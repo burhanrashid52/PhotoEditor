@@ -55,6 +55,7 @@ public class PropertiesBSFragment extends BottomSheetDialogFragment implements S
             @Override
             public void onColorPickerClickListener(int colorCode) {
                 if (mProperties != null) {
+                    dismiss();
                     mProperties.onColorChanged(colorCode);
                 }
             }

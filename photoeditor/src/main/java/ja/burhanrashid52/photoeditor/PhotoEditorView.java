@@ -9,19 +9,22 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 /**
  * Created by Burhanuddin Rashid on 1/18/2018.
  */
 
-public class PhotoEditorView extends FrameLayout {
+public class PhotoEditorView extends RelativeLayout {
+
     private ImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
-    private RelativeLayout mParentLayout;
+    private static final int imgSrcId = 1, brushSrcId = 2;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -46,10 +49,13 @@ public class PhotoEditorView extends FrameLayout {
 
     @SuppressLint("Recycle")
     private void init(@Nullable AttributeSet attrs) {
-        View rootView = inflate(getContext(), R.layout.photo_editor_view, null);
-        mParentLayout = rootView.findViewById(R.id.parentImgSource);
-        mImgSource = rootView.findViewById(R.id.imgSource);
-        mBrushDrawingView = rootView.findViewById(R.id.brushDrawing);
+        //Setup image attributes
+        mImgSource = new ImageView(getContext());
+        mImgSource.setId(imgSrcId);
+        mImgSource.setAdjustViewBounds(true);
+        RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imgSrcParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoEditorView);
             Drawable imgSrcDrawable = a.getDrawable(R.styleable.PhotoEditorView_src);
@@ -57,18 +63,35 @@ public class PhotoEditorView extends FrameLayout {
                 mImgSource.setImageDrawable(imgSrcDrawable);
             }
         }
-        addView(rootView);
+
+        //Setup brush view
+        mBrushDrawingView = new BrushDrawingView(getContext());
+        mBrushDrawingView.setVisibility(GONE);
+        mBrushDrawingView.setId(brushSrcId);
+        //Align brush to the size of image view
+        RelativeLayout.LayoutParams brushParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        brushParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        brushParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
+        brushParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
+
+
+        //Add image source
+        addView(mImgSource, imgSrcParam);
+        //Add brush view
+        addView(mBrushDrawingView, brushParam);
     }
 
-    public ImageView getImageSource() {
+    /**
+     * Source image which you want to edit
+     *
+     * @return source ImageView
+     */
+    public ImageView getSource() {
         return mImgSource;
     }
 
     BrushDrawingView getBrushDrawingView() {
         return mBrushDrawingView;
-    }
-
-    RelativeLayout getParentLayout() {
-        return mParentLayout;
     }
 }

@@ -19,7 +19,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/rounded_border_tv">
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.text.emoji.widget.EmojiTextView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/tvPhotoEditorText"
             android:layout_width="wrap_content"

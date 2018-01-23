@@ -23,7 +23,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:src="@color/colorPrimaryDark" />
+        app:src="@drawable/got" />
 
     <ImageView
         android:id="@+id/imgUndo"

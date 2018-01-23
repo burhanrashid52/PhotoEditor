@@ -87,9 +87,9 @@ public class BrushDrawingView extends View {
     }
 
     void brushEraser() {
+        mBrushDrawMode = true;
         mDrawPaint.setStrokeWidth(mBrushEraserSize);
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        setBrushDrawingMode(true);
     }
 
     void setBrushDrawingMode(boolean brushDrawMode) {
@@ -244,6 +244,9 @@ public class BrushDrawingView extends View {
         mPath.moveTo(x, y);
         mTouchX = x;
         mTouchY = y;
+        if (mBrushViewChangeListener != null) {
+            mBrushViewChangeListener.onStartDrawing();
+        }
     }
 
     private void touchMove(float x, float y) {
@@ -264,6 +267,7 @@ public class BrushDrawingView extends View {
         mLinePaths.add(new LinePath(mPath, mDrawPaint));
         mPath = new Path();
         if (mBrushViewChangeListener != null) {
+            mBrushViewChangeListener.onStopDrawing();
             mBrushViewChangeListener.onViewAdd(this);
         }
     }
