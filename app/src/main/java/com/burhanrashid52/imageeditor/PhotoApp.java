@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.FontRequestEmojiCompatConfig;
+import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
 import android.support.v4.provider.FontRequest;
 import android.util.Log;
 
@@ -44,8 +45,8 @@ public class PhotoApp extends Application {
                     }
                 });
 
-        //  BundledEmojiCompatConfig bundledEmojiCompatConfig = new BundledEmojiCompatConfig(this);
-        // EmojiCompat.init(config);
+     //   BundledEmojiCompatConfig bundledEmojiCompatConfig = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
     }
 
     public static PhotoApp getPhotoApp() {

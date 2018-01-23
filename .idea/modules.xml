@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://F:\MultidotsProjects\PhotoEditor\ImageEditorAndroid.iml" filepath="F:\MultidotsProjects\PhotoEditor\ImageEditorAndroid.iml" />
-      <module fileurl="file://C:\Users\Burhanuddin\StudioProjects\PhotoEditor\ImageEditorAndroid.iml" filepath="C:\Users\Burhanuddin\StudioProjects\PhotoEditor\ImageEditorAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/PhotoEditor.iml" filepath="$PROJECT_DIR$/PhotoEditor.iml" />
-      <module fileurl="file://F:\SampleProjects\ImageEditorAndroid\PhotoEditor.iml" filepath="F:\SampleProjects\ImageEditorAndroid\PhotoEditor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/photoeditor/photoeditor.iml" filepath="$PROJECT_DIR$/photoeditor/photoeditor.iml" />
-      <module fileurl="file://C:\Users\Burhanuddin\StudioProjects\PhotoEditor\photoeditor\photoeditor.iml" filepath="C:\Users\Burhanuddin\StudioProjects\PhotoEditor\photoeditor\photoeditor.iml" />
-      <module fileurl="file://F:\SampleProjects\ImageEditorAndroid\photoeditor\photoeditorsdk.iml" filepath="F:\SampleProjects\ImageEditorAndroid\photoeditor\photoeditorsdk.iml" />
     </modules>
   </component>
 </project>
