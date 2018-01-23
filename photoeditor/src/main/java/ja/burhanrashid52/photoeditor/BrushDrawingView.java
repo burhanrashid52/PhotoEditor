@@ -25,7 +25,7 @@ import java.util.List;
 
 public class BrushDrawingView extends View {
 
-    private float mBrushSize = 10;
+    private float mBrushSize = 25;
     private float mBrushEraserSize = 50;
     private int mOpacity = 255;
 
@@ -178,16 +178,12 @@ public class BrushDrawingView extends View {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     touchStart(touchX, touchY);
-                  /*  if (onPhotoEditorSDKListener != null)
-                        onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);*/
                     break;
                 case MotionEvent.ACTION_MOVE:
                     touchMove(touchX, touchY);
                     break;
                 case MotionEvent.ACTION_UP:
                     touchUp();
-                   /* if (onPhotoEditorSDKListener != null)
-                        onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);*/
                     break;
             }
             invalidate();
