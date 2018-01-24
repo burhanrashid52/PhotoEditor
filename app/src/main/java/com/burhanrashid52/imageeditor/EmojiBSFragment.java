@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -72,8 +72,6 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
 
     public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
 
-        //String[] emojisList = getActivity().getResources().getStringArray(R.array.photo_editor_emoji);
-
         ArrayList<String> emojisList = PhotoEditor.getEmojis(getActivity());
 
         @Override
@@ -93,7 +91,7 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            EmojiTextView txtEmoji;
+            TextView txtEmoji;
 
             ViewHolder(View itemView) {
                 super(itemView);
