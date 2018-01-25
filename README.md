@@ -33,5 +33,7 @@ Your can define your drawable or color resource directly using `app:src`
 
 Your can set the image programatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
 ```
+PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
+
 mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 ```
