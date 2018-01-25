@@ -261,9 +261,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                 if (txtTextEmoji != null) {
                     if (mDefaultEmojiTypeface != null) {
                         txtTextEmoji.setTypeface(mDefaultEmojiTypeface);
-                    } else {
-                        // txtTextEmoji.setTypeface(Typeface.createFromAsset(context.getAssets(),
-                        //        "emojione-android.ttf"));
                     }
                     txtTextEmoji.setGravity(Gravity.CENTER);
                     txtTextEmoji.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -318,7 +315,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.setBrushEraserSize(brushEraserSize);
     }
 
-    public void setBrushEraserColor(@ColorInt int color) {
+    void setBrushEraserColor(@ColorInt int color) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushEraserColor(color);
     }
@@ -344,7 +341,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.brushEraser();
     }
 
-    public void viewUndo() {
+    private void viewUndo() {
         if (addedViews.size() > 0) {
             parentView.removeView(addedViews.remove(addedViews.size() - 1));
             if (mOnPhotoEditorListener != null)
@@ -614,9 +611,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
 
         public PhotoEditor build() {
-            if (emojiTypeface == null) {
-                //emojiTypeface = Typeface.createFromAsset(context.getAssets(), "emojione-android.ttf");
-            }
             return new PhotoEditor(this);
         }
     }
