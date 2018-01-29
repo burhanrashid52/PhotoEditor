@@ -70,7 +70,7 @@ That's it we are done with setting up our library
 ### Drawing
 We can customize our brush and paint with diffrent set of propert.To start drawing on image we need to enable the drawing mode
 
-![](https://i.imgur.com/aCgBG0l.gif)
+![](https://i.imgur.com/INi5LIy.gif)
 
 | Type  | Method |
 | ------------- | ------------- |
@@ -78,6 +78,7 @@ We can customize our brush and paint with diffrent set of propert.To start drawi
 | Bursh Size (px)  | mPhotoEditor.setBrushSize(brushSize) |
 | Color Opacity (In %)  |   mPhotoEditor.setOpacity(opacity)  |
 | Brush Color | mPhotoEditor.setBrushColor(colorCode)  |
+| Brush Eraser  | mPhotoEditor.brushEraser() |
 
-
+**Note**: Whenever you set any property for brush for drawing it will automatically enables the drawing mode
 
