@@ -74,6 +74,8 @@ That's it we are done with setting up our library
 ### Drawing
 We can customize our brush and paint with diffrent set of propert.To start drawing on image we need to enable the drawing mode
 
+![](https://i.imgur.com/aCgBG0l.gif)
+
 | Type  | Method |
 | ------------- | ------------- |
 | Enable/Disable  | mPhotoEditor.setBrushDrawingMode(true); |
