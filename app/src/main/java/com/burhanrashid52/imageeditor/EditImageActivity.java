@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.provider.FontsContractCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -85,17 +88,16 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
 
+        Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
+        Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
+
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
+                .setDefaultTextTypeface(mTextRobotoTf)
+                .setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
-
-        //For testing only
-        /*List<Integer> defaultProvidedColors = ColorPickerAdapter.getDefaultColors(this);
-        for (int i = 0; i < 4; i++) {
-            mPhotoEditor.addText("Text " + i, defaultProvidedColors.get(i + 1));
-        }*/
     }
 
     private void initViews() {
