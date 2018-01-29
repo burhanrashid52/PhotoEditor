@@ -1,9 +1,34 @@
+#android studio files
 *.iml
 .gradle
-/local.properties
 /.idea/workspace.xml
+/.idea/misc.xml
+/.idea/dictionaries/
 /.idea/libraries
-.DS_Store
-/build
 /captures
-.externalNativeBuild
+
+# OSX files
+.DS_Store
+
+#built application files
+*.apk
+*.ap_
+
+# Eclipse project files
+.classpath
+.project
+
+# generated files
+bin/
+gen/
+/build
+/*/build
+
+# Windows thumbnail db
+Thumbs.db
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+#NDK
+obj/
