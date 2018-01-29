@@ -3,13 +3,9 @@
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like in Instagram stories.
 
 ## Getting Started
-To start with this , you need to just simply add the gradle link your app module like this
+To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
-dependencies {
-
-    implementation 'ja.burhanrashid52:photoeditor:0.0.5'
-    
-}
+implementation 'ja.burhanrashid52:photoeditor:0.0.5'
 ```
 or your can also import the :photoeditor module from sample for customization
 
