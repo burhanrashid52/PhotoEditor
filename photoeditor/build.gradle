@@ -15,11 +15,11 @@ ext {
     siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
     gitUrl = 'https://github.com/burhanrashid52/PhotoEditor/issues'
 
-    libraryVersion = '0.0.3'
+    libraryVersion = '0.0.5'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'
-    developerEmail = 'burhanrashid52@gmail.com'
+    developerEmail = 'burhanrashid5253@gmail.com'
 
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
@@ -35,7 +35,6 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -53,7 +52,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:27.0.2'
-    compile "com.android.support:support-emoji-bundled:27.0.2"
     testCompile 'junit:junit:4.12'
 }
 

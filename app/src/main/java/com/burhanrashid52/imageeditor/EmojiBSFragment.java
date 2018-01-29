@@ -2,15 +2,10 @@ package com.burhanrashid52.imageeditor;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.widget.EmojiTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -77,8 +72,6 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
 
     public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
 
-        //String[] emojisList = getActivity().getResources().getStringArray(R.array.photo_editor_emoji);
-
         ArrayList<String> emojisList = PhotoEditor.getEmojis(getActivity());
 
         @Override
@@ -98,7 +91,7 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            EmojiTextView txtEmoji;
+            TextView txtEmoji;
 
             ViewHolder(View itemView) {
                 super(itemView);

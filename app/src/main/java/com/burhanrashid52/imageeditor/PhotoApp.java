@@ -2,11 +2,6 @@ package com.burhanrashid52.imageeditor;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
-import android.support.v4.provider.FontRequest;
-import android.util.Log;
 
 /**
  * Created by Burhanuddin Rashid on 1/23/2018.
@@ -20,7 +15,7 @@ public class PhotoApp extends Application {
     public void onCreate() {
         super.onCreate();
         sPhotoApp = this;
-        FontRequest fontRequest = new FontRequest(
+     /*   FontRequest fontRequest = new FontRequest(
                 "com.google.android.gms.fonts",
                 "com.google.android.gms",
                 "Noto Color Emoji Compat",
@@ -44,8 +39,8 @@ public class PhotoApp extends Application {
                     }
                 });
 
-        //  BundledEmojiCompatConfig bundledEmojiCompatConfig = new BundledEmojiCompatConfig(this);
-        // EmojiCompat.init(config);
+     //   BundledEmojiCompatConfig bundledEmojiCompatConfig = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);*/
     }
 
     public static PhotoApp getPhotoApp() {

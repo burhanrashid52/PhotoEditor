@@ -13,9 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
-import android.support.text.emoji.widget.EmojiTextView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,7 +48,6 @@ public class PhotoEditor implements BrushViewChangeListener {
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
-    private EmojiCompat.Config mEmojiConfig;
 
 
     private PhotoEditor(Builder builder) {
@@ -63,10 +59,8 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
-        this.mEmojiConfig = builder.emojiConfig;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
-        EmojiCompat.init(mEmojiConfig);
         addedViews = new ArrayList<>();
         redoViews = new ArrayList<>();
     }
@@ -110,7 +104,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
-        final EmojiTextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
+        final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
         final ImageView imgClose = textRootView.findViewById(R.id.imgPhotoEditorClose);
         final FrameLayout frmBorder = textRootView.findViewById(R.id.frmBorder);
 
@@ -157,7 +151,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param colorCode    color to update on textview
      */
     public void editText(View view, Typeface textTypeface, String inputText, int colorCode) {
-        EmojiTextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
+        TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
         if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
             if (textTypeface != null) {
@@ -177,7 +171,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         final View emojiRootView = getLayout(ViewType.EMOJI);
-        final EmojiTextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
+        final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
         final FrameLayout frmBorder = emojiRootView.findViewById(R.id.frmBorder);
         final ImageView imgClose = emojiRootView.findViewById(R.id.imgPhotoEditorClose);
 
@@ -250,7 +244,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         switch (viewType) {
             case TEXT:
                 rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_text, null);
-                EmojiTextView txtText = rootView.findViewById(R.id.tvPhotoEditorText);
+                TextView txtText = rootView.findViewById(R.id.tvPhotoEditorText);
                 if (txtText != null && mDefaultTextTypeface != null) {
                     txtText.setGravity(Gravity.CENTER);
                     if (mDefaultEmojiTypeface != null) {
@@ -263,7 +257,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                 break;
             case EMOJI:
                 rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_text, null);
-                EmojiTextView txtTextEmoji = rootView.findViewById(R.id.tvPhotoEditorText);
+                TextView txtTextEmoji = rootView.findViewById(R.id.tvPhotoEditorText);
                 if (txtTextEmoji != null) {
                     if (mDefaultEmojiTypeface != null) {
                         txtTextEmoji.setTypeface(mDefaultEmojiTypeface);
@@ -574,7 +568,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         private BrushDrawingView brushDrawingView;
         private Typeface textTypeface;
         private Typeface emojiTypeface;
-        private EmojiCompat.Config emojiConfig;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
 
@@ -615,11 +608,6 @@ public class PhotoEditor implements BrushViewChangeListener {
             return this;
         }
 
-        public Builder setEmojiConfig(EmojiCompat.Config emojiConfig) {
-            this.emojiConfig = emojiConfig;
-            return this;
-        }
-
         Builder setBrushDrawingView(BrushDrawingView brushDrawingView) {
             this.brushDrawingView = brushDrawingView;
             return this;
@@ -628,9 +616,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         public PhotoEditor build() {
             if (emojiTypeface == null) {
                 //emojiTypeface = Typeface.createFromAsset(context.getAssets(), "emojione-android.ttf");
-            }
-            if (emojiConfig == null) {
-                emojiConfig = new BundledEmojiCompatConfig(context);
             }
             return new PhotoEditor(this);
         }
@@ -643,9 +628,5 @@ public class PhotoEditor implements BrushViewChangeListener {
             convertedEmojiList.add(convertEmoji(emojiUnicode));
         }
         return convertedEmojiList;
-    }
-
-    public void setEmojiConfig(EmojiCompat.Config emojiConfig) {
-        EmojiCompat.init(emojiConfig);
     }
 }
