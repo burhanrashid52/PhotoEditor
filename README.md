@@ -56,9 +56,9 @@ You can customize the properties in the PhotoEditor as per your requirement
 
 | Property  | Usage |
 | ------------- | ------------- |
-| setPinchTextScalable()  | set false to disable pinch to zoom on text insertion.By deafult its true
-| setDefaultTextTypeface()  | set default text font to be added on image  |
-| setDefaultEmojiTypeface()  | set default font specifc to add emojis |
+| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion.By deafult its true
+| `setDefaultTextTypeface()`  | set default text font to be added on image  |
+| `setDefaultEmojiTypeface()`  | set default font specifc to add emojis |
 
 That's it we are done with setting up our library
 
@@ -74,11 +74,11 @@ We can customize our brush and paint with diffrent set of propert.To start drawi
 
 | Type  | Method |
 | ------------- | ------------- |
-| Enable/Disable  | mPhotoEditor.setBrushDrawingMode(true); |
-| Bursh Size (px)  | mPhotoEditor.setBrushSize(brushSize) |
-| Color Opacity (In %)  |   mPhotoEditor.setOpacity(opacity)  |
-| Brush Color | mPhotoEditor.setBrushColor(colorCode)  |
-| Brush Eraser  | mPhotoEditor.brushEraser() |
+| Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
+| Bursh Size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
+| Color Opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
+| Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
+| Brush Eraser  | `mPhotoEditor.brushEraser()` |
 
 **Note**: Whenever you set any property for brush for drawing it will automatically enables the drawing mode
 
