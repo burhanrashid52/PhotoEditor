@@ -98,6 +98,9 @@ We can customize our brush and paint with diffrent set of property.To start draw
 
 
 ## Text
+
+![](https://i.imgur.com/491BmE8.gif)
+
 You can add the text with input text and colorCode like this
 
 `mPhotoEditor.addText(inputText, colorCode);` 
@@ -124,6 +127,9 @@ Now you can edit the text with a view like this
 
 
 ## Emoji
+
+![](https://i.imgur.com/RP8kqz6.gif)
+
 You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicodes
 
 `mPhotoEditor.addEmoji(emojiUnicode);`
@@ -142,6 +148,9 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
  
 
 ## Undo and Redo
+
+![](https://i.imgur.com/1Y9WcCB.gif)
+
  ```
    mPhotoEditor.undo();
    mPhotoEditor.redo();
