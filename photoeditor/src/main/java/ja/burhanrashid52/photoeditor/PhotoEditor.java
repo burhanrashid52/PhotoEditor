@@ -575,17 +575,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView = photoEditorView.getBrushDrawingView();
         }
 
-        Builder setParentView(RelativeLayout parentView) {
-            this.parentView = parentView;
-            return this;
-        }
-
-        Builder setChildView(ImageView imageView) {
-            this.imageView = imageView;
-            return this;
-        }
-
-        public Builder setDeleteView(View deleteView) {
+        Builder setDeleteView(View deleteView) {
             this.deleteView = deleteView;
             return this;
         }
@@ -595,7 +585,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             return this;
         }
 
-        Builder setDefaultEmojiTypeface(Typeface emojiTypeface) {
+        public Builder setDefaultEmojiTypeface(Typeface emojiTypeface) {
             this.emojiTypeface = emojiTypeface;
             return this;
         }
