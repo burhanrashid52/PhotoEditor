@@ -4,14 +4,15 @@ A Photo Editor library with simple, easy support for image editing using paints,
 
 ## Features
 
-- [**Drawing**](#drawing) on image with option to change its Color,Size,Opacity and Erasing.
-- Adding Images.
-- Adding Stickers.
-- Adding Text with option to change its Color.
-- Scaling and Rotating views.
-- Deleting views.
-- Saving photo after editing.
-- Undo after adding views.
+- [**Drawing**](#drawing) on image with option to change its Brush's Color,Size,Opacity and Erasing.
+- Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
+- Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
+- Adding [**Images/Stickers**](#stickers)
+- Pinch to Scale and Rotate views.
+- [**Undo and Redo**](#undo-and-redo) for Brush and Views.
+- [**Deleting**](#deleting) Views
+- [**Saving**](#saving) Photo after editing.
+
 
 - Effects
 Todo.
@@ -88,11 +89,8 @@ That's it we are done with setting up our library
 
 
 
-
-## Features
-
 ### Drawing
-We can customize our brush and paint with diffrent set of propert.To start drawing on image we need to enable the drawing mode
+We can customize our brush and paint with diffrent set of property.To start drawing on image we need to enable the drawing mode
 
 ![](https://i.imgur.com/INi5LIy.gif)
 
@@ -106,3 +104,68 @@ We can customize our brush and paint with diffrent set of propert.To start drawi
 
 **Note**: Whenever you set any property for brush for drawing it will automatically enables the drawing mode
 
+### Text
+You can add the text with input text and colorCode like this
+
+`mPhotoEditor.addText(inputText, colorCode);` 
+
+It will take default fonts provided in the builder,If you want diffrent fonts for diffrent text you can set typeface with each text like this 
+
+`mPhotoEditor.addText(mTypeface,inputText, colorCode);`
+
+In order to edit the text you need the view which you will reacive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
+
+ ```
+ mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
+            @Override
+            public void onEditTextChangeListener(View rootView, String text, int colorCode) {
+                
+            }
+        });
+  ```
+Now you can edit the text with a view like this
+
+`mPhotoEditor.editText(rootView, inputText, colorCode);`
+
+
+### Emoji
+You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicodes
+
+`mPhotoEditor.addEmoji(emojiUnicode);`
+
+It will take default fonts provided in the builder,If you want diffrent Emoji fonts for diffrent emoji you can set typeface with each Emoji like this 
+
+`mPhotoEditor.addEmoji(mEmojiTypeface,emojiUnicode);`
+
+
+ ### Adding Images/Stickers
+ You need to provide a Bitmap to add you Images  `mPhotoEditor.addImage(bitmap);`
+ 
+ ### Undo and Redo
+ ```
+   mPhotoEditor.undo();
+   mPhotoEditor.redo();
+ ```
+  ### Deleting
+  For deleting a Text/Emoji/Image you can click on the view to toggle the view highlighter box which will have a close icon so by on clicking on the icon you can delete the view
+  
+   ### Saving
+   
+   You need provide a file with callback method when edited image is saved
+   
+   ```
+    mPhotoEditor.saveImage(filePath, new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                       Log.e("PhotoEditor","Image Saved Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("PhotoEditor","Failed to save Image");
+                    }
+                });
+                
+    ```
+    
+ 
