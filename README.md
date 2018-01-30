@@ -184,7 +184,7 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
 ```
     
 ## How to contribute?
-* Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/CONTRIBUTING.md)
+* Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
 
 
 ## What's next?
