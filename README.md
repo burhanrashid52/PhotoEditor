@@ -193,10 +193,13 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
 
 ## Questions?🤔
 Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrashid52-blue.svg)](https://twitter.com/burhanrashid52)
+[![Medium](https://img.shields.io/badge/Medium-%40burhanrashid52-brightgreen.svg)](https://medium.com/@burhanrashid52)
+[![Facebook](https://img.shields.io/badge/Facebook-Burhanuddin%20Rashid-blue.svg)](https://www.facebook.com/Bursid)
+
 
 
 ## Credits
-This project is inspired by [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android) by [Eventtus](http://eventtus.com)
+This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android) by [Eventtus](http://eventtus.com)
 
 ## License
 Copyright 2018 Burhanuddin Rashid
