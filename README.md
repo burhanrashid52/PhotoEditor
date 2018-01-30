@@ -7,20 +7,12 @@ A Photo Editor library with simple, easy support for image editing using paints,
 - [**Drawing**](#drawing) on image with option to change its Brush's Color,Size,Opacity and Erasing.
 - Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
 - Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
-- Adding [**Images/Stickers**](#stickers)
+- Adding [**Images/Stickers**](#adding-imagesstickers)
 - Pinch to Scale and Rotate views.
 - [**Undo and Redo**](#undo-and-redo) for Brush and Views.
 - [**Deleting**](#deleting) Views
 - [**Saving**](#saving) Photo after editing.
 
-
-- Effects
-Todo.
-
-- Transforms
-  - Flip
-  - Rotate
-  - Resize
 
 ## Benefits
 - Hassle free coding
