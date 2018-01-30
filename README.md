@@ -4,7 +4,7 @@ A Photo Editor library with simple, easy support for image editing using paints,
 
 ## Features
 
-- [**Drawing**](###Drawing) on image with option to change its Color,Size,Opacity and Erasing.
+- [**Drawing**](#drawing) on image with option to change its Color,Size,Opacity and Erasing.
 - Adding Images.
 - Adding Stickers.
 - Adding Text with option to change its Color.
