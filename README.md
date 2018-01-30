@@ -1,5 +1,7 @@
 # PhotoEditor
 
+ ![API](https://img.shields.io/badge/API-14%2B-green.svg)
+
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like in Instagram stories.
 
 ## Features
@@ -19,6 +21,8 @@ A Photo Editor library with simple, easy support for image editing using paints,
 - Increase efficiency
 - Easy image editing
 
+
+
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
@@ -26,9 +30,6 @@ implementation 'ja.burhanrashid52:photoeditor:0.0.5'
 ```
 or your can also import the :photoeditor module from sample for customization
 
-### Prerequisites
-
-Minimum SDK version is supported till API 14
 
 ## Setting up the View
 First you need to add `PhotoEditorView` in your xml layout
@@ -180,7 +181,29 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
                         Log.e("PhotoEditor","Failed to save Image");
                     }
                 });
-                
-    ```
+```
     
+## How to contribute?
+* Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/CONTRIBUTING.md)
+
+
+## What's next?
+- Croping Image with Custom Aspect ratio and more customization text/emoji/stickers
+
+
+## Questions?🤔
+Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrashid52-blue.svg)](https://twitter.com/burhanrashid52)
+
+
+## Credits
+This project is inspired by [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android) by [Eventtus](http://eventtus.com)
+
+## License
+Copyright 2018 Burhanuddin Rashid
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  
