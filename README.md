@@ -30,9 +30,7 @@ or your can also import the :photoeditor module from sample for customization
 
 Minimum SDK version is supported till API 14
 
-## Installing
-
-### Setting up the View
+## Setting up the View
 First you need to add `PhotoEditorView` in your xml layout
 
 ```
@@ -52,7 +50,7 @@ PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
 mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 ```
 
-### Building a PhotoEditor
+## Building a PhotoEditor
 To use the image editing feature you need to build a PhotoEditor which requires a Context and PhotoEditorView which we have setup in our xml layout
 
 
@@ -81,7 +79,7 @@ That's it we are done with setting up our library
 
 
 
-### Drawing
+## Drawing
 We can customize our brush and paint with diffrent set of property.To start drawing on image we need to enable the drawing mode
 
 ![](https://i.imgur.com/INi5LIy.gif)
@@ -96,7 +94,10 @@ We can customize our brush and paint with diffrent set of property.To start draw
 
 **Note**: Whenever you set any property for brush for drawing it will automatically enables the drawing mode
 
-### Text
+
+
+
+## Text
 You can add the text with input text and colorCode like this
 
 `mPhotoEditor.addText(inputText, colorCode);` 
@@ -120,7 +121,9 @@ Now you can edit the text with a view like this
 `mPhotoEditor.editText(rootView, inputText, colorCode);`
 
 
-### Emoji
+
+
+## Emoji
 You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicodes
 
 `mPhotoEditor.addEmoji(emojiUnicode);`
@@ -130,18 +133,29 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
 `mPhotoEditor.addEmoji(mEmojiTypeface,emojiUnicode);`
 
 
- ### Adding Images/Stickers
+
+
+## Adding Images/Stickers
  You need to provide a Bitmap to add you Images  `mPhotoEditor.addImage(bitmap);`
  
- ### Undo and Redo
+ 
+ 
+
+## Undo and Redo
  ```
    mPhotoEditor.undo();
    mPhotoEditor.redo();
  ```
-  ### Deleting
+ 
+
+
+## Deleting
   For deleting a Text/Emoji/Image you can click on the view to toggle the view highlighter box which will have a close icon so by on clicking on the icon you can delete the view
   
-   ### Saving
+  
+  
+
+## Saving
    
    You need provide a file with callback method when edited image is saved
    
