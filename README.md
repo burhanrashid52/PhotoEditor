@@ -2,6 +2,30 @@
 
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like in Instagram stories.
 
+## Features
+
+- [**Drawing**](#Drawing) on image with option to change its Color,Size,Opacity and Erasing.
+- Adding Images.
+- Adding Stickers.
+- Adding Text with option to change its Color.
+- Scaling and Rotating views.
+- Deleting views.
+- Saving photo after editing.
+- Undo after adding views.
+
+- Effects
+Todo.
+
+- Transforms
+  - Flip
+  - Rotate
+  - Resize
+
+## Benefits
+- Hassle free coding
+- Increase efficiency
+- Easy image editing
+
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
