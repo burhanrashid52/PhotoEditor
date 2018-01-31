@@ -1,6 +1,27 @@
 # PhotoEditor
 
+ ![API](https://img.shields.io/badge/API-14%2B-green.svg)
+
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like in Instagram stories.
+
+## Features
+
+- [**Drawing**](#drawing) on image with option to change its Brush's Color,Size,Opacity and Erasing.
+- Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
+- Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
+- Adding [**Images/Stickers**](#adding-imagesstickers)
+- Pinch to Scale and Rotate views.
+- [**Undo and Redo**](#undo-and-redo) for Brush and Views.
+- [**Deleting**](#deleting) Views
+- [**Saving**](#saving) Photo after editing.
+
+
+## Benefits
+- Hassle free coding
+- Increase efficiency
+- Easy image editing
+
+
 
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
@@ -9,13 +30,8 @@ implementation 'ja.burhanrashid52:photoeditor:0.0.5'
 ```
 or your can also import the :photoeditor module from sample for customization
 
-### Prerequisites
 
-Minimum SDK version is supported till API 14
-
-## Installing
-
-### Setting up the View
+## Setting up the View
 First you need to add `PhotoEditorView` in your xml layout
 
 ```
@@ -35,7 +51,7 @@ PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
 mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 ```
 
-### Building a PhotoEditor
+## Building a PhotoEditor
 To use the image editing feature you need to build a PhotoEditor which requires a Context and PhotoEditorView which we have setup in our xml layout
 
 
@@ -64,11 +80,8 @@ That's it we are done with setting up our library
 
 
 
-
-## Features
-
-### Drawing
-We can customize our brush and paint with diffrent set of propert.To start drawing on image we need to enable the drawing mode
+## Drawing
+We can customize our brush and paint with diffrent set of property.To start drawing on image we need to enable the drawing mode
 
 ![](https://i.imgur.com/INi5LIy.gif)
 
@@ -82,3 +95,118 @@ We can customize our brush and paint with diffrent set of propert.To start drawi
 
 **Note**: Whenever you set any property for brush for drawing it will automatically enables the drawing mode
 
+
+
+
+## Text
+
+![](https://i.imgur.com/491BmE8.gif)
+
+You can add the text with input text and colorCode like this
+
+`mPhotoEditor.addText(inputText, colorCode);` 
+
+It will take default fonts provided in the builder,If you want diffrent fonts for diffrent text you can set typeface with each text like this 
+
+`mPhotoEditor.addText(mTypeface,inputText, colorCode);`
+
+In order to edit the text you need the view which you will reacive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
+
+ ```
+ mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
+            @Override
+            public void onEditTextChangeListener(View rootView, String text, int colorCode) {
+                
+            }
+        });
+  ```
+Now you can edit the text with a view like this
+
+`mPhotoEditor.editText(rootView, inputText, colorCode);`
+
+
+
+
+## Emoji
+
+![](https://i.imgur.com/RP8kqz6.gif)
+
+You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicodes
+
+`mPhotoEditor.addEmoji(emojiUnicode);`
+
+It will take default fonts provided in the builder,If you want diffrent Emoji fonts for diffrent emoji you can set typeface with each Emoji like this 
+
+`mPhotoEditor.addEmoji(mEmojiTypeface,emojiUnicode);`
+
+
+
+
+## Adding Images/Stickers
+ You need to provide a Bitmap to add you Images  `mPhotoEditor.addImage(bitmap);`
+ 
+ 
+ 
+
+## Undo and Redo
+
+![](https://i.imgur.com/1Y9WcCB.gif)
+
+ ```
+   mPhotoEditor.undo();
+   mPhotoEditor.redo();
+ ```
+ 
+
+
+## Deleting
+  For deleting a Text/Emoji/Image you can click on the view to toggle the view highlighter box which will have a close icon so by on clicking on the icon you can delete the view
+  
+  
+  
+
+## Saving
+   
+   You need provide a file with callback method when edited image is saved
+   
+   ```
+    mPhotoEditor.saveImage(filePath, new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                       Log.e("PhotoEditor","Image Saved Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("PhotoEditor","Failed to save Image");
+                    }
+                });
+```
+    
+## How to contribute?
+* Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
+
+
+## What's next?
+- Croping Image with Custom Aspect ratio and more customization text/emoji/stickers
+
+
+## Questions?🤔
+Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrashid52-blue.svg)](https://twitter.com/burhanrashid52)
+[![Medium](https://img.shields.io/badge/Medium-%40burhanrashid52-brightgreen.svg)](https://medium.com/@burhanrashid52)
+[![Facebook](https://img.shields.io/badge/Facebook-Burhanuddin%20Rashid-blue.svg)](https://www.facebook.com/Bursid)
+
+
+
+## Credits
+This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android) by [Eventtus](http://eventtus.com)
+
+## License
+Copyright 2018 Burhanuddin Rashid
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ 
