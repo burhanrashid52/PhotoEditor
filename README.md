@@ -2,7 +2,7 @@
 
  ![API](https://img.shields.io/badge/API-14%2B-green.svg)
 
-A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like in Instagram stories.
+A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like stories.
 
 ## Features
 
