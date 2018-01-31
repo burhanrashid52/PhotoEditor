@@ -3,6 +3,7 @@ package com.burhanrashid52.imageeditor;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.provider.FontsContractCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -94,7 +96,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
                 .setDefaultTextTypeface(mTextRobotoTf)
-                .setDefaultEmojiTypeface(mEmojiTypeFace)
+                //   .setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
@@ -111,6 +113,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgSticker;
         ImageView imgEmo;
         ImageView imgSave;
+        ImageView imgClose;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
@@ -144,6 +147,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgSave = findViewById(R.id.imgSave);
         imgSave.setOnClickListener(this);
+
+        imgClose = findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(this);
     }
 
     @Override
@@ -184,6 +190,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         switch (view.getId()) {
             case R.id.imgPencil:
                 mPhotoEditor.setBrushDrawingMode(true);
+                mTxtCurrentTool.setText(R.string.label_brush);
                 mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
                 break;
             case R.id.btnEraser:
@@ -211,6 +218,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
             case R.id.imgSave:
                 saveImage();
+                break;
+
+            case R.id.imgClose:
+                if (!mPhotoEditor.isCacheEmpty()) {
+                    showSaveDialog();
+                } else {
+                    finishAffinity();
+                }
                 break;
 
             case R.id.imgSticker:
@@ -323,5 +338,31 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         if (isGranted) {
             saveImage();
         }
+    }
+
+    private void showSaveDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you want to exit without saving image ?");
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveImage();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNeutralButton("Discard", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishAffinity();
+            }
+        });
+        builder.create().show();
+
     }
 }

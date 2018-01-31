@@ -26,7 +26,7 @@ A Photo Editor library with simple, easy support for image editing using paints,
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
-implementation 'ja.burhanrashid52:photoeditor:0.0.5'
+implementation 'ja.burhanrashid52:photoeditor:0.1.0'
 ```
 or your can also import the :photoeditor module from sample for customization
 
