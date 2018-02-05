@@ -1,6 +1,7 @@
 # PhotoEditor
 
- ![API](https://img.shields.io/badge/API-14%2B-green.svg)
+[![Downloads](https://img.shields.io/badge/Download-0.1.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+ [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736) 
 
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like stories.
 
