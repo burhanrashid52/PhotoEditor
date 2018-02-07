@@ -23,7 +23,7 @@ First you need to add `PhotoEditorView` in your xml layout
         android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:src="@drawable/got" />
+        android:src="@drawable/got" />
   
 ```
 Your can define your drawable or color resource directly using `app:src`
