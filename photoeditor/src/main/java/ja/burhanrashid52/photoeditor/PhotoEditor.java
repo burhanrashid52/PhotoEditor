@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.ColorInt;
@@ -29,6 +31,9 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import ja.burhanrashid52.photoeditor.filters.FilterHelper;
+import ja.burhanrashid52.photoeditor.filters.FilterType;
+
 /**
  * Created by Burhanuddin Rashid on 18/01/2017.
  */
@@ -48,6 +53,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private FilterHelper mFilterHelper;
 
 
     private PhotoEditor(Builder builder) {
@@ -59,6 +65,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
+        this.mFilterHelper = new FilterHelper(builder.gLSurfaceView);
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
         addedViews = new ArrayList<>();
@@ -556,6 +563,11 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
+    public void setFilter(@FilterType int filterType) {
+        mFilterHelper.setSourceBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+        mFilterHelper.setCurrentEffect(filterType);
+    }
+
     public static class Builder {
 
         private Context context;
@@ -567,12 +579,14 @@ public class PhotoEditor implements BrushViewChangeListener {
         private Typeface emojiTypeface;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
+        private GLSurfaceView gLSurfaceView;
 
         public Builder(Context context, PhotoEditorView photoEditorView) {
             this.context = context;
             parentView = photoEditorView;
             imageView = photoEditorView.getSource();
             brushDrawingView = photoEditorView.getBrushDrawingView();
+            gLSurfaceView = photoEditorView.getGLFilterView();
         }
 
         Builder setDeleteView(View deleteView) {
@@ -592,11 +606,6 @@ public class PhotoEditor implements BrushViewChangeListener {
 
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
-            return this;
-        }
-
-        Builder setBrushDrawingView(BrushDrawingView brushDrawingView) {
-            this.brushDrawingView = brushDrawingView;
             return this;
         }
 

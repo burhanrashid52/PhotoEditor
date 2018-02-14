@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -21,7 +22,8 @@ public class PhotoEditorView extends RelativeLayout {
 
     private ImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
-    private static final int imgSrcId = 1, brushSrcId = 2;
+    private GLSurfaceView mGLFilterView;
+    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -72,12 +74,29 @@ public class PhotoEditorView extends RelativeLayout {
         brushParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
         brushParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
 
+        //Setup GLSurface attributes
+        mGLFilterView = new GLSurfaceView(getContext());
+        mGLFilterView.setId(glFilterId);
+        mGLFilterView.setVisibility(GONE);
+        //Align brush to the size of image view
+        RelativeLayout.LayoutParams imgFilterParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imgFilterParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        imgFilterParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
+        imgFilterParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
+
 
         //Add image source
         addView(mImgSource, imgSrcParam);
+
+        //Add Gl FilterView
+        addView(mGLFilterView, imgFilterParam);
+
         //Add brush view
         addView(mBrushDrawingView, brushParam);
+
     }
+
 
     /**
      * Source image which you want to edit
@@ -86,6 +105,10 @@ public class PhotoEditorView extends RelativeLayout {
      */
     public ImageView getSource() {
         return mImgSource;
+    }
+
+    GLSurfaceView getGLFilterView() {
+        return mGLFilterView;
     }
 
     BrushDrawingView getBrushDrawingView() {
