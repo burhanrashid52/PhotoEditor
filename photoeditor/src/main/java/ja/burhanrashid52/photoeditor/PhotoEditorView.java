@@ -55,7 +55,7 @@ public class PhotoEditorView extends RelativeLayout {
         imgSrcParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoEditorView);
-            Drawable imgSrcDrawable = a.getDrawable(R.styleable.PhotoEditorView_src);
+            Drawable imgSrcDrawable = a.getDrawable(R.styleable.PhotoEditorView_photo_src);
             if (imgSrcDrawable != null) {
                 mImgSource.setImageDrawable(imgSrcDrawable);
             }

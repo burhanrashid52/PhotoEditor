@@ -3,12 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PhotoEditor.iml" filepath="$PROJECT_DIR$/PhotoEditor.iml" />
-      <module fileurl="file://F:\MultidotsProjects\PhotoEditorAndroid\PhotoEditor.iml" filepath="F:\MultidotsProjects\PhotoEditorAndroid\PhotoEditor.iml" />
-      <module fileurl="file://C:\Users\Burhanuddin\StudioProjects\PhotoEditor\.idea\PhotoEditorAndroid.iml" filepath="C:\Users\Burhanuddin\StudioProjects\PhotoEditor\.idea\PhotoEditorAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://F:\MultidotsProjects\PhotoEditorAndroid\app\app.iml" filepath="F:\MultidotsProjects\PhotoEditorAndroid\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/photoeditor/photoeditor.iml" filepath="$PROJECT_DIR$/photoeditor/photoeditor.iml" />
-      <module fileurl="file://F:\MultidotsProjects\PhotoEditorAndroid\photoeditor\photoeditor.iml" filepath="F:\MultidotsProjects\PhotoEditorAndroid\photoeditor\photoeditor.iml" />
     </modules>
   </component>
 </project>

@@ -13,9 +13,9 @@ ext {
     libraryDescription = 'A Photo Editor library to edit image using paints,text,emoji and images'
 
     siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
-    gitUrl = 'https://github.com/burhanrashid52/PhotoEditor/issues'
+    gitUrl = 'https://github.com/burhanrashid52/PhotoEditor'
 
-    libraryVersion = '0.1.0'
+    libraryVersion = '0.1.1'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'
