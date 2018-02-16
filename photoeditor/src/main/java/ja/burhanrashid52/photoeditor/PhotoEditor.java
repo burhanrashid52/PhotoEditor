@@ -2,6 +2,7 @@ package ja.burhanrashid52.photoeditor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -9,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -566,6 +568,18 @@ public class PhotoEditor implements BrushViewChangeListener {
     public void setFilter(@FilterType int filterType) {
         mFilterHelper.setSourceBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
         mFilterHelper.setCurrentEffect(filterType);
+
+      /*  mFilterHelper.captureBitmap(new FilterHelper.BitmapReadyCallbacks() {
+            @Override
+            public void onBitmapReady(final Bitmap bitmap) {
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                });
+            }
+        });*/
     }
 
     public static class Builder {

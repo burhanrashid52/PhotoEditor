@@ -27,7 +27,7 @@ import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.ViewType;
-import ja.burhanrashid52.photoeditor.filters.FilterType;
+import ja.burhanrashid52.photoeditor.filters.PhotoFilter;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
@@ -103,7 +103,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         //Set Image Dynamically
         //mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 
-        mPhotoEditor.setFilter(FilterType.LOMISH);
+        mPhotoEditor.setFilter(PhotoFilter.LOMISH);
+
     }
 
     private void initViews() {
