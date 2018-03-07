@@ -74,7 +74,8 @@
         android:src="@drawable/ic_close"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        android:layout_alignParentLeft="true" />
 
     <include
         android:id="@+id/constraintTools"
@@ -95,7 +96,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imgSave"
         app:layout_constraintStart_toEndOf="@+id/imgClose"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        android:layout_marginLeft="8dp" />
 
     <ImageView
         android:id="@+id/imgSave"

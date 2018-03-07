@@ -88,13 +88,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
 
-        Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
-        Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
+        //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
+        //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
-                .setDefaultTextTypeface(mTextRobotoTf)
-                //   .setDefaultEmojiTypeface(mEmojiTypeFace)
+                //.setDefaultTextTypeface(mTextRobotoTf)
+                //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
@@ -225,7 +225,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 if (!mPhotoEditor.isCacheEmpty()) {
                     showSaveDialog();
                 } else {
-                    finishAffinity();
+                    finish();
                 }
                 break;
 
@@ -360,7 +360,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         builder.setNeutralButton("Discard", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finishAffinity();
+                finish();
             }
         });
         builder.create().show();
