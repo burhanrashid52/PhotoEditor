@@ -16,15 +16,18 @@ A Photo Editor library with simple, easy support for image editing using paints,
 - [**Deleting**](#deleting) Views
 - [**Saving**](#saving) Photo after editing.
 
-### Change Logs
-  - **0.1.1 :**
-        Changed `app:src="@drawable/got_s"` to `app:photo_src="@drawable/got_s"` in `PhotoEditorView` 
 
 
 ## Benefits
 - Hassle free coding
 - Increase efficiency
 - Easy image editing
+
+
+
+### Change Logs
+  - **0.1.1 :**
+        Changed `app:src="@drawable/got_s"` to `app:photo_src="@drawable/got_s"` in `PhotoEditorView` 
 
 
 
