@@ -1,6 +1,6 @@
 # PhotoEditor
 
-[![Downloads](https://img.shields.io/badge/Download-0.1.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-0.1.1-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
  [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736) 
 
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like stories.
@@ -16,6 +16,10 @@ A Photo Editor library with simple, easy support for image editing using paints,
 - [**Deleting**](#deleting) Views
 - [**Saving**](#saving) Photo after editing.
 
+### Change Logs
+  - **0.1.1 :**
+        Changed `app:src="@drawable/got_s"` to `app:photo_src="@drawable/got_s"` in `PhotoEditorView` 
+
 
 ## Benefits
 - Hassle free coding
@@ -27,7 +31,7 @@ A Photo Editor library with simple, easy support for image editing using paints,
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
-implementation 'ja.burhanrashid52:photoeditor:0.1.0'
+implementation 'ja.burhanrashid52:photoeditor:0.1.1'
 ```
 or your can also import the :photoeditor module from sample for customization
 
@@ -40,10 +44,10 @@ First you need to add `PhotoEditorView` in your xml layout
         android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:src="@drawable/got" />
+        app:photo_src="@drawable/got_s" />
   
 ```
-Your can define your drawable or color resource directly using `app:src`
+Your can define your drawable or color resource directly using `app:photo_src`
 
 Your can set the image programatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
 ```
