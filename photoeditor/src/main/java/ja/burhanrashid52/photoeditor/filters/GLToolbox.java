@@ -18,9 +18,9 @@ package ja.burhanrashid52.photoeditor.filters;
 
 import android.opengl.GLES20;
 
-public class GLToolbox {
+class GLToolbox {
 
-    public static int loadShader(int shaderType, String source) {
+    private static int loadShader(int shaderType, String source) {
         int shader = GLES20.glCreateShader(shaderType);
         if (shader != 0) {
             GLES20.glShaderSource(shader, source);
@@ -36,7 +36,7 @@ public class GLToolbox {
         return shader;
     }
 
-    public static int createProgram(String vertexSource, String fragmentSource) {
+    static int createProgram(String vertexSource, String fragmentSource) {
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
         if (vertexShader == 0) {
             return 0;
@@ -65,14 +65,14 @@ public class GLToolbox {
         return program;
     }
 
-    public static void checkGlError(String op) {
+    static void checkGlError(String op) {
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
             throw new RuntimeException(op + ": glError " + error);
         }
     }
 
-    public static void initTexParams() {
+    static void initTexParams() {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
                 GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
