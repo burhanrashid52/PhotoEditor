@@ -209,7 +209,7 @@ Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrash
 
 
 ## Credits
-This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android) by [Eventtus](http://eventtus.com)
+This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android)
 
 ## License
 Copyright 2018 Burhanuddin Rashid
