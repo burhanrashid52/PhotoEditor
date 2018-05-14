@@ -20,9 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Burhanuddin Rashid on 12/1/18.
+ * <p>
+ * This is custom drawing view used to do painting on user touch events it it will paint on canvas
+ * as per attributes provided to the paint
+ * </p>
+ *
+ * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
+ * @version 0.1.1
+ * @since 12/1/18
  */
-
 public class BrushDrawingView extends View {
 
     private float mBrushSize = 25;
@@ -56,7 +62,7 @@ public class BrushDrawingView extends View {
         setupBrushDrawing();
     }
 
-    void setupBrushDrawing() {
+    private void setupBrushDrawing() {
         //Caution: This line is to disable hardware acceleration to make eraser feature work properly
         setLayerType(LAYER_TYPE_HARDWARE, null);
         mDrawPaint = new Paint();
@@ -150,7 +156,7 @@ public class BrushDrawingView extends View {
         invalidate();
     }
 
-    public void setBrushViewChangeListener(BrushViewChangeListener brushViewChangeListener) {
+    void setBrushViewChangeListener(BrushViewChangeListener brushViewChangeListener) {
         mBrushViewChangeListener = brushViewChangeListener;
     }
 
@@ -169,6 +175,12 @@ public class BrushDrawingView extends View {
         canvas.drawPath(mPath, mDrawPaint);
     }
 
+    /**
+     * Handle touch event to draw paint on canvas i.e brush drawing
+     *
+     * @param event points having touch info
+     * @return true if handling touch events
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {

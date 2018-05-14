@@ -12,9 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-
 /**
- * Created by Burhanuddin Rashid on 1/18/2018.
+ * <p>
+ * This ViewGroup will have the {@link BrushDrawingView} to draw paint on it with {@link ImageView}
+ * which our source image
+ * </p>
+ *
+ * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
+ * @version 0.1.1
+ * @since 1/18/2018
  */
 
 public class PhotoEditorView extends RelativeLayout {
