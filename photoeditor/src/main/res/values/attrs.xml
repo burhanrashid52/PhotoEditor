@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="PhotoEditorView">
-        <!-- {@deprecated Use photo_src instead.} -->
-        <attr name="photo_src" format="integer" />
-    </declare-styleable>
-</resources>
