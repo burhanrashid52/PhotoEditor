@@ -202,7 +202,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
      * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
      *
-     * @param emojiName
+     * @param emojiName unicode in form of string to display emoji
      */
     public void addEmoji(String emojiName) {
         addEmoji(null, emojiName);
