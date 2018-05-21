@@ -3,15 +3,21 @@ package ja.burhanrashid52.photoeditor;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import ja.burhanrashid52.photoeditor.filters.FilterHelper;
+import ja.burhanrashid52.photoeditor.filters.PhotoFilter;
 
 /**
  * <p>
@@ -26,9 +32,12 @@ import android.widget.RelativeLayout;
 
 public class PhotoEditorView extends RelativeLayout {
 
-    private ImageView mImgSource;
+    private static final String TAG = "PhotoEditorView";
+
+    private FilterImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
     private GLSurfaceView mGLFilterView;
+    private FilterHelper mFilterHelper;
     private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
 
     public PhotoEditorView(Context context) {
@@ -55,7 +64,7 @@ public class PhotoEditorView extends RelativeLayout {
     @SuppressLint("Recycle")
     private void init(@Nullable AttributeSet attrs) {
         //Setup image attributes
-        mImgSource = new ImageView(getContext());
+        mImgSource = new FilterImageView(getContext());
         mImgSource.setId(imgSrcId);
         mImgSource.setAdjustViewBounds(true);
         RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
@@ -84,12 +93,22 @@ public class PhotoEditorView extends RelativeLayout {
         mGLFilterView = new GLSurfaceView(getContext());
         mGLFilterView.setId(glFilterId);
         mGLFilterView.setVisibility(GONE);
+        mFilterHelper = new FilterHelper(mGLFilterView);
+
         //Align brush to the size of image view
         RelativeLayout.LayoutParams imgFilterParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         imgFilterParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         imgFilterParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
         imgFilterParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
+
+        mImgSource.setOnImageChangedListener(new FilterImageView.OnImageChangedListener() {
+            @Override
+            public void onBitmapLoaded(@Nullable Bitmap sourceBitmap) {
+                mFilterHelper.setSourceBitmap(sourceBitmap);
+                Log.d(TAG, "onBitmapLoaded() called with: sourceBitmap = [" + sourceBitmap + "]");
+            }
+        });
 
 
         //Add image source
@@ -113,11 +132,18 @@ public class PhotoEditorView extends RelativeLayout {
         return mImgSource;
     }
 
-    GLSurfaceView getGLFilterView() {
-        return mGLFilterView;
-    }
-
     BrushDrawingView getBrushDrawingView() {
         return mBrushDrawingView;
+    }
+
+    void setFilterType(PhotoFilter filterType) {
+        mGLFilterView.setVisibility(VISIBLE);
+        mFilterHelper.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
+        mFilterHelper.setCurrentEffect(filterType);
+    }
+
+    void saveFilter() {
+        mImgSource.setImageBitmap(mFilterHelper.getBitmap());
+        mGLFilterView.setVisibility(GONE);
     }
 }

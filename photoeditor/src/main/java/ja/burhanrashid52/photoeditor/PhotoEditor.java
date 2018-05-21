@@ -2,12 +2,9 @@ package ja.burhanrashid52.photoeditor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -31,8 +28,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ja.burhanrashid52.photoeditor.filters.FilterHelper;
-import ja.burhanrashid52.photoeditor.filters.FilterType;
+import ja.burhanrashid52.photoeditor.filters.PhotoFilter;
 
 /**
  * <p>
@@ -49,7 +45,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private static final String TAG = PhotoEditor.class.getSimpleName();
     private final LayoutInflater mLayoutInflater;
     private Context context;
-    private RelativeLayout parentView;
+    private PhotoEditorView parentView;
     private ImageView imageView;
     private View deleteView;
     private BrushDrawingView brushDrawingView;
@@ -59,7 +55,6 @@ public class PhotoEditor implements BrushViewChangeListener {
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
-    private FilterHelper mFilterHelper;
 
 
     private PhotoEditor(Builder builder) {
@@ -71,7 +66,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
-        this.mFilterHelper = new FilterHelper(builder.gLSurfaceView);
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
         addedViews = new ArrayList<>();
@@ -637,6 +631,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             protected void onPreExecute() {
                 super.onPreExecute();
                 clearTextHelperBox();
+                parentView.saveFilter();
                 parentView.setDrawingCacheEnabled(false);
             }
 
@@ -690,6 +685,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             protected void onPreExecute() {
                 super.onPreExecute();
                 clearTextHelperBox();
+                parentView.saveFilter();
                 parentView.setDrawingCacheEnabled(false);
             }
 
@@ -786,21 +782,8 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
-    public void setFilter(@FilterType int filterType) {
-        mFilterHelper.setSourceBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
-        mFilterHelper.setCurrentEffect(filterType);
-
-      /*  mFilterHelper.captureBitmap(new FilterHelper.BitmapReadyCallbacks() {
-            @Override
-            public void onBitmapReady(final Bitmap bitmap) {
-                ((Activity) context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageView.setImageBitmap(bitmap);
-                    }
-                });
-            }
-        });*/
+    public void setFilter(PhotoFilter filterType) {
+        parentView.setFilterType(filterType);
     }
 
     /**
@@ -809,7 +792,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     public static class Builder {
 
         private Context context;
-        private RelativeLayout parentView;
+        private PhotoEditorView parentView;
         private ImageView imageView;
         private View deleteView;
         private BrushDrawingView brushDrawingView;
@@ -817,7 +800,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         private Typeface emojiTypeface;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
-        private GLSurfaceView gLSurfaceView;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -831,7 +813,6 @@ public class PhotoEditor implements BrushViewChangeListener {
             parentView = photoEditorView;
             imageView = photoEditorView.getSource();
             brushDrawingView = photoEditorView.getBrushDrawingView();
-            gLSurfaceView = photoEditorView.getGLFilterView();
         }
 
         Builder setDeleteView(View deleteView) {

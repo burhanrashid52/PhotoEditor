@@ -19,8 +19,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.opengles.GL10;
 
-import ja.burhanrashid52.photoeditor.R;
-
 import static ja.burhanrashid52.photoeditor.filters.PhotoFilter.*;
 
 /**
@@ -38,8 +36,7 @@ public class FilterHelper implements GLSurfaceView.Renderer {
     private int mImageWidth;
     private int mImageHeight;
     private boolean mInitialized = false;
-    @FilterType
-    private int mCurrentEffect;
+    private PhotoFilter mCurrentEffect;
     private Context mContext;
     private Bitmap mSourceBitmap;
     private Bitmap mBitmap;
@@ -54,7 +51,10 @@ public class FilterHelper implements GLSurfaceView.Renderer {
     }
 
     public void setSourceBitmap(Bitmap sourceBitmap) {
+        //  if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) return;
+        // mCurrentEffect = NONE;
         mSourceBitmap = sourceBitmap;
+        mInitialized = false;
     }
 
     @Override
@@ -84,12 +84,17 @@ public class FilterHelper implements GLSurfaceView.Renderer {
             applyEffect();
         }
         renderResult();
+        mBitmap = createBitmapFromGLSurface(mEffectView.getWidth(), mEffectView.getHeight(), gl);
     }
 
-    public void setCurrentEffect(@FilterType int effect) {
+    public void setCurrentEffect(PhotoFilter effect) {
         mCurrentEffect = effect;
+        mEffectView.requestRender();
     }
 
+    public Bitmap getBitmap() {
+        return mBitmap;
+    }
 
     private void loadTextures() {
         // Generate textures
@@ -248,7 +253,7 @@ public class FilterHelper implements GLSurfaceView.Renderer {
     }
 
     // from other answer in this question
-    private Bitmap createBitmapFromGLSurface(int w, int h, GL10 gl) {
+    private Bitmap createBitmapFromGLSurface(int w, int h, GL10 gl) throws OutOfMemoryError {
         int x = 0, y = 0;
         int bitmapBuffer[] = new int[w * h];
         int bitmapSource[] = new int[w * h];
@@ -270,15 +275,10 @@ public class FilterHelper implements GLSurfaceView.Renderer {
                 }
             }
         } catch (GLException e) {
-            Log.e(TAG, "createBitmapFromGLSurface: " + e.getMessage(), e);
             return null;
         }
 
-        try {
-            return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
-        } catch (Exception e) {
-            return null;
-        }
+        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
     }
 
 }

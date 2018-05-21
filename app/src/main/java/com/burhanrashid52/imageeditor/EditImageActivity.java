@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +32,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         View.OnClickListener,
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
-        StickerBSFragment.StickerListener {
+        StickerBSFragment.StickerListener, FilterBSFragment.FilterListener {
 
     private static final String TAG = EditImageActivity.class.getSimpleName();
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
@@ -44,6 +43,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
+    private FilterBSFragment mFilterBSFragment;
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
 
@@ -88,6 +88,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mStickerBSFragment.setStickerListener(this);
         mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
+        mFilterBSFragment = new FilterBSFragment();
+        mFilterBSFragment.setFilterListener(this);
 
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
@@ -102,9 +104,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         //Set Image Dynamically
         //mPhotoEditorView.getSource().setImageResource(R.drawable.got);
-
-        mPhotoEditor.setFilter(PhotoFilter.LOMISH);
-
     }
 
     private void initViews() {
@@ -119,6 +118,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgEmo;
         ImageView imgSave;
         ImageView imgClose;
+        ImageView imgFilter;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
@@ -155,6 +155,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgClose = findViewById(R.id.imgClose);
         imgClose.setOnClickListener(this);
+
+        imgFilter = findViewById(R.id.imgFilter);
+        imgFilter.setOnClickListener(this);
     }
 
     @Override
@@ -211,6 +214,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                         mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });
+                break;
+
+            case R.id.imgFilter:
+                mTxtCurrentTool.setText("Filter");
+                mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
                 break;
 
             case R.id.imgUndo:
@@ -369,5 +377,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         });
         builder.create().show();
 
+    }
+
+    @Override
+    public void onFilterSelected(PhotoFilter photoFilter) {
+        mPhotoEditor.setFilter(photoFilter);
     }
 }
