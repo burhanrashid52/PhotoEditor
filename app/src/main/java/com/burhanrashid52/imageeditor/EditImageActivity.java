@@ -260,7 +260,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     + System.currentTimeMillis() + ".png");
             try {
                 file.createNewFile();
-                mPhotoEditor.saveImage(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
+                mPhotoEditor.saveAsFile(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
                     @Override
                     public void onSuccess(@NonNull String imagePath) {
                         hideLoading();

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -557,15 +556,13 @@ public class PhotoEditor implements BrushViewChangeListener {
         void onFailure(@NonNull Exception exception);
     }
 
+
     /**
-     * Save the edited image on given path
-     *
-     * @param imagePath      path on which image to be saved
-     * @param onSaveListener callback for saving image
-     * @see OnSaveListener
+     * @deprecated Use {@link #saveAsFile(String, OnSaveListener)} instead
      */
     @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @Deprecated
     public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         new AsyncTask<String, String, Exception>() {
@@ -586,7 +583,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     FileOutputStream out = new FileOutputStream(file, false);
                     if (parentView != null) {
                         parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = parentView.getDrawingCache();
+                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
                         drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                     }
                     out.flush();
@@ -614,24 +611,113 @@ public class PhotoEditor implements BrushViewChangeListener {
         }.execute();
     }
 
-    private boolean isSDCARDMounted() {
-        String status = Environment.getExternalStorageState();
-        return status.equals(Environment.MEDIA_MOUNTED);
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        Log.d(TAG, "Image Path: " + imagePath);
+        new AsyncTask<String, String, Exception>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                clearTextHelperBox();
+                parentView.setDrawingCacheEnabled(false);
+            }
+
+            @SuppressLint("MissingPermission")
+            @Override
+            protected Exception doInBackground(String... strings) {
+                // Create a media file name
+                File file = new File(imagePath);
+                try {
+                    FileOutputStream out = new FileOutputStream(file, false);
+                    if (parentView != null) {
+                        parentView.setDrawingCacheEnabled(true);
+                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    }
+                    out.flush();
+                    out.close();
+                    Log.d(TAG, "Filed Saved Successfully");
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "Failed to save File");
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                super.onPostExecute(e);
+                if (e == null) {
+                    clearAllViews();
+                    onSaveListener.onSuccess(imagePath);
+                } else {
+                    onSaveListener.onFailure(e);
+                }
+            }
+
+        }.execute();
+    }
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param onSaveBitmap callback for saving image as bitmap
+     * @see OnSaveBitmap
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
+        new AsyncTask<String, String, Bitmap>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                clearTextHelperBox();
+                parentView.setDrawingCacheEnabled(false);
+            }
+
+            @Override
+            protected Bitmap doInBackground(String... strings) {
+                if (parentView != null) {
+                    parentView.setDrawingCacheEnabled(true);
+                    return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    clearAllViews();
+                    onSaveBitmap.onBitmapReady(bitmap);
+                } else {
+                    onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
+                }
+            }
+
+        }.execute();
     }
 
     private static String convertEmoji(String emoji) {
         String returnedEmoji;
         try {
             int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
-            returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
+            returnedEmoji = new String(Character.toChars(convertEmojiToInt));
         } catch (NumberFormatException e) {
             returnedEmoji = "";
         }
         return returnedEmoji;
-    }
-
-    private static String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 
     /**
