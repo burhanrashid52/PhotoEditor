@@ -1,7 +1,9 @@
 package ja.burhanrashid52.photoeditor;
 
 /**
- * Created by Burhanuddin Rashid on 1/17/2018.
+ * Created on 1/17/2018.
+ * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
+ * <p></p>
  */
 
 interface BrushViewChangeListener {

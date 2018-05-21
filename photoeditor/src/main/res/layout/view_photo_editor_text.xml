@@ -4,14 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imgPhotoEditorClose"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_gravity="top|start"
-        android:elevation="1dp"
-        android:src="@drawable/ic_remove" />
-
     <FrameLayout
         android:id="@+id/frmBorder"
         android:layout_width="match_parent"
@@ -30,5 +22,13 @@
             tools:textColor="@android:color/black" />
 
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imgPhotoEditorClose"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_gravity="top|start"
+        android:elevation="1dp"
+        android:src="@drawable/ic_remove" />
 
 </FrameLayout>

@@ -9,8 +9,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -37,9 +35,15 @@ import ja.burhanrashid52.photoeditor.filters.FilterHelper;
 import ja.burhanrashid52.photoeditor.filters.FilterType;
 
 /**
- * Created by Burhanuddin Rashid on 18/01/2017.
+ * <p>
+ * This class in initialize by {@link PhotoEditor.Builder} using a builder pattern with multiple
+ * editing attributes
+ * </p>
+ *
+ * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
+ * @version 0.1.1
+ * @since 18/01/2017
  */
-
 public class PhotoEditor implements BrushViewChangeListener {
 
     private static final String TAG = PhotoEditor.class.getSimpleName();
@@ -74,6 +78,12 @@ public class PhotoEditor implements BrushViewChangeListener {
         redoViews = new ArrayList<>();
     }
 
+    /**
+     * This will add image on {@link PhotoEditorView} which you drag,rotate and scale using pinch
+     * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
+     *
+     * @param desiredImage bitmap image you want to add
+     */
     public void addImage(Bitmap desiredImage) {
         final View imageRootView = getLayout(ViewType.IMAGE);
         final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
@@ -104,11 +114,26 @@ public class PhotoEditor implements BrushViewChangeListener {
 
     }
 
+    /**
+     * This add the text on the {@link PhotoEditorView} with provided parameters
+     * by default {@link TextView#setText(int)} will be 18sp
+     *
+     * @param text              text to display
+     * @param colorCodeTextView text color to be displayed
+     */
     @SuppressLint("ClickableViewAccessibility")
     public void addText(String text, final int colorCodeTextView) {
         addText(null, text, colorCodeTextView);
     }
 
+    /**
+     * This add the text on the {@link PhotoEditorView} with provided parameters
+     * by default {@link TextView#setText(int)} will be 18sp
+     *
+     * @param textTypeface      typeface for custom font in the text
+     * @param text              text to display
+     * @param colorCodeTextView text color to be displayed
+     */
     @SuppressLint("ClickableViewAccessibility")
     public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
         brushDrawingView.setBrushDrawingMode(false);
@@ -147,6 +172,13 @@ public class PhotoEditor implements BrushViewChangeListener {
     }
 
 
+    /**
+     * This will update text and color on provided view
+     *
+     * @param view      view on which you want update
+     * @param inputText text to update {@link TextView}
+     * @param colorCode color to update on {@link TextView}
+     */
     public void editText(View view, String inputText, int colorCode) {
         editText(view, null, inputText, colorCode);
     }
@@ -155,9 +187,9 @@ public class PhotoEditor implements BrushViewChangeListener {
      * This will update the text and color on provided view
      *
      * @param view         root view where text view is a child
-     * @param textTypeface optional if provided
-     * @param inputText    text to update textview
-     * @param colorCode    color to update on textview
+     * @param textTypeface update typeface for custom font in the text
+     * @param inputText    text to update {@link TextView}
+     * @param colorCode    color to update on {@link TextView}
      */
     public void editText(View view, Typeface textTypeface, String inputText, int colorCode) {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
@@ -173,10 +205,23 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
+    /**
+     * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
+     * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
+     *
+     * @param emojiName unicode in form of string to display emoji
+     */
     public void addEmoji(String emojiName) {
         addEmoji(null, emojiName);
     }
 
+    /**
+     * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
+     * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
+     *
+     * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
+     * @param emojiName     unicode in form of string to display emoji
+     */
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         final View emojiRootView = getLayout(ViewType.EMOJI);
@@ -292,20 +337,38 @@ public class PhotoEditor implements BrushViewChangeListener {
         return rootView;
     }
 
+    /**
+     * Enable/Disable drawing mode to draw on {@link PhotoEditorView}
+     *
+     * @param brushDrawingMode true if mode is enabled
+     */
     public void setBrushDrawingMode(boolean brushDrawingMode) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushDrawingMode(brushDrawingMode);
     }
 
+    /**
+     * @return true is brush mode is enabled
+     */
     public Boolean getBrushDrawableMode() {
         return brushDrawingView != null && brushDrawingView.getBrushDrawingMode();
     }
 
+    /**
+     * set the size of bursh user want to paint on canvas i.e {@link BrushDrawingView}
+     *
+     * @param size size of brush
+     */
     public void setBrushSize(float size) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushSize(size);
     }
 
+    /**
+     * set opacity/transparency of brush while painting on {@link BrushDrawingView}
+     *
+     * @param opacity opacity is in form of percentage
+     */
     public void setOpacity(@IntRange(from = 0, to = 100) int opacity) {
         if (brushDrawingView != null) {
             opacity = (int) ((opacity / 100.0) * 255.0);
@@ -313,12 +376,23 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
-
+    /**
+     * set brush color which user want to paint
+     *
+     * @param color color value for paint
+     */
     public void setBrushColor(@ColorInt int color) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushColor(color);
     }
 
+    /**
+     * set the eraser size
+     * <br></br>
+     * <b>Note :</b> Eraser size is different from the normal brush size
+     *
+     * @param brushEraserSize size of eraser
+     */
     public void setBrushEraserSize(float brushEraserSize) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushEraserSize(brushEraserSize);
@@ -329,22 +403,42 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.setBrushEraserColor(color);
     }
 
+    /**
+     * @return provide the size of eraser
+     * @see PhotoEditor#setBrushEraserSize(float)
+     */
     public float getEraserSize() {
         return brushDrawingView != null ? brushDrawingView.getEraserSize() : 0;
     }
 
+    /**
+     * @return provide the size of eraser
+     * @see PhotoEditor#setBrushSize(float)
+     */
     public float getBrushSize() {
         if (brushDrawingView != null)
             return brushDrawingView.getBrushSize();
         return 0;
     }
 
+    /**
+     * @return provide the size of eraser
+     * @see PhotoEditor#setBrushColor(int)
+     */
     public int getBrushColor() {
         if (brushDrawingView != null)
             return brushDrawingView.getBrushColor();
         return 0;
     }
 
+    /**
+     * <p>
+     * Its enables eraser mode after that whenever user drags on screen this will erase the existing
+     * paint
+     * <br>
+     * <b>Note</b> : This eraser will work on paint views only
+     * <p>
+     */
     public void brushEraser() {
         if (brushDrawingView != null)
             brushDrawingView.brushEraser();
@@ -370,6 +464,11 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
+    /**
+     * Undo the last operation perform on the {@link PhotoEditor}
+     *
+     * @return true if there nothing more to undo
+     */
     public boolean undo() {
         if (addedViews.size() > 0) {
             View removeView = addedViews.get(addedViews.size() - 1);
@@ -387,6 +486,11 @@ public class PhotoEditor implements BrushViewChangeListener {
         return addedViews.size() != 0;
     }
 
+    /**
+     * Redo the last operation perform on the {@link PhotoEditor}
+     *
+     * @return true if there nothing more to redo
+     */
     public boolean redo() {
         if (redoViews.size() > 0) {
             View redoView = redoViews.get(redoViews.size() - 1);
@@ -406,6 +510,10 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.clearAll();
     }
 
+    /**
+     * Removes all the edited operations performed {@link PhotoEditorView}
+     * This will also clear the undo and redo stack
+     */
     public void clearAllViews() {
         for (int i = 0; i < addedViews.size(); i++) {
             parentView.removeView(addedViews.get(i));
@@ -436,14 +544,33 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
+    /**
+     * A callback to save the edited image asynchronously
+     */
     public interface OnSaveListener {
+
+        /**
+         * Call when edited image is saved successfully on given path
+         *
+         * @param imagePath path on which image is saved
+         */
         void onSuccess(@NonNull String imagePath);
 
+        /**
+         * Call when failed to saved image on given path
+         *
+         * @param exception exception thrown while saving image
+         */
         void onFailure(@NonNull Exception exception);
     }
 
+
+    /**
+     * @deprecated Use {@link #saveAsFile(String, OnSaveListener)} instead
+     */
     @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @Deprecated
     public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         new AsyncTask<String, String, Exception>() {
@@ -464,7 +591,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     FileOutputStream out = new FileOutputStream(file, false);
                     if (parentView != null) {
                         parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = parentView.getDrawingCache();
+                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
                         drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                     }
                     out.flush();
@@ -492,26 +619,120 @@ public class PhotoEditor implements BrushViewChangeListener {
         }.execute();
     }
 
-    private boolean isSDCARDMounted() {
-        String status = Environment.getExternalStorageState();
-        return status.equals(Environment.MEDIA_MOUNTED);
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        Log.d(TAG, "Image Path: " + imagePath);
+        new AsyncTask<String, String, Exception>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                clearTextHelperBox();
+                parentView.setDrawingCacheEnabled(false);
+            }
+
+            @SuppressLint("MissingPermission")
+            @Override
+            protected Exception doInBackground(String... strings) {
+                // Create a media file name
+                File file = new File(imagePath);
+                try {
+                    FileOutputStream out = new FileOutputStream(file, false);
+                    if (parentView != null) {
+                        parentView.setDrawingCacheEnabled(true);
+                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    }
+                    out.flush();
+                    out.close();
+                    Log.d(TAG, "Filed Saved Successfully");
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "Failed to save File");
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                super.onPostExecute(e);
+                if (e == null) {
+                    clearAllViews();
+                    onSaveListener.onSuccess(imagePath);
+                } else {
+                    onSaveListener.onFailure(e);
+                }
+            }
+
+        }.execute();
+    }
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param onSaveBitmap callback for saving image as bitmap
+     * @see OnSaveBitmap
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
+        new AsyncTask<String, String, Bitmap>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                clearTextHelperBox();
+                parentView.setDrawingCacheEnabled(false);
+            }
+
+            @Override
+            protected Bitmap doInBackground(String... strings) {
+                if (parentView != null) {
+                    parentView.setDrawingCacheEnabled(true);
+                    return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    clearAllViews();
+                    onSaveBitmap.onBitmapReady(bitmap);
+                } else {
+                    onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
+                }
+            }
+
+        }.execute();
     }
 
     private static String convertEmoji(String emoji) {
         String returnedEmoji;
         try {
             int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
-            returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
+            returnedEmoji = new String(Character.toChars(convertEmojiToInt));
         } catch (NumberFormatException e) {
             returnedEmoji = "";
         }
         return returnedEmoji;
     }
 
-    private static String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
-    }
-
+    /**
+     * Callback on editing operation perform on {@link PhotoEditorView}
+     *
+     * @param onPhotoEditorListener {@link OnPhotoEditorListener}
+     */
     public void setOnPhotoEditorListener(@NonNull OnPhotoEditorListener onPhotoEditorListener) {
         this.mOnPhotoEditorListener = onPhotoEditorListener;
     }
@@ -519,7 +740,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     /**
      * Check if any changes made need to save
      *
-     * @return true is nothing is there to change
+     * @return true if nothing is there to change
      */
     public boolean isCacheEmpty() {
         return addedViews.size() == 0 && redoViews.size() == 0;
@@ -582,6 +803,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         });*/
     }
 
+    /**
+     * Builder pattern to define {@link PhotoEditor} Instance
+     */
     public static class Builder {
 
         private Context context;
@@ -595,6 +819,13 @@ public class PhotoEditor implements BrushViewChangeListener {
         private boolean isTextPinchZoomable = true;
         private GLSurfaceView gLSurfaceView;
 
+        /**
+         * Building a PhotoEditor which requires a Context and PhotoEditorView
+         * which we have setup in our xml layout
+         *
+         * @param context         context
+         * @param photoEditorView {@link PhotoEditorView}
+         */
         public Builder(Context context, PhotoEditorView photoEditorView) {
             this.context = context;
             parentView = photoEditorView;
@@ -608,26 +839,53 @@ public class PhotoEditor implements BrushViewChangeListener {
             return this;
         }
 
+        /**
+         * set default text font to be added on image
+         *
+         * @param textTypeface typeface for custom font
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
         public Builder setDefaultTextTypeface(Typeface textTypeface) {
             this.textTypeface = textTypeface;
             return this;
         }
 
+        /**
+         * set default font specific to add emojis
+         *
+         * @param emojiTypeface typeface for custom font
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
         public Builder setDefaultEmojiTypeface(Typeface emojiTypeface) {
             this.emojiTypeface = emojiTypeface;
             return this;
         }
 
+        /**
+         * set false to disable pinch to zoom on text insertion.By deafult its true
+         *
+         * @param isTextPinchZoomable flag to make pinch to zoom
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
             return this;
         }
 
+        /**
+         * @return build PhotoEditor instance
+         */
         public PhotoEditor build() {
             return new PhotoEditor(this);
         }
     }
 
+    /**
+     * Provide the list of emoji in form of unicode string
+     *
+     * @param context context
+     * @return list of emoji unicode
+     */
     public static ArrayList<String> getEmojis(Context context) {
         ArrayList<String> convertedEmojiList = new ArrayList<>();
         String[] emojiList = context.getResources().getStringArray(R.array.photo_editor_emoji);

@@ -11,7 +11,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * Created by Burhanuddin Rashid on 18/01/2017.
+ * Created on 18/01/2017.
+ * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
+ * <p></p>
  */
 class MultiTouchListener implements OnTouchListener {
 
