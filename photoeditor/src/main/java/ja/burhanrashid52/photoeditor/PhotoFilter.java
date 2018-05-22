@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor.filters;
+package ja.burhanrashid52.photoeditor;
 
 /**
  * Created by Burhanuddin Rashid on 2/14/2018.

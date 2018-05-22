@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ja.burhanrashid52.photoeditor.filters;
+package ja.burhanrashid52.photoeditor;
 
 import android.opengl.GLES20;
 

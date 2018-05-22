@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ja.burhanrashid52.photoeditor.filters;
+package ja.burhanrashid52.photoeditor;
 
 import android.opengl.GLES20;
 
@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class TextureRenderer {
+class TextureRenderer {
 
     private int mProgram;
     private int mTexSamplerHandle;

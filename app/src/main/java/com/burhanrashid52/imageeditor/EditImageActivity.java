@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.media.effect.EffectFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,11 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.ViewType;
-import ja.burhanrashid52.photoeditor.filters.PhotoFilter;
+import ja.burhanrashid52.photoeditor.PhotoFilter;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
@@ -44,6 +46,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
     private FilterBSFragment mFilterBSFragment;
+    private CustomEffectBSFragment mCustomEffectBSFragment;
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
 
@@ -90,6 +93,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mPropertiesBSFragment.setPropertiesChangeListener(this);
         mFilterBSFragment = new FilterBSFragment();
         mFilterBSFragment.setFilterListener(this);
+        mCustomEffectBSFragment = new CustomEffectBSFragment();
+
 
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
@@ -101,6 +106,21 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
+
+        mCustomEffectBSFragment.setPropertiesChangeListener(new CustomEffectBSFragment.Properties() {
+
+            @Override
+            public void onOpacityChanged(int opacity) {
+                float brightness = (float) (opacity / 100.0);
+                Log.d(TAG, "Brightness = [" + brightness + "]");
+                CustomEffect customEffect = new CustomEffect.Builder()
+                        .setEffectFactoryType(EffectFactory.EFFECT_BRIGHTNESS)
+                        .setParameter("brightness", brightness)
+                        .build();
+                mPhotoEditor.setCustomFilterEffect(customEffect);
+            }
+        });
+
 
         //Set Image Dynamically
         //mPhotoEditorView.getSource().setImageResource(R.drawable.got);
@@ -119,6 +139,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgSave;
         ImageView imgClose;
         ImageView imgFilter;
+        ImageView imgCustomFilter;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
@@ -158,6 +179,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgFilter = findViewById(R.id.imgFilter);
         imgFilter.setOnClickListener(this);
+
+        imgCustomFilter = findViewById(R.id.imgCustomFilter);
+        imgCustomFilter.setOnClickListener(this);
     }
 
     @Override
@@ -219,6 +243,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case R.id.imgFilter:
                 mTxtCurrentTool.setText("Filter");
                 mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
+                break;
+
+            case R.id.imgCustomFilter:
+                mTxtCurrentTool.setText("Custom Filter");
+                mCustomEffectBSFragment.show(getSupportFragmentManager(), mCustomEffectBSFragment.getTag());
                 break;
 
             case R.id.imgUndo:

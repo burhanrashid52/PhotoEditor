@@ -28,8 +28,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ja.burhanrashid52.photoeditor.filters.PhotoFilter;
-
 /**
  * <p>
  * This class in initialize by {@link PhotoEditor.Builder} using a builder pattern with multiple
@@ -536,6 +534,10 @@ public class PhotoEditor implements BrushViewChangeListener {
                 imgClose.setVisibility(View.GONE);
             }
         }
+    }
+
+    public void setCustomFilterEffect(CustomEffect customEffect) {
+        parentView.setCustomEffect(customEffect);
     }
 
     /**

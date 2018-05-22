@@ -121,10 +121,26 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:padding="8dp"
+        android:src="@drawable/ic_photo_filter"
+        app:layout_constraintBottom_toTopOf="@+id/constraintTools"
+        app:layout_constraintEnd_toStartOf="@+id/imgCustomFilter"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/imgCamera" />
+
+
+    <ImageView
+        android:id="@+id/imgCustomFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:padding="8dp"
         android:src="@drawable/ic_close"
         app:layout_constraintBottom_toTopOf="@+id/constraintTools"
         app:layout_constraintEnd_toStartOf="@+id/imgUndo"
-        app:layout_constraintStart_toEndOf="@+id/imgCamera" />
-
+        app:layout_constraintStart_toEndOf="@+id/imgFilter" />
 
 </android.support.constraint.ConstraintLayout>

@@ -6,8 +6,9 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -15,9 +16,6 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import ja.burhanrashid52.photoeditor.filters.FilterHelper;
-import ja.burhanrashid52.photoeditor.filters.PhotoFilter;
 
 /**
  * <p>
@@ -36,8 +34,7 @@ public class PhotoEditorView extends RelativeLayout {
 
     private FilterImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
-    private GLSurfaceView mGLFilterView;
-    private FilterHelper mFilterHelper;
+    private ImageFilterView mImageFilterView;
     private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
 
     public PhotoEditorView(Context context) {
@@ -90,10 +87,9 @@ public class PhotoEditorView extends RelativeLayout {
         brushParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
 
         //Setup GLSurface attributes
-        mGLFilterView = new GLSurfaceView(getContext());
-        mGLFilterView.setId(glFilterId);
-        mGLFilterView.setVisibility(GONE);
-        mFilterHelper = new FilterHelper(mGLFilterView);
+        mImageFilterView = new ImageFilterView(getContext());
+        mImageFilterView.setId(glFilterId);
+        mImageFilterView.setVisibility(GONE);
 
         //Align brush to the size of image view
         RelativeLayout.LayoutParams imgFilterParam = new RelativeLayout.LayoutParams(
@@ -105,7 +101,7 @@ public class PhotoEditorView extends RelativeLayout {
         mImgSource.setOnImageChangedListener(new FilterImageView.OnImageChangedListener() {
             @Override
             public void onBitmapLoaded(@Nullable Bitmap sourceBitmap) {
-                mFilterHelper.setSourceBitmap(sourceBitmap);
+                mImageFilterView.setSourceBitmap(sourceBitmap);
                 Log.d(TAG, "onBitmapLoaded() called with: sourceBitmap = [" + sourceBitmap + "]");
             }
         });
@@ -115,7 +111,7 @@ public class PhotoEditorView extends RelativeLayout {
         addView(mImgSource, imgSrcParam);
 
         //Add Gl FilterView
-        addView(mGLFilterView, imgFilterParam);
+        addView(mImageFilterView, imgFilterParam);
 
         //Add brush view
         addView(mBrushDrawingView, brushParam);
@@ -137,13 +133,20 @@ public class PhotoEditorView extends RelativeLayout {
     }
 
     void setFilterType(PhotoFilter filterType) {
-        mGLFilterView.setVisibility(VISIBLE);
-        mFilterHelper.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
-        mFilterHelper.setCurrentEffect(filterType);
+        mImageFilterView.setVisibility(VISIBLE);
+        mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
+        mImageFilterView.setCurrentEffect(filterType);
     }
 
     void saveFilter() {
-        mImgSource.setImageBitmap(mFilterHelper.getBitmap());
-        mGLFilterView.setVisibility(GONE);
+        mImgSource.setImageBitmap(mImageFilterView.getFilterBitmap());
+        mImageFilterView.setVisibility(GONE);
+
+    }
+
+    void setCustomEffect(CustomEffect customEffect) {
+        mImageFilterView.setVisibility(VISIBLE);
+        mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
+        mImageFilterView.setCustomEffect(customEffect);
     }
 }
