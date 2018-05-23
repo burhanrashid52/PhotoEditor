@@ -536,8 +536,12 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
-    public void setCustomFilterEffect(CustomEffect customEffect) {
-        parentView.setCustomEffect(customEffect);
+    public void setFilterEffect(CustomEffect customEffect) {
+        parentView.setFilterEffect(customEffect);
+    }
+
+    public void setFilterEffect(PhotoFilter filterType) {
+        parentView.setFilterEffect(filterType);
     }
 
     /**
@@ -627,51 +631,60 @@ public class PhotoEditor implements BrushViewChangeListener {
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
-        new AsyncTask<String, String, Exception>() {
-
+        parentView.saveFilter(new OnSaveBitmap() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                clearTextHelperBox();
-                parentView.saveFilter();
-                parentView.setDrawingCacheEnabled(false);
-            }
+            public void onBitmapReady(Bitmap saveBitmap) {
+                new AsyncTask<String, String, Exception>() {
 
-            @SuppressLint("MissingPermission")
-            @Override
-            protected Exception doInBackground(String... strings) {
-                // Create a media file name
-                File file = new File(imagePath);
-                try {
-                    FileOutputStream out = new FileOutputStream(file, false);
-                    if (parentView != null) {
-                        parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        clearTextHelperBox();
+                        parentView.setDrawingCacheEnabled(false);
                     }
-                    out.flush();
-                    out.close();
-                    Log.d(TAG, "Filed Saved Successfully");
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "Failed to save File");
-                    return e;
-                }
+
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    protected Exception doInBackground(String... strings) {
+                        // Create a media file name
+                        File file = new File(imagePath);
+                        try {
+                            FileOutputStream out = new FileOutputStream(file, false);
+                            if (parentView != null) {
+                                parentView.setDrawingCacheEnabled(true);
+                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            }
+                            out.flush();
+                            out.close();
+                            Log.d(TAG, "Filed Saved Successfully");
+                            return null;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "Failed to save File");
+                            return e;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Exception e) {
+                        super.onPostExecute(e);
+                        if (e == null) {
+                            clearAllViews();
+                            onSaveListener.onSuccess(imagePath);
+                        } else {
+                            onSaveListener.onFailure(e);
+                        }
+                    }
+
+                }.execute();
             }
 
             @Override
-            protected void onPostExecute(Exception e) {
-                super.onPostExecute(e);
-                if (e == null) {
-                    clearAllViews();
-                    onSaveListener.onSuccess(imagePath);
-                } else {
-                    onSaveListener.onFailure(e);
-                }
-            }
+            public void onFailure(Exception e) {
 
-        }.execute();
+            }
+        });
     }
 
     /**
@@ -682,37 +695,46 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
-        new AsyncTask<String, String, Bitmap>() {
+        parentView.saveFilter(new OnSaveBitmap() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                clearTextHelperBox();
-                parentView.saveFilter();
-                parentView.setDrawingCacheEnabled(false);
+            public void onBitmapReady(Bitmap saveBitmap) {
+                new AsyncTask<String, String, Bitmap>() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        clearTextHelperBox();
+                        parentView.setDrawingCacheEnabled(false);
+                    }
+
+                    @Override
+                    protected Bitmap doInBackground(String... strings) {
+                        if (parentView != null) {
+                            parentView.setDrawingCacheEnabled(true);
+                            return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Bitmap bitmap) {
+                        super.onPostExecute(bitmap);
+                        if (bitmap != null) {
+                            clearAllViews();
+                            onSaveBitmap.onBitmapReady(bitmap);
+                        } else {
+                            onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
+                        }
+                    }
+
+                }.execute();
             }
 
             @Override
-            protected Bitmap doInBackground(String... strings) {
-                if (parentView != null) {
-                    parentView.setDrawingCacheEnabled(true);
-                    return BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                } else {
-                    return null;
-                }
-            }
+            public void onFailure(Exception e) {
 
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-                if (bitmap != null) {
-                    clearAllViews();
-                    onSaveBitmap.onBitmapReady(bitmap);
-                } else {
-                    onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
-                }
             }
-
-        }.execute();
+        });
     }
 
     private static String convertEmoji(String emoji) {
@@ -784,9 +806,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
-    public void setFilter(PhotoFilter filterType) {
-        parentView.setFilterType(filterType);
-    }
 
     /**
      * Builder pattern to define {@link PhotoEditor} Instance

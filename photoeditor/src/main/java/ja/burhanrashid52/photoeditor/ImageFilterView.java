@@ -7,13 +7,14 @@ import android.media.effect.Effect;
 import android.media.effect.EffectContext;
 import android.media.effect.EffectFactory;
 import android.opengl.GLES20;
-import android.opengl.GLException;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 
-import java.nio.IntBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -43,8 +44,10 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private boolean mInitialized = false;
     private PhotoFilter mCurrentEffect;
     private Bitmap mSourceBitmap;
-    private Bitmap mFilterBitmap;
+    //  private Bitmap mFilterBitmap;
     private CustomEffect mCustomEffect;
+    private OnSaveBitmap mOnSaveBitmap;
+    private boolean isSaveImage = false;
 
     public ImageFilterView(Context context) {
         super(context);
@@ -60,12 +63,13 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
         setEGLContextClientVersion(2);
         setRenderer(this);
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        setCurrentEffect(NONE);
+        setFilterEffect(NONE);
     }
 
     void setSourceBitmap(Bitmap sourceBitmap) {
-        //  if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) return;
-        // mCurrentEffect = NONE;
+        if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
+            mCurrentEffect = NONE;
+        }
         mSourceBitmap = sourceBitmap;
         mInitialized = false;
     }
@@ -98,22 +102,37 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
             applyEffect();
         }
         renderResult();
-        mFilterBitmap = createBitmapFromGLSurface(getWidth(), getHeight(), gl);
+        if (isSaveImage) {
+            final Bitmap mFilterBitmap = BitmapUtil.createBitmapFromGLSurface(this, gl);
+            Log.e(TAG, "onDrawFrame: " + mFilterBitmap);
+            isSaveImage = false;
+            if (mOnSaveBitmap != null) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mOnSaveBitmap.onBitmapReady(mFilterBitmap);
+                    }
+                });
+            }
+        }
     }
 
-    void setCurrentEffect(PhotoFilter effect) {
+    void setFilterEffect(PhotoFilter effect) {
         mCurrentEffect = effect;
         mCustomEffect = null;
         requestRender();
     }
 
-    void setCustomEffect(CustomEffect customEffect) {
+    void setFilterEffect(CustomEffect customEffect) {
         mCustomEffect = customEffect;
         requestRender();
     }
 
-    Bitmap getFilterBitmap() {
-        return mFilterBitmap;
+
+    void saveBitmap(OnSaveBitmap onSaveBitmap) {
+        mOnSaveBitmap = onSaveBitmap;
+        isSaveImage = true;
+        requestRender();
     }
 
     private void loadTextures() {
@@ -255,34 +274,4 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
             mTexRenderer.renderTexture(mTextures[0]);
         }
     }
-
-    //Save filter in bitmap
-    private Bitmap createBitmapFromGLSurface(int w, int h, GL10 gl) throws OutOfMemoryError {
-        int x = 0, y = 0;
-        int bitmapBuffer[] = new int[w * h];
-        int bitmapSource[] = new int[w * h];
-        IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
-        intBuffer.position(0);
-
-        try {
-            gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer);
-            int offset1, offset2;
-            for (int i = 0; i < h; i++) {
-                offset1 = i * w;
-                offset2 = (h - i - 1) * w;
-                for (int j = 0; j < w; j++) {
-                    int texturePixel = bitmapBuffer[offset1 + j];
-                    int blue = (texturePixel >> 16) & 0xff;
-                    int red = (texturePixel << 16) & 0x00ff0000;
-                    int pixel = (texturePixel & 0xff00ff00) | red | blue;
-                    bitmapSource[offset2 + j] = pixel;
-                }
-            }
-        } catch (GLException e) {
-            return null;
-        }
-
-        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
-    }
-
 }

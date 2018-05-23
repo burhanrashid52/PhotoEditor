@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -132,21 +133,35 @@ public class PhotoEditorView extends RelativeLayout {
         return mBrushDrawingView;
     }
 
-    void setFilterType(PhotoFilter filterType) {
-        mImageFilterView.setVisibility(VISIBLE);
-        mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
-        mImageFilterView.setCurrentEffect(filterType);
+
+    void saveFilter(@NonNull final OnSaveBitmap onSaveBitmap) {
+        mImageFilterView.saveBitmap(new OnSaveBitmap() {
+            @Override
+            public void onBitmapReady(final Bitmap saveBitmap) {
+                Log.e(TAG, "saveFilter: " + saveBitmap);
+                mImgSource.setImageBitmap(saveBitmap);
+                mImageFilterView.setVisibility(GONE);
+                onSaveBitmap.onBitmapReady(saveBitmap);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onSaveBitmap.onFailure(e);
+            }
+        });
+
+
     }
 
-    void saveFilter() {
-        mImgSource.setImageBitmap(mImageFilterView.getFilterBitmap());
-        mImageFilterView.setVisibility(GONE);
-
-    }
-
-    void setCustomEffect(CustomEffect customEffect) {
+    void setFilterEffect(PhotoFilter filterType) {
         mImageFilterView.setVisibility(VISIBLE);
         mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
-        mImageFilterView.setCustomEffect(customEffect);
+        mImageFilterView.setFilterEffect(filterType);
+    }
+
+    void setFilterEffect(CustomEffect customEffect) {
+        mImageFilterView.setVisibility(VISIBLE);
+        mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
+        mImageFilterView.setFilterEffect(customEffect);
     }
 }

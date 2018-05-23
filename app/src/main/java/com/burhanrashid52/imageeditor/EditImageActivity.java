@@ -117,7 +117,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                         .setEffectFactoryType(EffectFactory.EFFECT_BRIGHTNESS)
                         .setParameter("brightness", brightness)
                         .build();
-                mPhotoEditor.setCustomFilterEffect(customEffect);
+                mPhotoEditor.setFilterEffect(customEffect);
             }
         });
 
@@ -410,6 +410,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
-        mPhotoEditor.setFilter(photoFilter);
+        mPhotoEditor.setFilterEffect(photoFilter);
     }
 }
