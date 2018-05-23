@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.imageeditor.filters;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+
+import com.burhanrashid52.imageeditor.R;
 
 public class CustomEffectBSFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 

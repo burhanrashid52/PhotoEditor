@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.imageeditor.filters;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.burhanrashid52.imageeditor.R;
 
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 

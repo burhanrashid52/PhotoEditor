@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class PhotoEditor implements BrushViewChangeListener {
 
-    private static final String TAG = PhotoEditor.class.getSimpleName();
+    private static final String TAG = "PhotoEditor";
     private final LayoutInflater mLayoutInflater;
     private Context context;
     private PhotoEditorView parentView;

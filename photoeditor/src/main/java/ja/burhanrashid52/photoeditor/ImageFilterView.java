@@ -31,7 +31,7 @@ import static ja.burhanrashid52.photoeditor.PhotoFilter.*;
  * @version 0.1.2
  * @since 2/14/2018
  */
-class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static final String TAG = "ImageFilterView";
     private int[] mTextures = new int[2];
@@ -64,7 +64,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
         setFilterEffect(NONE);
     }
 
-    void setSourceBitmap(Bitmap sourceBitmap) {
+    public void setSourceBitmap(Bitmap sourceBitmap) {
         if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
             mCurrentEffect = NONE;
         }
@@ -115,13 +115,13 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
     }
 
-    void setFilterEffect(PhotoFilter effect) {
+    public void setFilterEffect(PhotoFilter effect) {
         mCurrentEffect = effect;
         mCustomEffect = null;
         requestRender();
     }
 
-    void setFilterEffect(CustomEffect customEffect) {
+    public void setFilterEffect(CustomEffect customEffect) {
         mCustomEffect = customEffect;
         requestRender();
     }

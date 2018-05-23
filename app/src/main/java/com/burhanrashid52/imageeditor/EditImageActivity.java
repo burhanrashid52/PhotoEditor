@@ -14,10 +14,18 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.burhanrashid52.imageeditor.filters.CustomEffectBSFragment;
+import com.burhanrashid52.imageeditor.filters.FilterViewAdapter;
+import com.burhanrashid52.imageeditor.tools.EditingToolsAdapter;
+import com.burhanrashid52.imageeditor.filters.FilterBSFragment;
+import com.burhanrashid52.imageeditor.tools.ToolType;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +42,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         View.OnClickListener,
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
-        StickerBSFragment.StickerListener, FilterBSFragment.FilterListener {
+        StickerBSFragment.StickerListener, FilterBSFragment.FilterListener, EditingToolsAdapter.OnItemSelected {
 
     private static final String TAG = EditImageActivity.class.getSimpleName();
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
@@ -49,6 +57,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private CustomEffectBSFragment mCustomEffectBSFragment;
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
+    private RecyclerView mRvTools, mRvFilters;
+    private EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
+    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter();
 
 
     /**
@@ -96,6 +107,15 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mCustomEffectBSFragment = new CustomEffectBSFragment();
 
 
+        LinearLayoutManager llmTools = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRvTools.setLayoutManager(llmTools);
+        mRvTools.setAdapter(mEditingToolsAdapter);
+
+        LinearLayoutManager llmFilters = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRvFilters.setLayoutManager(llmFilters);
+        mRvFilters.setAdapter(mFilterViewAdapter);
+
+
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
@@ -125,37 +145,17 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     private void initViews() {
-        ImageView imgPencil;
-        ImageView imgEraser;
         ImageView imgUndo;
         ImageView imgRedo;
-        ImageView imgText;
         ImageView imgCamera;
         ImageView imgGallery;
-        ImageView imgSticker;
-        ImageView imgEmo;
         ImageView imgSave;
         ImageView imgClose;
-        ImageView imgFilter;
-        ImageView imgCustomFilter;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
-
-        imgEmo = findViewById(R.id.imgEmoji);
-        imgEmo.setOnClickListener(this);
-
-        imgSticker = findViewById(R.id.imgSticker);
-        imgSticker.setOnClickListener(this);
-
-        imgPencil = findViewById(R.id.imgPencil);
-        imgPencil.setOnClickListener(this);
-
-        imgText = findViewById(R.id.imgText);
-        imgText.setOnClickListener(this);
-
-        imgEraser = findViewById(R.id.btnEraser);
-        imgEraser.setOnClickListener(this);
+        mRvTools = findViewById(R.id.rvConstraintTools);
+        mRvFilters = findViewById(R.id.rvFilterView);
 
         imgUndo = findViewById(R.id.imgUndo);
         imgUndo.setOnClickListener(this);
@@ -175,11 +175,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         imgClose = findViewById(R.id.imgClose);
         imgClose.setOnClickListener(this);
 
-        imgFilter = findViewById(R.id.imgFilter);
-        imgFilter.setOnClickListener(this);
-
-        imgCustomFilter = findViewById(R.id.imgCustomFilter);
-        imgCustomFilter.setOnClickListener(this);
     }
 
     @Override
@@ -218,35 +213,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgPencil:
-                mPhotoEditor.setBrushDrawingMode(true);
-                mTxtCurrentTool.setText(R.string.label_brush);
-                mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
-                break;
-            case R.id.btnEraser:
-                mPhotoEditor.brushEraser();
-                mTxtCurrentTool.setText(R.string.label_eraser);
-                break;
-            case R.id.imgText:
-                TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
-                textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
-                    @Override
-                    public void onDone(String inputText, int colorCode) {
-                        mPhotoEditor.addText(inputText, colorCode);
-                        mTxtCurrentTool.setText(R.string.label_text);
-                    }
-                });
-                break;
-
-            case R.id.imgFilter:
-                mTxtCurrentTool.setText("Filter");
-                mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
-                break;
-
-            case R.id.imgCustomFilter:
-                mTxtCurrentTool.setText("Custom Filter");
-                mCustomEffectBSFragment.show(getSupportFragmentManager(), mCustomEffectBSFragment.getTag());
-                break;
 
             case R.id.imgUndo:
                 mPhotoEditor.undo();
@@ -266,14 +232,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 } else {
                     finish();
                 }
-                break;
-
-            case R.id.imgSticker:
-                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
-                break;
-
-            case R.id.imgEmoji:
-                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
                 break;
 
             case R.id.imgCamera:
@@ -409,5 +367,45 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
         mPhotoEditor.setFilterEffect(photoFilter);
+    }
+
+    @Override
+    public void onToolSelected(ToolType toolType) {
+        switch (toolType) {
+            case BRUSH:
+                mPhotoEditor.setBrushDrawingMode(true);
+                mTxtCurrentTool.setText(R.string.label_brush);
+                mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
+                break;
+            case TEXT:
+                TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
+                textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
+                    @Override
+                    public void onDone(String inputText, int colorCode) {
+                        mPhotoEditor.addText(inputText, colorCode);
+                        mTxtCurrentTool.setText(R.string.label_text);
+                    }
+                });
+                break;
+            case ERASER:
+                mPhotoEditor.brushEraser();
+                mTxtCurrentTool.setText(R.string.label_eraser);
+                break;
+            case FILTER:
+                mTxtCurrentTool.setText(R.string.label_filter);
+                mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
+                break;
+            case ADJUST:
+                mTxtCurrentTool.setText(R.string.label_adjust);
+                mRvFilters.setVisibility(View.VISIBLE);
+                //  mCustomEffectBSFragment.show(getSupportFragmentManager(), mCustomEffectBSFragment.getTag());
+                break;
+            case EMOJI:
+                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
+                break;
+            case STICKER:
+                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
+                break;
+        }
     }
 }
