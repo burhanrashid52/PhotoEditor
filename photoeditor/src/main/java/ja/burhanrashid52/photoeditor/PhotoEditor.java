@@ -536,10 +536,20 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
+    /**
+     * Setup of custom effect using effect type and set parameters values
+     *
+     * @param customEffect {@link CustomEffect.Builder#setParameter(String, Object)}
+     */
     public void setFilterEffect(CustomEffect customEffect) {
         parentView.setFilterEffect(customEffect);
     }
 
+    /**
+     * Set pre-define filter available
+     *
+     * @param filterType type of filter want to apply {@link PhotoEditor}
+     */
     public void setFilterEffect(PhotoFilter filterType) {
         parentView.setFilterEffect(filterType);
     }

@@ -11,7 +11,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -34,7 +33,7 @@ import static ja.burhanrashid52.photoeditor.PhotoFilter.*;
  */
 class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private static final String TAG = "GLFilterView";
+    private static final String TAG = "ImageFilterView";
     private int[] mTextures = new int[2];
     private EffectContext mEffectContext;
     private Effect mEffect;
@@ -44,7 +43,6 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private boolean mInitialized = false;
     private PhotoFilter mCurrentEffect;
     private Bitmap mSourceBitmap;
-    //  private Bitmap mFilterBitmap;
     private CustomEffect mCustomEffect;
     private OnSaveBitmap mOnSaveBitmap;
     private boolean isSaveImage = false;
@@ -160,7 +158,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
             mEffect.release();
         }
         if (mCustomEffect != null) {
-            mEffect = effectFactory.createEffect(mCustomEffect.getEffectFactoryType());
+            mEffect = effectFactory.createEffect(mCustomEffect.getEffectName());
             Map<String, Object> parameters = mCustomEffect.getParameters();
             for (Map.Entry<String, Object> param : parameters.entrySet()) {
                 mEffect.setParameter(param.getKey(), param.getValue());
@@ -205,11 +203,11 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
                     mEffect = effectFactory.createEffect(EFFECT_FISHEYE);
                     mEffect.setParameter("scale", .5f);
                     break;
-                case FLIPHOR:
+                case FLIP_HORIZONTAL:
                     mEffect = effectFactory.createEffect(EFFECT_FLIP);
                     mEffect.setParameter("horizontal", true);
                     break;
-                case FLIPVERT:
+                case FLIP_VERTICAL:
                     mEffect = effectFactory.createEffect(EFFECT_FLIP);
                     mEffect.setParameter("vertical", true);
                     break;

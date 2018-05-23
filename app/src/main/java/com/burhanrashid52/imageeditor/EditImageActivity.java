@@ -112,9 +112,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             @Override
             public void onOpacityChanged(int opacity) {
                 float brightness = (float) (opacity / 100.0);
-                Log.d(TAG, "Brightness = [" + brightness + "]");
-                CustomEffect customEffect = new CustomEffect.Builder()
-                        .setEffectFactoryType(EffectFactory.EFFECT_BRIGHTNESS)
+                CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_BRIGHTNESS)
                         .setParameter("brightness", brightness)
                         .build();
                 mPhotoEditor.setFilterEffect(customEffect);

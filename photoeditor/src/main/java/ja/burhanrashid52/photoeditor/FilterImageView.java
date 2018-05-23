@@ -19,7 +19,7 @@ import android.util.Log;
  * @version 0.1.2
  * @since 5/21/2018
  */
-public class FilterImageView extends AppCompatImageView {
+class FilterImageView extends AppCompatImageView {
 
     private OnImageChangedListener mOnImageChangedListener;
 
