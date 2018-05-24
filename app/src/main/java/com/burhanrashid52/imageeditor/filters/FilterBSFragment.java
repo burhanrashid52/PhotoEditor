@@ -31,10 +31,6 @@ public class FilterBSFragment extends BottomSheetDialogFragment {
         mFilterListener = filterListener;
     }
 
-    public interface FilterListener {
-        void onFilterSelected(PhotoFilter photoFilter);
-    }
-
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override

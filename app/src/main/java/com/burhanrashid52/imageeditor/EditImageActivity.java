@@ -13,15 +13,23 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.constraint.Guideline;
+import android.support.transition.ChangeBounds;
+import android.support.transition.Transition;
+import android.support.transition.TransitionManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.burhanrashid52.imageeditor.filters.CustomEffectBSFragment;
+import com.burhanrashid52.imageeditor.filters.FilterListener;
 import com.burhanrashid52.imageeditor.filters.FilterViewAdapter;
 import com.burhanrashid52.imageeditor.tools.EditingToolsAdapter;
 import com.burhanrashid52.imageeditor.filters.FilterBSFragment;
@@ -42,7 +50,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         View.OnClickListener,
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
-        StickerBSFragment.StickerListener, FilterBSFragment.FilterListener, EditingToolsAdapter.OnItemSelected {
+        StickerBSFragment.StickerListener, EditingToolsAdapter.OnItemSelected, FilterListener {
 
     private static final String TAG = EditImageActivity.class.getSimpleName();
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
@@ -59,32 +67,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private Typeface mWonderFont;
     private RecyclerView mRvTools, mRvFilters;
     private EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
-    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter();
+    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
+    private ConstraintLayout mRootView;
+    private ConstraintSet mConstraintSet = new ConstraintSet();
 
-
-    /**
-     * launch editor with multiple image
-     *
-     * @param context
-     * @param imagesPath
-     */
-    public static void launch(Context context, ArrayList<String> imagesPath) {
-        Intent starter = new Intent(context, EditImageActivity.class);
-        starter.putExtra(EXTRA_IMAGE_PATHS, imagesPath);
-        context.startActivity(starter);
-    }
-
-    /**
-     * launch editor with single image
-     *
-     * @param context
-     * @param imagePath
-     */
-    public static void launch(Context context, String imagePath) {
-        ArrayList<String> imagePaths = new ArrayList<>();
-        imagePaths.add(imagePath);
-        launch(context, imagePaths);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +127,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
 
         //Set Image Dynamically
-        //mPhotoEditorView.getSource().setImageResource(R.drawable.got);
+        // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
     }
 
     private void initViews() {
@@ -156,6 +142,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
         mRvTools = findViewById(R.id.rvConstraintTools);
         mRvFilters = findViewById(R.id.rvFilterView);
+        mRootView = findViewById(R.id.rootView);
 
         imgUndo = findViewById(R.id.imgUndo);
         imgUndo.setOnClickListener(this);
@@ -367,6 +354,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
         mPhotoEditor.setFilterEffect(photoFilter);
+        showFilter(false);
     }
 
     @Override
@@ -397,7 +385,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
             case ADJUST:
                 mTxtCurrentTool.setText(R.string.label_adjust);
-                mRvFilters.setVisibility(View.VISIBLE);
+                showFilter(true);
                 //  mCustomEffectBSFragment.show(getSupportFragmentManager(), mCustomEffectBSFragment.getTag());
                 break;
             case EMOJI:
@@ -407,5 +395,41 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
                 break;
         }
+    }
+
+
+    void showFilter(boolean isVisible) {
+        mConstraintSet.clone(mRootView);
+    //    ImageView imgClose = findViewById(R.id.imgClose);
+    //    ImageView imgCamera = findViewById(R.id.imgCamera);
+    //    ImageView imgUndo = findViewById(R.id.imgUndo);
+    //    Guideline guideline = findViewById(R.id.guideline);
+        if (isVisible) {
+
+            mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
+
+          /*  mConstraintSet.connect(imgClose.getId(), ConstraintSet.BOTTOM, mRvTools.getId(), ConstraintSet.TOP);
+            mConstraintSet.connect(imgClose.getId(), ConstraintSet.START, imgCamera.getId(), ConstraintSet.END);
+            mConstraintSet.connect(imgClose.getId(), ConstraintSet.END, imgUndo.getId(), ConstraintSet.START);
+            mConstraintSet.clear(imgClose.getId(), ConstraintSet.TOP);*/
+        } else {
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.END);
+            mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.END);
+
+            /*mConstraintSet.connect(imgClose.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
+            mConstraintSet.connect(imgClose.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
+            mConstraintSet.connect(imgClose.getId(), ConstraintSet.TOP, guideline.getId(), ConstraintSet.BOTTOM);
+            mConstraintSet.clear(imgClose.getId(), ConstraintSet.END);*/
+        }
+
+        ChangeBounds changeBounds = new ChangeBounds();
+        changeBounds.setDuration(350);
+        changeBounds.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
+
+        TransitionManager.beginDelayedTransition(mRootView, changeBounds);
+
+        mConstraintSet.applyTo(mRootView);
     }
 }
