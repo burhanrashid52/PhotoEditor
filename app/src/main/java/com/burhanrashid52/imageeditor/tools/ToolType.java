@@ -10,7 +10,6 @@ public enum ToolType {
     TEXT,
     ERASER,
     FILTER,
-    ADJUST,
     EMOJI,
     STICKER
 }

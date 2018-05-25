@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.burhanrashid52.imageeditor.R;
 
@@ -45,9 +46,10 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String filePath = mPairList.get(position).first;
-        Bitmap fromAsset = getBitmapFromAsset(holder.itemView.getContext(), filePath);
+        Pair<String, PhotoFilter> filterPair = mPairList.get(position);
+        Bitmap fromAsset = getBitmapFromAsset(holder.itemView.getContext(), filterPair.first);
         holder.mImageFilterView.setImageBitmap(fromAsset);
+        holder.mTxtFilterName.setText(filterPair.second.name().replace("_", " "));
     }
 
     @Override
@@ -57,10 +59,12 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mImageFilterView;
+        TextView mTxtFilterName;
 
         ViewHolder(View itemView) {
             super(itemView);
-            mImageFilterView = itemView.findViewById(R.id.glFilterView);
+            mImageFilterView = itemView.findViewById(R.id.imgFilterView);
+            mTxtFilterName = itemView.findViewById(R.id.txtFilterName);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

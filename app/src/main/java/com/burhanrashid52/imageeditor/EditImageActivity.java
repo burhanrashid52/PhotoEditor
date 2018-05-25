@@ -2,7 +2,6 @@ package com.burhanrashid52.imageeditor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,9 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.constraint.Guideline;
 import android.support.transition.ChangeBounds;
-import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,16 +25,15 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.burhanrashid52.imageeditor.base.BaseActivity;
 import com.burhanrashid52.imageeditor.filters.CustomEffectBSFragment;
 import com.burhanrashid52.imageeditor.filters.FilterListener;
 import com.burhanrashid52.imageeditor.filters.FilterViewAdapter;
 import com.burhanrashid52.imageeditor.tools.EditingToolsAdapter;
-import com.burhanrashid52.imageeditor.filters.FilterBSFragment;
 import com.burhanrashid52.imageeditor.tools.ToolType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
@@ -61,15 +57,17 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
-    private FilterBSFragment mFilterBSFragment;
     private CustomEffectBSFragment mCustomEffectBSFragment;
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
     private RecyclerView mRvTools, mRvFilters;
     private EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
     private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
-    private ConstraintLayout mRootView;
+    private ConstraintLayout mRootView, mFilterAttr;
+    //  private FrameLayout mFrmFilterContainer;
     private ConstraintSet mConstraintSet = new ConstraintSet();
+    private boolean mIsFilterVisible;
+    private boolean mIsFilterAttrVisible;
 
 
     @Override
@@ -88,8 +86,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mStickerBSFragment.setStickerListener(this);
         mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
-        mFilterBSFragment = new FilterBSFragment();
-        mFilterBSFragment.setFilterListener(this);
         mCustomEffectBSFragment = new CustomEffectBSFragment();
 
 
@@ -125,6 +121,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             }
         });
 
+       /* getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.filterContainer, new FilterFragment(), FilterFragment.TAG)
+                .commit();*/
+
 
         //Set Image Dynamically
         // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
@@ -143,6 +144,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mRvTools = findViewById(R.id.rvConstraintTools);
         mRvFilters = findViewById(R.id.rvFilterView);
         mRootView = findViewById(R.id.rootView);
+        mFilterAttr = findViewById(R.id.constraintFilter);
+        //    mFrmFilterContainer = findViewById(R.id.filterContainer);
 
         imgUndo = findViewById(R.id.imgUndo);
         imgUndo.setOnClickListener(this);
@@ -214,11 +217,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
 
             case R.id.imgClose:
-                if (!mPhotoEditor.isCacheEmpty()) {
-                    showSaveDialog();
-                } else {
-                    finish();
-                }
+                onBackPressed();
                 break;
 
             case R.id.imgCamera:
@@ -260,6 +259,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 });
             } catch (IOException e) {
                 e.printStackTrace();
+                hideLoading();
+                showSnackbar(e.getMessage());
             }
         }
     }
@@ -354,7 +355,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
         mPhotoEditor.setFilterEffect(photoFilter);
-        showFilter(false);
+        showFilterAttributes(!mIsFilterAttrVisible);
     }
 
     @Override
@@ -381,12 +382,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
             case FILTER:
                 mTxtCurrentTool.setText(R.string.label_filter);
-                mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
-                break;
-            case ADJUST:
-                mTxtCurrentTool.setText(R.string.label_adjust);
                 showFilter(true);
-                //  mCustomEffectBSFragment.show(getSupportFragmentManager(), mCustomEffectBSFragment.getTag());
+                //mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
                 break;
             case EMOJI:
                 mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
@@ -399,37 +396,61 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
 
     void showFilter(boolean isVisible) {
+        mIsFilterVisible = isVisible;
         mConstraintSet.clone(mRootView);
-    //    ImageView imgClose = findViewById(R.id.imgClose);
-    //    ImageView imgCamera = findViewById(R.id.imgCamera);
-    //    ImageView imgUndo = findViewById(R.id.imgUndo);
-    //    Guideline guideline = findViewById(R.id.guideline);
+
         if (isVisible) {
-
             mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.START);
-            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
-            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
-
-          /*  mConstraintSet.connect(imgClose.getId(), ConstraintSet.BOTTOM, mRvTools.getId(), ConstraintSet.TOP);
-            mConstraintSet.connect(imgClose.getId(), ConstraintSet.START, imgCamera.getId(), ConstraintSet.END);
-            mConstraintSet.connect(imgClose.getId(), ConstraintSet.END, imgUndo.getId(), ConstraintSet.START);
-            mConstraintSet.clear(imgClose.getId(), ConstraintSet.TOP);*/
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.END,
+                    ConstraintSet.PARENT_ID, ConstraintSet.END);
         } else {
-            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.END);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.END);
             mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.END);
-
-            /*mConstraintSet.connect(imgClose.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
-            mConstraintSet.connect(imgClose.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
-            mConstraintSet.connect(imgClose.getId(), ConstraintSet.TOP, guideline.getId(), ConstraintSet.BOTTOM);
-            mConstraintSet.clear(imgClose.getId(), ConstraintSet.END);*/
         }
 
         ChangeBounds changeBounds = new ChangeBounds();
         changeBounds.setDuration(350);
         changeBounds.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
-
         TransitionManager.beginDelayedTransition(mRootView, changeBounds);
 
         mConstraintSet.applyTo(mRootView);
+        if (!isVisible) {
+            showFilterAttributes(false);
+        }
+    }
+
+    void showFilterAttributes(boolean isVisible) {
+        mIsFilterAttrVisible = isVisible;
+        mConstraintSet.clone(mRootView);
+        if (isVisible) {
+            mConstraintSet.clear(mFilterAttr.getId(), ConstraintSet.TOP);
+            mConstraintSet.connect(mFilterAttr.getId(), ConstraintSet.BOTTOM,
+                    mRvTools.getId(), ConstraintSet.TOP);
+        } else {
+            mConstraintSet.clear(mFilterAttr.getId(), ConstraintSet.BOTTOM);
+            mConstraintSet.connect(mFilterAttr.getId(), ConstraintSet.TOP,
+                    mRvTools.getId(), ConstraintSet.TOP);
+        }
+
+        ChangeBounds changeBounds = new ChangeBounds();
+        changeBounds.setDuration(350);
+        changeBounds.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
+        TransitionManager.beginDelayedTransition(mRootView, changeBounds);
+
+        mConstraintSet.applyTo(mRootView);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mIsFilterVisible) {
+            showFilter(false);
+        } else if (!mPhotoEditor.isCacheEmpty()) {
+            showSaveDialog();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
