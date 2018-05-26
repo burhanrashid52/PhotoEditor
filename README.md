@@ -27,12 +27,6 @@ A Photo Editor library with simple, easy support for image editing using paints,
 
 
 
-### Change Logs
-  - **0.1.1 :**
-        Changed `app:src="@drawable/got_s"` to `app:photo_src="@drawable/got_s"` in `PhotoEditorView` 
-
-
-
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
