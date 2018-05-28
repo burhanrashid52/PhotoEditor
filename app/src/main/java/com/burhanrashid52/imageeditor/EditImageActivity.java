@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.media.effect.EffectFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.burhanrashid52.imageeditor.base.BaseActivity;
-import com.burhanrashid52.imageeditor.filters.CustomEffectBSFragment;
 import com.burhanrashid52.imageeditor.filters.FilterListener;
 import com.burhanrashid52.imageeditor.filters.FilterViewAdapter;
 import com.burhanrashid52.imageeditor.tools.EditingToolsAdapter;
@@ -35,7 +33,6 @@ import com.burhanrashid52.imageeditor.tools.ToolType;
 import java.io.File;
 import java.io.IOException;
 
-import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -57,17 +54,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
-    private CustomEffectBSFragment mCustomEffectBSFragment;
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
     private RecyclerView mRvTools, mRvFilters;
     private EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
     private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
-    private ConstraintLayout mRootView, mFilterAttr;
-    //  private FrameLayout mFrmFilterContainer;
+    private ConstraintLayout mRootView;
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
-    private boolean mIsFilterAttrVisible;
 
 
     @Override
@@ -86,8 +80,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mStickerBSFragment.setStickerListener(this);
         mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
-        mCustomEffectBSFragment = new CustomEffectBSFragment();
-
 
         LinearLayoutManager llmTools = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRvTools.setLayoutManager(llmTools);
@@ -109,24 +101,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         mPhotoEditor.setOnPhotoEditorListener(this);
 
-        mCustomEffectBSFragment.setPropertiesChangeListener(new CustomEffectBSFragment.Properties() {
-
-            @Override
-            public void onOpacityChanged(int opacity) {
-                float brightness = (float) (opacity / 100.0);
-                CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_BRIGHTNESS)
-                        .setParameter("brightness", brightness)
-                        .build();
-                mPhotoEditor.setFilterEffect(customEffect);
-            }
-        });
-
-       /* getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.filterContainer, new FilterFragment(), FilterFragment.TAG)
-                .commit();*/
-
-
         //Set Image Dynamically
         // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
     }
@@ -144,8 +118,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mRvTools = findViewById(R.id.rvConstraintTools);
         mRvFilters = findViewById(R.id.rvFilterView);
         mRootView = findViewById(R.id.rootView);
-        mFilterAttr = findViewById(R.id.constraintFilter);
-        //    mFrmFilterContainer = findViewById(R.id.filterContainer);
 
         imgUndo = findViewById(R.id.imgUndo);
         imgUndo.setOnClickListener(this);
@@ -355,7 +327,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
         mPhotoEditor.setFilterEffect(photoFilter);
-        showFilterAttributes(!mIsFilterAttrVisible);
     }
 
     @Override
@@ -383,7 +354,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case FILTER:
                 mTxtCurrentTool.setText(R.string.label_filter);
                 showFilter(true);
-                //mFilterBSFragment.show(getSupportFragmentManager(), mFilterBSFragment.getTag());
                 break;
             case EMOJI:
                 mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
@@ -417,36 +387,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         TransitionManager.beginDelayedTransition(mRootView, changeBounds);
 
         mConstraintSet.applyTo(mRootView);
-        if (!isVisible) {
-            showFilterAttributes(false);
-        }
-    }
-
-    void showFilterAttributes(boolean isVisible) {
-        mIsFilterAttrVisible = isVisible;
-        mConstraintSet.clone(mRootView);
-        if (isVisible) {
-            mConstraintSet.clear(mFilterAttr.getId(), ConstraintSet.TOP);
-            mConstraintSet.connect(mFilterAttr.getId(), ConstraintSet.BOTTOM,
-                    mRvTools.getId(), ConstraintSet.TOP);
-        } else {
-            mConstraintSet.clear(mFilterAttr.getId(), ConstraintSet.BOTTOM);
-            mConstraintSet.connect(mFilterAttr.getId(), ConstraintSet.TOP,
-                    mRvTools.getId(), ConstraintSet.TOP);
-        }
-
-        ChangeBounds changeBounds = new ChangeBounds();
-        changeBounds.setDuration(350);
-        changeBounds.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
-        TransitionManager.beginDelayedTransition(mRootView, changeBounds);
-
-        mConstraintSet.applyTo(mRootView);
     }
 
     @Override
     public void onBackPressed() {
         if (mIsFilterVisible) {
             showFilter(false);
+            mTxtCurrentTool.setText(R.string.app_name);
         } else if (!mPhotoEditor.isCacheEmpty()) {
             showSaveDialog();
         } else {

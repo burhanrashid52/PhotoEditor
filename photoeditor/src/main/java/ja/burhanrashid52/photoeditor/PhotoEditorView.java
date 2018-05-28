@@ -102,6 +102,7 @@ public class PhotoEditorView extends RelativeLayout {
         mImgSource.setOnImageChangedListener(new FilterImageView.OnImageChangedListener() {
             @Override
             public void onBitmapLoaded(@Nullable Bitmap sourceBitmap) {
+                mImageFilterView.setFilterEffect(PhotoFilter.NONE);
                 mImageFilterView.setSourceBitmap(sourceBitmap);
                 Log.d(TAG, "onBitmapLoaded() called with: sourceBitmap = [" + sourceBitmap + "]");
             }

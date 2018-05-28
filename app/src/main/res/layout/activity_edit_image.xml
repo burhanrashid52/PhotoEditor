@@ -78,15 +78,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
-    <include
-        android:id="@+id/constraintFilter"
-        layout="@layout/layout_filter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rvConstraintTools" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvConstraintTools"
         android:layout_width="0dp"

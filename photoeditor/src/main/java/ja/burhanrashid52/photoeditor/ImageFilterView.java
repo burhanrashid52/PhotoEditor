@@ -66,7 +66,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     void setSourceBitmap(Bitmap sourceBitmap) {
         if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
-            mCurrentEffect = NONE;
+            //mCurrentEffect = NONE;
         }
         mSourceBitmap = sourceBitmap;
         mInitialized = false;
@@ -94,7 +94,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
             loadTextures();
             mInitialized = true;
         }
-        if (mCurrentEffect != NONE) {
+        if (mCurrentEffect != NONE || mCustomEffect != null) {
             //if an effect is chosen initialize it and apply it to the texture
             initEffect();
             applyEffect();
@@ -264,7 +264,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
     private void renderResult() {
-        if (mCurrentEffect != NONE) {
+        if (mCurrentEffect != NONE || mCustomEffect != null) {
             // if no effect is chosen, just render the original bitmap
             mTexRenderer.renderTexture(mTextures[1]);
         } else {
