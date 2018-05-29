@@ -199,7 +199,7 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
    You need provide a file with callback method when edited image is saved
    
    ```
-    mPhotoEditor.saveImage(filePath, new PhotoEditor.OnSaveListener() {
+    mPhotoEditor.saveAsFile(filePath, new PhotoEditor.OnSaveListener() {
                     @Override
                     public void onSuccess(@NonNull String imagePath) {
                        Log.e("PhotoEditor","Image Saved Successfully");
@@ -211,6 +211,7 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
                     }
                 });
 ```
+For more detail go to wiki
     
 ## How to contribute?
 * Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
