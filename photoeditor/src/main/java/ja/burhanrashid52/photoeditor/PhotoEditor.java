@@ -576,6 +576,9 @@ public class PhotoEditor implements BrushViewChangeListener {
 
 
     /**
+     * @param imagePath      path on which image to be saved
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
      * @deprecated Use {@link #saveAsFile(String, OnSaveListener)} instead
      */
     @SuppressLint("StaticFieldLeak")
