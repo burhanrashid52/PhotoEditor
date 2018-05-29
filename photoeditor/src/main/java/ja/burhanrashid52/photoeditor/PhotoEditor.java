@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -41,10 +40,10 @@ import java.util.List;
  */
 public class PhotoEditor implements BrushViewChangeListener {
 
-    private static final String TAG = PhotoEditor.class.getSimpleName();
+    private static final String TAG = "PhotoEditor";
     private final LayoutInflater mLayoutInflater;
     private Context context;
-    private RelativeLayout parentView;
+    private PhotoEditorView parentView;
     private ImageView imageView;
     private View deleteView;
     private BrushDrawingView brushDrawingView;
@@ -202,7 +201,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
      * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
      *
-     * @param emojiName
+     * @param emojiName unicode in form of string to display emoji
      */
     public void addEmoji(String emojiName) {
         addEmoji(null, emojiName);
@@ -538,6 +537,24 @@ public class PhotoEditor implements BrushViewChangeListener {
     }
 
     /**
+     * Setup of custom effect using effect type and set parameters values
+     *
+     * @param customEffect {@link CustomEffect.Builder#setParameter(String, Object)}
+     */
+    public void setFilterEffect(CustomEffect customEffect) {
+        parentView.setFilterEffect(customEffect);
+    }
+
+    /**
+     * Set pre-define filter available
+     *
+     * @param filterType type of filter want to apply {@link PhotoEditor}
+     */
+    public void setFilterEffect(PhotoFilter filterType) {
+        parentView.setFilterEffect(filterType);
+    }
+
+    /**
      * A callback to save the edited image asynchronously
      */
     public interface OnSaveListener {
@@ -557,15 +574,16 @@ public class PhotoEditor implements BrushViewChangeListener {
         void onFailure(@NonNull Exception exception);
     }
 
+
     /**
-     * Save the edited image on given path
-     *
      * @param imagePath      path on which image to be saved
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
+     * @deprecated Use {@link #saveAsFile(String, OnSaveListener)} instead
      */
     @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @Deprecated
     public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         new AsyncTask<String, String, Exception>() {
@@ -586,7 +604,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     FileOutputStream out = new FileOutputStream(file, false);
                     if (parentView != null) {
                         parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = parentView.getDrawingCache();
+                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
                         drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                     }
                     out.flush();
@@ -614,24 +632,133 @@ public class PhotoEditor implements BrushViewChangeListener {
         }.execute();
     }
 
-    private boolean isSDCARDMounted() {
-        String status = Environment.getExternalStorageState();
-        return status.equals(Environment.MEDIA_MOUNTED);
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        Log.d(TAG, "Image Path: " + imagePath);
+        parentView.saveFilter(new OnSaveBitmap() {
+            @Override
+            public void onBitmapReady(Bitmap saveBitmap) {
+                new AsyncTask<String, String, Exception>() {
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        clearTextHelperBox();
+                        parentView.setDrawingCacheEnabled(false);
+                    }
+
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    protected Exception doInBackground(String... strings) {
+                        // Create a media file name
+                        File file = new File(imagePath);
+                        try {
+                            FileOutputStream out = new FileOutputStream(file, false);
+                            if (parentView != null) {
+                                parentView.setDrawingCacheEnabled(true);
+                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            }
+                            out.flush();
+                            out.close();
+                            Log.d(TAG, "Filed Saved Successfully");
+                            return null;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "Failed to save File");
+                            return e;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Exception e) {
+                        super.onPostExecute(e);
+                        if (e == null) {
+                            clearAllViews();
+                            onSaveListener.onSuccess(imagePath);
+                        } else {
+                            onSaveListener.onFailure(e);
+                        }
+                    }
+
+                }.execute();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+    }
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param onSaveBitmap callback for saving image as bitmap
+     * @see OnSaveBitmap
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
+        parentView.saveFilter(new OnSaveBitmap() {
+            @Override
+            public void onBitmapReady(Bitmap saveBitmap) {
+                new AsyncTask<String, String, Bitmap>() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        clearTextHelperBox();
+                        parentView.setDrawingCacheEnabled(false);
+                    }
+
+                    @Override
+                    protected Bitmap doInBackground(String... strings) {
+                        if (parentView != null) {
+                            parentView.setDrawingCacheEnabled(true);
+                            return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Bitmap bitmap) {
+                        super.onPostExecute(bitmap);
+                        if (bitmap != null) {
+                            clearAllViews();
+                            onSaveBitmap.onBitmapReady(bitmap);
+                        } else {
+                            onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
+                        }
+                    }
+
+                }.execute();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 
     private static String convertEmoji(String emoji) {
         String returnedEmoji;
         try {
             int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
-            returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
+            returnedEmoji = new String(Character.toChars(convertEmojiToInt));
         } catch (NumberFormatException e) {
             returnedEmoji = "";
         }
         return returnedEmoji;
-    }
-
-    private static String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 
     /**
@@ -692,13 +819,14 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
     }
 
+
     /**
      * Builder pattern to define {@link PhotoEditor} Instance
      */
     public static class Builder {
 
         private Context context;
-        private RelativeLayout parentView;
+        private PhotoEditorView parentView;
         private ImageView imageView;
         private View deleteView;
         private BrushDrawingView brushDrawingView;
@@ -756,11 +884,6 @@ public class PhotoEditor implements BrushViewChangeListener {
          */
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
-            return this;
-        }
-
-        Builder setBrushDrawingView(BrushDrawingView brushDrawingView) {
-            this.brushDrawingView = brushDrawingView;
             return this;
         }
 

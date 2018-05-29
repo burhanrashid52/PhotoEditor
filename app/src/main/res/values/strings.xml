@@ -5,4 +5,6 @@
     <string name="label_sticker">Sticker</string>
     <string name="label_eraser">Eraser</string>
     <string name="label_text">Text</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_adjust">Adjust</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.imageeditor.base;
 
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
@@ -51,7 +51,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    void showLoading(@NonNull String message) {
+    protected void showLoading(@NonNull String message) {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage(message);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -59,13 +59,13 @@ public class BaseActivity extends AppCompatActivity {
         mProgressDialog.show();
     }
 
-    void hideLoading() {
+    protected void hideLoading() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
     }
 
-    void showSnackbar(@NonNull String message) {
+    protected void showSnackbar(@NonNull String message) {
         View view = findViewById(android.R.id.content);
         if (view != null) {
             Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
