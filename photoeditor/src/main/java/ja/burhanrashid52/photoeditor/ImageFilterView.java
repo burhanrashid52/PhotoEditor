@@ -65,9 +65,9 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
     void setSourceBitmap(Bitmap sourceBitmap) {
-        if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
+       /* if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
             //mCurrentEffect = NONE;
-        }
+        }*/
         mSourceBitmap = sourceBitmap;
         mInitialized = false;
     }
