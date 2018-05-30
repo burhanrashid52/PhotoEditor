@@ -10,7 +10,7 @@ A Photo Editor library with simple, easy support for image editing using paints,
 ## Features
 
 - [**Drawing**](#drawing) on image with option to change its Brush's Color,Size,Opacity and Erasing.
-- Apply [**Filter**](#filter) on image using MediaEffect
+- Apply [**Filter Effect**](#filter-effect) on image using MediaEffect
 - Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
 - Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
 - Adding [**Images/Stickers**](#adding-imagesstickers)
@@ -102,14 +102,14 @@ We can customize our brush and paint with diffrent set of property.To start draw
 
 
 
-## Filter
-You can apply inbuild filter to the sourc images using 
+## Filter Effect
+You can apply inbuild filter to the source images using 
 
  `mPhotoEditor.setFilterEffect(PhotoFilter.BRIGHTNESS);`
 
 ![](https://i.imgur.com/xXTGcVC.gif)
 
-You can also apply custom effect using `Custom.Builder` paramater
+You can also apply custom effect using `Custom.Builder`
 
 For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoEditor/wiki/Filter)
 
