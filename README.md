@@ -111,7 +111,7 @@ You can apply inbuild filter to the source images using
 
 You can also apply custom effect using `Custom.Builder`
 
-For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoEditor/wiki/Filter)
+For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoEditor/wiki/Filter-Effect)
 
 
 
