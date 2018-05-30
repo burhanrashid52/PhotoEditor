@@ -111,13 +111,7 @@ You can apply inbuild filter to the sourc images using
 
 You can also apply custom effect using `Custom.Builder` paramater
 
-```
-CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_BRIGHTNESS)
-                .setParameter("brightness", 0.5f)
-                .build();
-mPhotoEditor.setFilterEffect(customEffect);
-```
-For more details go to wiki
+For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoEditor/wiki/Filter)
 
 
 
@@ -205,7 +199,7 @@ It will take default fonts provided in the builder,If you want diffrent Emoji fo
                     }
                 });
 ```
-For more detail go to wiki
+For more detail check [Saving](https://github.com/burhanrashid52/PhotoEditor/wiki/Saving)
     
 ## How to contribute?
 * Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
