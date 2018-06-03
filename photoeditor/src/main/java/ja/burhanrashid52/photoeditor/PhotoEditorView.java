@@ -136,20 +136,24 @@ public class PhotoEditorView extends RelativeLayout {
 
 
     void saveFilter(@NonNull final OnSaveBitmap onSaveBitmap) {
-        mImageFilterView.saveBitmap(new OnSaveBitmap() {
-            @Override
-            public void onBitmapReady(final Bitmap saveBitmap) {
-                Log.e(TAG, "saveFilter: " + saveBitmap);
-                mImgSource.setImageBitmap(saveBitmap);
-                mImageFilterView.setVisibility(GONE);
-                onSaveBitmap.onBitmapReady(saveBitmap);
-            }
+        if (mImageFilterView.getVisibility() == VISIBLE) {
+            mImageFilterView.saveBitmap(new OnSaveBitmap() {
+                @Override
+                public void onBitmapReady(final Bitmap saveBitmap) {
+                    Log.e(TAG, "saveFilter: " + saveBitmap);
+                    mImgSource.setImageBitmap(saveBitmap);
+                    mImageFilterView.setVisibility(GONE);
+                    onSaveBitmap.onBitmapReady(saveBitmap);
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                onSaveBitmap.onFailure(e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    onSaveBitmap.onFailure(e);
+                }
+            });
+        } else {
+            onSaveBitmap.onBitmapReady(mImgSource.getBitmap());
+        }
 
 
     }

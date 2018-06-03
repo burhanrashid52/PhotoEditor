@@ -123,7 +123,7 @@ class FilterImageView extends AppCompatImageView {
         }
     }
 
-    private Bitmap getBitmap() {
+    Bitmap getBitmap() {
         return ((BitmapDrawable) getDrawable()).getBitmap();
     }
 }
