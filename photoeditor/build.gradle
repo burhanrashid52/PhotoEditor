@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
     gitUrl = 'https://github.com/burhanrashid52/PhotoEditor'
 
-    libraryVersion = '0.2.0'
+    libraryVersion = '0.2.1'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'
