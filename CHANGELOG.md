@@ -16,3 +16,6 @@ mPhotoEditor.setFilterEffect(customEffect);
 - Change : `saveImage(String, OnSaveListener)` is deprecated use `saveAsFile(String, OnSaveListener)`
 - New : You can save image as bitmap by using `saveAsBitmap(String, OnSaveListener)`
 - Fixed : save image without transparency #35
+
+## 0.2.1
+- Fixed: Image not saving #40
