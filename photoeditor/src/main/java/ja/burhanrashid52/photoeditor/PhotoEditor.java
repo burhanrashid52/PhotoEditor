@@ -4,14 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.annotation.ColorInt;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresPermission;
-import android.support.annotation.UiThread;
+import android.support.annotation.*;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -649,11 +645,16 @@ public class PhotoEditor implements BrushViewChangeListener {
             public void onBitmapReady(Bitmap saveBitmap) {
                 new AsyncTask<String, String, Exception>() {
 
+                    private int height;
+                    private int width;
+
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
                         clearTextHelperBox();
-                        parentView.setDrawingCacheEnabled(false);
+//                        parentView.setDrawingCacheEnabled(false);
+                        width = parentView.getWidth();
+                        height = parentView.getHeight();
                     }
 
                     @SuppressLint("MissingPermission")
@@ -664,17 +665,26 @@ public class PhotoEditor implements BrushViewChangeListener {
                         try {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
-                                parentView.setDrawingCacheEnabled(true);
-                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+//                                parentView.setDrawingCacheEnabled(true);
+//                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                                Bitmap drawingCache = Bitmap.createBitmap( width, height, Bitmap.Config.ARGB_8888 );
+                                Canvas canvas = new Canvas( drawingCache );
+                                parentView.draw( canvas );
+
                                 drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                             }
                             out.flush();
                             out.close();
                             Log.d(TAG, "Filed Saved Successfully");
+
+                            // trigger media scan
+                            Log.d(TAG, "Trigger media scan");
+                            MediaScannerWrapper mediaScannerWrapper = new MediaScannerWrapper( context.getApplicationContext(), imagePath, "image/png" );
+                            mediaScannerWrapper.scan();
+
                             return null;
                         } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.d(TAG, "Failed to save File");
+                            Log.e(TAG, "Failed to save File", e);
                             return e;
                         }
                     }
@@ -683,6 +693,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Exception e) {
                         super.onPostExecute(e);
                         if (e == null) {
+                            parentView.invalidate();
                             clearAllViews();
                             onSaveListener.onSuccess(imagePath);
                         } else {
