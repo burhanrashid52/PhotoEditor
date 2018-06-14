@@ -552,13 +552,15 @@ public class PhotoEditor implements BrushViewChangeListener {
     private void clearTextHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null && isBorderFunctionalityEnabled) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
+            if(isBorderFunctionalityEnabled) {
+                FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
+                if (frmBorder != null) {
+                    frmBorder.setBackgroundResource(0);
+                }
+                ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
+                if (imgClose != null) {
+                    imgClose.setVisibility(View.GONE);
+                }
             }
         }
     }
