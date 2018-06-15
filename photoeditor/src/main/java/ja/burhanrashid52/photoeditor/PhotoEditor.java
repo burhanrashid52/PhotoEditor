@@ -51,6 +51,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private List<View> redoViews;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
+    private boolean shouldClickThroughTransparentPixels;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
@@ -62,6 +63,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.deleteView = builder.deleteView;
         this.brushDrawingView = builder.brushDrawingView;
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
+        this.shouldClickThroughTransparentPixels = builder.shouldClickThroughTransparentPixels;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -272,6 +274,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                 parentView,
                 this.imageView,
                 isTextPinchZoomable,
+                shouldClickThroughTransparentPixels,
                 mOnPhotoEditorListener);
 
         //multiTouchListener.setOnMultiTouchListener(this);
@@ -834,6 +837,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         private Typeface emojiTypeface;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
+        private boolean shouldClickThroughTransparentPixels = false;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -884,6 +888,17 @@ public class PhotoEditor implements BrushViewChangeListener {
          */
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
+            return this;
+        }
+
+        /**
+         * set true to disable clicking on the fully transparent parts of an image
+         *
+         * @param shouldClickThroughTransparentPixels flag to make pinch to zoom
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setClickThroughTransparentPixels(boolean shouldClickThroughTransparentPixels) {
+            this.shouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
             return this;
         }
 

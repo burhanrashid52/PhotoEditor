@@ -1,6 +1,10 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -37,12 +41,15 @@ class MultiTouchListener implements OnTouchListener {
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl mOnGestureControl;
     private boolean mIsTextPinchZoomable;
+    private boolean mShouldClickThroughTransparentPixels;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
     MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
                        ImageView photoEditImageView, boolean isTextPinchZoomable,
+                       boolean shouldClickThroughTransparentPixels,
                        OnPhotoEditorListener onPhotoEditorListener) {
         mIsTextPinchZoomable = isTextPinchZoomable;
+        mShouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
         this.deleteView = deleteView;
@@ -122,8 +129,15 @@ class MultiTouchListener implements OnTouchListener {
         int x = (int) event.getRawX();
         int y = (int) event.getRawY();
 
+
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                if (mShouldClickThroughTransparentPixels) {
+                    if (isImageWithBitmapDrawable(view)) {
+                        return isOpaquePixelClicked(view, event);
+                    }
+                }
+
                 mPrevX = event.getX();
                 mPrevY = event.getY();
                 mPrevRawX = event.getRawX();
@@ -190,6 +204,46 @@ class MultiTouchListener implements OnTouchListener {
         return true;
     }
 
+    /**
+     * @return False if the click is on an fully transparent pixel, true otherwise.
+     */
+    private boolean isOpaquePixelClicked(View view, MotionEvent event) {
+        ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+
+        float eventX = event.getX();
+        float eventY = event.getY();
+        float[] eventXY = new float[]{eventX, eventY};
+
+        Matrix invertMatrix = new Matrix();
+        ((ImageView) image).getImageMatrix().invert(invertMatrix);
+
+        invertMatrix.mapPoints(eventXY);
+        int xX = (int) eventXY[0];
+        int yY = (int) eventXY[1];
+
+        //Limit x, y range within bitmap
+        if (xX < 0) {
+            xX = 0;
+        } else if (xX > bitmap.getWidth() - 1) {
+            xX = bitmap.getWidth() - 1;
+        }
+
+        if (yY < 0) {
+            yY = 0;
+        } else if (yY > bitmap.getHeight() - 1) {
+            yY = bitmap.getHeight() - 1;
+        }
+
+        int pixelRGB = bitmap.getPixel(xX, yY);
+
+        if (Color.alpha(pixelRGB) == 0 /* 100% transparent. No opacity */) {
+            return false;
+        }
+
+        return true;
+    }
+
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
         if (view instanceof TextView) {
             if (onMultiTouchListener != null) {
@@ -222,6 +276,10 @@ class MultiTouchListener implements OnTouchListener {
         view.getLocationOnScreen(location);
         outRect.offset(location[0], location[1]);
         return outRect.contains(x, y);
+    }
+
+    private boolean isImageWithBitmapDrawable(View view){
+        return view.findViewById(R.id.imgPhotoEditorImage) != null && ((BitmapDrawable) ((ImageView)view.findViewById(R.id.imgPhotoEditorImage)).getDrawable()).getBitmap() != null;
     }
 
     void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
