@@ -52,6 +52,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
     private boolean shouldClickThroughTransparentPixels;
+    private boolean isBorderFunctionalityEnabled;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
@@ -64,6 +65,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.brushDrawingView = builder.brushDrawingView;
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.shouldClickThroughTransparentPixels = builder.shouldClickThroughTransparentPixels;
+        this.isBorderFunctionalityEnabled = builder.isBorderFunctionalityEnabled;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -90,10 +92,12 @@ public class PhotoEditor implements BrushViewChangeListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                if (isBorderFunctionalityEnabled) {
+                    boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                    frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                    imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                    frmBorder.setTag(!isBackgroundVisible);
+                }
             }
 
             @Override
@@ -101,6 +105,12 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             }
         });
+
+        if (!isBorderFunctionalityEnabled) {
+            imgClose.setVisibility(View.GONE);
+            frmBorder.setBackgroundResource(0);
+            frmBorder.setTag(false);
+        }
 
         imageRootView.setOnTouchListener(multiTouchListener);
 
@@ -145,10 +155,12 @@ public class PhotoEditor implements BrushViewChangeListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                if (isBorderFunctionalityEnabled) {
+                    boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                    frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                    imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                    frmBorder.setTag(!isBackgroundVisible);
+                }
             }
 
             @Override
@@ -160,6 +172,12 @@ public class PhotoEditor implements BrushViewChangeListener {
                 }
             }
         });
+
+        if (!isBorderFunctionalityEnabled) {
+            imgClose.setVisibility(View.GONE);
+            frmBorder.setBackgroundResource(0);
+            frmBorder.setTag(false);
+        }
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
@@ -232,16 +250,25 @@ public class PhotoEditor implements BrushViewChangeListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                if (isBorderFunctionalityEnabled) {
+                    boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                    frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                    imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                    frmBorder.setTag(!isBackgroundVisible);
+                }
             }
 
             @Override
             public void onLongClick() {
             }
         });
+
+        if (!isBorderFunctionalityEnabled) {
+            imgClose.setVisibility(View.GONE);
+            frmBorder.setBackgroundResource(0);
+            frmBorder.setTag(false);
+        }
+
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
     }
@@ -528,13 +555,15 @@ public class PhotoEditor implements BrushViewChangeListener {
     private void clearTextHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
+            if(isBorderFunctionalityEnabled) {
+                FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
+                if (frmBorder != null) {
+                    frmBorder.setBackgroundResource(0);
+                }
+                ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
+                if (imgClose != null) {
+                    imgClose.setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -837,6 +866,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         private Typeface emojiTypeface;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
+        private boolean isBorderFunctionalityEnabled = true;
         private boolean shouldClickThroughTransparentPixels = false;
 
         /**
@@ -888,6 +918,17 @@ public class PhotoEditor implements BrushViewChangeListener {
          */
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
+            return this;
+        }
+
+        /**
+         * set false to disable the background border and close button
+         *
+         * @param isBorderFunctionalityEnabled flag to make pinch to zoom
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setBorderFunctionalityEnabled(boolean isBorderFunctionalityEnabled) {
+            this.isBorderFunctionalityEnabled = isBorderFunctionalityEnabled;
             return this;
         }
 
