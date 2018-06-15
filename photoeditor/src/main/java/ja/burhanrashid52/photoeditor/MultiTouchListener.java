@@ -129,12 +129,13 @@ class MultiTouchListener implements OnTouchListener {
         int x = (int) event.getRawX();
         int y = (int) event.getRawY();
 
-
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (mShouldClickThroughTransparentPixels) {
                     if (isImageWithBitmapDrawable(view)) {
-                        return isOpaquePixelClicked(view, event);
+                        if(isTransparentPixelClicked(view, event)){
+                            return false;
+                        }
                     }
                 }
 
@@ -207,7 +208,7 @@ class MultiTouchListener implements OnTouchListener {
     /**
      * @return False if the click is on an fully transparent pixel, true otherwise.
      */
-    private boolean isOpaquePixelClicked(View view, MotionEvent event) {
+    private boolean isTransparentPixelClicked(View view, MotionEvent event) {
         ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
 
@@ -238,10 +239,10 @@ class MultiTouchListener implements OnTouchListener {
         int pixelRGB = bitmap.getPixel(xX, yY);
 
         if (Color.alpha(pixelRGB) == 0 /* 100% transparent. No opacity */) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
