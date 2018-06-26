@@ -53,6 +53,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     private boolean isTextPinchZoomable;
     private boolean shouldClickThroughTransparentPixels;
     private boolean isBorderFunctionalityEnabled;
+    private int transparentPixelsClickThroughRadius;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
@@ -65,6 +66,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         this.brushDrawingView = builder.brushDrawingView;
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.shouldClickThroughTransparentPixels = builder.shouldClickThroughTransparentPixels;
+        this.transparentPixelsClickThroughRadius = builder.transparentPixelsClickThroughRadius;
         this.isBorderFunctionalityEnabled = builder.isBorderFunctionalityEnabled;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
@@ -305,6 +307,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                 this.imageView,
                 isTextPinchZoomable,
                 shouldClickThroughTransparentPixels,
+                transparentPixelsClickThroughRadius,
                 mOnPhotoEditorListener);
 
         //multiTouchListener.setOnMultiTouchListener(this);
@@ -881,6 +884,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         private boolean isTextPinchZoomable = true;
         private boolean isBorderFunctionalityEnabled = true;
         private boolean shouldClickThroughTransparentPixels = false;
+        private int transparentPixelsClickThroughRadius = 0;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -954,11 +958,29 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         /**
          * set true to disable clicking on the fully transparent parts of an image
          *
-         * @param shouldClickThroughTransparentPixels flag to make pinch to zoom
+         * @param shouldClickThroughTransparentPixels flag to enable clickThrough on transparent pixels
          * @return {@link Builder} instant to build {@link PhotoEditor}
          */
         public Builder setClickThroughTransparentPixels(boolean shouldClickThroughTransparentPixels) {
             this.shouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
+            return this;
+        }
+
+        /**
+         * set the radius for witch the isTransparentPixelClicked method checks nearby pixels for transparency
+         *
+         * Radius is defined in Pixels around click location
+         *
+         * This is used to get a larger hit radius but still keep clickThrough on transparent pixels with only transparent pixels nearby
+         * (e.g. if struggling to target some images that has a lot of transparency inside them then increasing the radius will help)
+         *
+         * NB! Radius has to be larger than zero
+         *
+         * @param transparentPixelsClickThroughRadius value for click through radius
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setTransparentPixelClickThroughRadius(int transparentPixelsClickThroughRadius) {
+            this.transparentPixelsClickThroughRadius = transparentPixelsClickThroughRadius >= 0 ? transparentPixelsClickThroughRadius : 0;
             return this;
         }
 
