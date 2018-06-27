@@ -5,6 +5,7 @@
  [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
  [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-pink.svg)](https://android.libhunt.com/newsletter/97)
 [![AndroidWeekly](https://img.shields.io/badge/Android%20Weekly-%23312-blue.svg)](http://androidweekly.net/issues/issue-312)
+[![Mindorks](https://img.shields.io/badge/Mindorks%20Newsletter-%234-ff69b4.svg)](https://mindorks.com/newsletter/edition/4)
 
 A Photo Editor library with simple, easy support for image editing using paints,text,emoji and Sticker like stories.
 
