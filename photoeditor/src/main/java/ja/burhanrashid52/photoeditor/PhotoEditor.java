@@ -38,7 +38,7 @@ import java.util.List;
  * @version 0.1.1
  * @since 18/01/2017
  */
-public class PhotoEditor implements BrushViewChangeListener {
+public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.OnMultiTouchListener {
 
     private static final String TAG = "PhotoEditor";
     private final LayoutInflater mLayoutInflater;
@@ -51,6 +51,9 @@ public class PhotoEditor implements BrushViewChangeListener {
     private List<View> redoViews;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
+    private boolean shouldClickThroughTransparentPixels;
+    private boolean isBorderFunctionalityEnabled;
+    private int transparentPixelsClickThroughRadius;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
@@ -62,6 +65,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.deleteView = builder.deleteView;
         this.brushDrawingView = builder.brushDrawingView;
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
+        this.shouldClickThroughTransparentPixels = builder.shouldClickThroughTransparentPixels;
+        this.transparentPixelsClickThroughRadius = builder.transparentPixelsClickThroughRadius;
+        this.isBorderFunctionalityEnabled = builder.isBorderFunctionalityEnabled;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -85,13 +91,16 @@ public class PhotoEditor implements BrushViewChangeListener {
         imageView.setImageBitmap(desiredImage);
 
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnMultiTouchListener(this);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                if (isBorderFunctionalityEnabled) {
+                    boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                    frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                    imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                    frmBorder.setTag(!isBackgroundVisible);
+                }
             }
 
             @Override
@@ -99,6 +108,12 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             }
         });
+
+        if (!isBorderFunctionalityEnabled) {
+            imgClose.setVisibility(View.GONE);
+            frmBorder.setBackgroundResource(0);
+            frmBorder.setTag(false);
+        }
 
         imageRootView.setOnTouchListener(multiTouchListener);
 
@@ -140,13 +155,16 @@ public class PhotoEditor implements BrushViewChangeListener {
             textInputTv.setTypeface(textTypeface);
         }
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnMultiTouchListener(this);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                if (isBorderFunctionalityEnabled) {
+                    boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                    frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                    imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                    frmBorder.setTag(!isBackgroundVisible);
+                }
             }
 
             @Override
@@ -158,6 +176,12 @@ public class PhotoEditor implements BrushViewChangeListener {
                 }
             }
         });
+
+        if (!isBorderFunctionalityEnabled) {
+            imgClose.setVisibility(View.GONE);
+            frmBorder.setBackgroundResource(0);
+            frmBorder.setTag(false);
+        }
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
@@ -227,19 +251,29 @@ public class PhotoEditor implements BrushViewChangeListener {
         emojiTextView.setTextSize(56);
         emojiTextView.setText(emojiName);
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnMultiTouchListener(this);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                if (isBorderFunctionalityEnabled) {
+                    boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                    frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                    imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                    frmBorder.setTag(!isBackgroundVisible);
+                }
             }
 
             @Override
             public void onLongClick() {
             }
         });
+
+        if (!isBorderFunctionalityEnabled) {
+            imgClose.setVisibility(View.GONE);
+            frmBorder.setBackgroundResource(0);
+            frmBorder.setTag(false);
+        }
+
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
     }
@@ -272,6 +306,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                 parentView,
                 this.imageView,
                 isTextPinchZoomable,
+                shouldClickThroughTransparentPixels,
+                transparentPixelsClickThroughRadius,
                 mOnPhotoEditorListener);
 
         //multiTouchListener.setOnMultiTouchListener(this);
@@ -525,13 +561,15 @@ public class PhotoEditor implements BrushViewChangeListener {
     private void clearTextHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
+            if(isBorderFunctionalityEnabled) {
+                FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
+                if (frmBorder != null) {
+                    frmBorder.setBackgroundResource(0);
+                }
+                ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
+                if (imgClose != null) {
+                    imgClose.setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -552,6 +590,16 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     public void setFilterEffect(PhotoFilter filterType) {
         parentView.setFilterEffect(filterType);
+    }
+
+    @Override
+    public void onEditTextClickListener(String text, int colorCode) {
+        //TODO: get text root view and remove it from parent and addedViews
+    }
+
+    @Override
+    public void onRemoveViewListener(View removedView) {
+        viewUndo(removedView);
     }
 
     /**
@@ -834,6 +882,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         private Typeface emojiTypeface;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
+        private boolean isBorderFunctionalityEnabled = true;
+        private boolean shouldClickThroughTransparentPixels = false;
+        private int transparentPixelsClickThroughRadius = 0;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -849,7 +900,13 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView = photoEditorView.getBrushDrawingView();
         }
 
-        Builder setDeleteView(View deleteView) {
+        /**
+         * set deleted view that will appear during the movement of the views
+         *
+         * @param deleteView
+         * @return
+         */
+        public Builder setDeleteView(View deleteView) {
             this.deleteView = deleteView;
             return this;
         }
@@ -884,6 +941,46 @@ public class PhotoEditor implements BrushViewChangeListener {
          */
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
+            return this;
+        }
+
+        /**
+         * set false to disable the background border and close button
+         *
+         * @param isBorderFunctionalityEnabled flag to make pinch to zoom
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setBorderFunctionalityEnabled(boolean isBorderFunctionalityEnabled) {
+            this.isBorderFunctionalityEnabled = isBorderFunctionalityEnabled;
+            return this;
+        }
+
+        /**
+         * set true to disable clicking on the fully transparent parts of an image
+         *
+         * @param shouldClickThroughTransparentPixels flag to enable clickThrough on transparent pixels
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setClickThroughTransparentPixels(boolean shouldClickThroughTransparentPixels) {
+            this.shouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
+            return this;
+        }
+
+        /**
+         * set the radius for witch the isTransparentPixelClicked method checks nearby pixels for transparency
+         *
+         * Radius is defined in Pixels around click location
+         *
+         * This is used to get a larger hit radius but still keep clickThrough on transparent pixels with only transparent pixels nearby
+         * (e.g. if struggling to target some images that has a lot of transparency inside them then increasing the radius will help)
+         *
+         * NB! Radius has to be larger than zero
+         *
+         * @param transparentPixelsClickThroughRadius value for click through radius
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setTransparentPixelClickThroughRadius(int transparentPixelsClickThroughRadius) {
+            this.transparentPixelsClickThroughRadius = transparentPixelsClickThroughRadius >= 0 ? transparentPixelsClickThroughRadius : 0;
             return this;
         }
 
