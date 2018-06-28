@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
+group='com.github.zedge'
+
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'photoeditor'
@@ -12,8 +14,8 @@ ext {
 
     libraryDescription = 'A Photo Editor library to edit image using paints,text,emoji and images'
 
-    siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
-    gitUrl = 'https://github.com/burhanrashid52/PhotoEditor'
+    siteUrl = 'https://github.com/zedge/PhotoEditor'
+    gitUrl = 'https://github.com/zedge/PhotoEditor'
 
     libraryVersion = '0.2.1'
 
