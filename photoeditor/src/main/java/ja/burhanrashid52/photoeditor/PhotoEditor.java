@@ -585,51 +585,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     @Deprecated
     public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
-        Log.d(TAG, "Image Path: " + imagePath);
-        new AsyncTask<String, String, Exception>() {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                clearTextHelperBox();
-                parentView.setDrawingCacheEnabled(false);
-            }
-
-            @SuppressLint("MissingPermission")
-            @Override
-            protected Exception doInBackground(String... strings) {
-                // Create a media file name
-                File file = new File(imagePath);
-                try {
-                    FileOutputStream out = new FileOutputStream(file, false);
-                    if (parentView != null) {
-                        parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    }
-                    out.flush();
-                    out.close();
-                    Log.d(TAG, "Filed Saved Successfully");
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "Failed to save File");
-                    return e;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Exception e) {
-                super.onPostExecute(e);
-                if (e == null) {
-                    clearAllViews();
-                    onSaveListener.onSuccess(imagePath);
-                } else {
-                    onSaveListener.onFailure(e);
-                }
-            }
-
-        }.execute();
+        saveAsFile(imagePath, onSaveListener);
     }
 
 
