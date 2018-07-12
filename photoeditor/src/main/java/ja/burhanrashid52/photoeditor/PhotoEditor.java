@@ -38,7 +38,7 @@ import java.util.List;
  * @version 0.1.1
  * @since 18/01/2017
  */
-public class PhotoEditor implements BrushViewChangeListener {
+public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.OnMultiTouchListener {
 
     private static final String TAG = "PhotoEditor";
     private final LayoutInflater mLayoutInflater;
@@ -85,6 +85,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         imageView.setImageBitmap(desiredImage);
 
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnMultiTouchListener(this);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -140,6 +141,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             textInputTv.setTypeface(textTypeface);
         }
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnMultiTouchListener(this);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -227,6 +229,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         emojiTextView.setTextSize(56);
         emojiTextView.setText(emojiName);
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnMultiTouchListener(this);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -554,6 +557,16 @@ public class PhotoEditor implements BrushViewChangeListener {
         parentView.setFilterEffect(filterType);
     }
 
+    @Override
+    public void onEditTextClickListener(String text, int colorCode) {
+        //TODO: get text root view and remove it from parent and addedViews
+    }
+
+    @Override
+    public void onRemoveViewListener(View removedView) {
+        viewUndo(removedView);
+    }
+
     /**
      * A callback to save the edited image asynchronously
      */
@@ -849,7 +862,13 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView = photoEditorView.getBrushDrawingView();
         }
 
-        Builder setDeleteView(View deleteView) {
+        /**
+         * set deleted view that will appear during the movement of the views
+         *
+         * @param deleteView
+         * @return
+         */
+        public Builder setDeleteView(View deleteView) {
             this.deleteView = deleteView;
             return this;
         }
