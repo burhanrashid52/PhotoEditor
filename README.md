@@ -221,6 +221,10 @@ Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrash
 ## Credits
 This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo-editor-android)
 
+## Buy a cup of coffee
+If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of ☕️
+[PayPal](https://www.paypal.me/burhanrashid52)
+
 ## License
 
 MIT License
