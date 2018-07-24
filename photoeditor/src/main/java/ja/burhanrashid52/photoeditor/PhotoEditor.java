@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -49,6 +51,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     private BrushDrawingView brushDrawingView;
     private List<View> addedViews;
     private List<View> redoViews;
+    private View lastSelectedView;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
     private boolean shouldClickThroughTransparentPixels;
@@ -290,6 +293,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(rootView, params);
         addedViews.add(rootView);
+        lastSelectedView = rootView;
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onAddViewListener(viewType, addedViews.size());
     }
@@ -492,12 +496,39 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         }
     }
 
+    @Override
+    public void onViewSelectedListener(View selectedView) {
+        lastSelectedView = selectedView;
+    }
+
+    private static Bitmap flipBitmap(Bitmap source) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(-1, 1, source.getWidth()/2, source.getHeight()/2);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    /**
+     * Flip the last added Image
+     */
+    public void flip() {
+        if (lastSelectedView != null) {
+            ImageView flipView = lastSelectedView.findViewById(R.id.imgPhotoEditorImage);
+            if (flipView != null) {
+                Bitmap bitmap = ((BitmapDrawable) flipView.getDrawable()).getBitmap();
+                Bitmap flipedBitmap = flipBitmap(bitmap);
+                flipView.setImageBitmap(flipedBitmap);
+            }
+        }
+        return;
+    }
+
     /**
      * Undo the last operation perform on the {@link PhotoEditor}
      *
      * @return true if there nothing more to undo
      */
     public boolean undo() {
+        lastSelectedView = null;
         if (addedViews.size() > 0) {
             View removeView = addedViews.get(addedViews.size() - 1);
             if (removeView instanceof BrushDrawingView) {
@@ -520,6 +551,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      * @return true if there nothing more to redo
      */
     public boolean redo() {
+        lastSelectedView = null;
         if (redoViews.size() > 0) {
             View redoView = redoViews.get(redoViews.size() - 1);
             if (redoView instanceof BrushDrawingView) {

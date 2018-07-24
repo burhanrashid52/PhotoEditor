@@ -128,6 +128,8 @@ class MultiTouchListener implements OnTouchListener {
         mScaleGestureDetector.onTouchEvent(view, event);
         mGestureListener.onTouchEvent(event);
 
+        onMultiTouchListener.onViewSelectedListener(view);
+
         if (!isTranslateEnabled) {
             return true;
         }
@@ -416,6 +418,7 @@ class MultiTouchListener implements OnTouchListener {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
             mPrevSpanVector.set(detector.getCurrentSpanVector());
+            onMultiTouchListener.onViewSelectedListener(view);
             return mIsTextPinchZoomable;
         }
 
@@ -431,6 +434,7 @@ class MultiTouchListener implements OnTouchListener {
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
             move(view, info);
+            onMultiTouchListener.onViewSelectedListener(view);
             return !mIsTextPinchZoomable;
         }
     }
@@ -448,6 +452,8 @@ class MultiTouchListener implements OnTouchListener {
 
     interface OnMultiTouchListener {
         void onEditTextClickListener(String text, int colorCode);
+
+        void onViewSelectedListener(View selectedView);
 
         void onRemoveViewListener(View removedView);
     }

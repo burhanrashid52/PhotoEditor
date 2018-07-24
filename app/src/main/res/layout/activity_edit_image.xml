@@ -27,6 +27,17 @@
         app:photo_src="@drawable/got_s" />
 
     <ImageView
+        android:id="@+id/imgFlip"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="#99000000"
+        android:padding="8dp"
+        android:src="@drawable/baseline_flip_black_24"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
+        app:layout_constraintEnd_toStartOf="@+id/imgUndo" />
+
+    <ImageView
         android:id="@+id/imgUndo"
         android:layout_width="50dp"
         android:layout_height="wrap_content"

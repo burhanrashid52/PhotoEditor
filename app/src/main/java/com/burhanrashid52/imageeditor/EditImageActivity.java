@@ -112,6 +112,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgGallery;
         ImageView imgSave;
         ImageView imgClose;
+        ImageView imgFlip;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
@@ -136,6 +137,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgClose = findViewById(R.id.imgClose);
         imgClose.setOnClickListener(this);
+
+        imgFlip = findViewById(R.id.imgFlip);
+        imgFlip.setOnClickListener(this);
 
     }
 
@@ -175,6 +179,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.imgFlip:
+                mPhotoEditor.flip();
+                break;
 
             case R.id.imgUndo:
                 mPhotoEditor.undo();
