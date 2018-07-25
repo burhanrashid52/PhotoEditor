@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -16,10 +17,12 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -119,6 +122,15 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         }
 
         imageRootView.setOnTouchListener(multiTouchListener);
+
+        Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        if (desiredImage.getWidth() < size.x / 2) {
+            float scaleFactor = size.x / 2 / desiredImage.getWidth();
+            imageRootView.setScaleX(scaleFactor);
+            imageRootView.setScaleY(scaleFactor);
+        }
 
         addViewToParent(imageRootView, ViewType.IMAGE);
 
