@@ -54,7 +54,6 @@ public class PhotoEditor implements BrushViewChangeListener {
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
-
     private PhotoEditor(Builder builder) {
         this.context = builder.context;
         this.parentView = builder.parentView;
@@ -640,10 +639,25 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        saveAsFile(imagePath, onSaveListener, null);
+    }
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     * @param flags          flags to customize the save function @see SaveOptions
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener, @Nullable Integer flags) {
         Log.d(TAG, "Image Path: " + imagePath);
+        final int saveFlags = flags == null ? 0 : flags;
+
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
@@ -665,7 +679,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
                                 parentView.setDrawingCacheEnabled(true);
-                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                                Bitmap drawingCache = ((saveFlags & SaveOptions.DISABLE_OPTIMIZATION_TRANSPARENCY) == SaveOptions.DISABLE_OPTIMIZATION_TRANSPARENCY)
+                                        ? parentView.getDrawingCache()
+                                        : BitmapUtil.removeTransparency(parentView.getDrawingCache());
                                 drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                             }
                             out.flush();
@@ -683,7 +699,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Exception e) {
                         super.onPostExecute(e);
                         if (e == null) {
-                            clearAllViews();
+                            if ((saveFlags & SaveOptions.DISABLE_CLEAR_ALL_VIEWS) != SaveOptions.DISABLE_CLEAR_ALL_VIEWS) {
+                                clearAllViews();
+                            }
                             onSaveListener.onSuccess(imagePath);
                         } else {
                             onSaveListener.onFailure(e);
@@ -695,7 +713,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveListener.onFailure(e);
             }
         });
     }
@@ -745,7 +763,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveBitmap.onFailure(e);
             }
         });
     }
