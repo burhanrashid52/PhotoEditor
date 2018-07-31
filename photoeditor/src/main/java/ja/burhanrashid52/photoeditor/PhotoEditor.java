@@ -622,7 +622,6 @@ public class PhotoEditor implements BrushViewChangeListener {
             protected void onPostExecute(Exception e) {
                 super.onPostExecute(e);
                 if (e == null) {
-                    clearAllViews();
                     onSaveListener.onSuccess(imagePath);
                 } else {
                     onSaveListener.onFailure(e);
@@ -683,7 +682,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Exception e) {
                         super.onPostExecute(e);
                         if (e == null) {
-                            clearAllViews();
                             onSaveListener.onSuccess(imagePath);
                         } else {
                             onSaveListener.onFailure(e);
@@ -733,7 +731,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Bitmap bitmap) {
                         super.onPostExecute(bitmap);
                         if (bitmap != null) {
-                            clearAllViews();
                             onSaveBitmap.onBitmapReady(bitmap);
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
