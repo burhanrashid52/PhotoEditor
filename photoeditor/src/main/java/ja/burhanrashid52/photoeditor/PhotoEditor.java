@@ -726,6 +726,20 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
+        saveAsBitmap(onSaveBitmap, null);
+    }
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param onSaveBitmap callback for saving image as bitmap
+     * @see OnSaveBitmap
+     * @param flags        flags to customize the save function @see SaveOptions
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap, @Nullable Integer flags) {
+        final int saveFlags = flags == null ? 0 : flags;
+
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
@@ -741,7 +755,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected Bitmap doInBackground(String... strings) {
                         if (parentView != null) {
                             parentView.setDrawingCacheEnabled(true);
-                            return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                            return ((saveFlags & SaveOptions.DISABLE_OPTIMIZATION_TRANSPARENCY) == SaveOptions.DISABLE_OPTIMIZATION_TRANSPARENCY)
+                                    ? parentView.getDrawingCache()
+                                    : BitmapUtil.removeTransparency(parentView.getDrawingCache());
                         } else {
                             return null;
                         }
@@ -751,7 +767,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Bitmap bitmap) {
                         super.onPostExecute(bitmap);
                         if (bitmap != null) {
-                            clearAllViews();
+                            if ((saveFlags & SaveOptions.DISABLE_CLEAR_ALL_VIEWS) != SaveOptions.DISABLE_CLEAR_ALL_VIEWS) {
+                                clearAllViews();
+                            }
                             onSaveBitmap.onBitmapReady(bitmap);
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
