@@ -39,8 +39,20 @@ public interface OnPhotoEditorListener {
      * undo and redo happens or text is removed
      *
      * @param numberOfAddedViews number of views currently added
+     * @deprecated Use {@link OnPhotoEditorListener#onRemoveViewListener(ViewType, int)} instead
      */
+    @Deprecated
     void onRemoveViewListener(int numberOfAddedViews);
+
+
+    /**
+     * This is a callback when user remove any view on the {@link PhotoEditorView} it happens when usually
+     * undo and redo happens or text is removed
+     *
+     * @param viewType           enum which define type of view is added
+     * @param numberOfAddedViews number of views currently added
+     */
+    void onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
 
     /**
      * A callback when user start dragging a view which can be

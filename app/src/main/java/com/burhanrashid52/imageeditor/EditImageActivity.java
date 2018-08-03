@@ -163,6 +163,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     @Override
+    public void onRemoveViewListener(ViewType viewType, int numberOfAddedViews) {
+        Log.d(TAG, "onRemoveViewListener() called with: viewType = [" + viewType + "], numberOfAddedViews = [" + numberOfAddedViews + "]");
+    }
+
+    @Override
     public void onStartViewChangeListener(ViewType viewType) {
         Log.d(TAG, "onStartViewChangeListener() called with: viewType = [" + viewType + "]");
     }

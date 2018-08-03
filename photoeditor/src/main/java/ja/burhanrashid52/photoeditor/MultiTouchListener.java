@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 /**
  * Created on 18/01/2017.
+ *
  * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
  * <p></p>
  */
@@ -191,7 +192,15 @@ class MultiTouchListener implements OnTouchListener {
     }
 
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
-        if (view instanceof TextView) {
+        Object viewTag = view.getTag();
+        if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
+            if (isStart)
+                mOnPhotoEditorListener.onStartViewChangeListener(((ViewType) view.getTag()));
+            else
+                mOnPhotoEditorListener.onStopViewChangeListener(((ViewType) view.getTag()));
+        }
+
+        /*if (view instanceof TextView) {
             if (onMultiTouchListener != null) {
                 if (mOnPhotoEditorListener != null) {
                     if (isStart)
@@ -214,7 +223,7 @@ class MultiTouchListener implements OnTouchListener {
                 else
                     mOnPhotoEditorListener.onStopViewChangeListener(ViewType.IMAGE);
             }
-        }
+        }*/
     }
 
     private boolean isViewInBounds(View view, int x, int y) {

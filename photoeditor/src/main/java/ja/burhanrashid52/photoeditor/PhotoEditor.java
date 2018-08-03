@@ -285,7 +285,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param viewType image,text or emoji
      * @return rootview
      */
-    private View getLayout(ViewType viewType) {
+    private View getLayout(final ViewType viewType) {
         View rootView = null;
         switch (viewType) {
             case TEXT:
@@ -315,13 +315,16 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
 
         if (rootView != null) {
+            //We are setting tag as ViewType to identify what type of the view it is
+            //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
+            rootView.setTag(viewType);
             final ImageView imgClose = rootView.findViewById(R.id.imgPhotoEditorClose);
             final View finalRootView = rootView;
             if (imgClose != null) {
                 imgClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewUndo(finalRootView);
+                        viewUndo(finalRootView, viewType);
                     }
                 });
             }
@@ -436,22 +439,24 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.brushEraser();
     }
 
-    private void viewUndo() {
+    /*private void viewUndo() {
         if (addedViews.size() > 0) {
             parentView.removeView(addedViews.remove(addedViews.size() - 1));
             if (mOnPhotoEditorListener != null)
                 mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
         }
-    }
+    }*/
 
-    private void viewUndo(View removedView) {
+    private void viewUndo(View removedView, ViewType viewType) {
         if (addedViews.size() > 0) {
             if (addedViews.contains(removedView)) {
                 parentView.removeView(removedView);
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
-                if (mOnPhotoEditorListener != null)
+                if (mOnPhotoEditorListener != null) {
                     mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
+                }
             }
         }
     }
@@ -473,6 +478,10 @@ public class PhotoEditor implements BrushViewChangeListener {
             }
             if (mOnPhotoEditorListener != null) {
                 mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                Object viewTag = removeView.getTag();
+                if (viewTag != null && viewTag instanceof ViewType) {
+                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
+                }
             }
         }
         return addedViews.size() != 0;
@@ -492,6 +501,10 @@ public class PhotoEditor implements BrushViewChangeListener {
                 redoViews.remove(redoViews.size() - 1);
                 parentView.addView(redoView);
                 addedViews.add(redoView);
+            }
+            Object viewTag = redoView.getTag();
+            if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
+                mOnPhotoEditorListener.onAddViewListener(((ViewType) viewTag), addedViews.size());
             }
         }
         return redoViews.size() != 0;
@@ -519,10 +532,10 @@ public class PhotoEditor implements BrushViewChangeListener {
     }
 
     /**
-     * Remove all helper boxes from text
+     * Remove all helper boxes from views
      */
     @UiThread
-    private void clearTextHelperBox() {
+    public void clearHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
             FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
@@ -608,7 +621,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        clearTextHelperBox();
+                        clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -671,7 +684,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        clearTextHelperBox();
+                        clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -758,6 +771,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
         if (mOnPhotoEditorListener != null) {
             mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
 
