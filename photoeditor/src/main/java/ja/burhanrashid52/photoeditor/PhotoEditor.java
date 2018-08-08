@@ -694,6 +694,19 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
+        saveAsBitmap(new SaveSettings.Builder().build(), onSaveBitmap);
+    }
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param saveSettings   builder for multiple save options {@link SaveSettings}
+     * @param onSaveBitmap callback for saving image as bitmap
+     * @see OnSaveBitmap
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void saveAsBitmap(@NonNull final SaveSettings saveSettings,
+                             @NonNull final OnSaveBitmap onSaveBitmap) {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
@@ -709,7 +722,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected Bitmap doInBackground(String... strings) {
                         if (parentView != null) {
                             parentView.setDrawingCacheEnabled(true);
-                            return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                            return saveSettings.isTransparencyEnabled() ?
+                                    BitmapUtil.removeTransparency(parentView.getDrawingCache())
+                                    : parentView.getDrawingCache();
                         } else {
                             return null;
                         }
@@ -719,7 +734,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Bitmap bitmap) {
                         super.onPostExecute(bitmap);
                         if (bitmap != null) {
-                            clearAllViews();
+                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
                             onSaveBitmap.onBitmapReady(bitmap);
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
@@ -731,7 +746,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveBitmap.onFailure(e);
             }
         });
     }
