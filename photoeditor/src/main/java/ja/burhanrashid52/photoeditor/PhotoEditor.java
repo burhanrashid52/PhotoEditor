@@ -601,7 +601,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         saveAsFile(imagePath, onSaveListener);
     }
 
-
     /**
      * Save the edited image on given path
      *
@@ -609,9 +608,24 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        saveAsFile(imagePath, new SaveSettings.Builder().build(), onSaveListener);
+    }
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param saveSettings   builder for multiple save options {@link SaveSettings}
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath,
+                           @NonNull final SaveSettings saveSettings,
+                           @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
@@ -634,7 +648,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
                                 parentView.setDrawingCacheEnabled(true);
-                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                                Bitmap drawingCache = saveSettings.isTransparencyEnabled()
+                                        ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
+                                        : parentView.getDrawingCache();
                                 drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                             }
                             out.flush();
@@ -652,7 +668,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Exception e) {
                         super.onPostExecute(e);
                         if (e == null) {
-                            clearAllViews();
+                            //Clear all views if its enabled in save settings
+                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
                             onSaveListener.onSuccess(imagePath);
                         } else {
                             onSaveListener.onFailure(e);
@@ -664,7 +681,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveListener.onFailure(e);
             }
         });
     }
