@@ -285,7 +285,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param viewType image,text or emoji
      * @return rootview
      */
-    private View getLayout(ViewType viewType) {
+    private View getLayout(final ViewType viewType) {
         View rootView = null;
         switch (viewType) {
             case TEXT:
@@ -315,13 +315,16 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
 
         if (rootView != null) {
+            //We are setting tag as ViewType to identify what type of the view it is
+            //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
+            rootView.setTag(viewType);
             final ImageView imgClose = rootView.findViewById(R.id.imgPhotoEditorClose);
             final View finalRootView = rootView;
             if (imgClose != null) {
                 imgClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewUndo(finalRootView);
+                        viewUndo(finalRootView, viewType);
                     }
                 });
             }
@@ -436,22 +439,24 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.brushEraser();
     }
 
-    private void viewUndo() {
+    /*private void viewUndo() {
         if (addedViews.size() > 0) {
             parentView.removeView(addedViews.remove(addedViews.size() - 1));
             if (mOnPhotoEditorListener != null)
                 mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
         }
-    }
+    }*/
 
-    private void viewUndo(View removedView) {
+    private void viewUndo(View removedView, ViewType viewType) {
         if (addedViews.size() > 0) {
             if (addedViews.contains(removedView)) {
                 parentView.removeView(removedView);
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
-                if (mOnPhotoEditorListener != null)
+                if (mOnPhotoEditorListener != null) {
                     mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
+                }
             }
         }
     }
@@ -473,6 +478,10 @@ public class PhotoEditor implements BrushViewChangeListener {
             }
             if (mOnPhotoEditorListener != null) {
                 mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                Object viewTag = removeView.getTag();
+                if (viewTag != null && viewTag instanceof ViewType) {
+                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
+                }
             }
         }
         return addedViews.size() != 0;
@@ -492,6 +501,10 @@ public class PhotoEditor implements BrushViewChangeListener {
                 redoViews.remove(redoViews.size() - 1);
                 parentView.addView(redoView);
                 addedViews.add(redoView);
+            }
+            Object viewTag = redoView.getTag();
+            if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
+                mOnPhotoEditorListener.onAddViewListener(((ViewType) viewTag), addedViews.size());
             }
         }
         return redoViews.size() != 0;
@@ -519,10 +532,10 @@ public class PhotoEditor implements BrushViewChangeListener {
     }
 
     /**
-     * Remove all helper boxes from text
+     * Remove all helper boxes from views
      */
     @UiThread
-    private void clearTextHelperBox() {
+    public void clearHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
             FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
@@ -585,53 +598,8 @@ public class PhotoEditor implements BrushViewChangeListener {
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     @Deprecated
     public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
-        Log.d(TAG, "Image Path: " + imagePath);
-        new AsyncTask<String, String, Exception>() {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                clearTextHelperBox();
-                parentView.setDrawingCacheEnabled(false);
-            }
-
-            @SuppressLint("MissingPermission")
-            @Override
-            protected Exception doInBackground(String... strings) {
-                // Create a media file name
-                File file = new File(imagePath);
-                try {
-                    FileOutputStream out = new FileOutputStream(file, false);
-                    if (parentView != null) {
-                        parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    }
-                    out.flush();
-                    out.close();
-                    Log.d(TAG, "Filed Saved Successfully");
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "Failed to save File");
-                    return e;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Exception e) {
-                super.onPostExecute(e);
-                if (e == null) {
-                    clearAllViews();
-                    onSaveListener.onSuccess(imagePath);
-                } else {
-                    onSaveListener.onFailure(e);
-                }
-            }
-
-        }.execute();
+        saveAsFile(imagePath, onSaveListener);
     }
-
 
     /**
      * Save the edited image on given path
@@ -640,9 +608,24 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        saveAsFile(imagePath, new SaveSettings.Builder().build(), onSaveListener);
+    }
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param saveSettings   builder for multiple save options {@link SaveSettings}
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath,
+                           @NonNull final SaveSettings saveSettings,
+                           @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
@@ -652,7 +635,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        clearTextHelperBox();
+                        clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -665,7 +648,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
                                 parentView.setDrawingCacheEnabled(true);
-                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                                Bitmap drawingCache = saveSettings.isTransparencyEnabled()
+                                        ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
+                                        : parentView.getDrawingCache();
                                 drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                             }
                             out.flush();
@@ -683,7 +668,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPostExecute(Exception e) {
                         super.onPostExecute(e);
                         if (e == null) {
-                            clearAllViews();
+                            //Clear all views if its enabled in save settings
+                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
                             onSaveListener.onSuccess(imagePath);
                         } else {
                             onSaveListener.onFailure(e);
@@ -695,7 +681,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveListener.onFailure(e);
             }
         });
     }
@@ -715,7 +701,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        clearTextHelperBox();
+                        clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -802,6 +788,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
         if (mOnPhotoEditorListener != null) {
             mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
 

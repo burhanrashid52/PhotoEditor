@@ -36,6 +36,7 @@ import java.io.IOException;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.ViewType;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 
@@ -163,6 +164,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     @Override
+    public void onRemoveViewListener(ViewType viewType, int numberOfAddedViews) {
+        Log.d(TAG, "onRemoveViewListener() called with: viewType = [" + viewType + "], numberOfAddedViews = [" + numberOfAddedViews + "]");
+    }
+
+    @Override
     public void onStartViewChangeListener(ViewType viewType) {
         Log.d(TAG, "onStartViewChangeListener() called with: viewType = [" + viewType + "]");
     }
@@ -215,7 +221,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     + System.currentTimeMillis() + ".png");
             try {
                 file.createNewFile();
-                mPhotoEditor.saveAsFile(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
+
+                SaveSettings saveSettings = new SaveSettings.Builder()
+                        .setClearViewsEnabled(true)
+                        .setTransparencyEnabled(true)
+                        .build();
+
+                mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
                     @Override
                     public void onSuccess(@NonNull String imagePath) {
                         hideLoading();
