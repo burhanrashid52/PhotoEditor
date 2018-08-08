@@ -19,3 +19,11 @@ mPhotoEditor.setFilterEffect(customEffect);
 
 ## 0.2.1
 - Fixed: Image not saving #40
+
+## 0.3.1
+- New: Disable clearAllViews onSave #54 #49 #42 and PR #71
+- Fixed: ViewType in onRemoveViewListener() #50
+- Fixed: Wrong ViewType on onStartViewChangeListener #74
+- Fixed: clearHelperBox() #37
+- Fixed: Brush color changes after saving image  #52
+- Fixed: Glide null bitmap issue #59

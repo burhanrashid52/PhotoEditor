@@ -33,7 +33,7 @@ A Photo Editor library with simple, easy support for image editing using paints,
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
 ```
-implementation 'ja.burhanrashid52:photoeditor:0.2.1'
+implementation 'ja.burhanrashid52:photoeditor:0.3.1'
 ```
 or your can also import the :photoeditor module from sample for customization
 
@@ -51,7 +51,7 @@ First you need to add `PhotoEditorView` in your xml layout
 ```
 Your can define your drawable or color resource directly using `app:photo_src`
 
-Your can set the image programatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
+Your can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
 ```
 PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
 
@@ -79,7 +79,7 @@ You can customize the properties in the PhotoEditor as per your requirement
 
 | Property  | Usage |
 | ------------- | ------------- |
-| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion.By deafult its true
+| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion.By default its true
 | `setDefaultTextTypeface()`  | set default text font to be added on image  |
 | `setDefaultEmojiTypeface()`  | set default font specifc to add emojis |
 
@@ -88,7 +88,7 @@ That's it we are done with setting up our library
 
 
 ## Drawing
-We can customize our brush and paint with diffrent set of property.To start drawing on image we need to enable the drawing mode
+We can customize our brush and paint with different set of property.To start drawing on image we need to enable the drawing mode
 
 ![](https://i.imgur.com/INi5LIy.gif)
 
@@ -125,11 +125,11 @@ You can add the text with input text and colorCode like this
 
 `mPhotoEditor.addText(inputText, colorCode);` 
 
-It will take default fonts provided in the builder,If you want diffrent fonts for diffrent text you can set typeface with each text like this 
+It will take default fonts provided in the builder,If you want different fonts for different text you can set typeface with each text like this
 
 `mPhotoEditor.addText(mTypeface,inputText, colorCode);`
 
-In order to edit the text you need the view which you will reacive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
+In order to edit the text you need the view which you will receive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
 
  ```
  mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
@@ -150,11 +150,11 @@ Now you can edit the text with a view like this
 
 ![](https://i.imgur.com/RP8kqz6.gif)
 
-You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicodes
+You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicode.
 
 `mPhotoEditor.addEmoji(emojiUnicode);`
 
-It will take default fonts provided in the builder,If you want diffrent Emoji fonts for diffrent emoji you can set typeface with each Emoji like this 
+It will take default fonts provided in the builder,If you want different Emoji fonts for different emoji you can set typeface with each Emoji like this
 
 `mPhotoEditor.addEmoji(mEmojiTypeface,emojiUnicode);`
 
@@ -225,9 +225,7 @@ This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo
 If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of ☕️
 [PayPal](https://www.paypal.me/burhanrashid52)
 
-## License
-
-MIT License
+## MIT License
 
 Copyright (c) 2018 Burhanuddin Rashid
 
