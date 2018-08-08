@@ -44,7 +44,7 @@ public class SaveSettings {
          * Define a flag to clear the view after saving the image
          *
          * @param clearViewsEnabled true if you want to clear all the views on {@link PhotoEditorView}
-         * @return
+         * @return Builder
          */
         public Builder setClearViewsEnabled(boolean clearViewsEnabled) {
             isClearViewsEnabled = clearViewsEnabled;

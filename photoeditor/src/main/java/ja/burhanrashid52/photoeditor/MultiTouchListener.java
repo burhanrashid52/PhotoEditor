@@ -161,21 +161,6 @@ class MultiTouchListener implements OnTouchListener {
                     deleteView.setVisibility(View.GONE);
                 }
                 firePhotoEditorSDKListener(view, false);
-               /* float mCurrentCancelX = event.getRawX();
-                float mCurrentCancelY = event.getRawY();
-                if (mCurrentCancelX == mPrevRawX || mCurrentCancelY == mPrevRawY) {
-                    if (view instanceof FrameLayout) {
-                        TextView text = (TextView) ((FrameLayout) view).getChildAt(1);
-                        if (onMultiTouchListener != null) {
-                            onMultiTouchListener.onEditTextClickListener(
-                                    text.getText().toString(), text.getCurrentTextColor());
-                        }
-                        if (mOnPhotoEditorListener != null) {
-                            mOnPhotoEditorListener.onEditTextChangeListener(
-                                    text.getText().toString(), text.getCurrentTextColor());
-                        }
-                    }
-                }*/
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 int pointerIndexPointerUp = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -199,31 +184,6 @@ class MultiTouchListener implements OnTouchListener {
             else
                 mOnPhotoEditorListener.onStopViewChangeListener(((ViewType) view.getTag()));
         }
-
-        /*if (view instanceof TextView) {
-            if (onMultiTouchListener != null) {
-                if (mOnPhotoEditorListener != null) {
-                    if (isStart)
-                        mOnPhotoEditorListener.onStartViewChangeListener(ViewType.TEXT);
-                    else
-                        mOnPhotoEditorListener.onStopViewChangeListener(ViewType.TEXT);
-                }
-            } else {
-                if (mOnPhotoEditorListener != null) {
-                    if (isStart)
-                        mOnPhotoEditorListener.onStartViewChangeListener(ViewType.EMOJI);
-                    else
-                        mOnPhotoEditorListener.onStopViewChangeListener(ViewType.EMOJI);
-                }
-            }
-        } else {
-            if (mOnPhotoEditorListener != null) {
-                if (isStart)
-                    mOnPhotoEditorListener.onStartViewChangeListener(ViewType.IMAGE);
-                else
-                    mOnPhotoEditorListener.onStopViewChangeListener(ViewType.IMAGE);
-            }
-        }*/
     }
 
     private boolean isViewInBounds(View view, int x, int y) {
