@@ -157,7 +157,9 @@ class MultiTouchListener implements OnTouchListener {
                 mPrevRawY = event.getRawY();
                 mActivePointerId = event.getPointerId(0);
                 if (deleteView != null) {
+                    deleteView.setAlpha(0);
                     deleteView.setVisibility(View.VISIBLE);
+                    deleteView.animate().setStartDelay(200).setDuration(400).alpha(1.0f);
                 }
                 view.bringToFront();
                 firePhotoEditorSDKListener(view, true);
