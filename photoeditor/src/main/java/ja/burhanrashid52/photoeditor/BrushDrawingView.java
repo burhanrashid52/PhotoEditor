@@ -91,6 +91,7 @@ public class BrushDrawingView extends View {
         mDrawPaint.setAlpha(mOpacity);
         //Comment below code to resolve Brush color changes after saving image  #52
         //  mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        mDrawPaint.setXfermode(null); // Reset to deactivate eraser
     }
 
     void brushEraser() {
