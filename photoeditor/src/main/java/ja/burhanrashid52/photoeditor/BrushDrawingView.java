@@ -74,8 +74,8 @@ public class BrushDrawingView extends View {
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawPaint.setStrokeWidth(mBrushSize);
         mDrawPaint.setAlpha(mOpacity);
-        //Comment below code to resolve Brush color changes after saving image  #52
-//        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        //Resolve Brush color changes after saving image  #52
+        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
         this.setVisibility(View.GONE);
     }
@@ -90,8 +90,8 @@ public class BrushDrawingView extends View {
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawPaint.setStrokeWidth(mBrushSize);
         mDrawPaint.setAlpha(mOpacity);
-        //Comment below code to resolve Brush color changes after saving image  #52
-        //  mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        //Resolve Brush color changes after saving image  #52
+        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
     }
 

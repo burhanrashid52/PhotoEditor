@@ -27,3 +27,6 @@ mPhotoEditor.setFilterEffect(customEffect);
 - Fixed: clearHelperBox() #37
 - Fixed: Brush color changes after saving image  #52
 - Fixed: Glide null bitmap issue #59
+
+## 0.3.3
+- Fixed : Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
