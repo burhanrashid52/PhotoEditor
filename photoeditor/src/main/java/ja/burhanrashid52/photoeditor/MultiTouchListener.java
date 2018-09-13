@@ -456,6 +456,8 @@ class MultiTouchListener implements OnTouchListener {
         void onClick();
 
         void onLongClick();
+
+        void onDoubleTap();
     }
 
     void setOnGestureControl(OnGestureControl onGestureControl) {
@@ -477,6 +479,14 @@ class MultiTouchListener implements OnTouchListener {
             if (mOnGestureControl != null) {
                 mOnGestureControl.onLongClick();
             }
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (mOnGestureControl != null) {
+                mOnGestureControl.onDoubleTap();
+            }
+            return true;
         }
     }
 }

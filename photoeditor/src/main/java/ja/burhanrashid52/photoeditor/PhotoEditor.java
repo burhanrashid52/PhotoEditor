@@ -4,12 +4,19 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
@@ -56,6 +63,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     private int transparentPixelsClickThroughRadius;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private int hueValue = 0;
+    private ColorFilter colorFilter = new ColorMatrixColorFilter(NEGATIVE);
 
 
     private PhotoEditor(Builder builder) {
@@ -107,6 +116,19 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             public void onLongClick() {
 
             }
+
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onDoubleTap() {
+                int hue = getHueValue();
+                Log.d("PE", "HUE: " + hue);
+//                imageView.setColorFilter(newColorMatrix(hue));
+                if(imageView.getColorFilter() == colorFilter) {
+                    imageView.clearColorFilter();
+                } else {
+                    imageView.setColorFilter(colorFilter);
+                }
+            }
         });
 
         if (!isBorderFunctionalityEnabled) {
@@ -119,6 +141,70 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
 
         addViewToParent(imageRootView, ViewType.IMAGE);
 
+    }
+
+    /**
+     * Color matrix that flips the components (<code>-1.0f * c + 255 = 255 - c</code>)
+     * and keeps the alpha intact.
+     */
+    private static final float[] NEGATIVE = {
+            -1.0f,     0,     0,    0, 255, // red
+            0, -1.0f,     0,    0, 255, // green
+            0,     0, -1.0f,    0, 255, // blue
+            0,     0,     0, 1.0f,   0  // alpha
+    };
+
+//  drawable.setColorFilter(new ColorMatrixColorFilter(NEGATIVE));
+
+    //Returns hue value between 0 and 360
+    private int getHueValue(){
+        if((hueValue + 60) <= 360){
+            return  hueValue += 60;
+        }
+        return hueValue = 0;
+    }
+    /**
+     * Creates a HUE ajustment ColorFilter
+     * @param value degrees to shift the hue.
+     * @return
+     */
+    public static ColorFilter newColorMatrix(float value )
+    {
+        ColorMatrix cm = new ColorMatrix();
+        adjustHue(cm, value);
+
+        return new ColorMatrixColorFilter(cm);
+    }
+
+    /**
+     * @param cm
+     * @param value
+     */
+    public static void adjustHue(ColorMatrix cm, float value)
+    {
+        value = cleanValue(value, 180f) / 180f * (float) Math.PI;
+        if (value == 0)
+        {
+            return;
+        }
+        float cosVal = (float) Math.cos(value);
+        float sinVal = (float) Math.sin(value);
+        float lumR = 0.213f;
+        float lumG = 0.715f;
+        float lumB = 0.072f;
+        float[] mat = new float[]
+                {
+                        lumR + cosVal * (1 - lumR) + sinVal * (-lumR), lumG + cosVal * (-lumG) + sinVal * (-lumG), lumB + cosVal * (-lumB) + sinVal * (1 - lumB), 0, 0,
+                        lumR + cosVal * (-lumR) + sinVal * (0.143f), lumG + cosVal * (1 - lumG) + sinVal * (0.140f), lumB + cosVal * (-lumB) + sinVal * (-0.283f), 0, 0,
+                        lumR + cosVal * (-lumR) + sinVal * (-(1 - lumR)), lumG + cosVal * (-lumG) + sinVal * (lumG), lumB + cosVal * (1 - lumB) + sinVal * (lumB), 0, 0,
+                        0f, 0f, 0f, 1f, 0f,
+                        0f, 0f, 0f, 0f, 1f };
+        cm.postConcat(new ColorMatrix(mat));
+    }
+
+    protected static float cleanValue(float p_val, float p_limit)
+    {
+        return Math.min(p_limit, Math.max(-p_limit, p_val));
     }
 
     /**
@@ -174,6 +260,11 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                 if (mOnPhotoEditorListener != null) {
                     mOnPhotoEditorListener.onEditTextChangeListener(textRootView, textInput, currentTextColor);
                 }
+            }
+
+            @Override
+            public void onDoubleTap() {
+
             }
         });
 
@@ -265,6 +356,11 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
 
             @Override
             public void onLongClick() {
+            }
+
+            @Override
+            public void onDoubleTap() {
+
             }
         });
 
