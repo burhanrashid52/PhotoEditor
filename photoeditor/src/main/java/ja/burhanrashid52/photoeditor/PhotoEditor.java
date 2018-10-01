@@ -121,6 +121,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setTag(false);
         }
 
+        imageRootView.setTag(new ViewInfo(imageRootView));
+
         imageRootView.setOnTouchListener(multiTouchListener);
 
         Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -197,6 +199,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setBackgroundResource(0);
             frmBorder.setTag(false);
         }
+
+        textRootView.setTag(new ViewInfo(textRootView));
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
@@ -288,6 +292,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setBackgroundResource(0);
             frmBorder.setTag(false);
         }
+
+        emojiRootView.setTag(new ViewInfo(emojiRootView));
 
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
