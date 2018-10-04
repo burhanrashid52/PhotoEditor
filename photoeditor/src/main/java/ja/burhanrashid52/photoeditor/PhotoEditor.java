@@ -741,9 +741,23 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        saveAsFile(imagePath, Bitmap.CompressFormat.PNG, 100, onSaveListener);
+    }
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param compressFormat compression format
+     * @param quality        compression quality
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath, final Bitmap.CompressFormat compressFormat, final int quality, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
@@ -767,7 +781,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                             if (parentView != null) {
                                 parentView.setDrawingCacheEnabled(true);
                                 Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                drawingCache.compress(compressFormat, quality, out);
                             }
                             out.flush();
                             out.close();
