@@ -4,15 +4,19 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
@@ -62,6 +66,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     private int transparentPixelsClickThroughRadius;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private ColorFilter colorFilter = new ColorMatrixColorFilter(NEGATIVE);
 
 
     private PhotoEditor(Builder builder) {
@@ -113,6 +118,16 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             public void onLongClick() {
 
             }
+
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onDoubleTap() {
+                if(imageView.getColorFilter() == colorFilter) {
+                    imageView.clearColorFilter();
+                } else {
+                    imageView.setColorFilter(colorFilter);
+                }
+            }
         });
 
         if (!isBorderFunctionalityEnabled) {
@@ -137,6 +152,17 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         addViewToParent(imageRootView, ViewType.IMAGE);
 
     }
+
+    /**
+     * Color matrix that flips the components (<code>-1.0f * c + 255 = 255 - c</code>)
+     * and keeps the alpha intact.
+     */
+    private static final float[] NEGATIVE = {
+            -1.0f,     0,     0,    0, 255, // red
+            0, -1.0f,     0,    0, 255, // green
+            0,     0, -1.0f,    0, 255, // blue
+            0,     0,     0, 1.0f,   0  // alpha
+    };
 
     /**
      * This add the text on the {@link PhotoEditorView} with provided parameters
@@ -191,6 +217,11 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                 if (mOnPhotoEditorListener != null) {
                     mOnPhotoEditorListener.onEditTextChangeListener(textRootView, textInput, currentTextColor);
                 }
+            }
+
+            @Override
+            public void onDoubleTap() {
+
             }
         });
 
@@ -284,6 +315,11 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
 
             @Override
             public void onLongClick() {
+            }
+
+            @Override
+            public void onDoubleTap() {
+
             }
         });
 
