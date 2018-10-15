@@ -164,11 +164,6 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             0,     0,     0, 1.0f,   0  // alpha
     };
 
-    protected static float cleanValue(float p_val, float p_limit)
-    {
-        return Math.min(p_limit, Math.max(-p_limit, p_val));
-    }
-
     /**
      * This add the text on the {@link PhotoEditorView} with provided parameters
      * by default {@link TextView#setText(int)} will be 18sp
