@@ -90,6 +90,8 @@ class MultiTouchListener implements OnTouchListener {
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
         view.setScaleX(scale);
         view.setScaleY(scale);
+        ((ViewInfo)view.getTag()).setDefaultScaleX(scale);
+        ((ViewInfo)view.getTag()).setDefaultScaleY(scale);
 
         float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
         view.setRotation(rotation);
@@ -128,6 +130,8 @@ class MultiTouchListener implements OnTouchListener {
         mScaleGestureDetector.onTouchEvent(view, event);
         mGestureListener.onTouchEvent(event);
 
+        onMultiTouchListener.onViewSelectedListener(view);
+
         if (!isTranslateEnabled) {
             return true;
         }
@@ -155,18 +159,45 @@ class MultiTouchListener implements OnTouchListener {
                 mPrevRawY = event.getRawY();
                 mActivePointerId = event.getPointerId(0);
                 if (deleteView != null) {
+                    deleteView.setAlpha(0);
                     deleteView.setVisibility(View.VISIBLE);
+                    deleteView.animate().setStartDelay(200).setDuration(400).alpha(1.0f);
                 }
                 view.bringToFront();
                 firePhotoEditorSDKListener(view, true);
                 break;
             case MotionEvent.ACTION_MOVE:
-                int pointerIndexMove = event.findPointerIndex(mActivePointerId);
-                if (pointerIndexMove != -1) {
-                    float currX = event.getX(pointerIndexMove);
-                    float currY = event.getY(pointerIndexMove);
-                    if (!mScaleGestureDetector.isInProgress()) {
-                        adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                ViewInfo viewInfo = (ViewInfo) view.getTag();
+                if (deleteView != null  && isViewInBounds(deleteView, x, y) && !viewInfo.isDeleting()) {
+                    viewInfo.setDeleting(true);
+
+                    view.setPivotX(view.getMeasuredWidth()/2);
+                    view.setPivotY(view.getMeasuredHeight()/2);
+                    view.animate()
+                            //Set x,y to delete view center - view.width/height
+                            .x(((deleteView.getX() + deleteView.getWidth()/2) - view.getWidth()/2))
+                            .y(((deleteView.getY() + deleteView.getHeight()/2) - view.getHeight()/2))
+                            .scaleX(viewInfo.getScaledDownX())
+                            .scaleY(viewInfo.getScaledDownY())
+                            .setDuration(500)
+                            .start();
+                } else if (deleteView != null && !isViewInBounds(deleteView, x, y) && viewInfo.isDeleting()) {
+                    viewInfo.setDeleting(false);
+                    view.animate().cancel();
+                    view.animate()
+                            .scaleX(viewInfo.getDefaultScaleX())
+                            .scaleY(viewInfo.getDefaultScaleY())
+                            .setDuration(300)
+                            .start();
+
+                } else if(deleteView != null && !isViewInBounds(deleteView, x, y) && !viewInfo.isDeleting()){
+                    int pointerIndexMove = event.findPointerIndex(mActivePointerId);
+                    if (pointerIndexMove != -1) {
+                        float currX = event.getX(pointerIndexMove);
+                        float currY = event.getY(pointerIndexMove);
+                        if (!mScaleGestureDetector.isInProgress()) {
+                            adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                        }
                     }
                 }
                 break;
@@ -397,6 +428,64 @@ class MultiTouchListener implements OnTouchListener {
         return outRect.contains(x, y);
     }
 
+    /**
+     *    Method that converts the motion event x,y to actually image coordinates
+     *    Takes into consideration scale and rotation.
+     *
+     *    NB!: This method is custom made for this PhotoEditor as it takes into consideration the border around the imageView
+     *    If you want to use this method in a scenario where the view parameter is the ImageView itself you need to remove all the "border" handling.
+     * @param view
+     * @param event
+     */
+    private Point getBitmapHitXYForMotionEvent(View view, MotionEvent event) {
+        ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
+        FrameLayout border = view.findViewById(R.id.frmBorder);
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+
+        int eventX = (int) event.getX();
+        int eventY = (int) event.getY();
+
+        Rect imageRect = new Rect();
+        image.getHitRect(imageRect);
+
+        //Get rect of border
+        Rect borderRect = new Rect();
+        border.getHitRect(borderRect);
+
+        //The eventX and Y for the actual image (discluding the frame and any views around it)
+        int imageEventX = eventX - (imageRect.left + borderRect.left);
+        int imageEventY = eventY - (imageRect.top + borderRect.top);
+
+        float scaleFactorX = (float) bitmap.getWidth() / (float) image.getWidth();
+        float scaleFactorY = (float) bitmap.getHeight() / (float) image.getHeight();
+
+        //To get the coordinates of the click relative to the bitmap we use an scaled image matrix
+        float[] imageEventXY = new float[]{imageEventX, imageEventY};
+        Matrix invertMatrix = new Matrix();
+        ((ImageView) image).getImageMatrix().invert(invertMatrix);
+        invertMatrix.setScale(scaleFactorX, scaleFactorY);
+        invertMatrix.mapPoints(imageEventXY);
+
+        int bitmapX = (int) imageEventXY[0];
+        int bitmapY = (int) imageEventXY[1];
+
+        //Limit x, y range within bitmap
+        if (bitmapX < 0) {
+            bitmapX = 0;
+        } else if (bitmapX > bitmap.getWidth() - 1) {
+            bitmapX = bitmap.getWidth() - 1;
+        }
+
+        if (bitmapY < 0) {
+            bitmapY = 0;
+        } else if (bitmapY > bitmap.getHeight() - 1) {
+            bitmapY = bitmap.getHeight() - 1;
+        }
+
+        Log.d("MTL", "BITMAP X:" + bitmapX + " ,Y:" + bitmapY);
+        return new Point(bitmapX, bitmapY);
+    }
+
     private boolean isImageWithBitmapDrawable(View view){
         return view.findViewById(R.id.imgPhotoEditorImage) != null && ((BitmapDrawable) ((ImageView)view.findViewById(R.id.imgPhotoEditorImage)).getDrawable()).getBitmap() != null;
     }
@@ -416,6 +505,7 @@ class MultiTouchListener implements OnTouchListener {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
             mPrevSpanVector.set(detector.getCurrentSpanVector());
+            onMultiTouchListener.onViewSelectedListener(view);
             return mIsTextPinchZoomable;
         }
 
@@ -431,6 +521,7 @@ class MultiTouchListener implements OnTouchListener {
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
             move(view, info);
+            onMultiTouchListener.onViewSelectedListener(view);
             return !mIsTextPinchZoomable;
         }
     }
@@ -448,6 +539,8 @@ class MultiTouchListener implements OnTouchListener {
 
     interface OnMultiTouchListener {
         void onEditTextClickListener(String text, int colorCode);
+
+        void onViewSelectedListener(View selectedView);
 
         void onRemoveViewListener(View removedView);
     }

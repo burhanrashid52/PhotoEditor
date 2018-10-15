@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -21,10 +23,12 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -56,6 +60,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     private BrushDrawingView brushDrawingView;
     private List<View> addedViews;
     private List<View> redoViews;
+    private View lastSelectedView;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
     private boolean shouldClickThroughTransparentPixels;
@@ -133,7 +138,18 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setTag(false);
         }
 
+        imageRootView.setTag(new ViewInfo(imageRootView));
+
         imageRootView.setOnTouchListener(multiTouchListener);
+
+        Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        if (desiredImage.getWidth() < size.x / 2) {
+            float scaleFactor = size.x / 2 / desiredImage.getWidth();
+            imageRootView.setScaleX(scaleFactor);
+            imageRootView.setScaleY(scaleFactor);
+        }
 
         addViewToParent(imageRootView, ViewType.IMAGE);
 
@@ -221,6 +237,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setBackgroundResource(0);
             frmBorder.setTag(false);
         }
+
+        textRootView.setTag(new ViewInfo(textRootView));
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
@@ -318,6 +336,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setTag(false);
         }
 
+        emojiRootView.setTag(new ViewInfo(emojiRootView));
+
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
     }
@@ -334,6 +354,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(rootView, params);
         addedViews.add(rootView);
+        lastSelectedView = rootView;
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onAddViewListener(viewType, addedViews.size());
     }
@@ -536,12 +557,43 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         }
     }
 
+    @Override
+    public void onViewSelectedListener(View selectedView) {
+        lastSelectedView = selectedView;
+    }
+
+    private static Bitmap flipBitmap(Bitmap source) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(-1, 1, source.getWidth()/2, source.getHeight()/2);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    /**
+     * Flip the last added Image
+     */
+    public void flip() {
+        if (lastSelectedView != null) {
+            ImageView flipView = lastSelectedView.findViewById(R.id.imgPhotoEditorImage);
+            if (flipView != null) {
+                Bitmap bitmap = ((BitmapDrawable) flipView.getDrawable()).getBitmap();
+                Bitmap flipedBitmap = flipBitmap(bitmap);
+                flipView.setImageBitmap(flipedBitmap);
+            }
+        }
+        return;
+    }
+
+    public int getAddedViews() {
+        return addedViews.size();
+    }
+
     /**
      * Undo the last operation perform on the {@link PhotoEditor}
      *
      * @return true if there nothing more to undo
      */
     public boolean undo() {
+        lastSelectedView = null;
         if (addedViews.size() > 0) {
             View removeView = addedViews.get(addedViews.size() - 1);
             if (removeView instanceof BrushDrawingView) {
@@ -564,6 +616,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      * @return true if there nothing more to redo
      */
     public boolean redo() {
+        lastSelectedView = null;
         if (redoViews.size() > 0) {
             View redoView = redoViews.get(redoViews.size() - 1);
             if (redoView instanceof BrushDrawingView) {
@@ -731,9 +784,23 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
+        saveAsFile(imagePath, Bitmap.CompressFormat.PNG, 100, onSaveListener);
+    }
+
+    /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param compressFormat compression format
+     * @param quality        compression quality
+     * @param onSaveListener callback for saving image
+     * @see OnSaveListener
+     */
+    @SuppressLint("StaticFieldLeak")
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void saveAsFile(@NonNull final String imagePath, final Bitmap.CompressFormat compressFormat, final int quality, @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
@@ -757,7 +824,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                             if (parentView != null) {
                                 parentView.setDrawingCacheEnabled(true);
                                 Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                drawingCache.compress(compressFormat, quality, out);
                             }
                             out.flush();
                             out.close();
