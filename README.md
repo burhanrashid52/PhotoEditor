@@ -32,7 +32,7 @@ A Photo Editor library with simple, easy support for image editing using paints,
 
 ## Getting Started
 To start with this , you need to just simply add the dependencies in gradle file of app module like this
-```
+```java
 implementation 'ja.burhanrashid52:photoeditor:0.3.3'
 ```
 or your can also import the :photoeditor module from sample for customization
@@ -41,7 +41,7 @@ or your can also import the :photoeditor module from sample for customization
 ## Setting up the View
 First you need to add `PhotoEditorView` in your xml layout
 
-```
+```xml
  <ja.burhanrashid52.photoeditor.PhotoEditorView
         android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@ First you need to add `PhotoEditorView` in your xml layout
 Your can define your drawable or color resource directly using `app:photo_src`
 
 Your can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
-```
+```java
 PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
 
 mPhotoEditorView.getSource().setImageResource(R.drawable.got);
@@ -62,7 +62,7 @@ mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 To use the image editing feature you need to build a PhotoEditor which requires a Context and PhotoEditorView which we have setup in our xml layout
 
 
-```
+```java
 //Use custom font using latest support library
 Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
 
@@ -131,7 +131,7 @@ It will take default fonts provided in the builder,If you want different fonts f
 
 In order to edit the text you need the view which you will receive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
 
- ```
+ ```java
  mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
             @Override
             public void onEditTextChangeListener(View rootView, String text, int colorCode) {
@@ -171,7 +171,7 @@ It will take default fonts provided in the builder,If you want different Emoji f
 
 ![](https://i.imgur.com/1Y9WcCB.gif)
 
- ```
+ ```java
    mPhotoEditor.undo();
    mPhotoEditor.redo();
  ```
@@ -188,7 +188,7 @@ It will take default fonts provided in the builder,If you want different Emoji f
    
    You need provide a file with callback method when edited image is saved
    
-   ```
+   ```java
     mPhotoEditor.saveAsFile(filePath, new PhotoEditor.OnSaveListener() {
                     @Override
                     public void onSuccess(@NonNull String imagePath) {
