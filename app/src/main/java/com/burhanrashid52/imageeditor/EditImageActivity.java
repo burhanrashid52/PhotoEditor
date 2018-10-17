@@ -236,7 +236,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     }
 
                     @Override
-                    public void onFailure(@NonNull Exception exception) {
+                    public void onFailure(@NonNull Throwable exception) {
                         hideLoading();
                         showSnackbar("Failed to save Image");
                     }
