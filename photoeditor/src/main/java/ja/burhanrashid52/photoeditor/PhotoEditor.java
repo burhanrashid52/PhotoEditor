@@ -707,9 +707,9 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         /**
          * Call when failed to saved image on given path
          *
-         * @param exception exception thrown while saving image
+         * @param throwable exception or error thrown while saving image
          */
-        void onFailure(@NonNull Exception exception);
+        void onFailure(@NonNull Throwable throwable);
     }
 
 
@@ -798,7 +798,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                new AsyncTask<String, String, Exception>() {
+                new AsyncTask<String, String, Throwable>() {
 
                     @Override
                     protected void onPreExecute() {
@@ -809,7 +809,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
 
                     @SuppressLint("MissingPermission")
                     @Override
-                    protected Exception doInBackground(String... strings) {
+                    protected Throwable doInBackground(String... strings) {
                         // Create a media file name
                         File file = new File(imagePath);
                         try {
@@ -823,6 +823,10 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                             out.close();
                             Log.d(TAG, "Filed Saved Successfully");
                             return null;
+                        } catch (OutOfMemoryError oom) {
+                          oom.printStackTrace();
+                          Log.d(TAG, "Out of memory error");
+                          return oom;
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.d(TAG, "Failed to save File");
@@ -831,7 +835,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                     }
 
                     @Override
-                    protected void onPostExecute(Exception e) {
+                    protected void onPostExecute(Throwable e) {
                         super.onPostExecute(e);
                         if (e == null) {
                             onSaveListener.onSuccess(imagePath);
