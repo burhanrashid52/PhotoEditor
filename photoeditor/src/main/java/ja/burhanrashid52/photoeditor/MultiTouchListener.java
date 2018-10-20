@@ -46,7 +46,7 @@ class MultiTouchListener implements OnTouchListener {
     private boolean mIsTextPinchZoomable;
     private boolean mShouldClickThroughTransparentPixels;
     private int mVariableTransparentPixelsClickThroughRadius;
-    private int mTransparentPixelsClickThroughRadius;
+    private int mVariableTransparentPixelsClickThroughRadiusAt45Degrees;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
     MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
@@ -57,7 +57,7 @@ class MultiTouchListener implements OnTouchListener {
         mIsTextPinchZoomable = isTextPinchZoomable;
         mShouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
         mVariableTransparentPixelsClickThroughRadius = transparentPixelsClickThroughRadius;
-        mTransparentPixelsClickThroughRadius = transparentPixelsClickThroughRadius;
+        mVariableTransparentPixelsClickThroughRadiusAt45Degrees = (int) Math.round(mVariableTransparentPixelsClickThroughRadius * Math.cos(Math.toRadians(45)));
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
         this.deleteView = deleteView;
@@ -253,6 +253,8 @@ class MultiTouchListener implements OnTouchListener {
         ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
         FrameLayout border = view.findViewById(R.id.frmBorder);
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+//        Bitmap drawableBitmap = bitmap.copy(bitmap.getConfig(), true);
+
 
         int eventX = (int)event.getX();
         int eventY = (int)event.getY();
@@ -302,9 +304,7 @@ class MultiTouchListener implements OnTouchListener {
             bitmapY = bitmap.getHeight() - 1;
         }
 
-        boolean[][] visitorMatrix = mVariableTransparentPixelsClickThroughRadius > 0 ? new boolean[(mVariableTransparentPixelsClickThroughRadius * 2) + 1][(mVariableTransparentPixelsClickThroughRadius * 2) + 1] : new boolean[1][1];
-
-        return isPixelsInRadiusOpaque(visitorMatrix, bitmap, bitmapX, bitmapY, new Point(bitmapX, bitmapY));
+        return isPixelsInRadiusOpaque(bitmap, bitmapX, bitmapY);
     }
 
     /**
@@ -312,86 +312,105 @@ class MultiTouchListener implements OnTouchListener {
      * @param bitmap
      * @param x
      * @param y
-     * @param currentPixel
      * @return True if it finds any Opaque pixels on the given bitmap within the given radius of a given point. False otherwise.
      */
-    private boolean isPixelsInRadiusOpaque(boolean[][] visitedMatrix, Bitmap bitmap, int x, int y, Point currentPixel){
+    private boolean isPixelsInRadiusOpaque(Bitmap bitmap, int x, int y){
+        if (isPixelOpaque(bitmap, x, y)) return true;
 
-        try {
-            boolean inProximityOfClickedPixel = euclideanDistance(x, y, currentPixel) <= mVariableTransparentPixelsClickThroughRadius;
-
-            //Is pixel not inside the given radius
-            if(!inProximityOfClickedPixel){
-                return false;
-            }
-
-            if(hasPointBeenVisited(visitedMatrix, x, y, currentPixel)){
-                return false;
-            }
-
-            addPointToVisitorMatrix(visitedMatrix, x ,y , currentPixel);
-
-            int pixelRGB = bitmap.getPixel(currentPixel.x, currentPixel.y);
-
-            if(Color.alpha(pixelRGB) != 0){
-                return true;
-            } else {
-
-                Point topPoint = new Point(currentPixel.x, currentPixel.y - 1);
-                Point rightPoint = new Point(currentPixel.x + 1, currentPixel.y);
-                Point bottomPoint = new Point(currentPixel.x, currentPixel.y + 1);
-                Point leftPoint = new Point(currentPixel.x - 1, currentPixel.y);
-
-                // Checks the surrounding pixels, if inside radius we  check them for transparency.
-                // If all pixels are outside radius and this pixel is transparent we return true.
-                if(!(isPixelTransparent(bitmap, x, y, topPoint) && isPixelTransparent(bitmap, x, y, rightPoint)
-                   && isPixelTransparent(bitmap, x, y, bottomPoint) && isPixelTransparent(bitmap, x, y, leftPoint))){
-                    return true;
-                } else {
-                    //Check next pixel. This code could be optimized to run in circles instead
-                    return !(!isPixelsInRadiusOpaque(visitedMatrix, bitmap, x, y, topPoint) && !isPixelsInRadiusOpaque(visitedMatrix, bitmap, x, y, rightPoint) &&
-                            !isPixelsInRadiusOpaque(visitedMatrix, bitmap, x, y, bottomPoint) && !isPixelsInRadiusOpaque(visitedMatrix, bitmap, x, y, leftPoint));
-                }
-
-            }
-
-        } catch (IllegalArgumentException | IllegalStateException e){
-            Log.d("MultiTouchListener","Pixel not found in bitmap" + e);
+        /*
+                                   |
+                                   |
+                                   |
+                                   |
+                           --------|--------
+                                   |
+                                   |
+                                   |
+                                   |
+         */
+        for (int i = mVariableTransparentPixelsClickThroughRadius; i > 0; i--) {
+            if (isPixelOpaque(bitmap,x + i, y)) return true;
+            if (isPixelOpaque(bitmap, x,y + i)) return true;
+            if (isPixelOpaque(bitmap,x - i, y)) return true;
+            if (isPixelOpaque(bitmap, x,y - i)) return true;
         }
+        /*
+                               \       /
+                                \     /
+                                 \   /
+                                  \ /
+                                   *
+                                  / \
+                                 /   \
+                                /     \
+                               /       \
+         */
+        for (int i = mVariableTransparentPixelsClickThroughRadiusAt45Degrees; i > 0; i--) {
+            if (isPixelOpaque(bitmap, x + i, y + i)) return true;
+            if (isPixelOpaque(bitmap, x - i, y + i)) return true;
+            if (isPixelOpaque(bitmap, x + i, y - i)) return true;
+            if (isPixelOpaque(bitmap, x - i, y - i)) return true;
+        }
+        /*
+                               /████████\
+                              /██████████\
+                             /██        ██\
+                             |██        ██|
+                             |██        ██|
+                             |██        ██|
+                             \██        ██/
+                              \██████████/
+                               \████████/
+         */
+        float delta = (float)mVariableTransparentPixelsClickThroughRadiusAt45Degrees /
+                (float)(mVariableTransparentPixelsClickThroughRadius -
+                        mVariableTransparentPixelsClickThroughRadiusAt45Degrees);
+        for (int i = mVariableTransparentPixelsClickThroughRadius - 1;
+             i > mVariableTransparentPixelsClickThroughRadiusAt45Degrees;
+             i--) {
+            for (int j = 1; j < delta * (mVariableTransparentPixelsClickThroughRadius - i); j++) {
+                if (isPixelOpaque(bitmap, x + j, y - i)) return true;
+                if (isPixelOpaque(bitmap, x + i, y - j)) return true;
+                if (isPixelOpaque(bitmap, x + i, y + j)) return true;
+                if (isPixelOpaque(bitmap, x + j, y + i)) return true;
 
+                if (isPixelOpaque(bitmap, x - j, y - i)) return true;
+                if (isPixelOpaque(bitmap, x - i, y - j)) return true;
+                if (isPixelOpaque(bitmap, x - i, y + j)) return true;
+                if (isPixelOpaque(bitmap, x - j, y + i)) return true;
+            }
+        }
+        /*
+
+
+                                ████████
+                                ████████
+                                ████████
+                                ████████
+                                ████████
+
+
+
+         */
+        for (int i = 1; i < mVariableTransparentPixelsClickThroughRadiusAt45Degrees; i++) {
+            for (int j = 1; j < mVariableTransparentPixelsClickThroughRadiusAt45Degrees; j ++ ) {
+                if (isPixelOpaque(bitmap, x + i, y - j)) return true;
+                if (isPixelOpaque(bitmap, x + i, y + j)) return true;
+                if (isPixelOpaque(bitmap, x - i, y - j)) return true;
+                if (isPixelOpaque(bitmap, x - i, y + j)) return true;
+            }
+        }
         return false;
     }
 
-    private boolean isPixelTransparent(Bitmap bitmap, int x, int y, Point point){
+    private static boolean isPixelOpaque(Bitmap bitmap, int x, int y) {
+        if (x >= bitmap.getWidth() || y >= bitmap.getHeight()) return false;
         try {
-            int pixelRGB = bitmap.getPixel(point.x, point.y);
-            return Color.alpha(pixelRGB) == 0; /* 0% transparent. Full opacity */
+            int pixelRGB = bitmap.getPixel(x, y);
+            return Color.alpha(pixelRGB) != 0; /* 0% transparent. Full opacity */
         } catch (IllegalArgumentException | IllegalStateException e) {
-            Log.d("MultiTouchListener", "Pixel not found in bitmap" + e);
+            return false;
         }
-
-        //We return true if it fails to find pixel from bitmap as this could be outside the bitmap
-        return true;
-    }
-
-    private void addPointToVisitorMatrix(boolean[][] visitedMatrix, int x, int y, Point currentPixel){
-        int matrixX0 = x - mVariableTransparentPixelsClickThroughRadius;
-        int matrixY0 = y - mVariableTransparentPixelsClickThroughRadius;
-
-        visitedMatrix[currentPixel.x - matrixX0][currentPixel.y - matrixY0] = true;
-    }
-
-    private boolean hasPointBeenVisited(boolean[][] visitedMatrix, int x , int y, Point point){
-        int matrixX0 = x - mVariableTransparentPixelsClickThroughRadius;
-        int matrixY0 = y - mVariableTransparentPixelsClickThroughRadius;
-
-        return visitedMatrix[point.x - matrixX0][point.y - matrixY0];
-    }
-
-    private double euclideanDistance(int aX, int aY, Point pointB) {
-        double xDiff = aX - pointB.x;
-        double yDiff = aY - pointB.y;
-        return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
     }
 
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
