@@ -65,8 +65,9 @@ public class PhotoEditorView extends RelativeLayout {
         mImgSource = new FilterImageView(getContext());
         mImgSource.setId(imgSrcId);
         mImgSource.setAdjustViewBounds(true);
+        mImgSource.setScaleType(ImageView.ScaleType.CENTER_CROP);
         RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         imgSrcParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoEditorView);
