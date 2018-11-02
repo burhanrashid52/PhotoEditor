@@ -55,7 +55,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private Typeface mDefaultEmojiTypeface;
 
 
-    private PhotoEditor(Builder builder) {
+    protected PhotoEditor(Builder builder) {
         this.context = builder.context;
         this.parentView = builder.parentView;
         this.imageView = builder.imageView;
