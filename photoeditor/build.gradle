@@ -17,7 +17,7 @@ ext {
     siteUrl = 'https://github.com/zedge/PhotoEditor'
     gitUrl = 'https://github.com/zedge/PhotoEditor'
 
-    libraryVersion = '0.2.1'
+    libraryVersion = '0.3.3'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'

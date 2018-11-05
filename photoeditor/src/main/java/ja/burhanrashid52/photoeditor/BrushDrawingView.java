@@ -16,8 +16,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 /**
  * <p>
@@ -35,8 +34,8 @@ public class BrushDrawingView extends View {
     private float mBrushEraserSize = 50;
     private int mOpacity = 255;
 
-    private List<LinePath> mLinePaths = new ArrayList<>();
-    private List<LinePath> mRedoLinePaths = new ArrayList<>();
+    private Stack<LinePath> mDrawnPaths = new Stack<>();
+    private Stack<LinePath> mRedoPaths = new Stack<>();
     private Paint mDrawPaint;
 
     private Canvas mDrawCanvas;
@@ -75,7 +74,9 @@ public class BrushDrawingView extends View {
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawPaint.setStrokeWidth(mBrushSize);
         mDrawPaint.setAlpha(mOpacity);
-        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        //Resolve Brush color changes after saving image  #52
+        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
+        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
         this.setVisibility(View.GONE);
     }
 
@@ -89,7 +90,9 @@ public class BrushDrawingView extends View {
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawPaint.setStrokeWidth(mBrushSize);
         mDrawPaint.setAlpha(mOpacity);
-        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        //Resolve Brush color changes after saving image  #52
+        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
+        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
     }
 
     void brushEraser() {
@@ -148,8 +151,8 @@ public class BrushDrawingView extends View {
     }
 
     void clearAll() {
-        mLinePaths.clear();
-        mRedoLinePaths.clear();
+        mDrawnPaths.clear();
+        mRedoPaths.clear();
         if (mDrawCanvas != null) {
             mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         }
@@ -169,7 +172,7 @@ public class BrushDrawingView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        for (LinePath linePath : mLinePaths) {
+        for (LinePath linePath : mDrawnPaths) {
             canvas.drawPath(linePath.getDrawPath(), linePath.getDrawPaint());
         }
         canvas.drawPath(mPath, mDrawPaint);
@@ -224,30 +227,31 @@ public class BrushDrawingView extends View {
     }
 
     boolean undo() {
-        if (mLinePaths.size() > 0) {
-            mRedoLinePaths.add(mLinePaths.remove(mLinePaths.size() - 1));
+        if (!mDrawnPaths.empty()) {
+            mRedoPaths.push(mDrawnPaths.pop());
             invalidate();
         }
         if (mBrushViewChangeListener != null) {
             mBrushViewChangeListener.onViewRemoved(this);
         }
-        return mLinePaths.size() != 0;
+        return !mDrawnPaths.empty();
     }
 
     boolean redo() {
-        if (mRedoLinePaths.size() > 0) {
-            mLinePaths.add(mRedoLinePaths.remove(mRedoLinePaths.size() - 1));
+        if (!mRedoPaths.empty()) {
+            mDrawnPaths.push(mRedoPaths.pop());
             invalidate();
         }
+
         if (mBrushViewChangeListener != null) {
             mBrushViewChangeListener.onViewAdd(this);
         }
-        return mRedoLinePaths.size() != 0;
+        return !mRedoPaths.empty();
     }
 
 
     private void touchStart(float x, float y) {
-        mRedoLinePaths.clear();
+        mRedoPaths.clear();
         mPath.reset();
         mPath.moveTo(x, y);
         mTouchX = x;
@@ -272,7 +276,7 @@ public class BrushDrawingView extends View {
         // Commit the path to our offscreen
         mDrawCanvas.drawPath(mPath, mDrawPaint);
         // kill this so we don't double draw
-        mLinePaths.add(new LinePath(mPath, mDrawPaint));
+        mDrawnPaths.push(new LinePath(mPath, mDrawPaint));
         mPath = new Path();
         if (mBrushViewChangeListener != null) {
             mBrushViewChangeListener.onStopDrawing();

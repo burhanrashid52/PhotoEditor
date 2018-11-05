@@ -379,7 +379,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      * @param viewType image,text or emoji
      * @return rootview
      */
-    private View getLayout(ViewType viewType) {
+    private View getLayout(final ViewType viewType) {
         View rootView = null;
         switch (viewType) {
             case TEXT:
@@ -409,13 +409,16 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         }
 
         if (rootView != null) {
+            //We are setting tag as ViewType to identify what type of the view it is
+            //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
+            rootView.setTag(viewType);
             final ImageView imgClose = rootView.findViewById(R.id.imgPhotoEditorClose);
             final View finalRootView = rootView;
             if (imgClose != null) {
                 imgClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewUndo(finalRootView);
+                        viewUndo(finalRootView, viewType);
                     }
                 });
             }
@@ -530,22 +533,33 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             brushDrawingView.brushEraser();
     }
 
-    private void viewUndo() {
+    /*private void viewUndo() {
         if (addedViews.size() > 0) {
             parentView.removeView(addedViews.remove(addedViews.size() - 1));
             if (mOnPhotoEditorListener != null)
                 mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
         }
-    }
+    }*/
 
     private void viewUndo(View removedView) {
+        Object tagObject = removedView.getTag();
+        ViewType viewType = null;
+        if (tagObject instanceof ViewType) {
+            viewType = (ViewType) tagObject;
+        }
+        viewUndo(removedView, viewType);
+    }
+
+    private void viewUndo(View removedView, ViewType viewType) {
         if (addedViews.size() > 0) {
             if (addedViews.contains(removedView)) {
                 parentView.removeView(removedView);
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
-                if (mOnPhotoEditorListener != null)
+                if (mOnPhotoEditorListener != null) {
                     mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
+                }
             }
         }
     }
@@ -598,6 +612,10 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             }
             if (mOnPhotoEditorListener != null) {
                 mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                Object viewTag = removeView.getTag();
+                if (viewTag != null && viewTag instanceof ViewType) {
+                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
+                }
             }
         }
         return addedViews.size() != 0;
@@ -618,6 +636,10 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                 redoViews.remove(redoViews.size() - 1);
                 parentView.addView(redoView);
                 addedViews.add(redoView);
+            }
+            Object viewTag = redoView.getTag();
+            if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
+                mOnPhotoEditorListener.onAddViewListener(((ViewType) viewTag), addedViews.size());
             }
         }
         return redoViews.size() != 0;
@@ -645,10 +667,10 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     }
 
     /**
-     * Remove all helper boxes from text
+     * Remove all helper boxes from views
      */
     @UiThread
-    private void clearTextHelperBox() {
+    public void clearHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
             if(isBorderFunctionalityEnabled) {
@@ -723,52 +745,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     @Deprecated
     public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
-        Log.d(TAG, "Image Path: " + imagePath);
-        new AsyncTask<String, String, Exception>() {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                clearTextHelperBox();
-                parentView.setDrawingCacheEnabled(false);
-            }
-
-            @SuppressLint("MissingPermission")
-            @Override
-            protected Exception doInBackground(String... strings) {
-                // Create a media file name
-                File file = new File(imagePath);
-                try {
-                    FileOutputStream out = new FileOutputStream(file, false);
-                    if (parentView != null) {
-                        parentView.setDrawingCacheEnabled(true);
-                        Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    }
-                    out.flush();
-                    out.close();
-                    Log.d(TAG, "Filed Saved Successfully");
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "Failed to save File");
-                    return e;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Exception e) {
-                super.onPostExecute(e);
-                if (e == null) {
-                    onSaveListener.onSuccess(imagePath);
-                } else {
-                    onSaveListener.onFailure(e);
-                }
-            }
-
-        }.execute();
+        saveAsFile(imagePath, onSaveListener);
     }
-
 
     /**
      * Save the edited image on given path
@@ -779,21 +757,21 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      */
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
-        saveAsFile(imagePath, Bitmap.CompressFormat.PNG, 100, onSaveListener);
+        saveAsFile(imagePath, new SaveSettings.Builder().build(), onSaveListener);
     }
 
     /**
      * Save the edited image on given path
      *
      * @param imagePath      path on which image to be saved
-     * @param compressFormat compression format
-     * @param quality        compression quality
+     * @param saveSettings   builder for multiple save options {@link SaveSettings}
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void saveAsFile(@NonNull final String imagePath, final Bitmap.CompressFormat compressFormat, final int quality, @NonNull final OnSaveListener onSaveListener) {
+    public void saveAsFile(@NonNull final String imagePath,
+                           @NonNull final SaveSettings saveSettings,
+                           @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
@@ -803,7 +781,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        clearTextHelperBox();
+                        clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -816,8 +794,10 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
                                 parentView.setDrawingCacheEnabled(true);
-                                Bitmap drawingCache = BitmapUtil.removeTransparency(parentView.getDrawingCache());
-                                drawingCache.compress(compressFormat, quality, out);
+                                Bitmap drawingCache = saveSettings.isTransparencyEnabled()
+                                        ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
+                                        : parentView.getDrawingCache();
+                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
                             }
                             out.flush();
                             out.close();
@@ -838,6 +818,8 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                     protected void onPostExecute(Throwable e) {
                         super.onPostExecute(e);
                         if (e == null) {
+                            //Clear all views if its enabled in save settings
+                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
                             onSaveListener.onSuccess(imagePath);
                         } else {
                             onSaveListener.onFailure(e);
@@ -849,7 +831,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveListener.onFailure(e);
             }
         });
     }
@@ -862,6 +844,19 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      */
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
+        saveAsBitmap(new SaveSettings.Builder().build(), onSaveBitmap);
+    }
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param saveSettings   builder for multiple save options {@link SaveSettings}
+     * @param onSaveBitmap callback for saving image as bitmap
+     * @see OnSaveBitmap
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void saveAsBitmap(@NonNull final SaveSettings saveSettings,
+                             @NonNull final OnSaveBitmap onSaveBitmap) {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
@@ -869,7 +864,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        clearTextHelperBox();
+                        clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -877,7 +872,9 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                     protected Bitmap doInBackground(String... strings) {
                         if (parentView != null) {
                             parentView.setDrawingCacheEnabled(true);
-                            return BitmapUtil.removeTransparency(parentView.getDrawingCache());
+                            return saveSettings.isTransparencyEnabled() ?
+                                    BitmapUtil.removeTransparency(parentView.getDrawingCache())
+                                    : parentView.getDrawingCache();
                         } else {
                             return null;
                         }
@@ -887,6 +884,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                     protected void onPostExecute(Bitmap bitmap) {
                         super.onPostExecute(bitmap);
                         if (bitmap != null) {
+                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
                             onSaveBitmap.onBitmapReady(bitmap);
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
@@ -898,7 +896,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
 
             @Override
             public void onFailure(Exception e) {
-
+                onSaveBitmap.onFailure(e);
             }
         });
     }
@@ -955,6 +953,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         }
         if (mOnPhotoEditorListener != null) {
             mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
 

@@ -161,13 +161,13 @@ public class PhotoEditorView extends RelativeLayout {
 
     void setFilterEffect(PhotoFilter filterType) {
         mImageFilterView.setVisibility(VISIBLE);
-        mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
+        mImageFilterView.setSourceBitmap(mImgSource.getBitmap());
         mImageFilterView.setFilterEffect(filterType);
     }
 
     void setFilterEffect(CustomEffect customEffect) {
         mImageFilterView.setVisibility(VISIBLE);
-        mImageFilterView.setSourceBitmap(((BitmapDrawable) mImgSource.getDrawable()).getBitmap());
+        mImageFilterView.setSourceBitmap(mImgSource.getBitmap());
         mImageFilterView.setFilterEffect(customEffect);
     }
 }
