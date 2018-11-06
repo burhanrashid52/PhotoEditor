@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 /**
  * Created on 18/01/2017.
+ *
  * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
  * <p></p>
  */
@@ -90,8 +91,8 @@ class MultiTouchListener implements OnTouchListener {
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
         view.setScaleX(scale);
         view.setScaleY(scale);
-        ((ViewInfo)view.getTag()).setDefaultScaleX(scale);
-        ((ViewInfo)view.getTag()).setDefaultScaleY(scale);
+        ((ViewInfo)view.getTag(R.id.viewInfoTag)).setDefaultScaleX(scale);
+        ((ViewInfo)view.getTag(R.id.viewInfoTag)).setDefaultScaleY(scale);
 
         float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
         view.setRotation(rotation);
@@ -167,7 +168,7 @@ class MultiTouchListener implements OnTouchListener {
                 firePhotoEditorSDKListener(view, true);
                 break;
             case MotionEvent.ACTION_MOVE:
-                ViewInfo viewInfo = (ViewInfo) view.getTag();
+                ViewInfo viewInfo = (ViewInfo) view.getTag(R.id.viewInfoTag);
                 if (deleteView != null  && isViewInBounds(deleteView, x, y) && !viewInfo.isDeleting()) {
                     viewInfo.setDeleting(true);
 
@@ -216,21 +217,6 @@ class MultiTouchListener implements OnTouchListener {
                     deleteView.setVisibility(View.GONE);
                 }
                 firePhotoEditorSDKListener(view, false);
-               /* float mCurrentCancelX = event.getRawX();
-                float mCurrentCancelY = event.getRawY();
-                if (mCurrentCancelX == mPrevRawX || mCurrentCancelY == mPrevRawY) {
-                    if (view instanceof FrameLayout) {
-                        TextView text = (TextView) ((FrameLayout) view).getChildAt(1);
-                        if (onMultiTouchListener != null) {
-                            onMultiTouchListener.onEditTextClickListener(
-                                    text.getText().toString(), text.getCurrentTextColor());
-                        }
-                        if (mOnPhotoEditorListener != null) {
-                            mOnPhotoEditorListener.onEditTextChangeListener(
-                                    text.getText().toString(), text.getCurrentTextColor());
-                        }
-                    }
-                }*/
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 int pointerIndexPointerUp = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -414,29 +400,12 @@ class MultiTouchListener implements OnTouchListener {
     }
 
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
-        if (view instanceof TextView) {
-            if (onMultiTouchListener != null) {
-                if (mOnPhotoEditorListener != null) {
-                    if (isStart)
-                        mOnPhotoEditorListener.onStartViewChangeListener(ViewType.TEXT);
-                    else
-                        mOnPhotoEditorListener.onStopViewChangeListener(ViewType.TEXT);
-                }
-            } else {
-                if (mOnPhotoEditorListener != null) {
-                    if (isStart)
-                        mOnPhotoEditorListener.onStartViewChangeListener(ViewType.EMOJI);
-                    else
-                        mOnPhotoEditorListener.onStopViewChangeListener(ViewType.EMOJI);
-                }
-            }
-        } else {
-            if (mOnPhotoEditorListener != null) {
-                if (isStart)
-                    mOnPhotoEditorListener.onStartViewChangeListener(ViewType.IMAGE);
-                else
-                    mOnPhotoEditorListener.onStopViewChangeListener(ViewType.IMAGE);
-            }
+        Object viewTag = view.getTag();
+        if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
+            if (isStart)
+                mOnPhotoEditorListener.onStartViewChangeListener(((ViewType) view.getTag()));
+            else
+                mOnPhotoEditorListener.onStopViewChangeListener(((ViewType) view.getTag()));
         }
     }
 
