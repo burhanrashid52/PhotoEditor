@@ -136,7 +136,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setTag(false);
         }
 
-        imageRootView.setTag(new ViewInfo(imageRootView));
+        imageRootView.setTag(R.id.viewInfoTag, new ViewInfo(imageRootView.getScaleX(), imageRootView.getScaleY()));
 
         imageRootView.setOnTouchListener(multiTouchListener);
 
@@ -231,7 +231,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setTag(false);
         }
 
-        textRootView.setTag(new ViewInfo(textRootView));
+        textRootView.setTag(R.id.viewInfoTag, new ViewInfo(textRootView.getScaleX(), textRootView.getScaleY()));
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
@@ -329,7 +329,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             frmBorder.setTag(false);
         }
 
-        emojiRootView.setTag(new ViewInfo(emojiRootView));
+        emojiRootView.setTag(R.id.viewInfoTag, new ViewInfo(emojiRootView.getScaleX(), emojiRootView.getScaleY()));
 
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
@@ -797,7 +797,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                                 Bitmap drawingCache = saveSettings.isTransparencyEnabled()
                                         ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
                                         : parentView.getDrawingCache();
-                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                drawingCache.compress(saveSettings.getCompressFormat(), saveSettings.getCompressQuality(), out);
                             }
                             out.flush();
                             out.close();

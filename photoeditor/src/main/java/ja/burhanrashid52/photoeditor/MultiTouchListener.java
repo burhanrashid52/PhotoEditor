@@ -91,8 +91,8 @@ class MultiTouchListener implements OnTouchListener {
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
         view.setScaleX(scale);
         view.setScaleY(scale);
-        ((ViewInfo)view.getTag()).setDefaultScaleX(scale);
-        ((ViewInfo)view.getTag()).setDefaultScaleY(scale);
+        ((ViewInfo)view.getTag(R.id.viewInfoTag)).setDefaultScaleX(scale);
+        ((ViewInfo)view.getTag(R.id.viewInfoTag)).setDefaultScaleY(scale);
 
         float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
         view.setRotation(rotation);
@@ -168,7 +168,7 @@ class MultiTouchListener implements OnTouchListener {
                 firePhotoEditorSDKListener(view, true);
                 break;
             case MotionEvent.ACTION_MOVE:
-                ViewInfo viewInfo = (ViewInfo) view.getTag();
+                ViewInfo viewInfo = (ViewInfo) view.getTag(R.id.viewInfoTag);
                 if (deleteView != null  && isViewInBounds(deleteView, x, y) && !viewInfo.isDeleting()) {
                     viewInfo.setDeleting(true);
 

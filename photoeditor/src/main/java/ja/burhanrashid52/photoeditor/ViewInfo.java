@@ -23,9 +23,9 @@ public class ViewInfo {
     private float scaleDownX = 0;
     private float scaleDownY = 0;
 
-    public ViewInfo(View view) {
-        defaultScaleX = view.getScaleX();
-        defaultScaleY = view.getScaleY();
+    public ViewInfo(float scaleX, float scaleY) {
+        defaultScaleX = scaleX;
+        defaultScaleY = scaleY;
         scaleDownX = defaultScaleX/SCALE_DOWN_FACTOR;
         scaleDownY = defaultScaleY/SCALE_DOWN_FACTOR;
 
