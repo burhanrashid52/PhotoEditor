@@ -87,6 +87,17 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
         redoViews = new ArrayList<>();
     }
 
+
+    /**
+     * This will add sticker on {@link PhotoEditorView} which you drag,rotate and scale using pinch
+     * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
+     *
+     * @param desiredImage bitmap of the sticker image you want to add
+     */
+    public void addSticker(Bitmap desiredImage) {
+        addImageResource(desiredImage, ViewType.STICKER);
+    }
+
     /**
      * This will add image on {@link PhotoEditorView} which you drag,rotate and scale using pinch
      * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
@@ -94,7 +105,11 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
      * @param desiredImage bitmap image you want to add
      */
     public void addImage(Bitmap desiredImage) {
-        final View imageRootView = getLayout(ViewType.IMAGE);
+        addImageResource(desiredImage, ViewType.IMAGE);
+    }
+
+    private void addImageResource(Bitmap desiredImage, ViewType viewType) {
+        final View imageRootView = getLayout(viewType);
         final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
         final FrameLayout frmBorder = imageRootView.findViewById(R.id.frmBorder);
         final ImageView imgClose = imageRootView.findViewById(R.id.imgPhotoEditorClose);
@@ -149,8 +164,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
             imageRootView.setScaleY(scaleFactor);
         }
 
-        addViewToParent(imageRootView, ViewType.IMAGE);
-
+        addViewToParent(imageRootView, viewType);
     }
 
     /**
@@ -393,6 +407,7 @@ public class PhotoEditor implements BrushViewChangeListener, MultiTouchListener.
                 }
                 break;
             case IMAGE:
+            case STICKER:
                 rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_image, null);
                 break;
             case EMOJI:
