@@ -250,17 +250,11 @@ class MultiTouchListener implements OnTouchListener {
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
 //        Bitmap drawableBitmap = bitmap.copy(bitmap.getConfig(), true);
 
-
         int eventX = (int)event.getX();
         int eventY = (int)event.getY();
 
         Rect imageRect = new Rect();
         image.getHitRect(imageRect);
-
-        //Check if you hit outside the image. If you hit the frame around the view we say that that you hit a transparent pixel.
-        if(!imageRect.contains(eventX, eventY)){
-            return false;
-        }
 
         //Get rect of border
         Rect borderRect = new Rect();
