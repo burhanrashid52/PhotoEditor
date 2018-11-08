@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#1100FF00">
 
     <ImageView
         android:id="@+id/imgPhotoEditorClose"
@@ -27,7 +28,8 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_remove" />
+            android:src="@drawable/ic_remove"
+            android:background="#66FF0000"/>
 
     </FrameLayout>
 

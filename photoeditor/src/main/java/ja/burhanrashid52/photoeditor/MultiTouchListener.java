@@ -250,15 +250,31 @@ class MultiTouchListener implements OnTouchListener {
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
 //        Bitmap drawableBitmap = bitmap.copy(bitmap.getConfig(), true);
 
-        int eventX = (int)event.getX();
-        int eventY = (int)event.getY();
+        //Get rect of border
+        Rect borderRect = new Rect();
+        border.getHitRect(borderRect);
+
+        int eventX = (int)event.getX()- borderRect.left;
+        int eventY = (int)event.getY() - borderRect.top;
 
         Rect imageRect = new Rect();
         image.getHitRect(imageRect);
 
-        //Get rect of border
-        Rect borderRect = new Rect();
-        border.getHitRect(borderRect);
+        Rect hitRect = new Rect();
+        view.getHitRect(hitRect);
+
+        ((PhotoEditorView) parentView).drawImageHitRect(imageRect);
+        ((PhotoEditorView) parentView).drawEventXY(eventX, eventY);
+        ((PhotoEditorView) parentView).drawViewRect(hitRect);
+
+        Log.d("VIEWTYPE","VIEWTYPE:" + view);
+        //Check if you hit outside the image. If you hit the frame around the view we say that that you hit a transparent pixel.
+        if(!imageRect.contains(eventX, eventY)){
+            return false;
+        }
+
+
+
 
         //Enable to enabled radius to scale together with scaling
 //        mVariableTransparentPixelsClickThroughRadius = (int)(mTransparentPixelsClickThroughRadius * view.getScaleX());
@@ -266,6 +282,8 @@ class MultiTouchListener implements OnTouchListener {
         //The eventX and Y for the actual image (discluding the frame and any views around it)
         int imageEventX = eventX - (imageRect.left + borderRect.left);
         int imageEventY = eventY - (imageRect.top + borderRect.top);
+
+        ((PhotoEditorView) parentView).drawEventXY2(imageEventX, imageEventY);
 
         float scaleFactorX = (float) bitmap.getWidth() / (float) image.getWidth();
         float scaleFactorY = (float) bitmap.getHeight()/ (float)image.getHeight();

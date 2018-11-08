@@ -2,7 +2,11 @@ package ja.burhanrashid52.photoeditor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.media.effect.Effect;
 import android.media.effect.EffectContext;
 import android.media.effect.EffectFactory;
@@ -46,6 +50,42 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private CustomEffect mCustomEffect;
     private OnSaveBitmap mOnSaveBitmap;
     private boolean isSaveImage = false;
+
+    private Rect imageHitRect;
+    private Point eventXY;
+    private Point eventXY2;
+    private Rect viewRect;
+
+    public void drawImageHitRect(Rect imageHitRect){
+        this.imageHitRect = imageHitRect;
+    }
+
+    public void drawViewRect(Rect viewRect){
+        this.viewRect = viewRect;
+    }
+
+    public void drawEventXY(int x, int y ){
+        this.eventXY = new Point(x,y);
+    }
+
+    public void drawEventXY2(int x, int y ){
+        this.eventXY2 = new Point(x,y);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        canvas.drawRect(viewRect, paint);
+        paint.setColor(Color.GREEN);
+        canvas.drawRect(imageHitRect, paint);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(eventXY.x, eventXY.y, eventXY.x+5, eventXY.y+5, paint);
+        paint.setColor(Color.BLACK);
+        canvas.drawRect(eventXY2.x, eventXY2.y, eventXY2.x+5, eventXY2.y+5, paint);
+    }
 
     public ImageFilterView(Context context) {
         super(context);
