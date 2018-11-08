@@ -200,6 +200,15 @@ class MultiTouchListener implements OnTouchListener {
                             adjustTranslation(view, currX - mPrevX, currY - mPrevY);
                         }
                     }
+                } else if (deleteView == null){
+                    int pointerIndexMove = event.findPointerIndex(mActivePointerId);
+                    if (pointerIndexMove != -1) {
+                        float currX = event.getX(pointerIndexMove);
+                        float currY = event.getY(pointerIndexMove);
+                        if (!mScaleGestureDetector.isInProgress()) {
+                            adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                        }
+                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
