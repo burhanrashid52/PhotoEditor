@@ -1,6 +1,8 @@
 package ja.burhanrashid52.photoeditor;
 
 import android.graphics.Bitmap;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 /**
  * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
@@ -71,7 +73,7 @@ public class SaveSettings {
          * @param compressFormat JPEG, PNG or WEBP
          * @return Builder
          */
-        public Builder setCompressFormat(Bitmap.CompressFormat compressFormat) {
+        public Builder setCompressFormat(@NonNull Bitmap.CompressFormat compressFormat) {
             this.compressFormat = compressFormat;
             return this;
         }
@@ -82,7 +84,7 @@ public class SaveSettings {
          * @param compressQuality An integer from 0 to 100
          * @return Builder
          */
-        public Builder setCompressQuality(int compressQuality) {
+        public Builder setCompressQuality(@IntRange(from=0,to=100) int compressQuality) {
             this.compressQuality = compressQuality;
             return this;
         }
