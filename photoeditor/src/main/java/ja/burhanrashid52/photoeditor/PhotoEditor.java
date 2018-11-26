@@ -3,8 +3,10 @@ package ja.burhanrashid52.photoeditor;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -12,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -53,6 +56,8 @@ public class PhotoEditor implements BrushViewChangeListener {
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private Drawable mRemoveIcon;
+    private Integer mFrameColor;
 
 
     private PhotoEditor(Builder builder) {
@@ -64,6 +69,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
+        this.mRemoveIcon = builder.removeIcon;
+        this.mFrameColor = builder.frameColor;
+
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
         addedViews = new ArrayList<>();
@@ -75,8 +83,9 @@ public class PhotoEditor implements BrushViewChangeListener {
      * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
      *
      * @param desiredImage bitmap image you want to add
+     * @return the view added
      */
-    public void addImage(Bitmap desiredImage) {
+    public View addImage(Bitmap desiredImage) {
         final View imageRootView = getLayout(ViewType.IMAGE);
         final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
         final FrameLayout frmBorder = imageRootView.findViewById(R.id.frmBorder);
@@ -103,7 +112,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         imageRootView.setOnTouchListener(multiTouchListener);
 
         addViewToParent(imageRootView, ViewType.IMAGE);
-
+        return imageRootView;
     }
 
     /**
@@ -112,10 +121,25 @@ public class PhotoEditor implements BrushViewChangeListener {
      *
      * @param text              text to display
      * @param colorCodeTextView text color to be displayed
+     * @return the view added
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(String text, final int colorCodeTextView) {
-        addText(null, text, colorCodeTextView);
+    public View addText(String text, final int colorCodeTextView) {
+        return addText(null, text, colorCodeTextView, null);
+    }
+
+    /**
+     * This add the text on the {@link PhotoEditorView} with provided parameters
+     * by default {@link TextView#setText(int)} will be 18sp
+     *
+     * @param text              text to display
+     * @param colorCodeTextView text color to be displayed
+     * @param textSize          text size to be displayed
+     * @return the view added
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public View  addText(String text, final int colorCodeTextView, final float textSize) {
+        return addText(null, text, colorCodeTextView, textSize);
     }
 
     /**
@@ -125,9 +149,10 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param textTypeface      typeface for custom font in the text
      * @param text              text to display
      * @param colorCodeTextView text color to be displayed
+     * @return the view added
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
+    public View addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView, @Nullable Float textSize) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
         final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
@@ -138,6 +163,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         textInputTv.setTextColor(colorCodeTextView);
         if (textTypeface != null) {
             textInputTv.setTypeface(textTypeface);
+        }
+        if(textSize != null) {
+            textInputTv.setTextSize(textSize);
         }
         MultiTouchListener multiTouchListener = getMultiTouchListener();
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
@@ -161,6 +189,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
+        return textRootView;
     }
 
 
@@ -202,9 +231,10 @@ public class PhotoEditor implements BrushViewChangeListener {
      * if {@link PhotoEditor.Builder#setPinchTextScalable(boolean)} enabled
      *
      * @param emojiName unicode in form of string to display emoji
+     * @return the view added
      */
-    public void addEmoji(String emojiName) {
-        addEmoji(null, emojiName);
+    public View addEmoji(String emojiName) {
+        return addEmoji(null, emojiName);
     }
 
     /**
@@ -213,8 +243,9 @@ public class PhotoEditor implements BrushViewChangeListener {
      *
      * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
      * @param emojiName     unicode in form of string to display emoji
+     * @return the view added
      */
-    public void addEmoji(Typeface emojiTypeface, String emojiName) {
+    public View addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         final View emojiRootView = getLayout(ViewType.EMOJI);
         final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
@@ -242,6 +273,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         });
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
+        return emojiRootView;
     }
 
 
@@ -257,7 +289,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         parentView.addView(rootView, params);
         addedViews.add(rootView);
         if (mOnPhotoEditorListener != null)
-            mOnPhotoEditorListener.onAddViewListener(viewType, addedViews.size());
+            mOnPhotoEditorListener.onAddViewListener(rootView, viewType, addedViews.size());
     }
 
     /**
@@ -315,6 +347,15 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
 
         if (rootView != null) {
+
+            //setting custom frame color and remove icon
+            if(mRemoveIcon != null) {
+
+            }
+            if(mFrameColor != null) {
+                Drawable frame = rootView.findViewById(R.id.frmBorder).getBackground();
+                DrawableCompat.setTint(frame, mFrameColor);
+            }
             //We are setting tag as ViewType to identify what type of the view it is
             //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
             rootView.setTag(viewType);
@@ -454,8 +495,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
                 if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
-                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(removedView, addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(removedView, viewType, addedViews.size());
                 }
             }
         }
@@ -477,10 +518,10 @@ public class PhotoEditor implements BrushViewChangeListener {
                 redoViews.add(removeView);
             }
             if (mOnPhotoEditorListener != null) {
-                mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                mOnPhotoEditorListener.onRemoveViewListener(removeView, addedViews.size());
                 Object viewTag = removeView.getTag();
                 if (viewTag != null && viewTag instanceof ViewType) {
-                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(removeView, ((ViewType) viewTag), addedViews.size());
                 }
             }
         }
@@ -504,7 +545,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             }
             Object viewTag = redoView.getTag();
             if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
-                mOnPhotoEditorListener.onAddViewListener(((ViewType) viewTag), addedViews.size());
+                mOnPhotoEditorListener.onAddViewListener(redoView, ((ViewType) viewTag), addedViews.size());
             }
         }
         return redoViews.size() != 0;
@@ -788,22 +829,23 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
         addedViews.add(brushDrawingView);
         if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onAddViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+            mOnPhotoEditorListener.onAddViewListener(brushDrawingView, ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
 
     @Override
     public void onViewRemoved(BrushDrawingView brushDrawingView) {
+        View removeView = null;
         if (addedViews.size() > 0) {
-            View removeView = addedViews.remove(addedViews.size() - 1);
+            removeView = addedViews.remove(addedViews.size() - 1);
             if (!(removeView instanceof BrushDrawingView)) {
                 parentView.removeView(removeView);
             }
             redoViews.add(removeView);
         }
         if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
-            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(removeView, addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(removeView, ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
 
@@ -834,6 +876,8 @@ public class PhotoEditor implements BrushViewChangeListener {
         private BrushDrawingView brushDrawingView;
         private Typeface textTypeface;
         private Typeface emojiTypeface;
+        private Drawable removeIcon;
+        private Integer frameColor;
         //By Default pinch zoom on text is enabled
         private boolean isTextPinchZoomable = true;
 
@@ -886,6 +930,30 @@ public class PhotoEditor implements BrushViewChangeListener {
          */
         public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
             this.isTextPinchZoomable = isTextPinchZoomable;
+            return this;
+        }
+
+        /**
+         *
+         * Set the default color of the sticker's frame
+         *
+         * @param frameColor color of the sticker's frame
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setFrameColor(int frameColor) {
+            this.frameColor = frameColor;
+            return this;
+        }
+
+        /**
+         *
+         * Set the default remove icon of the sticker
+         *
+         * @param removeIcon remove icon of the sticker
+         * @return {@link Builder} instant to build {@link PhotoEditor}
+         */
+        public Builder setRemoveIcon(Drawable removeIcon) {
+            this.removeIcon = removeIcon;
             return this;
         }
 

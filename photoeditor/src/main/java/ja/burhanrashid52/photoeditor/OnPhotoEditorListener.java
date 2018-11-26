@@ -31,7 +31,7 @@ public interface OnPhotoEditorListener {
      * @param numberOfAddedViews number of views currently added
      * @see ViewType
      */
-    void onAddViewListener(ViewType viewType, int numberOfAddedViews);
+    void onAddViewListener(View rootView, ViewType viewType, int numberOfAddedViews);
 
 
     /**
@@ -39,10 +39,10 @@ public interface OnPhotoEditorListener {
      * undo and redo happens or text is removed
      *
      * @param numberOfAddedViews number of views currently added
-     * @deprecated Use {@link OnPhotoEditorListener#onRemoveViewListener(ViewType, int)} instead
+     * @deprecated Use {@link OnPhotoEditorListener#onRemoveViewListener(View rootView, ViewType, int)} instead
      */
     @Deprecated
-    void onRemoveViewListener(int numberOfAddedViews);
+    void onRemoveViewListener(View rootView, int numberOfAddedViews);
 
 
     /**
@@ -52,7 +52,7 @@ public interface OnPhotoEditorListener {
      * @param viewType           enum which define type of view is added
      * @param numberOfAddedViews number of views currently added
      */
-    void onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
+    void onRemoveViewListener(View rootView, ViewType viewType, int numberOfAddedViews);
 
     /**
      * A callback when user start dragging a view which can be
