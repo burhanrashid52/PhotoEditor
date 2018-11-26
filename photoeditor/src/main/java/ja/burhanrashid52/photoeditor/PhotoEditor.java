@@ -348,10 +348,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
         if (rootView != null) {
 
-            //setting custom frame color and remove icon
-            if(mRemoveIcon != null) {
-
-            }
+            //setting custom frame color
             if(mFrameColor != null) {
                 Drawable frame = rootView.findViewById(R.id.frmBorder).getBackground();
                 DrawableCompat.setTint(frame, mFrameColor);
@@ -362,6 +359,9 @@ public class PhotoEditor implements BrushViewChangeListener {
             final ImageView imgClose = rootView.findViewById(R.id.imgPhotoEditorClose);
             final View finalRootView = rootView;
             if (imgClose != null) {
+                if(mRemoveIcon != null) {
+                    imgClose.setImageDrawable(mRemoveIcon);
+                }
                 imgClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
