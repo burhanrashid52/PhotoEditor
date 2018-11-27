@@ -3,7 +3,6 @@ package ja.burhanrashid52.photoeditor;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -101,6 +100,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                 frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
                 imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
                 frmBorder.setTag(!isBackgroundVisible);
+                if(mOnPhotoEditorListener != null) mOnPhotoEditorListener.onViewClickListener(imageRootView, ViewType.TEXT);
             }
 
             @Override
@@ -175,6 +175,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                 frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
                 imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
                 frmBorder.setTag(!isBackgroundVisible);
+                if(mOnPhotoEditorListener != null) mOnPhotoEditorListener.onViewClickListener(textRootView, ViewType.TEXT);
             }
 
             @Override
@@ -265,6 +266,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                 frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
                 imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
                 frmBorder.setTag(!isBackgroundVisible);
+
+                if(mOnPhotoEditorListener != null) mOnPhotoEditorListener.onViewClickListener(emojiRootView, ViewType.TEXT);
             }
 
             @Override

@@ -70,4 +70,13 @@ public interface OnPhotoEditorListener {
      * @param viewType enum which define type of view is added
      */
     void onStopViewChangeListener(ViewType viewType);
+
+    /**
+     * A callback when user click on a view which ca be
+     * any of {@link ViewType}
+     *
+     * @param rootView the view that has been clicked
+     * @param viewType enum which define type of view is added
+     */
+    void onViewClickListener(View rootView, ViewType viewType);
 }
