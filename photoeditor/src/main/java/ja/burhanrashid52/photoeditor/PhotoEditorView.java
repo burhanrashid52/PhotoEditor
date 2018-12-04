@@ -4,11 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -36,7 +33,8 @@ public class PhotoEditorView extends RelativeLayout {
     private FilterImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
     private ImageFilterView mImageFilterView;
-    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
+    private CropImageView mCropImageView;
+    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3, cropSelectionId = 4;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -62,7 +60,7 @@ public class PhotoEditorView extends RelativeLayout {
     @SuppressLint("Recycle")
     private void init(@Nullable AttributeSet attrs) {
         //Setup image attributes
-        mImgSource = new FilterImageView(getContext());
+        mImgSource = new FilterImageView(getContext(), attrs);
         mImgSource.setId(imgSrcId);
         mImgSource.setAdjustViewBounds(true);
         RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
@@ -86,6 +84,18 @@ public class PhotoEditorView extends RelativeLayout {
         brushParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         brushParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
         brushParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
+
+        //Setup brush view
+        mCropImageView = new CropImageView(getContext());
+        mCropImageView.setVisibility(VISIBLE);
+        mCropImageView.setId(brushSrcId);
+        //Align brush to the size of image view
+        RelativeLayout.LayoutParams cropParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        cropParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        cropParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        cropParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        cropParam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
         //Setup GLSurface attributes
         mImageFilterView = new ImageFilterView(getContext());
@@ -118,6 +128,10 @@ public class PhotoEditorView extends RelativeLayout {
         //Add brush view
         addView(mBrushDrawingView, brushParam);
 
+        //Add crop view
+        addView(mCropImageView, cropParam);
+
+        mCropImageView.setRatioCropRect(mImgSource.getBitmapRect(), CropImageView.dataList.get(0).getRatio());
     }
 
 
