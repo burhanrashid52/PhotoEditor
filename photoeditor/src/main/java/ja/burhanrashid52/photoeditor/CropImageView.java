@@ -17,7 +17,7 @@ import java.util.List;
 import ja.burhanrashid52.photoeditor.imagezoom.RatioItem;
 
 
-class CropImageView extends View {
+public class CropImageView extends View {
 	private static int STATUS_IDLE = 1;// 空闲状态
 	private static int STATUS_MOVE = 2;// 移动状态
 	private static int STATUS_SCALE = 3;// 缩放状态

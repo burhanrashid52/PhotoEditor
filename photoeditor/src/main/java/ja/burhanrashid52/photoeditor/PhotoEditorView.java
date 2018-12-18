@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -131,7 +132,14 @@ public class PhotoEditorView extends RelativeLayout {
         //Add crop view
         addView(mCropImageView, cropParam);
 
-        mCropImageView.setRatioCropRect(mImgSource.getBitmapRect(), CropImageView.dataList.get(0).getRatio());
+        mImgSource.post(new Runnable() {
+            @Override
+            public void run() {
+                final RectF r = mImgSource.getBitmapRect();
+                mCropImageView.setCropRect(r);
+                mCropImageView.setRatioCropRect(mImgSource.getBitmapRect(), CropImageView.dataList.get(1).getRatio());
+            }
+        });
     }
 
 
