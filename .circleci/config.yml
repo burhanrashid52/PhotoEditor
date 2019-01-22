@@ -20,7 +20,7 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-     - run:
+      - run:
           name: Accept licenses
           command: yes | sdkmanager --licenses && sdkmanager --update
       - run:
