@@ -20,6 +20,9 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+     - run:
+          name: Accept licenses
+          command: yes | sdkmanager --licenses && sdkmanager --update
       - run:
           name: Lists installed targets
           command: android list target
