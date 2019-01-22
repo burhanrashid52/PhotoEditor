@@ -7,7 +7,7 @@
     tools:context=".CropActivity">
 
 
-    <ja.burhanrashid52.photoeditor.imagezoom.ImageViewTouch
+    <ImageView
         android:id="@+id/imgTouchView"
         android:layout_width="0dp"
         android:layout_height="0dp"

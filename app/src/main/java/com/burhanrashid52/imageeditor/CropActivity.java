@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.burhanrashid52.imageeditor.base.BaseActivity;
 
@@ -14,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ja.burhanrashid52.photoeditor.CropImageView;
-import ja.burhanrashid52.photoeditor.imagezoom.ImageViewTouch;
 import ja.burhanrashid52.photoeditor.imagezoom.RatioItem;
 import ja.burhanrashid52.photoeditor.imagezoom.utils.Matrix3;
 
 public class CropActivity extends BaseActivity {
 
     private static List<RatioItem> dataList = new ArrayList<RatioItem>();
+    private RectF mRectF;
+
 
     static {
         // init data
@@ -37,7 +39,7 @@ public class CropActivity extends BaseActivity {
     }
 
     private CropImageView mCropImageView;
-    private ImageViewTouch mImageViewTouch;
+    private ImageView mImageViewTouch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +48,19 @@ public class CropActivity extends BaseActivity {
         setContentView(R.layout.activity_crop);
         mCropImageView = findViewById(R.id.crop_panel);
         mImageViewTouch = findViewById(R.id.imgTouchView);
+        Bitmap resource = BitmapFactory.decodeResource(getResources(), R.drawable.got_s);
+        mRectF = new RectF(0, 0, resource.getWidth(), resource.getHeight());
         mImageViewTouch.setImageResource(R.drawable.got_s);
         mImageViewTouch.post(new Runnable() {
             @Override
             public void run() {
-                mCropImageView.setCropRect(mImageViewTouch.getBitmapRect());
-                mCropImageView.setRatioCropRect(mImageViewTouch.getBitmapRect(), dataList.get(4).getRatio());
+                mCropImageView.setCropRect(mRectF);
+                mCropImageView.setRatioCropRect(mRectF, dataList.get(4).getRatio());
             }
         });
     }
 
-    public void cropImage(View view) {
+    /*public void cropImage(View view) {
         new CropImageTask().execute(BitmapFactory.decodeResource(getResources(), R.drawable.got_s));
     }
 
@@ -100,5 +104,5 @@ public class CropActivity extends BaseActivity {
             mImageViewTouch.setImageBitmap(result);
             mCropImageView.setCropRect(mImageViewTouch.getBitmapRect());
         }
-    }//
+    }//*/
 }
