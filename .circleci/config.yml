@@ -26,6 +26,9 @@ jobs:
           environment:
           TERM: dumb
       - run:
+         name: Accept licenses
+         command: yes | sdkmanager --licenses
+      - run:
           name: Show list of system-images
           command: sdkmanager --list --verbose | grep system-images
       - run:
