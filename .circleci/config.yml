@@ -14,6 +14,9 @@ jobs:
          name: Chmod permissions
          command: sudo chmod +x ./gradlew
       - run:
+         name: Accept licenses
+         command: sdkmanager --update && yes | sdkmanager --licenses
+      - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
@@ -27,10 +30,10 @@ jobs:
           TERM: dumb
       - run:
           name: Show list of system-images
-          command: yes | sdkmanager --licenses | sdkmanager --list --verbose | grep system-images
+          command: sdkmanager --list --verbose | grep system-images
       - run:
           name: Setup Emulator
-          command: sdkmanager "system-images;android-27;build-tools;27.0.3;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-27;build-tools;27.0.3;default;armeabi-v7a"
+          command: sdkmanager "system-images;android-21;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-21;default;armeabi-v7a"
       - run:
           name: Launch Emulator
           command: |
