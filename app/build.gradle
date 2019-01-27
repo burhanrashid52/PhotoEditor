@@ -26,6 +26,12 @@ dependencies {
     //implementation 'ja.burhanrashid52:photoeditor:0.3.3'
     implementation project(':photoeditor')
     implementation 'com.android.support:cardview-v7:27.1.1'
+
+    testImplementation 'junit:junit:4.12'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
 // make sure this line comes *after* you apply the Android plugin
