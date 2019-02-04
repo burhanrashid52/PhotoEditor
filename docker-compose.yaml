@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  photoeditor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
