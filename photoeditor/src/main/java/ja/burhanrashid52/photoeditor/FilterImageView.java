@@ -12,24 +12,17 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
-
-import ja.burhanrashid52.photoeditor.imagezoom.ImageViewTouch;
 
 /**
  * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
  * @version 0.1.2
  * @since 5/21/2018
  */
-class FilterImageView extends ImageViewTouch {
+class FilterImageView extends AppCompatImageView {
 
     private OnImageChangedListener mOnImageChangedListener;
 
-    public FilterImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    /*public FilterImageView(Context context) {
+    public FilterImageView(Context context) {
         super(context);
     }
 
@@ -39,7 +32,7 @@ class FilterImageView extends ImageViewTouch {
 
     public FilterImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }*/
+    }
 
     public void setOnImageChangedListener(OnImageChangedListener onImageChangedListener) {
         mOnImageChangedListener = onImageChangedListener;

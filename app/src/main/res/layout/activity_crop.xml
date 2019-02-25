@@ -6,22 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".CropActivity">
 
-
-    <ImageView
-        android:id="@+id/imgTouchView"
+    <ja.burhanrashid52.photoeditor.CropPhotoView
+        android:id="@+id/cropPhotoView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ja.burhanrashid52.photoeditor.CropImageView
-        android:id="@+id/crop_panel"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,10 +19,10 @@
         android:id="@+id/btnCrop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Crop"
         android:onClick="cropImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Crop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

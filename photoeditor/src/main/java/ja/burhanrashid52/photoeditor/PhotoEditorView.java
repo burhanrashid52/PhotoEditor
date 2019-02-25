@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -34,8 +33,7 @@ public class PhotoEditorView extends RelativeLayout {
     private FilterImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
     private ImageFilterView mImageFilterView;
-    private CropImageView mCropImageView;
-    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3, cropSelectionId = 4;
+    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -86,18 +84,6 @@ public class PhotoEditorView extends RelativeLayout {
         brushParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
         brushParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
 
-        //Setup brush view
-        mCropImageView = new CropImageView(getContext());
-        mCropImageView.setVisibility(VISIBLE);
-        mCropImageView.setId(brushSrcId);
-        //Align brush to the size of image view
-        RelativeLayout.LayoutParams cropParam = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        cropParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        cropParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        cropParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        cropParam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
         //Setup GLSurface attributes
         mImageFilterView = new ImageFilterView(getContext());
         mImageFilterView.setId(glFilterId);
@@ -128,18 +114,6 @@ public class PhotoEditorView extends RelativeLayout {
 
         //Add brush view
         addView(mBrushDrawingView, brushParam);
-
-        //Add crop view
-        addView(mCropImageView, cropParam);
-
-        mImgSource.post(new Runnable() {
-            @Override
-            public void run() {
-                final RectF r = mImgSource.getBitmapRect();
-                mCropImageView.setCropRect(r);
-                mCropImageView.setRatioCropRect(mImgSource.getBitmapRect(), CropImageView.dataList.get(1).getRatio());
-            }
-        });
     }
 
 
