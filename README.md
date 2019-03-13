@@ -10,6 +10,8 @@
 
 A Photo Editor library with simple, easy support for image editing using paints,text,filters,emoji and Sticker like stories.
 
+<img src="Logotype Primary Horizontal.png" width="60%" height="60%" />
+
 ## Features
 
 - [**Drawing**](#drawing) on image with option to change its Brush's Color,Size,Opacity and Erasing.
