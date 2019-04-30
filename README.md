@@ -8,11 +8,11 @@
 [![AndroidWeekly](https://img.shields.io/badge/Android%20Weekly-%23312-blue.svg)](http://androidweekly.net/issues/issue-312)
 [![Mindorks](https://img.shields.io/badge/Mindorks%20Newsletter-%234-ff69b4.svg)](https://mindorks.com/newsletter/edition/4)
 
-A Photo Editor library with simple, easy support for image editing using paints,text,filters,emoji and Sticker like stories.
+A Photo Editor library with simple, easy support for image editing using paints, text, filters, emoji and Sticker like stories.
 
 ## Features
 
-- [**Drawing**](#drawing) on image with option to change its Brush's Color,Size,Opacity and Erasing.
+- [**Drawing**](#drawing) on image with option to change its Brush's Color, Size, Opacity and Erasing.
 - Apply [**Filter Effect**](#filter-effect) on image using MediaEffect
 - Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
 - Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
@@ -32,11 +32,11 @@ A Photo Editor library with simple, easy support for image editing using paints,
 
 
 ## Getting Started
-To start with this , you need to just simply add the dependencies in gradle file of app module like this
+To start with this , you need to just simply add the dependencies in gradle file of your app module like this
 ```java
 implementation 'ja.burhanrashid52:photoeditor:0.3.3'
 ```
-or your can also import the :photoeditor module from sample for customization
+or you can also import the :photoeditor module from sample for customization
 
 
 ## Setting up the View
@@ -50,9 +50,9 @@ First you need to add `PhotoEditorView` in your xml layout
         app:photo_src="@drawable/got_s" />
   
 ```
-Your can define your drawable or color resource directly using `app:photo_src`
+You can define your drawable or color resource directly using `app:photo_src`
 
-Your can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
+You can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
 ```java
 PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
 
@@ -60,7 +60,7 @@ mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 ```
 
 ## Building a PhotoEditor
-To use the image editing feature you need to build a PhotoEditor which requires a Context and PhotoEditorView which we have setup in our xml layout
+To use the image editing feature you need to build a PhotoEditor which requires a Context and PhotoEditorView which we have to setup in our xml layout
 
 
 ```java
@@ -89,7 +89,7 @@ That's it we are done with setting up our library
 
 
 ## Drawing
-We can customize our brush and paint with different set of property.To start drawing on image we need to enable the drawing mode
+We can customize our brush and paint with different set of property. To start drawing on image we need to enable the drawing mode
 
 ![](https://i.imgur.com/INi5LIy.gif)
 
@@ -101,7 +101,7 @@ We can customize our brush and paint with different set of property.To start dra
 | Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
 | Brush Eraser  | `mPhotoEditor.brushEraser()` |
 
-**Note**: Whenever you set any property for brush for drawing it will automatically enables the drawing mode
+**Note**: Whenever you set any property of brush for drawing it will automatically enable the drawing mode
 
 
 
@@ -126,11 +126,11 @@ You can add the text with input text and colorCode like this
 
 `mPhotoEditor.addText(inputText, colorCode);` 
 
-It will take default fonts provided in the builder,If you want different fonts for different text you can set typeface with each text like this
+It will take default fonts provided in the builder, if you want different fonts for different text you can set typeface with each text like this
 
 `mPhotoEditor.addText(mTypeface,inputText, colorCode);`
 
-In order to edit the text you need the view which you will receive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
+In order to edit the text you need the view, which you will receive in your PhotoEditor callback. This callback will trigger when you **Long Press** the added text
 
  ```java
  mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
@@ -155,7 +155,7 @@ You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will retu
 
 `mPhotoEditor.addEmoji(emojiUnicode);`
 
-It will take default fonts provided in the builder,If you want different Emoji fonts for different emoji you can set typeface with each Emoji like this
+It will take default fonts provided in the builder. If you want different Emoji fonts for different emoji you can set typeface with each Emoji like this
 
 `mPhotoEditor.addEmoji(mEmojiTypeface,emojiUnicode);`
 
@@ -163,7 +163,7 @@ It will take default fonts provided in the builder,If you want different Emoji f
 
 
 ## Adding Images/Stickers
- You need to provide a Bitmap to add you Images  `mPhotoEditor.addImage(bitmap);`
+ You need to provide a Bitmap to add your Images  `mPhotoEditor.addImage(bitmap);`
  
  
  
@@ -180,14 +180,14 @@ It will take default fonts provided in the builder,If you want different Emoji f
 
 
 ## Deleting
-  For deleting a Text/Emoji/Image you can click on the view to toggle the view highlighter box which will have a close icon so by on clicking on the icon you can delete the view
+  For deleting a Text/Emoji/Image you can click on the view to toggle the view highlighter box which will have a close icon. So, by clicking on the icon you can delete the view.
   
   
   
 
 ## Saving
    
-   You need provide a file with callback method when edited image is saved
+   You need to provide a file with callback method when edited image is saved
    
    ```java
     mPhotoEditor.saveAsFile(filePath, new PhotoEditor.OnSaveListener() {
