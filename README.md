@@ -126,7 +126,7 @@ You can add the text with input text and colorCode like this
 
 `mPhotoEditor.addText(inputText, colorCode);` 
 
-It will take default fonts provided in the builder, if you want different fonts for different text you can set typeface with each text like this
+It will take default fonts provided in the builder. If you want different fonts for different text you can set typeface with each text like this
 
 `mPhotoEditor.addText(mTypeface,inputText, colorCode);`
 
