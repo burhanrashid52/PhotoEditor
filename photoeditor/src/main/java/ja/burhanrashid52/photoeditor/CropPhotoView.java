@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -16,11 +16,14 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import ja.burhanrashid52.photoeditor.imagezoom.ImageViewTouch;
+import ja.burhanrashid52.photoeditor.imagezoom.utils.Matrix3;
+
 public class CropPhotoView extends RelativeLayout {
 
     private int imgSourceId = 1;
     private int cropPanelId = 2;
-    private FilterImageView mImgCropSource;
+    private ImageViewTouch mImgCropSource;
     private CropImageView mCropPanel;
     private boolean mIsCropMode;
     private RectF mSourceImageRectF;
@@ -49,12 +52,12 @@ public class CropPhotoView extends RelativeLayout {
 
     @SuppressLint("Recycle")
     private void init(@Nullable AttributeSet attrs) {
-        mImgCropSource = new FilterImageView(getContext(), attrs);
+        mImgCropSource = new ImageViewTouch(getContext(), attrs);
         mImgCropSource.setId(imgSourceId);
         mImgCropSource.setAdjustViewBounds(true);
 
         RelativeLayout.LayoutParams imgCropParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         imgCropParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         imgCropParams.addRule(RelativeLayout.ALIGN_TOP, imgSourceId);
         imgCropParams.addRule(RelativeLayout.ALIGN_BOTTOM, imgSourceId);
@@ -86,32 +89,19 @@ public class CropPhotoView extends RelativeLayout {
 
     public void setImageBitmap(final Bitmap bitmap) {
         mImgCropSource.setImageBitmap(bitmap);
-        mImgCropSource.post(new Runnable() {
-            @Override
-            public void run() {
-                mSourceImageRectF = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            }
-        });
     }
 
     public void setCropMode(boolean isCropMode) {
         mIsCropMode = isCropMode;
         mCropPanel.setVisibility(isCropMode ? VISIBLE : GONE);
         if (isCropMode) {
-            new Handler().postDelayed(new Runnable() {
+            mImgCropSource.post(new Runnable() {
                 @Override
                 public void run() {
-                    mCropPanel.setCropRect(mSourceImageRectF);
-                    mCropPanel.setRatioCropRect(mSourceImageRectF, mCropRatio.getRationValue());
+                    mCropPanel.setCropRect(mImgCropSource.getBitmapRect());
+                    mCropPanel.setRatioCropRect(mImgCropSource.getBitmapRect(), mCropRatio.getRationValue());
                 }
-            }, 500);
-           /* mImgCropSource.post(new Runnable() {
-                @Override
-                public void run() {
-                    mCropPanel.setCropRect(mSourceImageRectF);
-                    mCropPanel.setRatioCropRect(mSourceImageRectF, mCropRatio.getRationValue());
-                }
-            });*/
+            });
         }
     }
 
@@ -138,9 +128,26 @@ public class CropPhotoView extends RelativeLayout {
         @Override
         protected Bitmap doInBackground(Void... params) {
             RectF cropRect = mCropPanel.getCropRect();
-            return Bitmap.createBitmap(mBitmap,
+            Matrix touchMatrix = mImgCropSource.getImageViewMatrix();
+            // Canvas canvas = new Canvas(resultBit);
+            float[] data = new float[9];
+            touchMatrix.getValues(data);// 底部图片变化记录矩阵原始数据
+            Matrix3 cal = new Matrix3(data);// 辅助矩阵计算类
+            Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
+            Matrix m = new Matrix();
+            m.setValues(inverseMatrix.getValues());
+            m.mapRect(cropRect);// 变化剪切矩形
+
+            // Paint paint = new Paint();
+            // paint.setColor(Color.RED);
+            // paint.setStrokeWidth(10);
+            // canvas.drawRect(cropRect, paint);
+            // Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
+            // Bitmap.Config.ARGB_8888, true);
+            Bitmap resultBit = Bitmap.createBitmap(mBitmap,
                     (int) cropRect.left, (int) cropRect.top,
                     (int) cropRect.width(), (int) cropRect.height());
+            return resultBit;
         }
 
         @Override

@@ -1,10 +1,12 @@
 package ja.burhanrashid52.photoeditor.imagezoom;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -13,6 +15,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.ViewConfiguration;
+
+import ja.burhanrashid52.photoeditor.imagezoom.graphic.FastBitmapDrawable;
 
 public class ImageViewTouch extends ImageViewTouchBase {
     static final float SCROLL_DELTA_THRESHOLD = 1.0f;
@@ -186,7 +190,7 @@ public class ImageViewTouch extends ImageViewTouchBase {
         if (mFlingListener != null) {
             mFlingListener.onFling(e1, e2, velocityX, velocityY);
         }
-        
+
         if (e1.getPointerCount() > 1 || e2.getPointerCount() > 1)
             return false;
         if (mScaleDetector.isInProgress())
@@ -348,5 +352,13 @@ public class ImageViewTouch extends ImageViewTouchBase {
 
     public interface OnImageFlingListener {
         void onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
+    }
+
+    @Nullable
+    public Bitmap getBitmap() {
+        if (getDrawable() != null) {
+            return ((FastBitmapDrawable) getDrawable()).getBitmap();
+        }
+        return null;
     }
 }
