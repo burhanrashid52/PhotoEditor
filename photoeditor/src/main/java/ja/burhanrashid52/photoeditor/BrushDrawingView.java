@@ -12,6 +12,7 @@ import android.graphics.PorterDuffXfermode;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,13 +31,18 @@ import java.util.Stack;
  */
 public class BrushDrawingView extends View {
 
-    private float mBrushSize = 25;
-    private float mBrushEraserSize = 50;
-    private int mOpacity = 255;
+    static final float DEFAULT_BRUSH_SIZE = 25f;
+    static final float DEFAULT_ERASER_SIZE = 50f;
+    static final int DEFAULT_OPACITY = 255;
+
+    private float mBrushSize = DEFAULT_BRUSH_SIZE;
+    private float mBrushEraserSize = DEFAULT_ERASER_SIZE;
+    private int mOpacity = DEFAULT_OPACITY;
 
     private Stack<LinePath> mDrawnPaths = new Stack<>();
     private Stack<LinePath> mRedoPaths = new Stack<>();
-    private Paint mDrawPaint;
+    private Paint mDrawPaint = new Paint();
+    ;
 
     private Canvas mDrawCanvas;
     private boolean mBrushDrawMode;
@@ -64,11 +70,15 @@ public class BrushDrawingView extends View {
     private void setupBrushDrawing() {
         //Caution: This line is to disable hardware acceleration to make eraser feature work properly
         setLayerType(LAYER_TYPE_HARDWARE, null);
-        mDrawPaint = new Paint();
+        mDrawPaint.setColor(Color.BLACK);
+        setupPathAndPaint();
+        setVisibility(View.GONE);
+    }
+
+    private void setupPathAndPaint() {
         mPath = new Path();
         mDrawPaint.setAntiAlias(true);
         mDrawPaint.setDither(true);
-        mDrawPaint.setColor(Color.BLACK);
         mDrawPaint.setStyle(Paint.Style.STROKE);
         mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -77,22 +87,11 @@ public class BrushDrawingView extends View {
         //Resolve Brush color changes after saving image  #52
         //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-        this.setVisibility(View.GONE);
     }
 
     private void refreshBrushDrawing() {
         mBrushDrawMode = true;
-        mPath = new Path();
-        mDrawPaint.setAntiAlias(true);
-        mDrawPaint.setDither(true);
-        mDrawPaint.setStyle(Paint.Style.STROKE);
-        mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
-        mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-        mDrawPaint.setStrokeWidth(mBrushSize);
-        mDrawPaint.setAlpha(mOpacity);
-        //Resolve Brush color changes after saving image  #52
-        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
-        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+        setupPathAndPaint();
     }
 
     void brushEraser() {
@@ -282,5 +281,10 @@ public class BrushDrawingView extends View {
             mBrushViewChangeListener.onStopDrawing();
             mBrushViewChangeListener.onViewAdd(this);
         }
+    }
+
+    @VisibleForTesting
+    Paint getDrawingPaint() {
+        return mDrawPaint;
     }
 }
