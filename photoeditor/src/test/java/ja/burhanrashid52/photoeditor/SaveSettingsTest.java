@@ -1,7 +1,5 @@
 package ja.burhanrashid52.photoeditor;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertFalse;
@@ -10,13 +8,13 @@ import static junit.framework.TestCase.assertTrue;
 
 public class SaveSettingsTest {
 
-    @Before
+    /*@Before
     public void setUp() throws Exception {
     }
 
     @After
     public void tearDown() throws Exception {
-    }
+    }*/
 
     @Test
     public void testByDefaultTransparentAndClearViewFlagSettingIsEnabled() {
