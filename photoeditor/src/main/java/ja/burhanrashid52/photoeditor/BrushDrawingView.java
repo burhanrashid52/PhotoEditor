@@ -42,7 +42,6 @@ public class BrushDrawingView extends View {
     private Stack<LinePath> mDrawnPaths = new Stack<>();
     private Stack<LinePath> mRedoPaths = new Stack<>();
     private Paint mDrawPaint = new Paint();
-    ;
 
     private Canvas mDrawCanvas;
     private boolean mBrushDrawMode;
