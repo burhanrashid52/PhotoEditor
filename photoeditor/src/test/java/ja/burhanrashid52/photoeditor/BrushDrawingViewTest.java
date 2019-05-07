@@ -35,6 +35,10 @@ public class BrushDrawingViewTest {
         assertEquals(drawingPaint.getStrokeWidth(), BrushDrawingView.DEFAULT_BRUSH_SIZE);
         assertEquals(drawingPaint.getAlpha(), BrushDrawingView.DEFAULT_OPACITY);
         assertTrue(drawingPaint.getXfermode() instanceof PorterDuffXfermode);
+
+        // Spy is not working properly
+        /*Paint spyPaint = Mockito.spy(drawingPaint);
+        verify(spyPaint, times(1)).setColor(Color.BLACK);*/
     }
 
     @Test
@@ -69,12 +73,21 @@ public class BrushDrawingViewTest {
         assertEquals(brushDrawingView.getVisibility(), View.VISIBLE);
     }
 
-/*
-    @Test
-    public void brushEraser() {
-    }
 
     @Test
+    public void testWhenBrushEraserIsEnabled() {
+        BrushDrawingView brushDrawingView = new BrushDrawingView(mContext);
+        Paint drawingPaint = brushDrawingView.getDrawingPaint();
+        brushDrawingView.brushEraser();
+
+
+        assertTrue(brushDrawingView.getBrushDrawingMode());
+        assertEquals(brushDrawingView.getEraserSize(), BrushDrawingView.DEFAULT_ERASER_SIZE);
+        assertEquals(drawingPaint.getStrokeWidth(), BrushDrawingView.DEFAULT_ERASER_SIZE);
+        assertTrue(drawingPaint.getXfermode() instanceof PorterDuffXfermode);
+    }
+
+   /* @Test
     public void setOpacity() {
     }
 
