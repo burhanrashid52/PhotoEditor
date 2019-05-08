@@ -57,8 +57,7 @@ public class BrushDrawingView extends View {
     }
 
     public BrushDrawingView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setupBrushDrawing();
+        this(context, attrs, 0);
     }
 
     public BrushDrawingView(Context context, AttributeSet attrs, int defStyle) {
@@ -83,8 +82,6 @@ public class BrushDrawingView extends View {
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawPaint.setStrokeWidth(mBrushSize);
         mDrawPaint.setAlpha(mOpacity);
-        //Resolve Brush color changes after saving image  #52
-        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
     }
 
@@ -110,6 +107,10 @@ public class BrushDrawingView extends View {
     void setOpacity(@IntRange(from = 0, to = 255) int opacity) {
         this.mOpacity = opacity;
         setBrushDrawingMode(true);
+    }
+
+    int getOpacity() {
+        return mOpacity;
     }
 
     boolean getBrushDrawingMode() {
