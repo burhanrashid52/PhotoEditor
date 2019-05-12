@@ -158,12 +158,7 @@ public class BrushDrawingViewTest {
         assertEquals(brushDrawingView.getBrushColor(), Color.RED);
     }
 
-   /* @Test
-
-    @Test
-    public void setBrushColor() {
-    }
-
+   /*
     @Test
     public void setBrushEraserColor() {
     }
