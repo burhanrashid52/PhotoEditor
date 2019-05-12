@@ -8,14 +8,6 @@ import static junit.framework.TestCase.assertTrue;
 
 public class SaveSettingsTest {
 
-    /*@Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }*/
-
     @Test
     public void testByDefaultTransparentAndClearViewFlagSettingIsEnabled() {
         SaveSettings saveSettings = new SaveSettings.Builder().build();
