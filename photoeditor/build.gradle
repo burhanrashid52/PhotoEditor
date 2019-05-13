@@ -61,6 +61,8 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation "com.android.support:support-v13:27.1.1"
     androidTestImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
 }
 
 // Place it at the end of the file

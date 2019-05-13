@@ -128,7 +128,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     @SuppressLint("ClickableViewAccessibility")
     public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
-        final TextStyleBuilder styleBuilder = TextStyleBuilder.createBuilder();
+        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
 
         styleBuilder.withTextColor(colorCodeTextView);
         if (textTypeface != null) {
@@ -201,7 +201,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param colorCode    color to update on {@link TextView}
      */
     public void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, @NonNull int colorCode) {
-        final TextStyleBuilder styleBuilder = TextStyleBuilder.createBuilder();
+        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
         styleBuilder.withTextColor(colorCode);
         if (textTypeface != null) {
             styleBuilder.withTextFont(textTypeface);

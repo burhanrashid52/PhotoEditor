@@ -11,92 +11,80 @@ import java.util.Map;
 
 public class TextStyleBuilder {
 
-    private TextStyleBuilder() { }
     private Map<TextStyle, Object> values = new HashMap<>();
+    protected Map<TextStyle, Object> getValues() { return values; }
 
     public void withTextSize(@NonNull float size) {
-        values.put(TextStyle.Size, size);
+        values.put(TextStyle.SIZE, size);
     }
 
     public void withTextColor(@NonNull int color) {
-        values.put(TextStyle.Color, color);
+        values.put(TextStyle.COLOR, color);
     }
 
     public void withTextFont(@NonNull Typeface textTypeface) {
-        values.put(TextStyle.FontFamily, textTypeface);
+        values.put(TextStyle.FONT_FAMILY, textTypeface);
     }
 
     public void withGravity(@NonNull int gravity) {
-        values.put(TextStyle.Gravity, gravity);
+        values.put(TextStyle.GRAVITY, gravity);
     }
 
     public void withBackgroundColor(@NonNull int background) {
-        values.put(TextStyle.background, background);
+        values.put(TextStyle.BACKGROUND, background);
     }
 
     public void withBackgroundDrawable(@NonNull Drawable bgDrawable) {
-        values.put(TextStyle.background, bgDrawable);
+        values.put(TextStyle.BACKGROUND, bgDrawable);
     }
 
     public void withTextAppearance(@NonNull int textAppearance) {
-        values.put(TextStyle.textAppearance, textAppearance);
-    }
-
-    public static TextStyleBuilder createBuilder() {
-        return new TextStyleBuilder();
+        values.put(TextStyle.TEXT_APPEARANCE, textAppearance);
     }
 
     void applyStyle(@NonNull TextView textView) {
         for (Map.Entry<TextStyle, Object> entry : values.entrySet()) {
             switch (entry.getKey()) {
-                case Size: {
+                case SIZE: {
                     final float size = (float) entry.getValue();
-                    textView.setTextSize(size);
+                    applyTextSize(textView, size);
                 }
                 break;
 
-                case Color: {
+                case COLOR: {
                     final int color = (int) entry.getValue();
-                    textView.setTextColor(color);
+                    applyTextColor(textView, color);
                 }
                 break;
 
-                case FontFamily: {
+                case FONT_FAMILY: {
                     final Typeface typeface = (Typeface) entry.getValue();
-                    textView.setTypeface(typeface);
+                    applyFontFamily(textView, typeface);
                 }
                 break;
 
-                case Gravity: {
+                case GRAVITY: {
                     final int gravity = (int) entry.getValue();
-                    textView.setGravity(gravity);
+                    applyGravity(textView, gravity);
                 }
                 break;
 
-                case background: {
+                case BACKGROUND: {
                     if (entry.getValue() instanceof Drawable) {
                         final Drawable bg = (Drawable) entry.getValue();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            textView.setBackground(bg);
-                        } else {
-                            textView.setBackgroundDrawable(bg);
-                        }
+                        applyBackgroundDrawable(textView, bg);
 
                     } else if (entry.getValue() instanceof Integer) {
                         final int color = (Integer) entry.getValue();
-                        textView.setBackgroundColor(color);
+                        applyBackgroundColor(textView, color);
                     }
                 }
                 break;
 
-                case textAppearance: {
+                case TEXT_APPEARANCE: {
                     if (entry.getValue() instanceof Integer) {
                         final int styleAppearance = (Integer)entry.getValue();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            textView.setTextAppearance(styleAppearance);
-                        } else {
-                            textView.setTextAppearance(textView.getContext(), styleAppearance);
-                        }
+                        applyTextAppearance(textView, styleAppearance);
                     }
                 }
                 break;
@@ -104,13 +92,49 @@ public class TextStyleBuilder {
         }
     }
 
-    private enum TextStyle {
-        Size("TextSize"),
-        Color("TextColor"),
-        Gravity("Gravity"),
-        FontFamily("FontFamily"),
-        background("Background"),
-        textAppearance("textAppearance");
+    protected void applyTextSize(TextView textView, float size) {
+        textView.setTextSize(size);
+    }
+
+    protected void applyTextColor(TextView textView, int color) {
+        textView.setTextColor(color);
+    }
+
+    protected void applyFontFamily(TextView textView, Typeface typeface) {
+        textView.setTypeface(typeface);
+    }
+
+    protected void applyGravity(TextView textView, int gravity) {
+        textView.setGravity(gravity);
+    }
+
+    protected void applyBackgroundColor(TextView textView, int color) {
+        textView.setBackgroundColor(color);
+    }
+
+    protected void applyBackgroundDrawable(TextView textView, Drawable bg) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            textView.setBackground(bg);
+        } else {
+            textView.setBackgroundDrawable(bg);
+        }
+    }
+
+    protected void applyTextAppearance(TextView textView, int styleAppearance) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textView.setTextAppearance(styleAppearance);
+        } else {
+            textView.setTextAppearance(textView.getContext(), styleAppearance);
+        }
+    }
+
+    protected enum TextStyle {
+        SIZE("TextSize"),
+        COLOR("TextColor"),
+        GRAVITY("GRAVITY"),
+        FONT_FAMILY("FONT_FAMILY"),
+        BACKGROUND("Background"),
+        TEXT_APPEARANCE("TEXT_APPEARANCE");
 
         TextStyle(String property) {
             this.property = property;
