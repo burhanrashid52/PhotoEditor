@@ -37,6 +37,7 @@ import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.SaveSettings;
+import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 
@@ -147,7 +148,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
             public void onDone(String inputText, int colorCode) {
-                mPhotoEditor.editText(rootView, inputText, colorCode);
+                final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+                styleBuilder.withTextColor(colorCode);
+
+                mPhotoEditor.editText(rootView, inputText, styleBuilder);
                 mTxtCurrentTool.setText(R.string.label_text);
             }
         });
@@ -354,7 +358,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
                     public void onDone(String inputText, int colorCode) {
-                        mPhotoEditor.addText(inputText, colorCode);
+                        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+                        styleBuilder.withTextColor(colorCode);
+
+                        mPhotoEditor.addText(inputText, styleBuilder);
                         mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });
