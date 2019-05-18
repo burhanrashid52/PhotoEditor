@@ -128,6 +128,25 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     @SuppressLint("ClickableViewAccessibility")
     public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
+        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+
+        styleBuilder.withTextColor(colorCodeTextView);
+        if (textTypeface != null) {
+            styleBuilder.withTextFont(textTypeface);
+        }
+
+        addText(text, styleBuilder);
+    }
+
+    /**
+     * This add the text on the {@link PhotoEditorView} with provided parameters
+     * by default {@link TextView#setText(int)} will be 18sp
+     *
+     * @param text              text to display
+     * @param styleBuilder text style builder with your style
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
         final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
@@ -135,10 +154,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         final FrameLayout frmBorder = textRootView.findViewById(R.id.frmBorder);
 
         textInputTv.setText(text);
-        textInputTv.setTextColor(colorCodeTextView);
-        if (textTypeface != null) {
-            textInputTv.setTypeface(textTypeface);
-        }
+        if (styleBuilder != null)
+            styleBuilder.applyStyle(textInputTv);
+
         MultiTouchListener multiTouchListener = getMultiTouchListener();
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
@@ -163,7 +181,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         addViewToParent(textRootView, ViewType.TEXT);
     }
 
-
     /**
      * This will update text and color on provided view
      *
@@ -171,7 +188,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param inputText text to update {@link TextView}
      * @param colorCode color to update on {@link TextView}
      */
-    public void editText(View view, String inputText, int colorCode) {
+    public void editText(@NonNull View view, String inputText, @NonNull int colorCode) {
         editText(view, null, inputText, colorCode);
     }
 
@@ -183,14 +200,30 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param inputText    text to update {@link TextView}
      * @param colorCode    color to update on {@link TextView}
      */
-    public void editText(View view, Typeface textTypeface, String inputText, int colorCode) {
+    public void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, @NonNull int colorCode) {
+        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+        styleBuilder.withTextColor(colorCode);
+        if (textTypeface != null) {
+            styleBuilder.withTextFont(textTypeface);
+        }
+
+        editText(view, inputText, styleBuilder);
+    }
+
+    /**
+     * This will update the text and color on provided view
+     *
+     * @param view         root view where text view is a child
+     * @param inputText    text to update {@link TextView}
+     * @param styleBuilder style to apply on {@link TextView}
+     */
+    public void editText(@NonNull View view, String inputText, @Nullable TextStyleBuilder styleBuilder) {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
         if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
-            if (textTypeface != null) {
-                inputTextView.setTypeface(textTypeface);
-            }
-            inputTextView.setTextColor(colorCode);
+            if (styleBuilder != null)
+                styleBuilder.applyStyle(inputTextView);
+
             parentView.updateViewLayout(view, view.getLayoutParams());
             int i = addedViews.indexOf(view);
             if (i > -1) addedViews.set(i, view);
