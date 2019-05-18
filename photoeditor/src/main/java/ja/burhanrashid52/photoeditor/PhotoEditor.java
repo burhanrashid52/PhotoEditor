@@ -684,7 +684,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                                 Bitmap drawingCache = saveSettings.isTransparencyEnabled()
                                         ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
                                         : parentView.getDrawingCache();
-                                drawingCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                drawingCache.compress(saveSettings.getCompressFormat(), saveSettings.getCompressQuality(), out);
                             }
                             out.flush();
                             out.close();
