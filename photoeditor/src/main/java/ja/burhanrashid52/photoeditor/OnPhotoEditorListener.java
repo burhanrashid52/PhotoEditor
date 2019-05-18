@@ -33,18 +33,6 @@ public interface OnPhotoEditorListener {
      */
     void onAddViewListener(ViewType viewType, int numberOfAddedViews);
 
-
-    /**
-     * This is a callback when user remove any view on the {@link PhotoEditorView} it happens when usually
-     * undo and redo happens or text is removed
-     *
-     * @param numberOfAddedViews number of views currently added
-     * @deprecated Use {@link OnPhotoEditorListener#onRemoveViewListener(ViewType, int)} instead
-     */
-    @Deprecated
-    void onRemoveViewListener(int numberOfAddedViews);
-
-
     /**
      * This is a callback when user remove any view on the {@link PhotoEditorView} it happens when usually
      * undo and redo happens or text is removed

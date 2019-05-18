@@ -36,10 +36,10 @@ import java.io.IOException;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.PhotoFilter;
 import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
-import ja.burhanrashid52.photoeditor.PhotoFilter;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
@@ -160,11 +160,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
         Log.d(TAG, "onAddViewListener() called with: viewType = [" + viewType + "], numberOfAddedViews = [" + numberOfAddedViews + "]");
-    }
-
-    @Override
-    public void onRemoveViewListener(int numberOfAddedViews) {
-        Log.d(TAG, "onRemoveViewListener() called with: numberOfAddedViews = [" + numberOfAddedViews + "]");
     }
 
     @Override

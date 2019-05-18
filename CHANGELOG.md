@@ -33,12 +33,21 @@ mPhotoEditor.setFilterEffect(customEffect);
 
 ## 0.4.0
 - New : Added compress quality and format in save settings
-```
-Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.PNG;
-int compressQuality = 50;
-
+``1
 SaveSettings saveSettings = new SaveSettings.Builder()
       .setCompressFormat(compressFormat)
       .setCompressQuality(compressQuality)
       .build();
 ```
+- New : Added Text style builder for add and edit text
+```
+new TextStyleBuilder()
+      .withTextColor(123)
+      .withTextSize(12f)
+      .withGravity(3)
+      .withTextFont(Typeface.DEFAULT)
+      .withBackgroundColor(321)
+      .withTextAppearance(144)
+      .applyStyle(textView);
+```
+-Removed : All Deprecated methods

@@ -142,7 +142,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * This add the text on the {@link PhotoEditorView} with provided parameters
      * by default {@link TextView#setText(int)} will be 18sp
      *
-     * @param text              text to display
+     * @param text         text to display
      * @param styleBuilder text style builder with your style
      */
     @SuppressLint("ClickableViewAccessibility")
@@ -487,7 +487,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
                 if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
                     mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
                 }
             }
@@ -510,7 +509,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                 redoViews.add(removeView);
             }
             if (mOnPhotoEditorListener != null) {
-                mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
                 Object viewTag = removeView.getTag();
                 if (viewTag != null && viewTag instanceof ViewType) {
                     mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
@@ -620,20 +618,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         void onFailure(@NonNull Exception exception);
     }
 
-
-    /**
-     * @param imagePath      path on which image to be saved
-     * @param onSaveListener callback for saving image
-     * @see OnSaveListener
-     * @deprecated Use {@link #saveAsFile(String, OnSaveListener)} instead
-     */
-    @SuppressLint("StaticFieldLeak")
-    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    @Deprecated
-    public void saveImage(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
-        saveAsFile(imagePath, onSaveListener);
-    }
-
     /**
      * Save the edited image on given path
      *
@@ -733,7 +717,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     /**
      * Save the edited image as bitmap
      *
-     * @param saveSettings   builder for multiple save options {@link SaveSettings}
+     * @param saveSettings builder for multiple save options {@link SaveSettings}
      * @param onSaveBitmap callback for saving image as bitmap
      * @see OnSaveBitmap
      */
@@ -835,7 +819,6 @@ public class PhotoEditor implements BrushViewChangeListener {
             redoViews.add(removeView);
         }
         if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
             mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
         }
     }
