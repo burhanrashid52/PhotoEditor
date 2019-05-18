@@ -30,3 +30,15 @@ mPhotoEditor.setFilterEffect(customEffect);
 
 ## 0.3.3
 - Fixed : Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
+
+## 0.4.0
+- New : Added compress quality and format in save settings
+```
+Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.PNG;
+int compressQuality = 50;
+
+SaveSettings saveSettings = new SaveSettings.Builder()
+      .setCompressFormat(compressFormat)
+      .setCompressQuality(compressQuality)
+      .build();
+```
