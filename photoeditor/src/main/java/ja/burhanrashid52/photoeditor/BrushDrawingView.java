@@ -14,6 +14,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -31,17 +32,17 @@ import java.util.Stack;
  */
 public class BrushDrawingView extends View {
 
-    static final float DEFAULT_BRUSH_SIZE = 25f;
-    static final float DEFAULT_ERASER_SIZE = 50f;
+    static final float DEFAULT_BRUSH_SIZE = 25.0f;
+    static final float DEFAULT_ERASER_SIZE = 50.0f;
     static final int DEFAULT_OPACITY = 255;
 
     private float mBrushSize = DEFAULT_BRUSH_SIZE;
     private float mBrushEraserSize = DEFAULT_ERASER_SIZE;
     private int mOpacity = DEFAULT_OPACITY;
 
-    private Stack<LinePath> mDrawnPaths = new Stack<>();
-    private Stack<LinePath> mRedoPaths = new Stack<>();
-    private Paint mDrawPaint = new Paint();
+    private final Stack<LinePath> mDrawnPaths = new Stack<>();
+    private final Stack<LinePath> mRedoPaths = new Stack<>();
+    private final Paint mDrawPaint = new Paint();
 
     private Canvas mDrawCanvas;
     private boolean mBrushDrawMode;
@@ -207,24 +208,6 @@ public class BrushDrawingView extends View {
         }
     }
 
-    private class LinePath {
-        private Paint mDrawPaint;
-        private Path mDrawPath;
-
-        LinePath(Path drawPath, Paint drawPaints) {
-            mDrawPaint = new Paint(drawPaints);
-            mDrawPath = new Path(drawPath);
-        }
-
-        Paint getDrawPaint() {
-            return mDrawPaint;
-        }
-
-        Path getDrawPath() {
-            return mDrawPath;
-        }
-    }
-
     boolean undo() {
         if (!mDrawnPaths.empty()) {
             mRedoPaths.push(mDrawnPaths.pop());
@@ -286,5 +269,10 @@ public class BrushDrawingView extends View {
     @VisibleForTesting
     Paint getDrawingPaint() {
         return mDrawPaint;
+    }
+
+    @VisibleForTesting
+    Pair<Stack<LinePath>, Stack<LinePath>> getDrawingPath() {
+        return new Pair<>(mDrawnPaths, mRedoPaths);
     }
 }
