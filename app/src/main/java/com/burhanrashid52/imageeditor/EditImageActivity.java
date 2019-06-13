@@ -36,9 +36,10 @@ import java.io.IOException;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
-import ja.burhanrashid52.photoeditor.SaveSettings;
-import ja.burhanrashid52.photoeditor.ViewType;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
+import ja.burhanrashid52.photoeditor.SaveSettings;
+import ja.burhanrashid52.photoeditor.TextStyleBuilder;
+import ja.burhanrashid52.photoeditor.ViewType;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
@@ -147,7 +148,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
             public void onDone(String inputText, int colorCode) {
-                mPhotoEditor.editText(rootView, inputText, colorCode);
+                final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+                styleBuilder.withTextColor(colorCode);
+
+                mPhotoEditor.editText(rootView, inputText, styleBuilder);
                 mTxtCurrentTool.setText(R.string.label_text);
             }
         });
@@ -156,11 +160,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
         Log.d(TAG, "onAddViewListener() called with: viewType = [" + viewType + "], numberOfAddedViews = [" + numberOfAddedViews + "]");
-    }
-
-    @Override
-    public void onRemoveViewListener(int numberOfAddedViews) {
-        Log.d(TAG, "onRemoveViewListener() called with: numberOfAddedViews = [" + numberOfAddedViews + "]");
     }
 
     @Override
@@ -354,7 +353,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
                     public void onDone(String inputText, int colorCode) {
-                        mPhotoEditor.addText(inputText, colorCode);
+                        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+                        styleBuilder.withTextColor(colorCode);
+
+                        mPhotoEditor.addText(inputText, styleBuilder);
                         mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });

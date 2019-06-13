@@ -1,7 +1,7 @@
 # PhotoEditor
 
 [![CircleCI](https://circleci.com/gh/burhanrashid52/PhotoEditor.svg?style=svg)](https://circleci.com/gh/burhanrashid52/PhotoEditor)
-[![Downloads](https://img.shields.io/badge/Download-0.3.3-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-0.4.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -34,7 +34,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 ## Getting Started
 To start with this, we need to simply add the dependencies in the gradle file of our app module like this
 ```java
-implementation 'ja.burhanrashid52:photoeditor:0.3.3'
+implementation 'ja.burhanrashid52:photoeditor:0.4.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
@@ -144,7 +144,7 @@ Now we can edit the text with a view like this
 
 `mPhotoEditor.editText(rootView, inputText, colorCode);`
 
-
+If you want more customization on text. Please refer the wiki page for more details.
 
 
 ## Emoji

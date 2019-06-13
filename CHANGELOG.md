@@ -30,3 +30,26 @@ mPhotoEditor.setFilterEffect(customEffect);
 
 ## 0.3.3
 - Fixed : Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
+
+## 0.4.0
+- New : Added compress quality and format in save settings
+```
+SaveSettings saveSettings = new SaveSettings.Builder()
+      .setCompressFormat(compressFormat)
+      .setCompressQuality(compressQuality)
+      .build();
+```
+- New : Added Text style builder for add and edit text
+```
+new TextStyleBuilder()
+      .withTextColor(123)
+      .withTextSize(12f)
+      .withGravity(3)
+      .withTextFont(Typeface.DEFAULT)
+      .withBackgroundColor(321)
+      .withTextAppearance(144)
+      .applyStyle(textView);
+```
+- New : Bumped support version to 28
+- Removed : All Deprecated methods
+- Test : Added test cases for `BrushDrawingView` with 100% code coverage

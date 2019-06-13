@@ -11,11 +11,11 @@ jobs:
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-         name: Chmod permissions
-         command: sudo chmod +x ./gradlew
+          name: Chmod permissions
+          command: sudo chmod +x ./gradlew
       - run:
-         name: Accept licenses
-         command: yes | sdkmanager --licenses || true
+          name: Accept licenses
+          command: yes | sdkmanager --licenses || true
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -37,21 +37,32 @@ jobs:
       - run:
           name: Launch Emulator
           command: |
-                  cd ${ANDROID_HOME}/emulator;ls
-                  export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
-                  emulator -avd test -no-window -noaudio -no-boot-anim -no-window -accel on
+            cd ${ANDROID_HOME}/emulator;ls
+            export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
+            emulator -avd test -no-window -noaudio -no-boot-anim -no-window -accel on
           background: true
       - run:
           name: Wait emulator
           command: |
-              circle-android wait-for-boot
-              adb shell input keyevent 82
+            circle-android wait-for-boot
+            adb shell input keyevent 82
       - run:
-          name: Run Espresso UI Tests
+          name: Run apps espresso UI tests
           command: ./gradlew :app:connectedDebugAndroidTest
       - run:
-          name: Run UnitTest
-          command: ./gradlew testDebugUnitTest
+          name: Run apps UnitTest
+          command: ./gradlew :app:testDebugUnitTest
+      - run:
+          name: Run photoeditor espresso UI tests
+          command: ./gradlew connectedDebugAndroidTest
+      - run:
+          name: Run apps unit tests
+          command: ./gradlew test
+      - store_artifacts:
+          path: photoeditor/build/reports
+          destination: reports
+      - store_test_results:
+          path: photoeditor/build/test-results
       - store_artifacts:
           path: app/build/reports
           destination: reports
