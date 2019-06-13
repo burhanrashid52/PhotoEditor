@@ -52,6 +52,17 @@ jobs:
       - run:
           name: Run apps UnitTest
           command: ./gradlew :app:testDebugUnitTest
+      - run:
+          name: Run photoeditor espresso UI tests
+          command: ./gradlew connectedDebugAndroidTest
+      - run:
+          name: Run apps unit tests
+          command: ./gradlew test
+      - store_artifacts:
+          path: photoeditor/build/reports
+          destination: reports
+      - store_test_results:
+          path: photoeditor/build/test-results
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -60,14 +71,3 @@ jobs:
           destination: apks
       - store_test_results:
           path: app/build/test-results
-      - run:
-          name: Run photoeditor espresso UI tests
-          command: ./gradlew :photoeditor:connectedDebugAndroidTest
-      - run:
-          name: Run apps UnitTest
-          command: ./gradlew :app:testDebugUnitTest
-      - store_artifacts:
-          path: photoeditor/build/reports
-          destination: reports
-      - store_test_results:
-          path: photoeditor/build/test-results

@@ -51,3 +51,4 @@ new TextStyleBuilder()
       .applyStyle(textView);
 ```
 -Removed : All Deprecated methods
+- Test : Added test cases for `BrushDrawingView` with 100% code coverage

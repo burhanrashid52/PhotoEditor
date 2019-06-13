@@ -3,11 +3,8 @@ package ja.burhanrashid52.photoeditor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-@RunWith(RobolectricTestRunner.class)
 public class BaseBrushDrawingViewTest {
     protected Context mContext = RuntimeEnvironment.systemContext;
 

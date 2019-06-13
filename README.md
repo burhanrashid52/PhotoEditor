@@ -144,7 +144,7 @@ Now we can edit the text with a view like this
 
 `mPhotoEditor.editText(rootView, inputText, colorCode);`
 
-
+If you want more customization on text. Please refer the wiki page for more details.
 
 
 ## Emoji
