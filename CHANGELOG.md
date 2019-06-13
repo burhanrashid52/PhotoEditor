@@ -33,7 +33,7 @@ mPhotoEditor.setFilterEffect(customEffect);
 
 ## 0.4.0
 - New : Added compress quality and format in save settings
-``1
+```
 SaveSettings saveSettings = new SaveSettings.Builder()
       .setCompressFormat(compressFormat)
       .setCompressQuality(compressQuality)
@@ -50,5 +50,6 @@ new TextStyleBuilder()
       .withTextAppearance(144)
       .applyStyle(textView);
 ```
--Removed : All Deprecated methods
+- New : Bumped support version to 28
+- Removed : All Deprecated methods
 - Test : Added test cases for `BrushDrawingView` with 100% code coverage
