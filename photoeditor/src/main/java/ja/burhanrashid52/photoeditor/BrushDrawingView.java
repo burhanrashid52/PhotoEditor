@@ -12,7 +12,9 @@ import android.graphics.PorterDuffXfermode;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -30,13 +32,17 @@ import java.util.Stack;
  */
 public class BrushDrawingView extends View {
 
-    private float mBrushSize = 25;
-    private float mBrushEraserSize = 50;
-    private int mOpacity = 255;
+    static final float DEFAULT_BRUSH_SIZE = 25.0f;
+    static final float DEFAULT_ERASER_SIZE = 50.0f;
+    static final int DEFAULT_OPACITY = 255;
 
-    private Stack<LinePath> mDrawnPaths = new Stack<>();
-    private Stack<LinePath> mRedoPaths = new Stack<>();
-    private Paint mDrawPaint;
+    private float mBrushSize = DEFAULT_BRUSH_SIZE;
+    private float mBrushEraserSize = DEFAULT_ERASER_SIZE;
+    private int mOpacity = DEFAULT_OPACITY;
+
+    private final Stack<LinePath> mDrawnPaths = new Stack<>();
+    private final Stack<LinePath> mRedoPaths = new Stack<>();
+    private final Paint mDrawPaint = new Paint();
 
     private Canvas mDrawCanvas;
     private boolean mBrushDrawMode;
@@ -52,8 +58,7 @@ public class BrushDrawingView extends View {
     }
 
     public BrushDrawingView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setupBrushDrawing();
+        this(context, attrs, 0);
     }
 
     public BrushDrawingView(Context context, AttributeSet attrs, int defStyle) {
@@ -64,35 +69,26 @@ public class BrushDrawingView extends View {
     private void setupBrushDrawing() {
         //Caution: This line is to disable hardware acceleration to make eraser feature work properly
         setLayerType(LAYER_TYPE_HARDWARE, null);
-        mDrawPaint = new Paint();
+        mDrawPaint.setColor(Color.BLACK);
+        setupPathAndPaint();
+        setVisibility(View.GONE);
+    }
+
+    private void setupPathAndPaint() {
         mPath = new Path();
         mDrawPaint.setAntiAlias(true);
         mDrawPaint.setDither(true);
-        mDrawPaint.setColor(Color.BLACK);
         mDrawPaint.setStyle(Paint.Style.STROKE);
         mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
         mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawPaint.setStrokeWidth(mBrushSize);
         mDrawPaint.setAlpha(mOpacity);
-        //Resolve Brush color changes after saving image  #52
-        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
         mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-        this.setVisibility(View.GONE);
     }
 
     private void refreshBrushDrawing() {
         mBrushDrawMode = true;
-        mPath = new Path();
-        mDrawPaint.setAntiAlias(true);
-        mDrawPaint.setDither(true);
-        mDrawPaint.setStyle(Paint.Style.STROKE);
-        mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
-        mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-        mDrawPaint.setStrokeWidth(mBrushSize);
-        mDrawPaint.setAlpha(mOpacity);
-        //Resolve Brush color changes after saving image  #52
-        //Resolve Brush bug using PorterDuff.Mode.SRC_OVER #80 and PR #83
-        mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+        setupPathAndPaint();
     }
 
     void brushEraser() {
@@ -112,6 +108,10 @@ public class BrushDrawingView extends View {
     void setOpacity(@IntRange(from = 0, to = 255) int opacity) {
         this.mOpacity = opacity;
         setBrushDrawingMode(true);
+    }
+
+    int getOpacity() {
+        return mOpacity;
     }
 
     boolean getBrushDrawingMode() {
@@ -208,24 +208,6 @@ public class BrushDrawingView extends View {
         }
     }
 
-    private class LinePath {
-        private Paint mDrawPaint;
-        private Path mDrawPath;
-
-        LinePath(Path drawPath, Paint drawPaints) {
-            mDrawPaint = new Paint(drawPaints);
-            mDrawPath = new Path(drawPath);
-        }
-
-        Paint getDrawPaint() {
-            return mDrawPaint;
-        }
-
-        Path getDrawPath() {
-            return mDrawPath;
-        }
-    }
-
     boolean undo() {
         if (!mDrawnPaths.empty()) {
             mRedoPaths.push(mDrawnPaths.pop());
@@ -282,5 +264,15 @@ public class BrushDrawingView extends View {
             mBrushViewChangeListener.onStopDrawing();
             mBrushViewChangeListener.onViewAdd(this);
         }
+    }
+
+    @VisibleForTesting
+    Paint getDrawingPaint() {
+        return mDrawPaint;
+    }
+
+    @VisibleForTesting
+    Pair<Stack<LinePath>, Stack<LinePath>> getDrawingPath() {
+        return new Pair<>(mDrawnPaths, mRedoPaths);
     }
 }
