@@ -1,5 +1,5 @@
 # PhotoEditor
-#
+##
 [![CircleCI](https://circleci.com/gh/burhanrashid52/PhotoEditor.svg?style=svg)](https://circleci.com/gh/burhanrashid52/PhotoEditor)
 [![Downloads](https://img.shields.io/badge/Download-0.3.3-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
