@@ -653,6 +653,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         clearHelperBox();
+                        brushDrawingView.invalidate();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
@@ -732,6 +733,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         clearHelperBox();
+                        brushDrawingView.invalidate();
                         parentView.setDrawingCacheEnabled(false);
                     }
 
