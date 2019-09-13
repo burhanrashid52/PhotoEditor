@@ -724,6 +724,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final SaveSettings saveSettings,
                              @NonNull final OnSaveBitmap onSaveBitmap) {
+        brushDrawingView.invalidate();
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
