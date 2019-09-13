@@ -677,6 +677,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                             Log.d(TAG, "Filed Saved Successfully");
                             return null;
                         } catch (Exception e) {
+                            Log.getStackTraceString(e);
                             e.printStackTrace();
                             Log.d(TAG, "Failed to save File");
                             return e;
@@ -693,7 +694,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         } else {
                             onSaveListener.onFailure(e);
                         }
-                        brushDrawingView.setSaveProcessing(false);
+//                        brushDrawingView.setSaveProcessing(false);
                     }
 
                 }.execute();
@@ -738,7 +739,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         clearHelperBox();
-                        parentView.setDrawingCacheEnabled(false);
                     }
 
                     @Override
@@ -761,7 +761,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
                         }
-                        brushDrawingView.setSaveProcessing(false);
+//                        brushDrawingView.setSaveProcessing(false);
                     }
 
                 }.execute();
@@ -770,6 +770,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             @Override
             public void onFailure(Exception e) {
                 onSaveBitmap.onFailure(e);
+                Log.getStackTraceString(e);
                 brushDrawingView.setSaveProcessing(false);
             }
         });
