@@ -644,6 +644,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                            @NonNull final SaveSettings saveSettings,
                            @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
+        brushDrawingView.invalidate();
+
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
@@ -652,6 +654,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
+                        brushDrawingView.invalidate();
+
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
@@ -732,6 +736,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
+                        brushDrawingView.invalidate();
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }

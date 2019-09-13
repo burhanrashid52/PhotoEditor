@@ -175,6 +175,7 @@ public class BrushDrawingView extends View {
         for (LinePath linePath : mDrawnPaths) {
             canvas.drawPath(linePath.getDrawPath(), linePath.getDrawPaint());
         }
+        invalidate();
         canvas.drawPath(mPath, mDrawPaint);
     }
 
