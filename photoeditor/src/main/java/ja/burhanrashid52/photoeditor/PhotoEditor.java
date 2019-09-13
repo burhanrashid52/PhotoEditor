@@ -667,6 +667,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                         try {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
+                                brushDrawingView.invalidate();
+                                parentView.setDrawingCacheEnabled(true);
                                 Bitmap drawingCache = saveSettings.isTransparencyEnabled()
                                         ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
                                         : parentView.getDrawingCache();
@@ -674,6 +676,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                             }
                             out.flush();
                             out.close();
+                            brushDrawingView.invalidate();
                             Log.d(TAG, "Filed Saved Successfully");
                             return null;
                         } catch (Exception e) {
@@ -694,6 +697,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         } else {
                             onSaveListener.onFailure(e);
                         }
+                        brushDrawingView.invalidate();
 //                        brushDrawingView.setSaveProcessing(false);
                     }
 
@@ -738,7 +742,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
+                        brushDrawingView.invalidate();
                         clearHelperBox();
+                        parentView.setDrawingCacheEnabled(true);
                     }
 
                     @Override
@@ -761,6 +767,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
                         }
+                        brushDrawingView.invalidate();
 //                        brushDrawingView.setSaveProcessing(false);
                     }
 
