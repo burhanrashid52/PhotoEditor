@@ -644,6 +644,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                            @NonNull final SaveSettings saveSettings,
                            @NonNull final OnSaveListener onSaveListener) {
         Log.d(TAG, "Image Path: " + imagePath);
+        brushDrawingView.setSaveProcessing(true);
         brushDrawingView.invalidate();
 
         parentView.saveFilter(new OnSaveBitmap() {
@@ -654,8 +655,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        brushDrawingView.invalidate();
-
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
@@ -668,7 +667,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                         try {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
-                                parentView.setDrawingCacheEnabled(true);
                                 Bitmap drawingCache = saveSettings.isTransparencyEnabled()
                                         ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
                                         : parentView.getDrawingCache();
@@ -695,6 +693,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         } else {
                             onSaveListener.onFailure(e);
                         }
+                        brushDrawingView.setSaveProcessing(false);
                     }
 
                 }.execute();
@@ -702,6 +701,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onFailure(Exception e) {
+                brushDrawingView.setSaveProcessing(false);
                 onSaveListener.onFailure(e);
             }
         });
@@ -728,6 +728,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final SaveSettings saveSettings,
                              @NonNull final OnSaveBitmap onSaveBitmap) {
+        brushDrawingView.setSaveProcessing(true);
         brushDrawingView.invalidate();
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
@@ -736,7 +737,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        brushDrawingView.invalidate();
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
                     }
@@ -744,7 +744,6 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected Bitmap doInBackground(String... strings) {
                         if (parentView != null) {
-                            parentView.setDrawingCacheEnabled(true);
                             return saveSettings.isTransparencyEnabled() ?
                                     BitmapUtil.removeTransparency(parentView.getDrawingCache())
                                     : parentView.getDrawingCache();
@@ -762,6 +761,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         } else {
                             onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
                         }
+                        brushDrawingView.setSaveProcessing(false);
                     }
 
                 }.execute();
@@ -770,6 +770,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             @Override
             public void onFailure(Exception e) {
                 onSaveBitmap.onFailure(e);
+                brushDrawingView.setSaveProcessing(false);
             }
         });
     }
