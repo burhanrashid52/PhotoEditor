@@ -1,5 +1,6 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 /**
@@ -39,8 +40,9 @@ public interface OnPhotoEditorListener {
      *
      * @param viewType           enum which define type of view is added
      * @param numberOfAddedViews number of views currently added
+     * @param removedView view to indicate the removed stickers/ text
      */
-    void onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
+    void onRemoveViewListener(ViewType viewType, int numberOfAddedViews, @Nullable View removedView);
 
     /**
      * A callback when user start dragging a view which can be

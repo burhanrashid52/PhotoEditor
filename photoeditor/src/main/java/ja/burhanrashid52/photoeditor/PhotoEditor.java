@@ -487,7 +487,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                 addedViews.remove(removedView);
                 redoViews.add(removedView);
                 if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size(), removedView);
                 }
             }
         }
@@ -511,7 +511,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             if (mOnPhotoEditorListener != null) {
                 Object viewTag = removeView.getTag();
                 if (viewTag != null && viewTag instanceof ViewType) {
-                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size(), removeView);
                 }
             }
         }
@@ -834,7 +834,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             redoViews.add(removeView);
         }
         if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size(), null);
         }
     }
 
