@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.photoeditor;
 
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
