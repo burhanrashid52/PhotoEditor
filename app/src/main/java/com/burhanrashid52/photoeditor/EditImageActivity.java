@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.photoeditor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -24,11 +24,11 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.burhanrashid52.imageeditor.base.BaseActivity;
-import com.burhanrashid52.imageeditor.filters.FilterListener;
-import com.burhanrashid52.imageeditor.filters.FilterViewAdapter;
-import com.burhanrashid52.imageeditor.tools.EditingToolsAdapter;
-import com.burhanrashid52.imageeditor.tools.ToolType;
+import com.burhanrashid52.photoeditor.base.BaseActivity;
+import com.burhanrashid52.photoeditor.filters.FilterListener;
+import com.burhanrashid52.photoeditor.filters.FilterViewAdapter;
+import com.burhanrashid52.photoeditor.tools.EditingToolsAdapter;
+import com.burhanrashid52.photoeditor.tools.ToolType;
 
 import java.io.File;
 import java.io.IOException;
