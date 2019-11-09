@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor.filters;
+package com.burhanrashid52.photoeditor.filters;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.burhanrashid52.imageeditor.R;
+import com.burhanrashid52.photoeditor.R;
 
 import java.io.IOException;
 import java.io.InputStream;
