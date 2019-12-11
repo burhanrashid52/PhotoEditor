@@ -30,11 +30,14 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - Easy image editing
 
 
+## AndroidX
+PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to v.0.4.0. Any fix in PR are Welcome :)
+
 
 ## Getting Started
 To start with this, we need to simply add the dependencies in the gradle file of our app module like this
 ```java
-implementation 'ja.burhanrashid52:photoeditor:0.4.0'
+implementation 'ja.burhanrashid52:photoeditor:1.0.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
