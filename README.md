@@ -1,7 +1,7 @@
 # PhotoEditor
 
 [![CircleCI](https://circleci.com/gh/burhanrashid52/PhotoEditor.svg?style=svg)](https://circleci.com/gh/burhanrashid52/PhotoEditor)
-[![Downloads](https://img.shields.io/badge/Download-0.4.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-1.0.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -30,11 +30,14 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - Easy image editing
 
 
+## AndroidX
+PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to v.0.4.0. Any fix in PR are Welcome :)
+
 
 ## Getting Started
 To start with this, we need to simply add the dependencies in the gradle file of our app module like this
 ```java
-implementation 'ja.burhanrashid52:photoeditor:0.4.0'
+implementation 'ja.burhanrashid52:photoeditor:1.0.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 

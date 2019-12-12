@@ -53,3 +53,8 @@ new TextStyleBuilder()
 - New : Bumped support version to 28
 - Removed : All Deprecated methods
 - Test : Added test cases for `BrushDrawingView` with 100% code coverage
+
+## 1.0.0
+- New : Migrating the support libraries to AndroidX
+- New : Bumped target sdk version to 29
+- Test : Adding UI to test for the library

@@ -10,19 +10,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.transition.ChangeBounds;
-import android.support.transition.TransitionManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.ChangeBounds;
+import androidx.transition.TransitionManager;
 
 import com.burhanrashid52.photoeditor.base.BaseActivity;
 import com.burhanrashid52.photoeditor.filters.FilterListener;
@@ -51,7 +52,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
-    private PhotoEditor mPhotoEditor;
+    PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
@@ -250,6 +251,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case CAMERA_REQUEST:
@@ -293,7 +295,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onEmojiClick(String emojiUnicode) {
         mPhotoEditor.addEmoji(emojiUnicode);
         mTxtCurrentTool.setText(R.string.label_emoji);
-
     }
 
     @Override
@@ -311,7 +312,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     private void showSaveDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you want to exit without saving image ?");
+        builder.setMessage(getString(R.string.msg_save_image));
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -363,7 +364,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
             case ERASER:
                 mPhotoEditor.brushEraser();
-                mTxtCurrentTool.setText(R.string.label_eraser);
+                mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;
             case FILTER:
                 mTxtCurrentTool.setText(R.string.label_filter);
