@@ -721,12 +721,14 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param onSaveBitmap callback for saving image as bitmap
      * @see OnSaveBitmap
      */
+    Bitmap mutableBitmap;
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final SaveSettings saveSettings,
                              @NonNull final OnSaveBitmap onSaveBitmap) {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
+                mutableBitmap = Bitmap.createBitmap(saveBitmap.getWidth(), saveBitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 new AsyncTask<String, String, Bitmap>() {
                     @Override
                     protected void onPreExecute() {
@@ -738,10 +740,16 @@ public class PhotoEditor implements BrushViewChangeListener {
                     @Override
                     protected Bitmap doInBackground(String... strings) {
                         if (parentView != null) {
-                            parentView.setDrawingCacheEnabled(true);
+                            
+                            Canvas canvas = new Canvas(mutableBitmap);
+                            canvas.save();
+                            parentView.draw(canvas);
+                            canvas.restore();
+
                             return saveSettings.isTransparencyEnabled() ?
-                                    BitmapUtil.removeTransparency(parentView.getDrawingCache())
-                                    : parentView.getDrawingCache();
+                                    BitmapUtil.removeTransparency(mutableBitmap)
+                                    : mutableBitmap;
+                            
                         } else {
                             return null;
                         }
