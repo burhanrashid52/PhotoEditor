@@ -346,7 +346,6 @@ class MultiTouchListener implements OnTouchListener {
         return outRect.contains(x, y);
     }
 
-    // Taken from https://github.com/burhanrashid52/PhotoEditor/pull/58 branch.
     private boolean isImageWithBitmapDrawable(View view){
         try {
             final ImageView imagePhotoView = view.findViewById(R.id.imgPhotoEditorImage);
