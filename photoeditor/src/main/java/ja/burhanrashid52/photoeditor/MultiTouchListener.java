@@ -1,13 +1,24 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import androidx.annotation.Nullable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 18/01/2017.
@@ -36,13 +47,20 @@ class MultiTouchListener implements OnTouchListener {
 
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl mOnGestureControl;
+    private boolean mShouldClickThroughTransparentPixels;
     private boolean mIsTextPinchZoomable;
+    private int mVariableTransparentPixelsClickThroughRadius;
+    private int mTransparentPixelsClickThroughRadius;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
     MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
                        ImageView photoEditImageView, boolean isTextPinchZoomable,
+                       boolean shouldClickThroughTransparentPixels,
+                       int transparentPixelsClickThroughRadius,
                        OnPhotoEditorListener onPhotoEditorListener) {
         mIsTextPinchZoomable = isTextPinchZoomable;
+        mShouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
+        mTransparentPixelsClickThroughRadius = transparentPixelsClickThroughRadius;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
         this.deleteView = deleteView;
@@ -124,6 +142,16 @@ class MultiTouchListener implements OnTouchListener {
 
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                if (mShouldClickThroughTransparentPixels) {
+                    // Only enable click through on unfocused views.
+                    if (isImageWithBitmapDrawable(view) && view.getTag() == null) {
+                        //If user clicks on an transparent pixel we return but not absorbing the event
+                        if (!isOpaquePixelClicked(view, event)) {
+                            return false;
+                        }
+                    }
+                }
+
                 mPrevX = event.getX();
                 mPrevY = event.getY();
                 mPrevRawX = event.getRawX();
@@ -172,6 +200,128 @@ class MultiTouchListener implements OnTouchListener {
                 }
                 break;
         }
+
+
+        return true;
+    }
+
+    /**
+     * Taken from https://github.com/burhanrashid52/PhotoEditor/pull/58 branch.
+     * @return False if the click is on an fully transparent pixel (and if no opaque pixel is found inside the given radius), true otherwise.
+     */
+    private boolean isOpaquePixelClicked(View view, MotionEvent event) {
+        ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
+        FrameLayout border = view.findViewById(R.id.frmBorder);
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+
+        int eventX = (int)event.getX();
+        int eventY = (int)event.getY();
+
+        Rect imageRect = new Rect();
+        image.getHitRect(imageRect);
+
+        //Check if you hit outside the image. If you hit the frame around the view we say that that you hit a transparent pixel.
+        if(!imageRect.contains(eventX, eventY)){
+            return false;
+        }
+
+        //Get rect of border
+        Rect borderRect = new Rect();
+        border.getHitRect(borderRect);
+
+        //Enable to enabled radius to scale together with scaling
+        mVariableTransparentPixelsClickThroughRadius = (int)(mTransparentPixelsClickThroughRadius * view.getScaleX());
+
+        //The eventX and Y for the actual image (discluding the frame and any views around it)
+        int imageEventX = eventX - (imageRect.left + borderRect.left);
+        int imageEventY = eventY - (imageRect.top + borderRect.top);
+
+        float scaleFactorX = (float) bitmap.getWidth() / (float) image.getWidth();
+        float scaleFactorY = (float) bitmap.getHeight()/ (float)image.getHeight();
+
+        //To get the coordinates of the click relative to the bitmap we use an scaled image matrix
+        float[] imageEventXY = new float[]{imageEventX, imageEventY};
+        Matrix invertMatrix = new Matrix();
+        ((ImageView) image).getImageMatrix().invert(invertMatrix);
+        invertMatrix.setScale(scaleFactorX, scaleFactorY);
+        invertMatrix.mapPoints(imageEventXY);
+
+        int bitmapX = (int) imageEventXY[0];
+        int bitmapY = (int) imageEventXY[1];
+
+        //Limit x, y range within bitmap
+        if (bitmapX < 0) {
+            bitmapX = 0;
+        } else if (bitmapX > bitmap.getWidth() - 1) {
+            bitmapX = bitmap.getWidth() - 1;
+        }
+
+        if (bitmapY < 0) {
+            bitmapY = 0;
+        } else if (bitmapY > bitmap.getHeight() - 1) {
+            bitmapY = bitmap.getHeight() - 1;
+        }
+
+        return isPixelsInRadiusOpaque(bitmap, bitmapX, bitmapY);
+    }
+
+    /**
+     *
+     * Taken from https://github.com/burhanrashid52/PhotoEditor/pull/58 branch.
+     * @param bitmap
+     * @param x X Co-ordinate of click.
+     * @param y Y Co-ordinate of click.
+     * @return True if it finds any Opaque pixels on the given bitmap within the given radius of a given point. False otherwise.
+     */
+    private boolean isPixelsInRadiusOpaque(Bitmap bitmap, int x, int y){
+
+        try {
+            int pixelRGB = bitmap.getPixel(x, y);
+
+            if(Color.alpha(pixelRGB) != 0){
+                return true;
+            } else {
+                final List<Point> indicesInRadius = new ArrayList<>();
+
+                for (int bitmapX = (x - mVariableTransparentPixelsClickThroughRadius);
+                     bitmapX <= (x + mVariableTransparentPixelsClickThroughRadius);
+                     bitmapX++) {
+                    for (int bitmapY = (y - mVariableTransparentPixelsClickThroughRadius);
+                         bitmapY < (y + mVariableTransparentPixelsClickThroughRadius);
+                         bitmapY++) {
+                        double diffX = bitmapX - x;
+                        double diffY = bitmapY - y;
+                        double distanceSquared = Math.pow(diffX, 2) + Math.pow(diffY, 2);
+
+                        if (distanceSquared <= Math.pow(mVariableTransparentPixelsClickThroughRadius, 2)) {
+                            indicesInRadius.add(new Point(bitmapX, bitmapY));
+                        }
+                    }
+                }
+                // TODO(kleyow): Sort the list by distance to the center of the radius.
+                for (int index = 0; index < indicesInRadius.size() ; index++) {
+                    if(!(isPixelTransparent(bitmap, indicesInRadius.get(index)))) {
+                        return true;
+                    }
+                }
+            }
+
+        } catch (IllegalArgumentException | IllegalStateException e){
+            Log.d("MultiTouchListener","Pixel not found in bitmap" + e);
+        }
+
+        return false;
+    }
+
+    private boolean isPixelTransparent(Bitmap bitmap, Point point){
+        try {
+            int pixelRGB = bitmap.getPixel(point.x, point.y);
+            return Color.alpha(pixelRGB) == 0; /* 0% transparent. Full opacity */
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            Log.d("MultiTouchListener", "Pixel not found in bitmap" + e);
+        }
+
+        //We return true if it fails to find pixel from bitmap as this could be outside the bitmap
         return true;
     }
 
@@ -190,6 +340,25 @@ class MultiTouchListener implements OnTouchListener {
         view.getLocationOnScreen(location);
         outRect.offset(location[0], location[1]);
         return outRect.contains(x, y);
+    }
+
+    // Taken from https://github.com/burhanrashid52/PhotoEditor/pull/58 branch.
+    private boolean isImageWithBitmapDrawable(View view){
+        try {
+            final ImageView imagePhotoView = view.findViewById(R.id.imgPhotoEditorImage);
+
+            if (imagePhotoView != null) {
+                final Drawable imagePhotoViewDrawable = imagePhotoView.getDrawable();
+
+                if (imagePhotoViewDrawable != null) {
+                    final BitmapDrawable imagePhotoViewBitmapDrawable = (BitmapDrawable) imagePhotoViewDrawable;
+                    return imagePhotoViewBitmapDrawable.getBitmap() != null;
+                }
+            }
+        } catch (ClassCastException e) {
+            Log.e("MultiTouchListener", "isImageWithBitmapDrawable: ", e);
+        }
+        return false;
     }
 
     void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
