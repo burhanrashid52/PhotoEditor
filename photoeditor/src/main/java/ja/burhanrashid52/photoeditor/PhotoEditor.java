@@ -860,7 +860,6 @@ public class PhotoEditor implements BrushViewChangeListener {
         private boolean isTextPinchZoomable = true;
         private boolean shouldClickThroughTransparentPixels = false;
         private int transparentPixelsClickThroughRadius = 0;
-        private boolean faceDetectionStickerAssist = false;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -918,7 +917,7 @@ public class PhotoEditor implements BrushViewChangeListener {
          * set true to disable clicking on the fully transparent parts of an image
          *
          * @param shouldClickThroughTransparentPixels flag to enable clickThrough on transparent pixels
-         * @return {@link Builder} instant to build {@link PhotoEditor}
+         * @return {@link Builder} instance to build {@link PhotoEditor}
          */
         public Builder setClickThroughTransparentPixels(boolean shouldClickThroughTransparentPixels) {
             this.shouldClickThroughTransparentPixels = shouldClickThroughTransparentPixels;
@@ -933,7 +932,7 @@ public class PhotoEditor implements BrushViewChangeListener {
          * This is used to get a larger hit radius but still keep clickThrough on transparent pixels with only transparent pixels nearby
          * (e.g. if struggling to target some images that has a lot of transparency inside them then increasing the radius will help)
          *
-         * NB! Radius has to be larger than zero
+         *  Radius has to be larger than zero
          *
          * @param transparentPixelsClickThroughRadius value for click through radius
          * @return {@link Builder} instant to build {@link PhotoEditor}
@@ -942,7 +941,6 @@ public class PhotoEditor implements BrushViewChangeListener {
             this.transparentPixelsClickThroughRadius = transparentPixelsClickThroughRadius >= 0 ? transparentPixelsClickThroughRadius : 0;
             return this;
         }
-
 
         /**
          * @return build PhotoEditor instance

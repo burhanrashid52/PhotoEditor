@@ -142,14 +142,14 @@ class MultiTouchListener implements OnTouchListener {
 
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                if (mShouldClickThroughTransparentPixels) {
-                    // Only enable click through on unfocused views.
-                    if (isImageWithBitmapDrawable(view) && view.getTag() == null) {
-                        //If user clicks on an transparent pixel we return but not absorbing the event
-                        if (!isOpaquePixelClicked(view, event)) {
-                            return false;
-                        }
-                    }
+                // Only enable click through on unfocused views.
+                // If user clicks on an transparent pixel we return but not absorbing the event
+                if (mShouldClickThroughTransparentPixels
+                    && isImageWithBitmapDrawable(view)
+                    && view.getTag() == null
+                    && !isOpaquePixelClicked(view, event))
+                {
+                    return false;
                 }
 
                 mPrevX = event.getX();
@@ -206,50 +206,53 @@ class MultiTouchListener implements OnTouchListener {
     }
 
     /**
-     * Taken from https://github.com/burhanrashid52/PhotoEditor/pull/58 branch.
+     * Check if a opaque pixel is clicked within the click radius.
+     *
+     * @param view The view that is the target of the touch event
+     * @param event The touch event with X,Y coordinates to check.
      * @return False if the click is on an fully transparent pixel (and if no opaque pixel is found inside the given radius), true otherwise.
      */
     private boolean isOpaquePixelClicked(View view, MotionEvent event) {
-        ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
-        FrameLayout border = view.findViewById(R.id.frmBorder);
-        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+        final ImageView image = view.findViewById(R.id.imgPhotoEditorImage);
 
-        int eventX = (int)event.getX();
-        int eventY = (int)event.getY();
+        final int eventX = (int)event.getX();
+        final int eventY = (int)event.getY();
 
-        Rect imageRect = new Rect();
+        final Rect imageRect = new Rect();
         image.getHitRect(imageRect);
 
-        //Check if you hit outside the image. If you hit the frame around the view we say that that you hit a transparent pixel.
+        // Check if you hit outside the image. If you hit the frame around the view we say that that you hit a transparent pixel.
         if(!imageRect.contains(eventX, eventY)){
             return false;
         }
 
-        //Get rect of border
-        Rect borderRect = new Rect();
+        // Get rect of border
+        final FrameLayout border = view.findViewById(R.id.frmBorder);
+        final Rect borderRect = new Rect();
         border.getHitRect(borderRect);
 
-        //Enable to enabled radius to scale together with scaling
+        // Enable to enabled radius to scale together with scaling
         mVariableTransparentPixelsClickThroughRadius = (int)(mTransparentPixelsClickThroughRadius * view.getScaleX());
 
-        //The eventX and Y for the actual image (discluding the frame and any views around it)
-        int imageEventX = eventX - (imageRect.left + borderRect.left);
-        int imageEventY = eventY - (imageRect.top + borderRect.top);
+        // The eventX and Y for the actual image (discluding the frame and any views around it)
+        final int imageEventX = eventX - (imageRect.left + borderRect.left);
+        final int imageEventY = eventY - (imageRect.top + borderRect.top);
 
-        float scaleFactorX = (float) bitmap.getWidth() / (float) image.getWidth();
-        float scaleFactorY = (float) bitmap.getHeight()/ (float)image.getHeight();
+        final Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+        final float scaleFactorX = (float) bitmap.getWidth() / (float) image.getWidth();
+        final float scaleFactorY = (float) bitmap.getHeight()/ (float)image.getHeight();
 
-        //To get the coordinates of the click relative to the bitmap we use an scaled image matrix
-        float[] imageEventXY = new float[]{imageEventX, imageEventY};
-        Matrix invertMatrix = new Matrix();
-        ((ImageView) image).getImageMatrix().invert(invertMatrix);
+        // To get the coordinates of the click relative to the bitmap we use an scaled image matrix
+        final Matrix invertMatrix = new Matrix();
+        image.getImageMatrix().invert(invertMatrix);
         invertMatrix.setScale(scaleFactorX, scaleFactorY);
+        final float[] imageEventXY = new float[]{imageEventX, imageEventY};
         invertMatrix.mapPoints(imageEventXY);
 
         int bitmapX = (int) imageEventXY[0];
         int bitmapY = (int) imageEventXY[1];
 
-        //Limit x, y range within bitmap
+        // Limit x, y range within bitmap
         if (bitmapX < 0) {
             bitmapX = 0;
         } else if (bitmapX > bitmap.getWidth() - 1) {
@@ -266,8 +269,8 @@ class MultiTouchListener implements OnTouchListener {
     }
 
     /**
+     * Check if a pixel is within a radius.
      *
-     * Taken from https://github.com/burhanrashid52/PhotoEditor/pull/58 branch.
      * @param bitmap
      * @param x X Co-ordinate of click.
      * @param y Y Co-ordinate of click.
@@ -298,7 +301,8 @@ class MultiTouchListener implements OnTouchListener {
                         }
                     }
                 }
-                // TODO(kleyow): Sort the list by distance to the center of the radius.
+
+                // TODO: Optionally, for efficiency, sort by the center of the radius.
                 for (int index = 0; index < indicesInRadius.size() ; index++) {
                     if(!(isPixelTransparent(bitmap, indicesInRadius.get(index)))) {
                         return true;
@@ -321,7 +325,7 @@ class MultiTouchListener implements OnTouchListener {
             Log.d("MultiTouchListener", "Pixel not found in bitmap" + e);
         }
 
-        //We return true if it fails to find pixel from bitmap as this could be outside the bitmap
+        // We return true if it fails to find pixel from bitmap as this could be outside the bitmap
         return true;
     }
 
