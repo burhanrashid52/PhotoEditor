@@ -75,6 +75,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         initViews();
 
+        handleIntentImage(mPhotoEditorView.getSource());
+
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond_wonderland.ttf");
 
         mPropertiesBSFragment = new PropertiesBSFragment();
@@ -106,6 +108,19 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         //Set Image Dynamically
         // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
+    }
+
+    private void handleIntentImage(ImageView source) {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String intentType = intent.getType();
+            if (intentType != null && intentType.startsWith("image/")) {
+                Uri imageUri = intent.getData();
+                if (imageUri != null) {
+                    source.setImageURI(imageUri);
+                }
+            }
+        }
     }
 
     private void initViews() {
