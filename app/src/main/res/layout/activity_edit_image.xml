@@ -28,9 +28,9 @@
 
     <ImageView
         android:id="@+id/imgUndo"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/top_tool_icon_width"
         android:layout_height="wrap_content"
-        android:background="#99000000"
+        android:background="@color/semi_black_transparent"
         android:padding="8dp"
         android:src="@drawable/ic_undo"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
@@ -38,9 +38,9 @@
 
     <ImageView
         android:id="@+id/imgRedo"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/top_tool_icon_width"
         android:layout_height="wrap_content"
-        android:background="#99000000"
+        android:background="@color/semi_black_transparent"
         android:padding="8dp"
         android:src="@drawable/ic_redo"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
@@ -48,9 +48,9 @@
 
     <ImageView
         android:id="@+id/imgGallery"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/top_tool_icon_width"
         android:layout_height="wrap_content"
-        android:background="#99000000"
+        android:background="@color/semi_black_transparent"
         android:padding="8dp"
         android:src="@drawable/ic_gallery"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
@@ -58,9 +58,9 @@
 
     <ImageView
         android:id="@+id/imgCamera"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/top_tool_icon_width"
         android:layout_height="wrap_content"
-        android:background="#99000000"
+        android:background="@color/semi_black_transparent"
         android:padding="8dp"
         android:src="@drawable/ic_camera"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
@@ -70,8 +70,8 @@
         android:id="@+id/imgClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_margin="8dp"
         android:src="@drawable/ic_close"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,8 +84,8 @@
         android:layout_height="wrap_content"
         android:background="@color/tool_bg"
         android:orientation="horizontal"
-        android:paddingBottom="4dp"
         android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,8 +108,8 @@
         android:id="@+id/txtCurrentTool"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:singleLine="true"
         android:text="@string/app_name"
         android:textColor="@android:color/white"
@@ -127,5 +127,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline" />
+
+    <ImageView
+        android:id="@+id/imgShare"
+        android:layout_width="@dimen/top_tool_icon_width"
+        android:layout_height="wrap_content"
+        android:background="@color/semi_black_transparent"
+        android:padding="8dp"
+        android:src="@drawable/ic_share"
+        app:layout_constraintBottom_toBottomOf="@+id/photoEditorView"
+        app:layout_constraintEnd_toStartOf="@+id/imgUndo"
+        app:layout_constraintStart_toEndOf="@+id/imgCamera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

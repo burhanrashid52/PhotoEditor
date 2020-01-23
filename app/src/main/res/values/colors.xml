@@ -17,5 +17,6 @@
     <color name="yellow_color_picker">#FBE870</color>
     <color name="yellow_green_color_picker">#C5E17A</color>
     <color name="tool_bg">#151414</color>
+    <color name="semi_black_transparent">#99000000</color>
 
 </resources>
