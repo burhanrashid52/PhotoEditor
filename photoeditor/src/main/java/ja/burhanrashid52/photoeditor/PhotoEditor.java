@@ -14,8 +14,10 @@ import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -47,13 +49,45 @@ public class PhotoEditor implements BrushViewChangeListener {
     private ImageView imageView;
     private View deleteView;
     private BrushDrawingView brushDrawingView;
-    private List<View> addedViews;
-    private List<View> redoViews;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private ViewState viewState;
 
+    // Tracked state of user-added views (stickers, emoji, text, etc)
+    public static class ViewState {
+
+        private View currentSelectedView;
+        private List<View> addedViews;
+        private List<View> redoViews;
+
+        public ViewState() {
+            this.currentSelectedView = null;
+            this.addedViews = new ArrayList<>();
+            this.redoViews = new ArrayList<>();
+        }
+
+        public View getCurrentSelectedView() {
+            return currentSelectedView;
+        }
+
+        public void setCurrentSelectedView(View currentSelectedView) {
+            this.currentSelectedView = currentSelectedView;
+        }
+
+        public List<View> getAddedViews() {
+            return addedViews;
+        }
+
+        public List<View> getRedoViews() {
+            return redoViews;
+        }
+
+        public void clearCurrentSelectedView() {
+            this.currentSelectedView = null;
+        }
+    }
 
     private PhotoEditor(Builder builder) {
         this.context = builder.context;
@@ -64,10 +98,83 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
+        this.viewState = new ViewState();
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
-        addedViews = new ArrayList<>();
-        redoViews = new ArrayList<>();
+
+
+        // A listener for the image view that helps with the focus view logic.
+        // i.e when you press on an empty space without stickers, it will de-select the focused sticker.
+        class ImageViewListener extends GestureDetector.SimpleOnGestureListener {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                Log.i("TAG", "onSingleTapUp: ");
+                clearHelperBox();
+                // Returning false when there is no in focus view will pass the
+                // touch event to the zoom layout logic.
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+            @Override
+            public boolean onDown(MotionEvent e) {
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX,
+                                    float distanceY) {
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent event) {
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent event) {
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent event) {
+                if (viewState.getCurrentSelectedView() == null) {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        final GestureDetector mDetector = new GestureDetector(context, new ImageViewListener());
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mDetector.onTouchEvent(event);
+            }
+        });
     }
 
     /**
@@ -88,10 +195,13 @@ public class PhotoEditor implements BrushViewChangeListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
+                clearHelperBox();
                 boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
                 frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
                 imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
                 frmBorder.setTag(!isBackgroundVisible);
+
+                viewState.setCurrentSelectedView(imageRootView);
             }
 
             @Override
@@ -101,9 +211,9 @@ public class PhotoEditor implements BrushViewChangeListener {
         });
 
         imageRootView.setOnTouchListener(multiTouchListener);
-
+        clearHelperBox();
         addViewToParent(imageRootView, ViewType.IMAGE);
-
+        viewState.setCurrentSelectedView(imageRootView);
     }
 
     /**
@@ -161,10 +271,13 @@ public class PhotoEditor implements BrushViewChangeListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
+                clearHelperBox();
                 boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
                 frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
                 imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
                 frmBorder.setTag(!isBackgroundVisible);
+
+                viewState.setCurrentSelectedView(textRootView);
             }
 
             @Override
@@ -178,7 +291,11 @@ public class PhotoEditor implements BrushViewChangeListener {
         });
 
         textRootView.setOnTouchListener(multiTouchListener);
+        clearHelperBox();
         addViewToParent(textRootView, ViewType.TEXT);
+
+        // Change the in-focus view
+        viewState.setCurrentSelectedView(textRootView);
     }
 
     /**
@@ -219,14 +336,14 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     public void editText(@NonNull View view, String inputText, @Nullable TextStyleBuilder styleBuilder) {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
-        if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
+        if (inputTextView != null && viewState.addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
             if (styleBuilder != null)
                 styleBuilder.applyStyle(inputTextView);
 
             parentView.updateViewLayout(view, view.getLayoutParams());
-            int i = addedViews.indexOf(view);
-            if (i > -1) addedViews.set(i, view);
+            int i = viewState.addedViews.indexOf(view);
+            if (i > -1) viewState.addedViews.set(i, view);
         }
     }
 
@@ -263,10 +380,14 @@ public class PhotoEditor implements BrushViewChangeListener {
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
+                clearHelperBox();
                 boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
                 frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
                 imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
                 frmBorder.setTag(!isBackgroundVisible);
+
+                // Change the in-focus view
+                viewState.setCurrentSelectedView(emojiRootView);
             }
 
             @Override
@@ -274,7 +395,11 @@ public class PhotoEditor implements BrushViewChangeListener {
             }
         });
         emojiRootView.setOnTouchListener(multiTouchListener);
+        clearHelperBox();
         addViewToParent(emojiRootView, ViewType.EMOJI);
+
+        // Change the in-focus view
+        viewState.setCurrentSelectedView(emojiRootView);
     }
 
 
@@ -288,9 +413,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(rootView, params);
-        addedViews.add(rootView);
+        viewState.addedViews.add(rootView);
         if (mOnPhotoEditorListener != null)
-            mOnPhotoEditorListener.onAddViewListener(viewType, addedViews.size());
+            mOnPhotoEditorListener.onAddViewListener(viewType, viewState.addedViews.size());
     }
 
     /**
@@ -305,7 +430,8 @@ public class PhotoEditor implements BrushViewChangeListener {
                 parentView,
                 this.imageView,
                 isTextPinchZoomable,
-                mOnPhotoEditorListener);
+                mOnPhotoEditorListener,
+                this.viewState);
 
         //multiTouchListener.setOnMultiTouchListener(this);
 
@@ -473,14 +599,16 @@ public class PhotoEditor implements BrushViewChangeListener {
     }
 
     /*private void viewUndo() {
-        if (addedViews.size() > 0) {
-            parentView.removeView(addedViews.remove(addedViews.size() - 1));
+        if (viewState.addedViews.size() > 0) {
+            parentView.removeView(viewState.addedViews.remove(viewState.addedViews.size() - 1));
             if (mOnPhotoEditorListener != null)
-                mOnPhotoEditorListener.onRemoveViewListener(addedViews.size());
+                mOnPhotoEditorListener.onRemoveViewListener(viewState.addedViews.size());
         }
     }*/
 
     private void viewUndo(View removedView, ViewType viewType) {
+        final List<View> addedViews = viewState.getAddedViews();
+        final List<View> redoViews = viewState.getRedoViews();
         if (addedViews.size() > 0) {
             if (addedViews.contains(removedView)) {
                 parentView.removeView(removedView);
@@ -499,6 +627,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @return true if there nothing more to undo
      */
     public boolean undo() {
+        final List<View> addedViews = viewState.getAddedViews();
+        final List<View> redoViews = viewState.getRedoViews();
         if (addedViews.size() > 0) {
             View removeView = addedViews.get(addedViews.size() - 1);
             if (removeView instanceof BrushDrawingView) {
@@ -524,6 +654,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @return true if there nothing more to redo
      */
     public boolean redo() {
+        final List<View> addedViews = viewState.getAddedViews();
+        final List<View> redoViews = viewState.getRedoViews();
         if (redoViews.size() > 0) {
             View redoView = redoViews.get(redoViews.size() - 1);
             if (redoView instanceof BrushDrawingView) {
@@ -551,6 +683,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      * This will also clear the undo and redo stack
      */
     public void clearAllViews() {
+        final List<View> addedViews = viewState.getAddedViews();
+        final List<View> redoViews = viewState.getRedoViews();
         for (int i = 0; i < addedViews.size(); i++) {
             parentView.removeView(addedViews.get(i));
         }
@@ -578,6 +712,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                 imgClose.setVisibility(View.GONE);
             }
         }
+        viewState.clearCurrentSelectedView();
     }
 
     /**
@@ -794,12 +929,14 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @return true if nothing is there to change
      */
     public boolean isCacheEmpty() {
-        return addedViews.size() == 0 && redoViews.size() == 0;
+        return viewState.getAddedViews().size() == 0 && viewState.getRedoViews().size() == 0;
     }
 
 
     @Override
     public void onViewAdd(BrushDrawingView brushDrawingView) {
+        final List<View> addedViews = viewState.getAddedViews();
+        final List<View> redoViews = viewState.getRedoViews();
         if (redoViews.size() > 0) {
             redoViews.remove(redoViews.size() - 1);
         }
@@ -811,6 +948,8 @@ public class PhotoEditor implements BrushViewChangeListener {
 
     @Override
     public void onViewRemoved(BrushDrawingView brushDrawingView) {
+        final List<View> addedViews = viewState.getAddedViews();
+        final List<View> redoViews = viewState.getRedoViews();
         if (addedViews.size() > 0) {
             View removeView = addedViews.remove(addedViews.size() - 1);
             if (!(removeView instanceof BrushDrawingView)) {

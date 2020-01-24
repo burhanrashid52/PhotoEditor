@@ -39,9 +39,15 @@ class MultiTouchListener implements OnTouchListener {
     private boolean mIsTextPinchZoomable;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
-    MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
-                       ImageView photoEditImageView, boolean isTextPinchZoomable,
-                       OnPhotoEditorListener onPhotoEditorListener) {
+    private PhotoEditor.ViewState viewState;
+
+    MultiTouchListener(@Nullable View deleteView,
+                       RelativeLayout parentView,
+                       ImageView photoEditImageView,
+                       boolean isTextPinchZoomable,
+                       OnPhotoEditorListener onPhotoEditorListener,
+                       PhotoEditor.ViewState viewState
+    ) {
         mIsTextPinchZoomable = isTextPinchZoomable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
@@ -55,6 +61,7 @@ class MultiTouchListener implements OnTouchListener {
         } else {
             outRect = new Rect(0, 0, 0, 0);
         }
+        this.viewState = viewState;
     }
 
     private static float adjustAngle(float degrees) {
@@ -136,12 +143,15 @@ class MultiTouchListener implements OnTouchListener {
                 firePhotoEditorSDKListener(view, true);
                 break;
             case MotionEvent.ACTION_MOVE:
-                int pointerIndexMove = event.findPointerIndex(mActivePointerId);
-                if (pointerIndexMove != -1) {
-                    float currX = event.getX(pointerIndexMove);
-                    float currY = event.getY(pointerIndexMove);
-                    if (!mScaleGestureDetector.isInProgress()) {
-                        adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                // Only enable dragging on focused stickers.
+                if (view == viewState.getCurrentSelectedView()) {
+                    int pointerIndexMove = event.findPointerIndex(mActivePointerId);
+                    if (pointerIndexMove != -1) {
+                        float currX = event.getX(pointerIndexMove);
+                        float currY = event.getY(pointerIndexMove);
+                        if (!mScaleGestureDetector.isInProgress()) {
+                            adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                        }
                     }
                 }
                 break;
