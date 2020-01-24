@@ -108,62 +108,41 @@ public class PhotoEditor implements BrushViewChangeListener {
         class ImageViewListener extends GestureDetector.SimpleOnGestureListener {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                Log.i("TAG", "onSingleTapUp: ");
                 clearHelperBox();
                 // Returning false when there is no in focus view will pass the
                 // touch event to the zoom layout logic.
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
+
             @Override
             public boolean onDown(MotionEvent e) {
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
 
             @Override
             public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
 
             @Override
             public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX,
                                     float distanceY) {
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
 
             @Override
             public boolean onDoubleTap(MotionEvent event) {
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
 
             @Override
             public boolean onDoubleTapEvent(MotionEvent event) {
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent event) {
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-                return true;
+                return !(viewState.getCurrentSelectedView() == null);
             }
         }
 
@@ -196,11 +175,9 @@ public class PhotoEditor implements BrushViewChangeListener {
             @Override
             public void onClick() {
                 clearHelperBox();
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
-
+                frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
+                imgClose.setVisibility(View.VISIBLE);
+                frmBorder.setTag(true);
                 viewState.setCurrentSelectedView(imageRootView);
             }
 
@@ -272,11 +249,9 @@ public class PhotoEditor implements BrushViewChangeListener {
             @Override
             public void onClick() {
                 clearHelperBox();
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
-
+                frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
+                imgClose.setVisibility(View.VISIBLE);
+                frmBorder.setTag(true);
                 viewState.setCurrentSelectedView(textRootView);
             }
 
@@ -381,10 +356,9 @@ public class PhotoEditor implements BrushViewChangeListener {
             @Override
             public void onClick() {
                 clearHelperBox();
-                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
-                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
-                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
-                frmBorder.setTag(!isBackgroundVisible);
+                frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
+                imgClose.setVisibility(View.VISIBLE);
+                frmBorder.setTag(true);
 
                 // Change the in-focus view
                 viewState.setCurrentSelectedView(emojiRootView);
