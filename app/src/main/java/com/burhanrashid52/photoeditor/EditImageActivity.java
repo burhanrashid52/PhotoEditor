@@ -429,7 +429,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     private void showBottomSheetDialogFragment(BottomSheetDialogFragment fragment) {
-        if (fragment.isAdded()) {
+        if (fragment == null || fragment.isAdded()) {
             return;
         }
         fragment.show(getSupportFragmentManager(), fragment.getTag());
