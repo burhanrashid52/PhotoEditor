@@ -33,6 +33,7 @@ import com.burhanrashid52.photoeditor.filters.FilterListener;
 import com.burhanrashid52.photoeditor.filters.FilterViewAdapter;
 import com.burhanrashid52.photoeditor.tools.EditingToolsAdapter;
 import com.burhanrashid52.photoeditor.tools.ToolType;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -395,7 +396,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case BRUSH:
                 mPhotoEditor.setBrushDrawingMode(true);
                 mTxtCurrentTool.setText(R.string.label_brush);
-                mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
+                showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case TEXT:
                 TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
@@ -419,12 +420,19 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 showFilter(true);
                 break;
             case EMOJI:
-                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
+                showBottomSheetDialogFragment(mEmojiBSFragment);
                 break;
             case STICKER:
-                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
+                showBottomSheetDialogFragment(mStickerBSFragment);
                 break;
         }
+    }
+
+    private void showBottomSheetDialogFragment(BottomSheetDialogFragment fragment) {
+        if (fragment.isAdded()) {
+            return;
+        }
+        fragment.show(getSupportFragmentManager(), fragment.getTag());
     }
 
 
