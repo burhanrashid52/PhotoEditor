@@ -17,9 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.ChangeBounds;
@@ -50,7 +53,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         StickerBSFragment.StickerListener, EditingToolsAdapter.OnItemSelected, FilterListener {
 
     private static final String TAG = EditImageActivity.class.getSimpleName();
-    public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
+    public static final String FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoeditor.fileprovider";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
     PhotoEditor mPhotoEditor;
@@ -67,6 +70,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
 
+    @Nullable
+    @VisibleForTesting
+    Uri mSaveImageUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         setContentView(R.layout.activity_edit_image);
 
         initViews();
+
+        handleIntentImage(mPhotoEditorView.getSource());
 
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond_wonderland.ttf");
 
@@ -109,6 +118,19 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
     }
 
+    private void handleIntentImage(ImageView source) {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String intentType = intent.getType();
+            if (intentType != null && intentType.startsWith("image/")) {
+                Uri imageUri = intent.getData();
+                if (imageUri != null) {
+                    source.setImageURI(imageUri);
+                }
+            }
+        }
+    }
+
     private void initViews() {
         ImageView imgUndo;
         ImageView imgRedo;
@@ -116,6 +138,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgGallery;
         ImageView imgSave;
         ImageView imgClose;
+        ImageView imgShare;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
@@ -140,6 +163,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgClose = findViewById(R.id.imgClose);
         imgClose.setOnClickListener(this);
+
+        imgShare = findViewById(R.id.imgShare);
+        imgShare.setOnClickListener(this);
 
     }
 
@@ -198,6 +224,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case R.id.imgClose:
                 onBackPressed();
                 break;
+            case R.id.imgShare:
+                shareImage();
+                break;
 
             case R.id.imgCamera:
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -211,6 +240,24 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
                 break;
         }
+    }
+
+    private void shareImage() {
+        if (mSaveImageUri == null) {
+            showSnackbar(getString(R.string.msg_save_image_to_share));
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_STREAM, buildFileProviderUri(mSaveImageUri));
+        startActivity(Intent.createChooser(intent, getString(R.string.msg_share_image)));
+    }
+
+    private Uri buildFileProviderUri(@NonNull Uri uri) {
+        return FileProvider.getUriForFile(this,
+                FILE_PROVIDER_AUTHORITY,
+                new File(uri.getPath()));
     }
 
     @SuppressLint("MissingPermission")
@@ -233,7 +280,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     public void onSuccess(@NonNull String imagePath) {
                         hideLoading();
                         showSnackbar("Image Saved Successfully");
-                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
+                        mSaveImageUri = Uri.fromFile(new File(imagePath));
+                        mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
                     }
 
                     @Override
