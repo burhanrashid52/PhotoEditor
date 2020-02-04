@@ -99,7 +99,7 @@ We can customize our brush and paint with different set of property. To start dr
 | Type  | Method |
 | ------------- | ------------- |
 | Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
-| Bursh Size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
+| Brush Size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
 | Color Opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
 | Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
 | Brush Eraser  | `mPhotoEditor.brushEraser()` |
