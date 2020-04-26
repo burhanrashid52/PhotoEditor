@@ -39,14 +39,14 @@ class MultiTouchListener implements OnTouchListener {
     private boolean mIsTextPinchZoomable;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
-    private PhotoEditor.ViewState viewState;
+    private PhotoEditorViewState viewState;
 
     MultiTouchListener(@Nullable View deleteView,
                        RelativeLayout parentView,
                        ImageView photoEditImageView,
                        boolean isTextPinchZoomable,
                        OnPhotoEditorListener onPhotoEditorListener,
-                       PhotoEditor.ViewState viewState
+                       PhotoEditorViewState viewState
     ) {
         mIsTextPinchZoomable = isTextPinchZoomable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());

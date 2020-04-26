@@ -46,6 +46,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private final LayoutInflater mLayoutInflater;
     private Context context;
     private PhotoEditorView parentView;
+    private PhotoEditorViewState viewState;
     private ImageView imageView;
     private View deleteView;
     private BrushDrawingView brushDrawingView;
@@ -53,42 +54,8 @@ public class PhotoEditor implements BrushViewChangeListener {
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
-    private ViewState viewState;
 
-    // Tracked state of user-added views (stickers, emoji, text, etc)
-    public static class ViewState {
-
-        private View currentSelectedView;
-        private List<View> addedViews;
-        private List<View> redoViews;
-
-        public ViewState() {
-            this.currentSelectedView = null;
-            this.addedViews = new ArrayList<>();
-            this.redoViews = new ArrayList<>();
-        }
-
-        public View getCurrentSelectedView() {
-            return currentSelectedView;
-        }
-
-        public void setCurrentSelectedView(View currentSelectedView) {
-            this.currentSelectedView = currentSelectedView;
-        }
-
-        public List<View> getAddedViews() {
-            return addedViews;
-        }
-
-        public List<View> getRedoViews() {
-            return redoViews;
-        }
-
-        public void clearCurrentSelectedView() {
-            this.currentSelectedView = null;
-        }
-    }
-
+    @SuppressLint("ClickableViewAccessibility")
     private PhotoEditor(Builder builder) {
         this.context = builder.context;
         this.parentView = builder.parentView;
@@ -98,55 +65,22 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.isTextPinchZoomable = builder.isTextPinchZoomable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
-        this.viewState = new ViewState();
+        this.viewState = new PhotoEditorViewState();
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
 
-
-        // A listener for the image view that helps with the focus view logic.
-        // i.e when you press on an empty space without stickers, it will de-select the focused sticker.
-        class ImageViewListener extends GestureDetector.SimpleOnGestureListener {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                clearHelperBox();
-                // Returning false when there is no in focus view will pass the
-                // touch event to the zoom layout logic.
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-
-            @Override
-            public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX,
-                                    float distanceY) {
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent event) {
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent event) {
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent event) {
-                return !(viewState.getCurrentSelectedView() == null);
-            }
-        }
-
-        final GestureDetector mDetector = new GestureDetector(context, new ImageViewListener());
+        final GestureDetector mDetector = new GestureDetector(
+                context,
+                new PhotoEditorImageViewListener(
+                        this.viewState,
+                        new PhotoEditorImageViewListener.OnSingleTapUpCallback() {
+                            @Override
+                            public void onSingleTapUp() {
+                                clearHelperBox();
+                            }
+                        }
+                )
+        );
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -311,14 +245,13 @@ public class PhotoEditor implements BrushViewChangeListener {
      */
     public void editText(@NonNull View view, String inputText, @Nullable TextStyleBuilder styleBuilder) {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
-        if (inputTextView != null && viewState.addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
+        if (inputTextView != null && viewState.containsAddedView(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
             if (styleBuilder != null)
                 styleBuilder.applyStyle(inputTextView);
 
             parentView.updateViewLayout(view, view.getLayoutParams());
-            int i = viewState.addedViews.indexOf(view);
-            if (i > -1) viewState.addedViews.set(i, view);
+            viewState.replaceAddedView(view);
         }
     }
 
@@ -387,9 +320,9 @@ public class PhotoEditor implements BrushViewChangeListener {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(rootView, params);
-        viewState.addedViews.add(rootView);
+        viewState.addAddedView(rootView);
         if (mOnPhotoEditorListener != null)
-            mOnPhotoEditorListener.onAddViewListener(viewType, viewState.addedViews.size());
+            mOnPhotoEditorListener.onAddViewListener(viewType, viewState.getAddedViewsCount());
     }
 
     /**
@@ -572,25 +505,16 @@ public class PhotoEditor implements BrushViewChangeListener {
             brushDrawingView.brushEraser();
     }
 
-    /*private void viewUndo() {
-        if (viewState.addedViews.size() > 0) {
-            parentView.removeView(viewState.addedViews.remove(viewState.addedViews.size() - 1));
-            if (mOnPhotoEditorListener != null)
-                mOnPhotoEditorListener.onRemoveViewListener(viewState.addedViews.size());
-        }
-    }*/
-
     private void viewUndo(View removedView, ViewType viewType) {
-        final List<View> addedViews = viewState.getAddedViews();
-        final List<View> redoViews = viewState.getRedoViews();
-        if (addedViews.size() > 0) {
-            if (addedViews.contains(removedView)) {
-                parentView.removeView(removedView);
-                addedViews.remove(removedView);
-                redoViews.add(removedView);
-                if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onRemoveViewListener(viewType, addedViews.size());
-                }
+        if (viewState.containsAddedView(removedView)) {
+            parentView.removeView(removedView);
+            viewState.removeAddedView(removedView);
+            viewState.pushRedoView(removedView);
+            if (mOnPhotoEditorListener != null) {
+                mOnPhotoEditorListener.onRemoveViewListener(
+                        viewType,
+                        viewState.getAddedViewsCount()
+                );
             }
         }
     }
@@ -601,25 +525,28 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @return true if there nothing more to undo
      */
     public boolean undo() {
-        final List<View> addedViews = viewState.getAddedViews();
-        final List<View> redoViews = viewState.getRedoViews();
-        if (addedViews.size() > 0) {
-            View removeView = addedViews.get(addedViews.size() - 1);
+        if (viewState.getAddedViewsCount() > 0) {
+            View removeView = viewState.getAddedView(
+                    viewState.getAddedViewsCount() - 1
+            );
             if (removeView instanceof BrushDrawingView) {
                 return brushDrawingView != null && brushDrawingView.undo();
             } else {
-                addedViews.remove(addedViews.size() - 1);
+                viewState.removeAddedView(viewState.getAddedViewsCount() - 1);
                 parentView.removeView(removeView);
-                redoViews.add(removeView);
+                viewState.pushRedoView(removeView);
             }
             if (mOnPhotoEditorListener != null) {
                 Object viewTag = removeView.getTag();
                 if (viewTag != null && viewTag instanceof ViewType) {
-                    mOnPhotoEditorListener.onRemoveViewListener(((ViewType) viewTag), addedViews.size());
+                    mOnPhotoEditorListener.onRemoveViewListener(
+                            (ViewType) viewTag,
+                            viewState.getAddedViewsCount()
+                    );
                 }
             }
         }
-        return addedViews.size() != 0;
+        return viewState.getAddedViewsCount() != 0;
     }
 
     /**
@@ -628,23 +555,26 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @return true if there nothing more to redo
      */
     public boolean redo() {
-        final List<View> addedViews = viewState.getAddedViews();
-        final List<View> redoViews = viewState.getRedoViews();
-        if (redoViews.size() > 0) {
-            View redoView = redoViews.get(redoViews.size() - 1);
+        if (viewState.getRedoViewsCount() > 0) {
+            View redoView = viewState.getRedoView(
+                    viewState.getRedoViewsCount() - 1
+            );
             if (redoView instanceof BrushDrawingView) {
                 return brushDrawingView != null && brushDrawingView.redo();
             } else {
-                redoViews.remove(redoViews.size() - 1);
+                viewState.popRedoView();
                 parentView.addView(redoView);
-                addedViews.add(redoView);
+                viewState.addAddedView(redoView);
             }
             Object viewTag = redoView.getTag();
             if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
-                mOnPhotoEditorListener.onAddViewListener(((ViewType) viewTag), addedViews.size());
+                mOnPhotoEditorListener.onAddViewListener(
+                        (ViewType) viewTag,
+                        viewState.getAddedViewsCount()
+                );
             }
         }
-        return redoViews.size() != 0;
+        return viewState.getRedoViewsCount() != 0;
     }
 
     private void clearBrushAllViews() {
@@ -657,16 +587,14 @@ public class PhotoEditor implements BrushViewChangeListener {
      * This will also clear the undo and redo stack
      */
     public void clearAllViews() {
-        final List<View> addedViews = viewState.getAddedViews();
-        final List<View> redoViews = viewState.getRedoViews();
-        for (int i = 0; i < addedViews.size(); i++) {
-            parentView.removeView(addedViews.get(i));
+        for (int i = 0; i < viewState.getAddedViewsCount(); i++) {
+            parentView.removeView(viewState.getAddedView(i));
         }
-        if (addedViews.contains(brushDrawingView)) {
+        if (viewState.containsAddedView(brushDrawingView)) {
             parentView.addView(brushDrawingView);
         }
-        addedViews.clear();
-        redoViews.clear();
+        viewState.clearAddedViews();
+        viewState.clearRedoViews();
         clearBrushAllViews();
     }
 
@@ -903,36 +831,40 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @return true if nothing is there to change
      */
     public boolean isCacheEmpty() {
-        return viewState.getAddedViews().size() == 0 && viewState.getRedoViews().size() == 0;
+        return viewState.getAddedViewsCount() == 0 && viewState.getRedoViewsCount() == 0;
     }
 
 
     @Override
     public void onViewAdd(BrushDrawingView brushDrawingView) {
-        final List<View> addedViews = viewState.getAddedViews();
-        final List<View> redoViews = viewState.getRedoViews();
-        if (redoViews.size() > 0) {
-            redoViews.remove(redoViews.size() - 1);
+        if (viewState.getRedoViewsCount() > 0) {
+            viewState.popRedoView();
         }
-        addedViews.add(brushDrawingView);
+        viewState.addAddedView(brushDrawingView);
         if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onAddViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+            mOnPhotoEditorListener.onAddViewListener(
+                    ViewType.BRUSH_DRAWING,
+                    viewState.getAddedViewsCount()
+            );
         }
     }
 
     @Override
     public void onViewRemoved(BrushDrawingView brushDrawingView) {
-        final List<View> addedViews = viewState.getAddedViews();
-        final List<View> redoViews = viewState.getRedoViews();
-        if (addedViews.size() > 0) {
-            View removeView = addedViews.remove(addedViews.size() - 1);
+        if (viewState.getAddedViewsCount() > 0) {
+            View removeView = viewState.removeAddedView(
+                    viewState.getAddedViewsCount() - 1
+            );
             if (!(removeView instanceof BrushDrawingView)) {
                 parentView.removeView(removeView);
             }
-            redoViews.add(removeView);
+            viewState.pushRedoView(removeView);
         }
         if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onRemoveViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+            mOnPhotoEditorListener.onRemoveViewListener(
+                    ViewType.BRUSH_DRAWING,
+                    viewState.getAddedViewsCount()
+            );
         }
     }
 
