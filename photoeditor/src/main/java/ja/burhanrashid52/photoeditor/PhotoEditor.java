@@ -654,6 +654,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         super.onPreExecute();
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
+                        brushDrawingView.destroyDrawingCache();
                     }
 
                     @SuppressLint("MissingPermission")
@@ -733,6 +734,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         super.onPreExecute();
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
+                        brushDrawingView.destroyDrawingCache();
                     }
 
                     @Override
