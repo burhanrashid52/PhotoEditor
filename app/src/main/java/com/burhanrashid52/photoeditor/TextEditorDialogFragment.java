@@ -2,6 +2,7 @@ package com.burhanrashid52.photoeditor;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -34,9 +36,11 @@ public class TextEditorDialogFragment extends DialogFragment {
     private InputMethodManager mInputMethodManager;
     private int mColorCode;
     private TextEditor mTextEditor;
+    private Boolean boldB = false ;
+    private Boolean italicB = false;
 
     public interface TextEditor {
-        void onDone(String inputText, int colorCode);
+        void onDone(String inputText, int colorCode );
     }
 
 
@@ -84,6 +88,8 @@ public class TextEditorDialogFragment extends DialogFragment {
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
+        Button myButton = (Button) view.findViewById(R.id.button);
+        Button myButton2 = (Button) view.findViewById(R.id.button2);
 
         //Setup the color picker for text color
         RecyclerView addTextColorPickerRecyclerView = view.findViewById(R.id.add_text_color_picker_recycler_view);
@@ -115,6 +121,25 @@ public class TextEditorDialogFragment extends DialogFragment {
                 if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
                     mTextEditor.onDone(inputText, mColorCode);
                 }
+            }
+        });
+        myButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                boldB = !boldB;
+                if         (boldB && italicB ) { mAddTextEditText.setTypeface(null, Typeface.BOLD_ITALIC); }
+               else if (boldB) { mAddTextEditText.setTypeface(null, Typeface.BOLD); }
+                else if (italicB) { mAddTextEditText.setTypeface(null, Typeface.ITALIC); }
+                else  { mAddTextEditText.setTypeface(null, Typeface.NORMAL); }
+            }
+        });
+        myButton2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                italicB = !italicB;
+                if (italicB && boldB) { mAddTextEditText.setTypeface(null, Typeface.BOLD_ITALIC); }
+               else if (italicB) { mAddTextEditText.setTypeface(null, Typeface.ITALIC); }
+                else if (boldB) { mAddTextEditText.setTypeface(null, Typeface.BOLD); }
+                else { mAddTextEditText.setTypeface(null, Typeface.NORMAL); }
             }
         });
 

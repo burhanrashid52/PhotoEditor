@@ -7,6 +7,16 @@
     android:background="#B3000000"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/button"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="BOLD"
+        android:textColor="#C2FFFFFF"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/add_text_done_tv"
         android:layout_width="wrap_content"
@@ -50,5 +60,21 @@
             tools:listitem="@layout/color_picker_item_list" />
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="88dp"
+        android:layout_marginLeft="88dp"
+        android:layout_marginTop="1dp"
+        android:onClick="onClick"
+        android:text="ITALIC"
+        android:textColor="#BDFFFFFF"
+        android:textStyle="italic" />
 
 </RelativeLayout>

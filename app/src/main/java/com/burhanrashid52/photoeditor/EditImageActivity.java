@@ -177,8 +177,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             public void onDone(String inputText, int colorCode) {
                 final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                 styleBuilder.withTextColor(colorCode);
+                styleBuilder.withTextFont(Typeface.defaultFromStyle(Typeface.BOLD)); // Create a switch corresponding with Bold /Italic Buttons
 
-                mPhotoEditor.editText(rootView, inputText, styleBuilder);
+               mPhotoEditor.editText(rootView, inputText, styleBuilder);
                 mTxtCurrentTool.setText(R.string.label_text);
             }
         });
@@ -403,6 +404,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     @Override
                     public void onDone(String inputText, int colorCode) {
                         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+                      //  styleBuilder.withTextFont(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC)); // Create a switch corresponding with Bold /Italic Buttons
                         styleBuilder.withTextColor(colorCode);
 
                         mPhotoEditor.addText(inputText, styleBuilder);
