@@ -38,9 +38,12 @@ public class TextEditorDialogFragment extends DialogFragment {
     private TextEditor mTextEditor;
     private Boolean boldB = false ;
     private Boolean italicB = false;
+    private Integer textStyleInt;
+    private Typeface textStyleType;
+
 
     public interface TextEditor {
-        void onDone(String inputText, int colorCode );
+        void onDone(String inputText, int colorCode, Typeface textStyleType);
     }
 
 
@@ -88,8 +91,8 @@ public class TextEditorDialogFragment extends DialogFragment {
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
-        Button myButton = (Button) view.findViewById(R.id.button);
-        Button myButton2 = (Button) view.findViewById(R.id.button2);
+        Button mBoldB = (Button) view.findViewById(R.id.button);
+        Button mItalicB = (Button) view.findViewById(R.id.button2);
 
         //Setup the color picker for text color
         RecyclerView addTextColorPickerRecyclerView = view.findViewById(R.id.add_text_color_picker_recycler_view);
@@ -119,27 +122,32 @@ public class TextEditorDialogFragment extends DialogFragment {
                 dismiss();
                 String inputText = mAddTextEditText.getText().toString();
                 if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
-                    mTextEditor.onDone(inputText, mColorCode);
+                    mTextEditor.onDone(inputText, mColorCode, textStyleType);
                 }
             }
         });
-        myButton.setOnClickListener(new View.OnClickListener() {
+        // Listen to Bold / Italic Buttons
+        mBoldB.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 boldB = !boldB;
-                if         (boldB && italicB ) { mAddTextEditText.setTypeface(null, Typeface.BOLD_ITALIC); }
-               else if (boldB) { mAddTextEditText.setTypeface(null, Typeface.BOLD); }
-                else if (italicB) { mAddTextEditText.setTypeface(null, Typeface.ITALIC); }
-                else  { mAddTextEditText.setTypeface(null, Typeface.NORMAL); }
+                if         (boldB && italicB ) { textStyleInt = Typeface.BOLD_ITALIC; } //BOLD_ITALIC =3
+                else if (boldB) { textStyleInt = Typeface.BOLD; }   //BOLD=1
+                else if (italicB) {textStyleInt = Typeface.ITALIC; } //ITALIC =2
+                else  { textStyleInt = Typeface.NORMAL; } //NORMAL =0
+                 textStyleType =   Typeface.defaultFromStyle(textStyleInt);
+                mAddTextEditText.setTypeface(textStyleType); // convert int to typeface to pass to onDone() to effect StyleBuilder
             }
         });
-        myButton2.setOnClickListener(new View.OnClickListener() {
+        mItalicB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 italicB = !italicB;
-                if (italicB && boldB) { mAddTextEditText.setTypeface(null, Typeface.BOLD_ITALIC); }
-               else if (italicB) { mAddTextEditText.setTypeface(null, Typeface.ITALIC); }
-                else if (boldB) { mAddTextEditText.setTypeface(null, Typeface.BOLD); }
-                else { mAddTextEditText.setTypeface(null, Typeface.NORMAL); }
+                if (italicB && boldB) {  textStyleInt = Typeface.BOLD_ITALIC; }
+                else if (italicB) { textStyleInt = Typeface.ITALIC; }
+                else if (boldB) {  textStyleInt = Typeface.BOLD; }
+                else {  textStyleInt = Typeface.NORMAL;  }
+                textStyleType =   Typeface.defaultFromStyle(textStyleInt);
+                mAddTextEditText.setTypeface(textStyleType);
             }
         });
 

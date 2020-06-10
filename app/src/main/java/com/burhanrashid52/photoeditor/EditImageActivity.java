@@ -174,11 +174,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 TextEditorDialogFragment.show(this, text, colorCode);
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
-            public void onDone(String inputText, int colorCode) {
+            public void onDone(String inputText, int colorCode, Typeface textStyleType) { // inserts Typeface textStyleType from TextEditorDialogueFragment (checks for bold and Italic, makes into typeface)
                 final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                 styleBuilder.withTextColor(colorCode);
-                styleBuilder.withTextFont(Typeface.defaultFromStyle(Typeface.BOLD)); // Create a switch corresponding with Bold /Italic Buttons
-
+                styleBuilder.withTextFont(textStyleType);
                mPhotoEditor.editText(rootView, inputText, styleBuilder);
                 mTxtCurrentTool.setText(R.string.label_text);
             }
@@ -402,10 +401,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
-                    public void onDone(String inputText, int colorCode) {
+                    public void onDone(String inputText, int colorCode, Typeface textStyleType) {
                         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
-                      //  styleBuilder.withTextFont(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC)); // Create a switch corresponding with Bold /Italic Buttons
                         styleBuilder.withTextColor(colorCode);
+                        styleBuilder.withTextFont(textStyleType);
 
                         mPhotoEditor.addText(inputText, styleBuilder);
                         mTxtCurrentTool.setText(R.string.label_text);
