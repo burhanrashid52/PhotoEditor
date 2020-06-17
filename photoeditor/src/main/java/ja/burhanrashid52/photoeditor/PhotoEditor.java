@@ -53,6 +53,8 @@ public class PhotoEditor implements BrushViewChangeListener {
     private boolean isTextPinchZoomable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
+    private boolean shadowOn;
+    private int shadowColor;
 
 
     private PhotoEditor(Builder builder) {
@@ -135,7 +137,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             styleBuilder.withTextFont(textTypeface);
         }
 
-        addText(text, styleBuilder);
+        addText(text, styleBuilder, shadowOn, shadowColor);
     }
 
     /**
@@ -146,7 +148,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param styleBuilder text style builder with your style
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
+    public void addText(String text, @Nullable final TextStyleBuilder styleBuilder, boolean shadowOn, int shadowColor) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
         final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
@@ -155,7 +157,13 @@ public class PhotoEditor implements BrushViewChangeListener {
 
         textInputTv.setText(text);
         if (styleBuilder != null)
-            styleBuilder.applyStyle(textInputTv);
+            if (shadowOn) {
+                textInputTv.setShadowLayer(1, 2, 2, shadowColor);
+            } // apply Shadow Layer
+            else {
+                textInputTv.setShadowLayer(0, 0, 0, 0);
+            }
+        styleBuilder.applyStyle(textInputTv);
 
         MultiTouchListener multiTouchListener = getMultiTouchListener();
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
@@ -207,7 +215,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             styleBuilder.withTextFont(textTypeface);
         }
 
-        editText(view, inputText, styleBuilder);
+        editText(view, inputText, styleBuilder, shadowOn, shadowColor);
     }
 
     /**
@@ -217,8 +225,13 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param inputText    text to update {@link TextView}
      * @param styleBuilder style to apply on {@link TextView}
      */
-    public void editText(@NonNull View view, String inputText, @Nullable TextStyleBuilder styleBuilder) {
+    public void editText(@NonNull View view, String inputText, @Nullable TextStyleBuilder styleBuilder, boolean shadowOn, int shadowColor) {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
+        if (shadowOn) {
+            inputTextView.setShadowLayer(1, 2, 2, shadowColor);
+        } else {
+            inputTextView.setShadowLayer(0, 0, 0, 0);
+        }
         if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
             if (styleBuilder != null)

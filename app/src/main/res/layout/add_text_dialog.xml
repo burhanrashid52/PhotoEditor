@@ -7,16 +7,6 @@
     android:background="#B3000000"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="BOLD"
-        android:textColor="#C2FFFFFF"
-        android:textStyle="bold" />
-
     <TextView
         android:id="@+id/add_text_done_tv"
         android:layout_width="wrap_content"
@@ -62,7 +52,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/italic"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,7 +64,35 @@
         android:layout_marginTop="1dp"
         android:onClick="onClick"
         android:text="ITALIC"
-        android:textColor="#BDFFFFFF"
+        android:textColor="#FFFFFF"
         android:textStyle="italic" />
+
+    <Button
+        android:id="@+id/bold"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="BOLD"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/shadow"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="153dp"
+        android:layout_marginRight="153dp"
+        android:shadowColor="#FF9800"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="1"
+        android:text="SHADOW"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>

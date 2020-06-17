@@ -36,14 +36,16 @@ public class TextEditorDialogFragment extends DialogFragment {
     private InputMethodManager mInputMethodManager;
     private int mColorCode;
     private TextEditor mTextEditor;
-    private Boolean boldB = false ;
-    private Boolean italicB = false;
+    private boolean boldB = false;
+    private boolean italicB = false;
     private Integer textStyleInt;
     private Typeface textStyleType;
+    private boolean shadowOn;
+    private int shadowColor;
 
 
     public interface TextEditor {
-        void onDone(String inputText, int colorCode, Typeface textStyleType);
+        void onDone(String inputText, int mColorCode, Typeface textStyleType, boolean shadowOn, int shadowColor);
     }
 
 
@@ -91,8 +93,9 @@ public class TextEditorDialogFragment extends DialogFragment {
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
-        Button mBoldB = (Button) view.findViewById(R.id.button);
-        Button mItalicB = (Button) view.findViewById(R.id.button2);
+        Button mBoldB = view.findViewById(R.id.bold);
+        Button mItalicB = view.findViewById(R.id.italic);
+        Button mShadow = view.findViewById(R.id.shadow);
 
         //Setup the color picker for text color
         RecyclerView addTextColorPickerRecyclerView = view.findViewById(R.id.add_text_color_picker_recycler_view);
@@ -122,7 +125,7 @@ public class TextEditorDialogFragment extends DialogFragment {
                 dismiss();
                 String inputText = mAddTextEditText.getText().toString();
                 if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
-                    mTextEditor.onDone(inputText, mColorCode, textStyleType);
+                    mTextEditor.onDone(inputText, mColorCode, textStyleType, shadowOn, shadowColor);
                 }
             }
         });
@@ -142,15 +145,30 @@ public class TextEditorDialogFragment extends DialogFragment {
         mItalicB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 italicB = !italicB;
-                if (italicB && boldB) {  textStyleInt = Typeface.BOLD_ITALIC; }
-                else if (italicB) { textStyleInt = Typeface.ITALIC; }
-                else if (boldB) {  textStyleInt = Typeface.BOLD; }
-                else {  textStyleInt = Typeface.NORMAL;  }
-                textStyleType =   Typeface.defaultFromStyle(textStyleInt);
+                if (italicB && boldB) {
+                    textStyleInt = Typeface.BOLD_ITALIC;
+                } else if (italicB) {
+                    textStyleInt = Typeface.ITALIC;
+                } else if (boldB) {
+                    textStyleInt = Typeface.BOLD;
+                } else {
+                    textStyleInt = Typeface.NORMAL;
+                }
+                textStyleType = Typeface.defaultFromStyle(textStyleInt);
                 mAddTextEditText.setTypeface(textStyleType);
             }
         });
-
+        mShadow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                shadowOn = !shadowOn;
+                shadowColor = mColorCode;
+                if (shadowOn) {
+                    mAddTextEditText.setShadowLayer(1, 2, 2, shadowColor);
+                } else {
+                    mAddTextEditText.setShadowLayer(0, 0, 0, 0);
+                }
+            }
+        });
     }
 
 

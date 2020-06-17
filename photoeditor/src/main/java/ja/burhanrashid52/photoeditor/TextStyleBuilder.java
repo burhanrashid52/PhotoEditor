@@ -86,6 +86,17 @@ public class TextStyleBuilder {
         values.put(TextStyle.TEXT_APPEARANCE, textAppearance);
     }
 
+    //
+//  I struggled with this one, I tried create a way to add a shadow layer by adding it to the methods here so i can edit the style builder directly, this is what i got so far
+// feel free to ignore this
+    //
+    public void withShadowLayer(int shadowRadius, int shadowDx, int shadowDy, int shadowColor) {
+        values.put(TextStyle.SHADOW_LAYER, shadowRadius);
+        values.put(TextStyle.SHADOW_LAYER, shadowDx);
+        values.put(TextStyle.SHADOW_LAYER, shadowDy);
+        values.put(TextStyle.SHADOW_LAYER, shadowColor);
+    }
+
     /**
      * Method to apply all the style setup on this Builder}
      *
@@ -132,8 +143,20 @@ public class TextStyleBuilder {
 
                 case TEXT_APPEARANCE: {
                     if (entry.getValue() instanceof Integer) {
-                        final int styleAppearance = (Integer)entry.getValue();
+                        final int styleAppearance = (Integer) entry.getValue();
                         applyTextAppearance(textView, styleAppearance);
+                    }
+                }
+                break;
+
+                case SHADOW_LAYER: {
+                    if (entry.getValue() instanceof Integer) {
+                        final int shadowRadius = (Integer) entry.getValue();
+                        final int shadowDx = (Integer) entry.getValue();
+                        final int shadowDy = (Integer) entry.getValue();
+                        final int shadowColor = (Integer) entry.getValue();
+
+                        applyShadowLayer(textView, shadowRadius, shadowDx, shadowDy, shadowColor);
                     }
                 }
                 break;
@@ -177,6 +200,10 @@ public class TextStyleBuilder {
         }
     }
 
+    protected void applyShadowLayer(TextView textView, int shadowRadius, int shadowDx, int shadowDy, int shadowColor) {
+        textView.setShadowLayer(shadowRadius, shadowDx, shadowDy, shadowColor);
+    }
+
     /**
      * Enum to maintain current supported style properties used on on {@link PhotoEditor#addText(String, TextStyleBuilder)} and {@link PhotoEditor#editText(View, String, TextStyleBuilder)}
      */
@@ -186,13 +213,17 @@ public class TextStyleBuilder {
         GRAVITY("Gravity"),
         FONT_FAMILY("FontFamily"),
         BACKGROUND("Background"),
-        TEXT_APPEARANCE("TextAppearance");
+        TEXT_APPEARANCE("TextAppearance"),
+        SHADOW_LAYER("ShadowLayer");
 
         TextStyle(String property) {
             this.property = property;
         }
 
         private String property;
-        public String getProperty() {return property;}
+
+        public String getProperty() {
+            return property;
+        }
     }
 }
