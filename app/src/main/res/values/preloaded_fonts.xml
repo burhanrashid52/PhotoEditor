@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/averia_serif_libre_light</item>
+        <item>@font/lobster</item>
+        <item>@font/megrim</item>
+        <item>@font/philosopher</item>
         <item>@font/roboto_medium</item>
+        <item>@font/unifrakturmaguntia</item>
+        <item>@font/opensans</item>
     </array>
 </resources>

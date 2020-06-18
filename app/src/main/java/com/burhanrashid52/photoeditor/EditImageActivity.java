@@ -174,11 +174,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 TextEditorDialogFragment.show(this, text, colorCode);
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
-            public void onDone(String inputText, int colorCode, Typeface textStyleType, boolean shadowOn, int shadowColor) { // inserts Typeface textStyleType from TextEditorDialogueFragment (checks for bold and Italic, makes into typeface)
+            public void onDone(String inputText, int colorCode, int textStyleInt, boolean shadowOn, int shadowColor, Typeface font) { // inserts Typeface textStyleType from TextEditorDialogueFragment (checks for bold and Italic, makes into typeface)
                 final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                 styleBuilder.withTextColor(colorCode);
-                styleBuilder.withTextFont(textStyleType);
-                mPhotoEditor.editText(rootView, inputText, styleBuilder, shadowOn, shadowColor); // pass shadowOn and shadow color to Photoeditor.java
+                styleBuilder.withTextAppearance( textStyleInt);
+                mPhotoEditor.editText(rootView, inputText, styleBuilder, shadowOn, shadowColor, textStyleInt, font); // pass shadowOn and shadow color to Photoeditor.java
                 mTxtCurrentTool.setText(R.string.label_text);
             }
         });
@@ -401,12 +401,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
-                    public void onDone(String inputText, int colorCode, Typeface textStyleType, boolean shadowOn, int shadowColor) {
+                    public void onDone(String inputText, int colorCode, int textStyleInt, boolean shadowOn, int shadowColor, Typeface font) {
                         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                         styleBuilder.withTextColor(colorCode);
-                        styleBuilder.withTextFont(textStyleType);
 
-                        mPhotoEditor.addText(inputText, styleBuilder, shadowOn, shadowColor);
+                        mPhotoEditor.addText(inputText, styleBuilder, shadowOn, shadowColor, textStyleInt,font);
                         mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });
