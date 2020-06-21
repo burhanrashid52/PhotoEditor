@@ -1,11 +1,15 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import androidx.annotation.Nullable;
+
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -24,6 +28,7 @@ class MultiTouchListener implements OnTouchListener {
     private boolean isScaleEnabled = true;
     private float minimumScale = 0.5f;
     private float maximumScale = 10.0f;
+    private float scale  = 1;
     private int mActivePointerId = INVALID_POINTER_ID;
     private float mPrevX, mPrevY, mPrevRawX, mPrevRawY;
     private ScaleGestureDetector mScaleGestureDetector;
@@ -32,16 +37,16 @@ class MultiTouchListener implements OnTouchListener {
     private Rect outRect;
     private View deleteView;
     private ImageView photoEditImageView;
-    private RelativeLayout parentView;
-
+    private PhotoEditorView parentView;
+    private View emojiRoot ;
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl mOnGestureControl;
     private boolean mIsTextPinchZoomable;
     private OnPhotoEditorListener mOnPhotoEditorListener;
-
-    MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
+    int mScreenWidth ;int mScreenHeight;
+    MultiTouchListener(@Nullable View deleteView, PhotoEditorView parentView,
                        ImageView photoEditImageView, boolean isTextPinchZoomable,
-                       OnPhotoEditorListener onPhotoEditorListener) {
+                       OnPhotoEditorListener onPhotoEditorListener ) {
         mIsTextPinchZoomable = isTextPinchZoomable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
@@ -55,6 +60,17 @@ class MultiTouchListener implements OnTouchListener {
         } else {
             outRect = new Rect(0, 0, 0, 0);
         }
+//        this.emojiRoot = emojiRoot;
+
+    }
+    public void setEmojiRoot(View emojiRoot){
+        this.emojiRoot = emojiRoot;
+
+    }
+    public void setWeightHeight( int mScreenWidth , int mScreenHeight){
+        this.mScreenWidth = mScreenWidth;
+        this.mScreenHeight = mScreenHeight;
+
     }
 
     private static float adjustAngle(float degrees) {
@@ -67,27 +83,32 @@ class MultiTouchListener implements OnTouchListener {
         return degrees;
     }
 
-    private static void move(View view, TransformInfo info) {
+    private void move(View view, TransformInfo info) {
         computeRenderOffset(view, info.pivotX, info.pivotY);
-        adjustTranslation(view, info.deltaX, info.deltaY);
+        adjustTranslation(view, info.deltaX, info.deltaY );
 
         float scale = view.getScaleX() * info.deltaScale;
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
+        this.scale = scale;
         view.setScaleX(scale);
         view.setScaleY(scale);
-
         float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
         view.setRotation(rotation);
     }
 
-    private static void adjustTranslation(View view, float deltaX, float deltaY) {
+    private void adjustTranslation(View view, float deltaX, float deltaY) {
         float[] deltaVector = {deltaX, deltaY};
         view.getMatrix().mapVectors(deltaVector);
-        view.setTranslationX(view.getTranslationX() + deltaVector[0]);
-        view.setTranslationY(view.getTranslationY() + deltaVector[1]);
+        // these if are set not to allow emoji get outside of the screen
+        if (mPrevRawY >= 5*(this.emojiRoot.getWidth()*scale )/8 &&  mScreenWidth- mPrevRawY >= (this.emojiRoot.getWidth()*scale )/2  )
+            view.setTranslationX(view.getTranslationX() + deltaVector[0]);
+        if (mPrevRawX >= 5*(this.emojiRoot.getHeight()*scale )/8 &&  mScreenHeight- mPrevRawX >= 7*(this.emojiRoot.getHeight()*scale )/4  )
+            view.setTranslationY(view.getTranslationY() + deltaVector[1]);
+//            view.setTranslationX(view.getTranslationX() + deltaVector[0]);
+//            view.setTranslationY(view.getTranslationY() + deltaVector[1]);
     }
 
-    private static void computeRenderOffset(View view, float pivotX, float pivotY) {
+    private void computeRenderOffset(View view, float pivotX, float pivotY) {
         if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
             return;
         }
@@ -110,6 +131,7 @@ class MultiTouchListener implements OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
+
         mScaleGestureDetector.onTouchEvent(view, event);
         mGestureListener.onTouchEvent(event);
 
@@ -140,8 +162,11 @@ class MultiTouchListener implements OnTouchListener {
                 if (pointerIndexMove != -1) {
                     float currX = event.getX(pointerIndexMove);
                     float currY = event.getY(pointerIndexMove);
+                    mPrevRawX = event.getRawY();
+                    mPrevRawY = event.getRawX();
+
                     if (!mScaleGestureDetector.isInProgress()) {
-                        adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                        adjustTranslation(view, currX - mPrevX, currY - mPrevY  );
                     }
                 }
                 break;
@@ -162,6 +187,7 @@ class MultiTouchListener implements OnTouchListener {
                 firePhotoEditorSDKListener(view, false);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
+
                 int pointerIndexPointerUp = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
                 int pointerId = event.getPointerId(pointerIndexPointerUp);
                 if (pointerId == mActivePointerId) {
@@ -197,7 +223,6 @@ class MultiTouchListener implements OnTouchListener {
     }
 
     private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
         private float mPivotX;
         private float mPivotY;
         private Vector2D mPrevSpanVector = new Vector2D();

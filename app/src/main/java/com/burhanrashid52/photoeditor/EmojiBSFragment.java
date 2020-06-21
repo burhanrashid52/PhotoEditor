@@ -8,6 +8,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
     @SuppressLint("RestrictedApi")
     @Override
     public void setupDialog(Dialog dialog, int style) {
+
         super.setupDialog(dialog, style);
         View contentView = View.inflate(getContext(), R.layout.fragment_bottom_sticker_emoji_dialog, null);
         dialog.setContentView(contentView);
@@ -100,6 +103,7 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         if (mEmojiListener != null) {
                             mEmojiListener.onEmojiClick(emojisList.get(getLayoutPosition()));
                         }
@@ -109,4 +113,6 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
             }
         }
     }
+//    private void calculatePosition(float x, float y) {
+
 }

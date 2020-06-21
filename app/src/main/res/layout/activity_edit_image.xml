@@ -23,8 +23,7 @@
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:photo_src="@drawable/got_s" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/imgUndo"
@@ -65,7 +64,15 @@
         android:src="@drawable/ic_camera"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
         app:layout_constraintStart_toEndOf="@id/imgGallery" />
-
+    <ImageView
+        android:id="@+id/imgAdd"
+        android:layout_width="@dimen/top_tool_icon_width"
+        android:layout_height="wrap_content"
+        android:background="@color/semi_black_transparent"
+        android:padding="8dp"
+        android:src="@drawable/ic_plus"
+        app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
+        app:layout_constraintStart_toEndOf="@id/imgCamera" />
     <ImageView
         android:id="@+id/imgClose"
         android:layout_width="wrap_content"

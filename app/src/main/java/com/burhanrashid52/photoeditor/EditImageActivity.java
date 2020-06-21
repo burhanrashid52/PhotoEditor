@@ -5,6 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +18,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,7 +41,10 @@ import com.burhanrashid52.photoeditor.tools.EditingToolsAdapter;
 import com.burhanrashid52.photoeditor.tools.ToolType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
@@ -55,8 +64,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public static final String FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoeditor.fileprovider";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
+    private static final int RESULT_LOAD_IMG = 54;
+
     PhotoEditor mPhotoEditor;
+    PhotoEditor mPhotoEditor2;
     private PhotoEditorView mPhotoEditorView;
+    private PhotoEditorView mPhotoEditorView2;
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
@@ -68,7 +81,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private ConstraintLayout mRootView;
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
-
+    ImageView imageView ;
+    ArrayList<Bitmap> images;
     @Nullable
     @VisibleForTesting
     Uri mSaveImageUri;
@@ -81,8 +95,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         setContentView(R.layout.activity_edit_image);
 
         initViews();
-
         handleIntentImage(mPhotoEditorView.getSource());
+        images = new ArrayList<>();
+        Bitmap defaultImg = BitmapFactory.decodeResource(EditImageActivity.this.getResources(),
+                R.drawable.got_s);
+        images.add(defaultImg);
+        configure(images , false);
 
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond_wonderland.ttf");
 
@@ -138,6 +156,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         ImageView imgSave;
         ImageView imgClose;
         ImageView imgShare;
+        ImageView imgAdd;
 
         mPhotoEditorView = findViewById(R.id.photoEditorView);
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool);
@@ -156,6 +175,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         imgGallery = findViewById(R.id.imgGallery);
         imgGallery.setOnClickListener(this);
+
+        imgAdd = findViewById(R.id.imgAdd);
+        imgAdd.setOnClickListener(this);
 
         imgSave = findViewById(R.id.imgSave);
         imgSave.setOnClickListener(this);
@@ -207,7 +229,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-
             case R.id.imgUndo:
                 mPhotoEditor.undo();
                 break;
@@ -237,6 +258,16 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
+                break;
+            case R.id.imgAdd:
+                // the plus icon is set to add another image
+                if (images.size() >= 2) {
+                    images.remove(0);
+                }
+                Intent photoPickerIntent = new Intent();
+                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(Intent.createChooser(photoPickerIntent, "Select Picture"), RESULT_LOAD_IMG);
                 break;
         }
     }
@@ -311,9 +342,24 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     try {
                         mPhotoEditor.clearAllViews();
                         Uri uri = data.getData();
+                        images.clear();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        images.add(bitmap);
                         mPhotoEditorView.getSource().setImageBitmap(bitmap);
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case RESULT_LOAD_IMG:
+                    try {
+                        Uri imageUri = data.getData();
+                        assert imageUri != null;
+                        InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                        Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                        images.add(selectedImage);
+                        configure(images, true);
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                     break;
@@ -341,7 +387,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onEmojiClick(String emojiUnicode) {
-        mPhotoEditor.addEmoji(emojiUnicode);
+        final int mScreenWidth = this.getWindowManager().getDefaultDisplay().getWidth();
+        final int mScreenHeight = this.getWindowManager().getDefaultDisplay().getHeight();
+        mPhotoEditor.addEmoji(emojiUnicode ,mScreenWidth , mScreenHeight );
         mTxtCurrentTool.setText(R.string.label_emoji);
     }
 
@@ -350,6 +398,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mPhotoEditor.addImage(bitmap);
         mTxtCurrentTool.setText(R.string.label_sticker);
     }
+
 
     @Override
     public void isPermissionGranted(boolean isGranted, String permission) {
@@ -463,4 +512,32 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             super.onBackPressed();
         }
     }
+    private void configure(ArrayList<Bitmap> images , boolean flag ) {
+        final int mScreenWidth = this.getWindowManager().getDefaultDisplay().getWidth();
+        final int mScreenHeight = this.getWindowManager().getDefaultDisplay().getHeight();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mScreenWidth, mScreenHeight);
+        mPhotoEditorView.getSource().setLayoutParams(params);
+        mPhotoEditorView.getSource().setAdjustViewBounds(true);
+        mPhotoEditorView.getSource().setScaleType(ImageView.ScaleType.FIT_XY);
+        if (flag) {
+            mPhotoEditor.clearAllViews();
+            Bitmap result = combineImg(images , mScreenWidth , mScreenHeight);
+            mPhotoEditorView.getSource().setImageBitmap(result);
+        }
+        else {
+            mPhotoEditorView.getSource().setImageBitmap(images.get(0));
+        }
+
+    }
+    private Bitmap combineImg(ArrayList<Bitmap> parts ,int mScreenWidth , int mScreenHeight) {
+        Bitmap result = Bitmap.createBitmap(mScreenWidth,mScreenHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint();
+        for (int i = 0; i < 2; i++) {
+            canvas.drawBitmap(parts.get(i),null, new Rect(0 ,i * mScreenHeight/2, mScreenWidth,(i + 1) * mScreenHeight/2) , paint);
+        }
+        return result;
+
+    }
+
 }

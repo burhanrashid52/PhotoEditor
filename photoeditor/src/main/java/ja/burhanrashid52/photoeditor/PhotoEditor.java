@@ -105,6 +105,35 @@ public class PhotoEditor implements BrushViewChangeListener {
         addViewToParent(imageRootView, ViewType.IMAGE);
 
     }
+    public void addAnotherImage(Bitmap desiredImage) {
+        final View imageRootView = getLayout(ViewType.IMAGE);
+        final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
+        final FrameLayout frmBorder = imageRootView.findViewById(R.id.frmBorder);
+        final ImageView imgClose = imageRootView.findViewById(R.id.imgPhotoEditorClose);
+
+        imageView.setImageBitmap(desiredImage);
+
+        MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
+            @Override
+            public void onClick() {
+                boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
+                frmBorder.setBackgroundResource(isBackgroundVisible ? 0 : R.drawable.rounded_border_tv);
+                imgClose.setVisibility(isBackgroundVisible ? View.GONE : View.VISIBLE);
+                frmBorder.setTag(!isBackgroundVisible);
+            }
+
+            @Override
+            public void onLongClick() {
+
+            }
+        });
+
+        imageRootView.setOnTouchListener(multiTouchListener);
+
+        addViewToParent(imageRootView, ViewType.IMAGE);
+
+    }
 
     /**
      * This add the text on the {@link PhotoEditorView} with provided parameters
@@ -236,8 +265,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      *
      * @param emojiName unicode in form of string to display emoji
      */
-    public void addEmoji(String emojiName) {
-        addEmoji(null, emojiName);
+    public void addEmoji(String emojiName , int mScreenWidth , int mScreenHeight) {
+        addEmoji(null, emojiName , mScreenWidth ,  mScreenHeight);
     }
 
     /**
@@ -247,7 +276,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
      * @param emojiName     unicode in form of string to display emoji
      */
-    public void addEmoji(Typeface emojiTypeface, String emojiName) {
+    public void addEmoji(Typeface emojiTypeface, String emojiName ,  int mScreenWidth , int mScreenHeight) {
+
         brushDrawingView.setBrushDrawingMode(false);
         final View emojiRootView = getLayout(ViewType.EMOJI);
         final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
@@ -260,7 +290,10 @@ public class PhotoEditor implements BrushViewChangeListener {
         emojiTextView.setTextSize(56);
         emojiTextView.setText(emojiName);
         MultiTouchListener multiTouchListener = getMultiTouchListener();
+        multiTouchListener.setEmojiRoot(emojiRootView);
+        multiTouchListener.setWeightHeight(mScreenWidth,mScreenHeight);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
+
             @Override
             public void onClick() {
                 boolean isBackgroundVisible = frmBorder.getTag() != null && (boolean) frmBorder.getTag();
@@ -271,6 +304,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
             @Override
             public void onLongClick() {
+
             }
         });
         emojiRootView.setOnTouchListener(multiTouchListener);
@@ -306,11 +340,11 @@ public class PhotoEditor implements BrushViewChangeListener {
                 this.imageView,
                 isTextPinchZoomable,
                 mOnPhotoEditorListener);
-
         //multiTouchListener.setOnMultiTouchListener(this);
 
         return multiTouchListener;
     }
+
 
     /**
      * Get root view by its type i.e image,text and emoji
@@ -846,6 +880,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         private Context context;
         private PhotoEditorView parentView;
         private ImageView imageView;
+        ArrayList<ImageView> imageViews;
         private View deleteView;
         private BrushDrawingView brushDrawingView;
         private Typeface textTypeface;
@@ -927,4 +962,5 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
         return convertedEmojiList;
     }
+
 }

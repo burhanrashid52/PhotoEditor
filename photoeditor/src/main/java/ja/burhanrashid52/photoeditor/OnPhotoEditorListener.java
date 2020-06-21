@@ -1,5 +1,6 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.media.Image;
 import android.view.View;
 
 /**
@@ -22,6 +23,7 @@ public interface OnPhotoEditorListener {
      * @param colorCode current color value set on view
      */
     void onEditTextChangeListener(View rootView, String text, int colorCode);
+//    void onAddImageListener(View rootView, Image addedImage);
 
     /**
      * This is a callback when user adds any view on the {@link PhotoEditorView} it can be
@@ -58,4 +60,5 @@ public interface OnPhotoEditorListener {
      * @param viewType enum which define type of view is added
      */
     void onStopViewChangeListener(ViewType viewType);
+
 }
