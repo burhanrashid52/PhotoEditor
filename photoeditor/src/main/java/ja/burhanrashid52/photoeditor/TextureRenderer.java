@@ -28,7 +28,6 @@ class TextureRenderer {
     private int mTexSamplerHandle;
     private int mTexCoordHandle;
     private int mPosCoordHandle;
-
     private FloatBuffer mTexVertices;
     private FloatBuffer mPosVertices;
 
@@ -86,6 +85,7 @@ class TextureRenderer {
         mPosVertices.put(POS_VERTICES).position(0);
     }
 
+
     public void tearDown() {
         GLES20.glDeleteProgram(mProgram);
     }
@@ -137,6 +137,8 @@ class TextureRenderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisableVertexAttribArray(mPosCoordHandle);
+        GLES20.glDisableVertexAttribArray(mTexCoordHandle);
     }
 
     private void computeOutputVertices() {
@@ -160,5 +162,6 @@ class TextureRenderer {
             mPosVertices.put(coords).position(0);
         }
     }
+
 
 }

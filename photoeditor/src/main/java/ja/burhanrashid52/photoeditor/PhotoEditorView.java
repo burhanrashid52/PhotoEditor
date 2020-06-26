@@ -27,7 +27,8 @@ import android.widget.RelativeLayout;
  * @since 1/18/2018
  */
 
-public class PhotoEditorView extends RelativeLayout {
+public class
+  PhotoEditorView extends RelativeLayout {
 
     private static final String TAG = "PhotoEditorView";
 

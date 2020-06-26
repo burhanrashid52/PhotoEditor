@@ -30,7 +30,12 @@ import ja.burhanrashid52.photoeditor.PhotoFilter;
 public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.ViewHolder> {
 
     private FilterListener mFilterListener;
-    private List<Pair<String, PhotoFilter>> mPairList = new ArrayList<>();
+
+    public List<Pair<String, PhotoFilter>> getmPairList() {
+        return mPairList;
+    }
+
+    public List<Pair<String, PhotoFilter>> mPairList = new ArrayList<>();
 
     public FilterViewAdapter(FilterListener filterListener) {
         mFilterListener = filterListener;
@@ -87,6 +92,7 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.Vi
     }
 
     private void setupFilters() {
+        mPairList.clear();
         mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
         mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
         mPairList.add(new Pair<>("filters/brightness.png", PhotoFilter.BRIGHTNESS));

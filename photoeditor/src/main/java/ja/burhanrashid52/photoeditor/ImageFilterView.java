@@ -135,7 +135,8 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private void loadTextures() {
         // Generate textures
-        GLES20.glGenTextures(2, mTextures, 0);
+        GLES20.glDeleteTextures(mTextures.length,mTextures,0);
+        GLES20.glGenTextures(mTextures.length, mTextures, 0);
 
         // Load input bitmap
         if (mSourceBitmap != null) {
@@ -147,12 +148,14 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mSourceBitmap, 0);
 
+
             // Set texture parameters
             GLToolbox.initTexParams();
         }
     }
 
     private void initEffect() {
+        GLES20.glDeleteTextures(mTextures.length,mTextures,0);
         EffectFactory effectFactory = mEffectContext.getFactory();
         if (mEffect != null) {
             mEffect.release();
@@ -179,6 +182,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
                 case BRIGHTNESS:
                     mEffect = effectFactory.createEffect(EFFECT_BRIGHTNESS);
                     mEffect.setParameter("brightness", 2.0f);
+                    mEffect.release();
                     break;
                 case CONTRAST:
                     mEffect = effectFactory.createEffect(EFFECT_CONTRAST);
@@ -260,6 +264,7 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
     private void applyEffect() {
+        GLES20.glDeleteTextures(mTextures.length,mTextures,0);
         mEffect.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1]);
     }
 
@@ -272,4 +277,5 @@ class ImageFilterView extends GLSurfaceView implements GLSurfaceView.Renderer {
             mTexRenderer.renderTexture(mTextures[0]);
         }
     }
+
 }

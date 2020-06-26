@@ -463,4 +463,13 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             super.onBackPressed();
         }
     }
+    @Override
+
+    public void onDestroy() {
+
+        super.onDestroy();
+        mFilterViewAdapter.getmPairList().clear();
+
+    }
+
 }
