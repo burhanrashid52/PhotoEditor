@@ -1,12 +1,17 @@
 package com.burhanrashid52.photoeditor;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +25,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import static com.burhanrashid52.photoeditor.R.color.white;
+
 /**
  * Created by Burhanuddin Rashid on 1/16/2018.
  */
@@ -31,9 +38,13 @@ public class TextEditorDialogFragment extends DialogFragment {
     public static final String EXTRA_COLOR_CODE = "extra_color_code";
     private EditText mAddTextEditText;
     private TextView mAddTextDoneTextView;
+    private TextView mAddTextBoldTextView;
+    private TextView mAddItalicTextView;
     private InputMethodManager mInputMethodManager;
     private int mColorCode;
     private TextEditor mTextEditor;
+    boolean italicison  = false;
+    boolean boldison = false;
 
     public interface TextEditor {
         void onDone(String inputText, int colorCode);
@@ -56,7 +67,7 @@ public class TextEditorDialogFragment extends DialogFragment {
     //Show dialog with default text input as empty and text color white
     public static TextEditorDialogFragment show(@NonNull AppCompatActivity appCompatActivity) {
         return show(appCompatActivity,
-                "", ContextCompat.getColor(appCompatActivity, R.color.white));
+                "", ContextCompat.getColor(appCompatActivity, white));
     }
 
     @Override
@@ -84,13 +95,16 @@ public class TextEditorDialogFragment extends DialogFragment {
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
+        mAddTextBoldTextView = view.findViewById(R.id.make_bold);
+        mAddItalicTextView = view.findViewById(R.id.make_italic);
 
         //Setup the color picker for text color
         RecyclerView addTextColorPickerRecyclerView = view.findViewById(R.id.add_text_color_picker_recycler_view);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         addTextColorPickerRecyclerView.setLayoutManager(layoutManager);
         addTextColorPickerRecyclerView.setHasFixedSize(true);
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getActivity());
+        final ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getActivity());
         //This listener will change the text color when clicked on any color from picker
         colorPickerAdapter.setOnColorPickerClickListener(new ColorPickerAdapter.OnColorPickerClickListener() {
             @Override
@@ -117,6 +131,49 @@ public class TextEditorDialogFragment extends DialogFragment {
                 }
             }
         });
+        mAddItalicTextView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View view) {
+
+                String inputText = mAddTextEditText.getText().toString();
+                if (!italicison)
+                {
+                    mAddTextEditText.setTypeface(null, Typeface.ITALIC);
+                    mAddItalicTextView.setTextColor(Color.GREEN);
+                    italicison =true;
+                }
+                else{
+                    mAddTextEditText.setTypeface(null, Typeface.NORMAL);
+                    mAddItalicTextView.setTextColor(Color.WHITE);
+                    italicison=false;
+                }
+            }
+        });
+        mAddTextBoldTextView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View view) {
+
+                String inputText = mAddTextEditText.getText().toString();
+                if (!boldison)
+                {
+                    mAddTextEditText.setTypeface(null, Typeface.BOLD);
+                    mAddTextBoldTextView.setTextColor(Color.GREEN);
+                    boldison =true;
+                }
+                else{
+                    mAddTextEditText.setTypeface(null, Typeface.NORMAL);
+                    mAddTextBoldTextView.setTextColor(Color.WHITE);
+                    boldison=false;
+                }
+            }
+        });
+
+
+
 
     }
 
