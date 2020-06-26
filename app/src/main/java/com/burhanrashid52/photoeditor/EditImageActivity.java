@@ -174,9 +174,24 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 TextEditorDialogFragment.show(this, text, colorCode);
         textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
             @Override
-            public void onDone(String inputText, int colorCode) {
+            public void onDone(String inputText, int colorCode , boolean bold , boolean italic) {
                 final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                 styleBuilder.withTextColor(colorCode);
+                if (bold && italic) {
+                    Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD_ITALIC);
+                    styleBuilder.withTextFont(boldTypeface);
+                }
+                else if (italic) {
+                    Typeface italicTypeface = Typeface.defaultFromStyle(Typeface.ITALIC);
+                    styleBuilder.withTextFont(italicTypeface);
+                }
+                else if (bold) {
+                    Typeface italicTypeface = Typeface.defaultFromStyle(Typeface.BOLD);
+                    styleBuilder.withTextFont(italicTypeface);
+                }else{
+                    Typeface italicTypeface = Typeface.defaultFromStyle(Typeface.NORMAL);
+                    styleBuilder.withTextFont(italicTypeface);
+                }
 
                 mPhotoEditor.editText(rootView, inputText, styleBuilder);
                 mTxtCurrentTool.setText(R.string.label_text);
@@ -401,9 +416,21 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
                 textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
                     @Override
-                    public void onDone(String inputText, int colorCode) {
+                    public void onDone(String inputText, int colorCode , boolean bold , boolean italic) {
                         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                         styleBuilder.withTextColor(colorCode);
+                        if (bold && italic) {
+                            Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD_ITALIC);
+                            styleBuilder.withTextFont(boldTypeface);
+                        }
+                        else if (italic) {
+                            Typeface italicTypeface = Typeface.defaultFromStyle(Typeface.ITALIC);
+                            styleBuilder.withTextFont(italicTypeface);
+                        }
+                        else if (bold) {
+                            Typeface italicTypeface = Typeface.defaultFromStyle(Typeface.BOLD);
+                            styleBuilder.withTextFont(italicTypeface);
+                        }
 
                         mPhotoEditor.addText(inputText, styleBuilder);
                         mTxtCurrentTool.setText(R.string.label_text);

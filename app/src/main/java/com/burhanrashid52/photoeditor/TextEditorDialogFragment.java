@@ -2,6 +2,7 @@ package com.burhanrashid52.photoeditor;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -34,9 +36,13 @@ public class TextEditorDialogFragment extends DialogFragment {
     private InputMethodManager mInputMethodManager;
     private int mColorCode;
     private TextEditor mTextEditor;
+    private Button mBoldButton ;
+    private Button mItalicButton ;
+    private boolean bold ;
+    private boolean italic ;
 
     public interface TextEditor {
-        void onDone(String inputText, int colorCode);
+        void onDone(String inputText, int colorCode , boolean bold , boolean italic);
     }
 
 
@@ -84,7 +90,33 @@ public class TextEditorDialogFragment extends DialogFragment {
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
+        mItalicButton = view.findViewById(R.id.italic_button);
+        mBoldButton = view.findViewById(R.id.bold_button);
 
+        mBoldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bold){
+                    mBoldButton.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.rounded_border_text_view));
+                    bold = false;
+                }else{
+                    mBoldButton.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.rounded_border_text_view_on));
+                    bold = true;
+                }
+            }
+        });
+        mItalicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (italic){
+                    mItalicButton.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.rounded_border_text_view));
+                    italic = false;
+                }else{
+                    mItalicButton.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.rounded_border_text_view_on));
+                    italic = true;
+                }
+            }
+        });
         //Setup the color picker for text color
         RecyclerView addTextColorPickerRecyclerView = view.findViewById(R.id.add_text_color_picker_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -113,7 +145,7 @@ public class TextEditorDialogFragment extends DialogFragment {
                 dismiss();
                 String inputText = mAddTextEditText.getText().toString();
                 if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
-                    mTextEditor.onDone(inputText, mColorCode);
+                    mTextEditor.onDone(inputText, mColorCode , bold , italic);
                 }
             }
         });
