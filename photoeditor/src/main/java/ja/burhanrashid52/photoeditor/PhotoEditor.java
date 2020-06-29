@@ -221,6 +221,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
         if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
+            inputTextView.setTypeface(null , Typeface.BOLD);
             if (styleBuilder != null)
                 styleBuilder.applyStyle(inputTextView);
 

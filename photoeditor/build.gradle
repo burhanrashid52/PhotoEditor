@@ -31,7 +31,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
         versionName "1.0.0"
@@ -58,12 +58,16 @@ android {
     }
 }
 
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -71,6 +75,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.23.0'
     testImplementation 'org.robolectric:robolectric:4.2'
+    compile 'com.github.yukuku:ambilwarna:2.0.1'
+    implementation "dev.sasikanth:colorsheet:1.0.1"
+    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
+
+
+
 }
 
 // Place it at the end of the file

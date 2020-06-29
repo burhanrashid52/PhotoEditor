@@ -1,8 +1,9 @@
 package com.burhanrashid52.photoeditor;
-
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -17,13 +18,25 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.skydoves.colorpickerview.ColorEnvelope;
+import com.skydoves.colorpickerview.ColorPickerDialog;
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 
 import static com.burhanrashid52.photoeditor.R.color.white;
 
@@ -40,11 +53,13 @@ public class TextEditorDialogFragment extends DialogFragment {
     private TextView mAddTextDoneTextView;
     private TextView mAddTextBoldTextView;
     private TextView mAddItalicTextView;
+    private TextView shadow_color;
     private InputMethodManager mInputMethodManager;
     private int mColorCode;
     private TextEditor mTextEditor;
     boolean italicison  = false;
     boolean boldison = false;
+    boolean isdone = false;
 
     public interface TextEditor {
         void onDone(String inputText, int colorCode);
@@ -91,13 +106,14 @@ public class TextEditorDialogFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
         mAddTextBoldTextView = view.findViewById(R.id.make_bold);
         mAddItalicTextView = view.findViewById(R.id.make_italic);
-
+        shadow_color = view.findViewById(R.id.color_picker_shadow);
         //Setup the color picker for text color
         RecyclerView addTextColorPickerRecyclerView = view.findViewById(R.id.add_text_color_picker_recycler_view);
 
@@ -126,8 +142,9 @@ public class TextEditorDialogFragment extends DialogFragment {
                 mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 dismiss();
                 String inputText = mAddTextEditText.getText().toString();
-                if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
-                    mTextEditor.onDone(inputText, mColorCode);
+                if (!TextUtils.isEmpty(inputText) && mTextEditor != null){
+                    if(!isdone)
+                         mTextEditor.onDone(inputText, mColorCode);
                 }
             }
         });
@@ -143,16 +160,21 @@ public class TextEditorDialogFragment extends DialogFragment {
                     mAddTextEditText.setTypeface(null, Typeface.ITALIC);
                     mAddItalicTextView.setTextColor(Color.GREEN);
                     italicison =true;
+
                 }
                 else{
                     mAddTextEditText.setTypeface(null, Typeface.NORMAL);
                     mAddItalicTextView.setTextColor(Color.WHITE);
                     italicison=false;
+
+                }
+                if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
+                    mTextEditor.onDone(inputText, mColorCode);
                 }
             }
         });
         mAddTextBoldTextView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
+            @SuppressLint({"ResourceAsColor", "LongLogTag"})
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
@@ -163,19 +185,67 @@ public class TextEditorDialogFragment extends DialogFragment {
                     mAddTextEditText.setTypeface(null, Typeface.BOLD);
                     mAddTextBoldTextView.setTextColor(Color.GREEN);
                     boldison =true;
+
+
                 }
                 else{
                     mAddTextEditText.setTypeface(null, Typeface.NORMAL);
                     mAddTextBoldTextView.setTextColor(Color.WHITE);
                     boldison=false;
+
+                }
+                if (!TextUtils.isEmpty(inputText) && mTextEditor != null) {
+                    mTextEditor.onDone(inputText, mColorCode);
+                    isdone = true;
                 }
             }
         });
 
 
 
+        shadow_color.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onClick(View v) {
+
+                opencolorpicker();
+
+            }
+        });
+
 
     }
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        public void opencolorpicker()
+        {
+
+            ColorPickerDialogBuilder
+                    .with(getContext())
+                    .setTitle("Choose color")
+                    .initialColor(getActivity().getApplicationContext().getColor(R.color.colorPrimary))
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .setOnColorSelectedListener(new OnColorSelectedListener() {
+                        @Override
+                        public void onColorSelected(int selectedColor) {
+
+                        }
+                    })
+                    .setPositiveButton("ok", new ColorPickerClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                            mAddTextEditText.setTextColor(selectedColor);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .build()
+                    .show();
+        }
 
 
     //Callback to listener if user is done with text editing
