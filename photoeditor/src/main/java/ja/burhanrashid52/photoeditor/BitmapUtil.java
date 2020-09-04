@@ -42,7 +42,7 @@ class BitmapUtil {
         }
         loop:
         for (int y = 0; y < source.getHeight(); y++) {
-            for (int x = firstX; x < source.getHeight(); x++) {
+            for (int x = firstX; x < source.getWidth(); x++) {
                 if (pixels[x + (y * source.getWidth())] != Color.TRANSPARENT) {
                     firstY = y;
                     break loop;
