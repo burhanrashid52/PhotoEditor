@@ -211,10 +211,6 @@ For more detail check [Saving](https://github.com/burhanrashid52/PhotoEditor/wik
 * Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
 
 
-## What's next?
-- Croping Image with Custom Aspect ratio and more customization text/emoji/stickers
-
-
 ## Questions?🤔
 Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrashid52-blue.svg)](https://twitter.com/burhanrashid52)
 [![Medium](https://img.shields.io/badge/Medium-%40burhanrashid52-brightgreen.svg)](https://medium.com/@burhanrashid52)
@@ -257,10 +253,15 @@ No. Currently, the focus is on making the android library better. We don't have 
 <p>
 
 [Image Scaling](https://github.com/burhanrashid52/PhotoEditor/issues/10).
-[Memory Issue in Filter](https://github.com/burhanrashid52/PhotoEditor/issues/48).
+<br>[Memory Issue in Filter](https://github.com/burhanrashid52/PhotoEditor/issues/48).
 
 </p>
 </details>
+
+### Who is using PhotoEditor?
+1. [Best Quotes & Status 2019 (99000+ Collection)](https://play.google.com/store/apps/details?id=com.swastik.quotesandstatus&hl=en_US)
+
+**Note**: I will be happy to add your app to the list. Please reach out to me with details. You know how to reach me :)
 
 
 ## Credits
