@@ -1,7 +1,7 @@
 # PhotoEditor
 
 [![CircleCI](https://circleci.com/gh/burhanrashid52/PhotoEditor.svg?style=svg)](https://circleci.com/gh/burhanrashid52/PhotoEditor)
-[![Downloads](https://img.shields.io/badge/Download-1.0.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-1.1.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -38,7 +38,7 @@ PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of
 ## Getting Started
 To start with this, we need to simply add the dependencies in the gradle file of our app module like this
 ```java
-implementation 'ja.burhanrashid52:photoeditor:1.0.0'
+implementation 'ja.burhanrashid52:photoeditor:1.1.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
@@ -261,6 +261,7 @@ No. Currently, the focus is on making the android library better. We don't have 
 
 ### Who is using PhotoEditor?
 1. [Best Quotes & Status 2019 (99000+ Collection)](https://play.google.com/store/apps/details?id=com.swastik.quotesandstatus&hl=en_US)
+2. [Pixxo](https://play.google.com/store/apps/details?id=com.pixxo.breezil.pixxo)
 
 **Note**: I will be happy to add your app to the list. Please reach out to me with details. You know how to reach me :)
 

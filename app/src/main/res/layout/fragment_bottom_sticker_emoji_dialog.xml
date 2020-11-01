@@ -23,7 +23,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp" />
 
         <View
             android:id="@+id/lineView"
@@ -54,7 +55,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="8dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
