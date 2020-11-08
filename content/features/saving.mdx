@@ -1,0 +1,61 @@
+---
+title: 'Saving'
+description: 'You can save image as a file or bitmap'
+---
+## Saving in File
+You can save image as a file which needs to provide a file path with callback method when an edited image is saved
+
+   ```java
+    mPhotoEditor.saveAsFile(filePath, new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                       Log.e("PhotoEditor","Image Saved Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("PhotoEditor","Failed to save Image");
+                    }
+                });
+```
+
+## Saving as Bitmap
+You can also save image as a bitmap using saveAsBitmap provides a callback with saved bitmap
+
+  ```java
+    mPhotoEditor.saveAsBitmap(new PhotoEditor.OnSaveBitmap() {
+                    @Override
+                    public void onBitmapReady(@NonNull Bitmap saveBitmap) {
+                       Log.e("PhotoEditor","Image Saved Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("PhotoEditor","Failed to save Image");
+                    }
+                });
+```
+
+## Saving with Options
+You can also provide your custom options while saving the edited image. You need to use the SaveSettings shown below.
+
+  ```java
+   SaveSettings saveSettings = new SaveSettings.Builder()
+                        .setClearViewsEnabled(true)
+                        .setTransparencyEnabled(true)
+                        .setCompressFormat(compressFormat)
+                        .setCompressQuality(compressQuality)
+                        .build();
+
+    mPhotoEditor.saveAsFile(filePath,saveSettings,new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                       Log.e("PhotoEditor","Image Saved Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("PhotoEditor","Failed to save Image");
+                    }
+                });
+```

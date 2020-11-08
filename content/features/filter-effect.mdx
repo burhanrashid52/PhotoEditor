@@ -1,0 +1,42 @@
+---
+title: 'Filter Effect'
+description: 'Introducing filter feature from version 0.2.0'
+---
+
+Introducing filter feature from version 0.2.0. Now you can apply a filter effect on the source image.
+
+![](https://i.imgur.com/xXTGcVC.gif)
+
+There are two ways you can apply the filter on the source image
+
+
+## Inbuild Filters
+
+By default, this library provides few commonly used filters . The listing of this filters is defined in the `PhotoFilter` enum. You can apply filter image using the following API
+
+```java
+mPhotoEditor.setFilterEffect(PhotoFilter.BRIGHTNESS);
+```
+
+## Custom Filter
+In some cases, you want to have a custom filter in which can easily apply using a `CustomEffect` builder which requires an `EffecFactory` name and the value of its parameters
+
+```java
+CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_BRIGHTNESS)
+                .setParameter("brightness", 0.5f)
+                .build();
+mPhotoEditor.setFilterEffect(customEffect);
+```
+It will throw a runtime exception if the effect name is empty
+
+**Note:** Check all the available filters on `EffectFactory` [Documentation](https://developer.android.com/reference/android/media/effect/EffectFactory)
+
+## Limitation
+ - Image filter is based upon the MediaEffect support library. So only limited filters are available on EffectFacctory
+ - Filter feature is designed in a way that filter will apply to the source image, it wont work on the apply effect like paint, sticker, text, and emoji
+
+
+
+
+
+

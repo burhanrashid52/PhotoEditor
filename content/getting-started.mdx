@@ -1,0 +1,58 @@
+---
+title: 'Getting Started'
+description: 'Getting Started page'
+---
+
+To start with this, you need to just simply add the dependencies in the gradle file of app module like this
+```bash
+implementation 'ja.burhanrashid52:photoeditor:1.1.0'
+```
+or you can also import the :photoeditor module from the sample for customization
+
+
+## Setting up the View
+First, you need to add `PhotoEditorView` in your XML layout
+
+```java
+ <ja.burhanrashid52.photoeditor.PhotoEditorView
+        android:id="@+id/photoEditorView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:photo_src="@drawable/got_s" />
+
+```
+You can define your drawable or color resource directly using `app:photo_src`
+
+Your can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that you can load image from resources,file or (Picasso/Glide)
+```java
+PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
+
+mPhotoEditorView.getSource().setImageResource(R.drawable.got);
+```
+
+## Building a PhotoEditor
+To use the image editing feature you need to build a PhotoEditor which requires a Context and PhotoEditorView which we have set up in our XML layout
+
+
+```java
+//Use custom font using latest support library
+Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
+
+//loading font from assest
+Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
+
+mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
+         .setPinchTextScalable(true)
+         .setDefaultTextTypeface(mTextRobotoTf)
+         .setDefaultEmojiTypeface(mEmojiTypeFace)
+         .build();
+ ```
+You can customize the properties in the PhotoEditor as per your requirement
+
+| Property  | Usage |
+| ------------- | ------------- |
+| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion.By deafult its true
+| `setDefaultTextTypeface()`   | set default text font to be added on image  |
+| `setDefaultEmojiTypeface()`  | set default font specifc to add emojis |
+
+That's it we are done with setting up our library

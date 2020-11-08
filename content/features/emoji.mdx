@@ -1,0 +1,18 @@
+---
+title: 'Emoji'
+description: 'You can add the Emoji'
+---
+
+![](https://i.imgur.com/RP8kqz6.gif)
+
+You can add the Emoji by `PhotoEditor.getEmojis(getActivity());` which will return a list of emojis unicodes
+
+```java
+mPhotoEditor.addEmoji(emojiUnicode);
+```
+
+It will take default fonts provided in the builder,If you want different Emoji fonts for different emoji you can set typeface with each Emoji like this
+
+```java
+mPhotoEditor.addEmoji(mEmojiTypeface,emojiUnicode);
+```

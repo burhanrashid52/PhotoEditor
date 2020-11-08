@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a4aa1ef2-b35e-44b1-95c3-96253a14f209" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/android-x.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/drawing.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/emoji.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/filter-effect.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/images-stickers.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/saving.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/text.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/features/undo-and-redo.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/getting-started.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/index.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/ramen.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/want-more.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gatsby-config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gatsby-plugin-theme-ui/colors.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gatsby-plugin-theme-ui/components.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gatsby-plugin-theme-ui/headings.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gatsby-plugin-theme-ui/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gatsby-theme-document/logo.mdx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/site-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/site-image.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allclasses-frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/allclasses-frame.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allclasses-noframe.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/allclasses-noframe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constant-values.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/constant-values.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deprecated-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/deprecated-list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/help-doc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-1.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-1.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-10.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-10.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-11.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-11.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-12.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-12.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-13.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-13.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-14.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-14.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-15.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-15.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-2.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-3.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-3.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-4.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-4.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-5.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-5.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-6.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-6.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-7.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-7.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-8.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-8.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index-files/index-9.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index-files/index-9.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/BrushDrawingView.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/BrushDrawingView.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/CustomEffect.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/CustomEffect.Builder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/CustomEffect.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/CustomEffect.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/OnPhotoEditorListener.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/OnPhotoEditorListener.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/OnSaveBitmap.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/OnSaveBitmap.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/PhotoEditor.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/PhotoEditor.Builder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/PhotoEditor.OnSaveListener.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/PhotoEditor.OnSaveListener.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/PhotoEditor.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/PhotoEditor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/PhotoEditorView.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/PhotoEditorView.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/PhotoFilter.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/PhotoFilter.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/SaveSettings.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/SaveSettings.Builder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/SaveSettings.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/SaveSettings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/TextStyleBuilder.TextStyle.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/TextStyleBuilder.TextStyle.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/TextStyleBuilder.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/TextStyleBuilder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/ViewType.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/ViewType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/package-frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/package-frame.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ja/burhanrashid52/photoeditor/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/ja/burhanrashid52/photoeditor/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/overview-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-list" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/package-list" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/java-doc/stylesheet.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsbtTreeLayoutManager">
+    <layout place="tools.popupGrunt">
+      <scroll-view-position x="0" y="0" />
+    </layout>
+  </component>
+  <component name="ProjectId" id="1h2Fwfu9ykpUmiumzCv8RHNILap" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/java-doc" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.index.html (1)">
+    <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63343/PhotoEditor/src/java-doc/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63343/PhotoEditor/java-doc/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="develop" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="develop" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.index.html (1)" />
+        <item itemvalue="npm.build" />
+        <item itemvalue="npm.develop" />
+        <item itemvalue="JavaScript Debug.index.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a4aa1ef2-b35e-44b1-95c3-96253a14f209" name="Default Changelist" comment="" />
+      <created>1599201519781</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1599201519781</updated>
+      <workItem from="1599201525949" duration="817000" />
+      <workItem from="1604797010019" duration="6000" />
+      <workItem from="1604797051011" duration="331000" />
+      <workItem from="1604797408522" duration="1063000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1899" height="269" key="GridCell.Tab.0.bottom" timestamp="1604797746270">
+      <screen x="1792" y="63" width="1920" height="992" />
+    </state>
+    <state width="1899" height="269" key="GridCell.Tab.0.bottom/1792.63.1920.992/0.23.1792.1097@1792.63.1920.992" timestamp="1604797746270" />
+    <state width="1899" height="269" key="GridCell.Tab.0.center" timestamp="1604797746269">
+      <screen x="1792" y="63" width="1920" height="992" />
+    </state>
+    <state width="1899" height="269" key="GridCell.Tab.0.center/1792.63.1920.992/0.23.1792.1097@1792.63.1920.992" timestamp="1604797746269" />
+    <state width="1899" height="269" key="GridCell.Tab.0.left" timestamp="1604797746269">
+      <screen x="1792" y="63" width="1920" height="992" />
+    </state>
+    <state width="1899" height="269" key="GridCell.Tab.0.left/1792.63.1920.992/0.23.1792.1097@1792.63.1920.992" timestamp="1604797746269" />
+    <state width="1899" height="269" key="GridCell.Tab.0.right" timestamp="1604797746270">
+      <screen x="1792" y="63" width="1920" height="992" />
+    </state>
+    <state width="1899" height="269" key="GridCell.Tab.0.right/1792.63.1920.992/0.23.1792.1097@1792.63.1920.992" timestamp="1604797746270" />
+    <state width="500" height="445" key="SwitcherDM" timestamp="1604797647116">
+      <screen x="1792" y="63" width="1920" height="992" />
+    </state>
+    <state width="500" height="445" key="SwitcherDM/1792.63.1920.992/0.23.1792.1097@1792.63.1920.992" timestamp="1604797647116" />
+    <state x="771" y="435" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup" timestamp="1604797089355">
+      <screen x="0" y="23" width="1792" height="1097" />
+    </state>
+    <state x="771" y="435" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup/1792.63.1920.992/0.23.1792.1097@0.23.1792.1097" timestamp="1604797089355" />
+  </component>
+</project>

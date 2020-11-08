@@ -1,0 +1,54 @@
+---
+title: 'Text'
+description: 'You can add the text with input text and colorCode'
+---
+![](https://i.imgur.com/491BmE8.gif)
+
+You can add the text with input text and colorCode like this
+
+```java
+mPhotoEditor.addText(inputText, colorCode);
+```
+
+It will take default fonts provided in the builder,If you want diffrent fonts for diffrent text you can set typeface with each text like this
+
+```java
+mPhotoEditor.addText(mTypeface,inputText, colorCode);
+```
+
+In order to edit the text you need the view which you will reacive in you PhotoEditor callback.This callback will trigger when you **Long Press** the added text
+
+ ```java
+ mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
+    @Override
+    public void onEditTextChangeListener(View rootView, String text, int colorCode) {
+
+      }
+  });
+  ```
+Now you can edit the text with a view like this
+
+```java
+mPhotoEditor.editText(rootView, inputText, colorCode);
+```
+
+## Customize Text using TextStyleBuilder
+
+- Added Text style builder for add and edit text
+```java
+new TextStyleBuilder()
+      .withTextColor(123)
+      .withTextSize(12f)
+      .withGravity(3)
+      .withTextFont(Typeface.DEFAULT)
+      .withBackgroundColor(321)
+      .withTextAppearance(144)
+      .applyStyle(textView);
+```
+- Apply style while adding text
+```java
+TextStyleBuilder styleBuilder = new TextStyleBuilder()
+                                      .withTextColor(colorCode);
+
+mPhotoEditor.addText(inputText, styleBuilder);
+```
