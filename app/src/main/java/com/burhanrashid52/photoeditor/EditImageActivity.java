@@ -56,6 +56,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public static final String FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoeditor.fileprovider";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
+    public static final String ACTION_NEXTGEN_EDIT = "action_nextgen_edit";
     PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
     private PropertiesBSFragment mPropertiesBSFragment;
@@ -121,11 +122,22 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private void handleIntentImage(ImageView source) {
         Intent intent = getIntent();
         if (intent != null) {
-            String intentType = intent.getType();
-            if (intentType != null && intentType.startsWith("image/")) {
-                Uri imageUri = intent.getData();
-                if (imageUri != null) {
-                    source.setImageURI(imageUri);
+            if (intent.getAction().equals(Intent.ACTION_EDIT) ||
+                    intent.getAction().equals(ACTION_NEXTGEN_EDIT)) {
+                try {
+                    Uri uri = intent.getData();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    source.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                String intentType = intent.getType();
+                if (intentType != null && intentType.startsWith("image/")) {
+                    Uri imageUri = intent.getData();
+                    if (imageUri != null) {
+                        source.setImageURI(imageUri);
+                    }
                 }
             }
         }
