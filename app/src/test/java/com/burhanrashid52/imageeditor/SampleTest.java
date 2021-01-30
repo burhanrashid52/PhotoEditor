@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoeditor;
+package com.burhanrashid52.imageeditor;
 
 import org.junit.Test;
 

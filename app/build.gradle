@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.burhanrashid52.photoeditor"
+        applicationId "com.burhanrashid52.imageeditor"
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 1
