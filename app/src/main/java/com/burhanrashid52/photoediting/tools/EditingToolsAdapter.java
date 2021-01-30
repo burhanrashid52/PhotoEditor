@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor.tools;
+package com.burhanrashid52.photoediting.tools;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.burhanrashid52.imageeditor.R;
+import com.burhanrashid52.photoediting.R;
 
 import java.util.ArrayList;
 import java.util.List;

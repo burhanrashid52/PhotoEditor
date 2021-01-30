@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.burhanrashid52.imageeditor">
+    package="com.burhanrashid52.photoediting">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.burhanrashid52.imageeditor.PhotoApp"
+        android:name="com.burhanrashid52.photoediting.PhotoApp"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +20,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
         <activity
-            android:name="com.burhanrashid52.imageeditor.EditImageActivity"
+            android:name="com.burhanrashid52.photoediting.EditImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -59,7 +59,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.burhanrashid52.imageeditor.fileprovider"
+            android:authorities="com.burhanrashid52.photoediting.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
 

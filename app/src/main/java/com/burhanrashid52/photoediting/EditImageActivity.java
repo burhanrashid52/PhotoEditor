@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.photoediting;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -28,11 +28,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
 
-import com.burhanrashid52.imageeditor.base.BaseActivity;
-import com.burhanrashid52.imageeditor.filters.FilterListener;
-import com.burhanrashid52.imageeditor.filters.FilterViewAdapter;
-import com.burhanrashid52.imageeditor.tools.EditingToolsAdapter;
-import com.burhanrashid52.imageeditor.tools.ToolType;
+import com.burhanrashid52.photoediting.base.BaseActivity;
+import com.burhanrashid52.photoediting.filters.FilterListener;
+import com.burhanrashid52.photoediting.filters.FilterViewAdapter;
+import com.burhanrashid52.photoediting.tools.EditingToolsAdapter;
+import com.burhanrashid52.photoediting.tools.ToolType;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.File;

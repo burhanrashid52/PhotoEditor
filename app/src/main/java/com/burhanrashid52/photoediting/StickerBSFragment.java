@@ -1,4 +1,4 @@
-package com.burhanrashid52.imageeditor;
+package com.burhanrashid52.photoediting;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
