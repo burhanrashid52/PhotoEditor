@@ -38,6 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.io.File;
 import java.io.IOException;
 
+import ja.burhanrashid52.photoeditor.DrawingObject;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -406,7 +407,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
                         styleBuilder.withTextColor(colorCode);
 
-                        mPhotoEditor.addText(inputText, styleBuilder);
+                        DrawingObject view = mPhotoEditor.addText(inputText, styleBuilder);
+                        view.getMultiTouchListener().setRotateEnabled(false);
+                        view.getMultiTouchListener().setScaleEnabled(false);
+                        view.getMultiTouchListener().setTranslateEnabled(false);
+
                         mTxtCurrentTool.setText(R.string.label_text);
                     }
                 });

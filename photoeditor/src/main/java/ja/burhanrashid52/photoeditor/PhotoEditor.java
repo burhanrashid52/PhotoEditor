@@ -76,7 +76,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      *
      * @param desiredImage bitmap image you want to add
      */
-    public void addImage(Bitmap desiredImage) {
+    public DrawingObject addImage(Bitmap desiredImage) {
         final View imageRootView = getLayout(ViewType.IMAGE);
         final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
         final FrameLayout frmBorder = imageRootView.findViewById(R.id.frmBorder);
@@ -103,7 +103,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         imageRootView.setOnTouchListener(multiTouchListener);
 
         addViewToParent(imageRootView, ViewType.IMAGE);
-
+        return new DrawingObject(ViewType.IMAGE, imageRootView, multiTouchListener);
     }
 
     /**
@@ -114,8 +114,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param colorCodeTextView text color to be displayed
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(String text, final int colorCodeTextView) {
-        addText(null, text, colorCodeTextView);
+    public DrawingObject addText(String text, final int colorCodeTextView) {
+        return addText(null, text, colorCodeTextView);
     }
 
     /**
@@ -127,7 +127,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param colorCodeTextView text color to be displayed
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
+    public DrawingObject addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
 
         styleBuilder.withTextColor(colorCodeTextView);
@@ -135,7 +135,7 @@ public class PhotoEditor implements BrushViewChangeListener {
             styleBuilder.withTextFont(textTypeface);
         }
 
-        addText(text, styleBuilder);
+        return addText(text, styleBuilder);
     }
 
     /**
@@ -146,7 +146,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param styleBuilder text style builder with your style
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
+    public DrawingObject addText(String text, @Nullable TextStyleBuilder styleBuilder) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
         final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
@@ -179,6 +179,8 @@ public class PhotoEditor implements BrushViewChangeListener {
 
         textRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(textRootView, ViewType.TEXT);
+
+        return new DrawingObject(ViewType.TEXT, textRootView, multiTouchListener);
     }
 
     /**
@@ -236,8 +238,8 @@ public class PhotoEditor implements BrushViewChangeListener {
      *
      * @param emojiName unicode in form of string to display emoji
      */
-    public void addEmoji(String emojiName) {
-        addEmoji(null, emojiName);
+    public DrawingObject addEmoji(String emojiName) {
+        return addEmoji(null, emojiName);
     }
 
     /**
@@ -247,7 +249,7 @@ public class PhotoEditor implements BrushViewChangeListener {
      * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
      * @param emojiName     unicode in form of string to display emoji
      */
-    public void addEmoji(Typeface emojiTypeface, String emojiName) {
+    public DrawingObject addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         final View emojiRootView = getLayout(ViewType.EMOJI);
         final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
@@ -275,6 +277,8 @@ public class PhotoEditor implements BrushViewChangeListener {
         });
         emojiRootView.setOnTouchListener(multiTouchListener);
         addViewToParent(emojiRootView, ViewType.EMOJI);
+
+        return new DrawingObject(ViewType.EMOJI, emojiRootView, multiTouchListener);
     }
 
 

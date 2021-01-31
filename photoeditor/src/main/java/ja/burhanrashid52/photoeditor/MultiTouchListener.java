@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
  * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
  * <p></p>
  */
-class MultiTouchListener implements OnTouchListener {
+public class MultiTouchListener implements OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;
     private final GestureDetector mGestureListener;
@@ -39,8 +39,10 @@ class MultiTouchListener implements OnTouchListener {
     private boolean mIsTextPinchZoomable;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
-    MultiTouchListener(@Nullable View deleteView, RelativeLayout parentView,
-                       ImageView photoEditImageView, boolean isTextPinchZoomable,
+    MultiTouchListener(@Nullable View deleteView,
+                       RelativeLayout parentView,
+                       ImageView photoEditImageView,
+                       boolean isTextPinchZoomable,
                        OnPhotoEditorListener onPhotoEditorListener) {
         mIsTextPinchZoomable = isTextPinchZoomable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
@@ -247,6 +249,18 @@ class MultiTouchListener implements OnTouchListener {
         void onClick();
 
         void onLongClick();
+    }
+
+    public void setRotateEnabled(boolean rotateEnabled) {
+        this.isRotateEnabled = rotateEnabled;
+    }
+
+    public void setTranslateEnabled(boolean translateEnabled) {
+        this.isTranslateEnabled = translateEnabled;
+    }
+
+    public void setScaleEnabled(boolean scaleEnabled) {
+        this.isScaleEnabled = scaleEnabled;
     }
 
     void setOnGestureControl(OnGestureControl onGestureControl) {
