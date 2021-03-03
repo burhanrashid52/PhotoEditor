@@ -10,6 +10,8 @@
 
 A Photo Editor library with simple, easy support for image editing using Paints, Text, Filters, Emoji and Sticker like stories.
 
+[<img src="https://raw.githubusercontent.com/steverichey/google-play-badge-svg/master/img/en_get.svg" width="300">](https://play.google.com/store/apps/details?id=com.burhanrashid52.photoediting)
+
 ## Features
 
 - [**Drawing**](#drawing) on image with option to change its Brush's Color, Size, Opacity and Erasing.
