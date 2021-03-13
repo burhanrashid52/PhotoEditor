@@ -16,13 +16,16 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
         with:
-          ref: release
-
-      # Upload AAR to bintray
-      - name: Upload AAR
-        run: bash ./gradlew clean build install bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}
+          java-version: 1.8
+      - name: Grant Permission to Execute
+        run: chmod +x gradlew
+      - name: Publish Library
+        env:
+          bintrayUser: ${{ secrets.BINTRAY_USER }}
+          bintrayApiKey: ${{ secrets.BINTRAY_API_KEY }}
+        run: ./gradlew clean build install bintrayUpload -PbintrayUser=${{ secrets.BINTRAY_USER }} -PbintrayApiKey=${{ secrets.BINTRAY_API_KEY }}
