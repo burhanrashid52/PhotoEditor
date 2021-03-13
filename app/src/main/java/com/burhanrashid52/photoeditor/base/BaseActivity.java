@@ -7,6 +7,8 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Build;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,7 +38,9 @@ public class BaseActivity extends AppCompatActivity {
     public void isPermissionGranted(boolean isGranted, String permission) {
 
     }
-
+    public boolean isSdk29OrHigher() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q);
+    }
     public void makeFullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
