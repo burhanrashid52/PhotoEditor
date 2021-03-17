@@ -2,20 +2,13 @@ package com.burhanrashid52.photoeditor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.AsyncQueryHandler;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +37,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
@@ -273,7 +265,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 new File(uri.getPath()));
     }
 
-    @SuppressLint({"MissingPermission", "InlinedApi"})
+    @SuppressLint({"MissingPermission",  "NewApi"})
     private void saveImage() {
         final String fileName = System.currentTimeMillis() + ".png";
         if (isSdk29OrHigher()) {
@@ -288,6 +280,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     mPhotoEditor.saveAsFile(filePath, saveSettings, new PhotoEditor.OnSaveListener() {
                         @Override
                         public void onSuccess(@NonNull String imagePath) {
+                            mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable();
                             hideLoading();
                             showSnackbar("Image Saved Successfully");
                             mSaveImageUri = uri;
