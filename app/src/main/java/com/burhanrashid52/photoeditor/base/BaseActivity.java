@@ -38,9 +38,7 @@ public class BaseActivity extends AppCompatActivity {
     public void isPermissionGranted(boolean isGranted, String permission) {
 
     }
-    public boolean isSdk29OrHigher() {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q);
-    }
+
     public void makeFullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
