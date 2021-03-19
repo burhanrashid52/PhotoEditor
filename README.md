@@ -8,6 +8,8 @@
 [![AndroidWeekly](https://img.shields.io/badge/Android%20Weekly-%23312-blue.svg)](http://androidweekly.net/issues/issue-312)
 [![Mindorks](https://img.shields.io/badge/Mindorks%20Newsletter-%234-ff69b4.svg)](https://mindorks.com/newsletter/edition/4)
 
+<a href="https://www.buymeacoffee.com/burhanrashid52" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 A Photo Editor library with simple, easy support for image editing using Paints, Text, Filters, Emoji and Sticker like stories.
 
 [<img src="https://raw.githubusercontent.com/steverichey/google-play-badge-svg/master/img/en_get.svg" width="300">](https://play.google.com/store/apps/details?id=com.burhanrashid52.photoediting)
@@ -273,7 +275,7 @@ This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo
 
 ## Buy a cup of coffee
 If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of ☕️
-[PayPal](https://www.paypal.me/burhanrashid52)
+[BuyMeACoffee](https://www.buymeacoffee.com/burhanrashid52)
 
 ## MIT License
 
