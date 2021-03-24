@@ -2,7 +2,7 @@ name: UI test in android emulator CI
 
 on:
   push:
-    branches: [ test_in_emulator ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
