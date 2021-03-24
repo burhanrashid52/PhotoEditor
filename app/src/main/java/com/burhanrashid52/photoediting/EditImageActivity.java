@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +49,7 @@ import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.burhanrashid52.photoediting.FileSaveHelper.isSdk29OrHigher;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
@@ -278,12 +281,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 new File(uri.getPath()));
     }
 
-    @SuppressLint({"MissingPermission",  "NewApi"})
+
     private void saveImage() {
         final String fileName = System.currentTimeMillis() + ".png";
-        if (isSdk29OrHigher()) {
+        final boolean hasStoragePermission =
+                ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
+        if(hasStoragePermission || isSdk29OrHigher()) {
             showLoading("Saving...");
-            mSaveFileHelper.createFileForSdk29orHigher(fileName, (fileCreated, filePath, error, uri) -> {
+            mSaveFileHelper.createFile(getContentResolver(), fileName, (fileCreated, filePath, error, uri) -> {
                 if (fileCreated) {
                     SaveSettings saveSettings = new SaveSettings.Builder()
                             .setClearViewsEnabled(true)
@@ -293,7 +298,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     mPhotoEditor.saveAsFile(filePath, saveSettings, new PhotoEditor.OnSaveListener() {
                         @Override
                         public void onSuccess(@NonNull String imagePath) {
-                            mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable();
+                            mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(getContentResolver());
                             hideLoading();
                             showSnackbar("Image Saved Successfully");
                             mSaveImageUri = uri;
@@ -312,40 +317,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     showSnackbar(error);
                 }
             });
-        } else {
-            if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                showLoading("Saving...");
-                File file = new File(Environment.getExternalStorageDirectory()
-                        + File.separator + fileName);
-                try {
-                    file.createNewFile();
-
-                    SaveSettings saveSettings = new SaveSettings.Builder()
-                            .setClearViewsEnabled(true)
-                            .setTransparencyEnabled(true)
-                            .build();
-
-                    mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
-                        @Override
-                        public void onSuccess(@NonNull String imagePath) {
-                            hideLoading();
-                            showSnackbar("Image Saved Successfully");
-                            mSaveImageUri = Uri.fromFile(new File(imagePath));
-                            mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            hideLoading();
-                            showSnackbar("Failed to save Image");
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    hideLoading();
-                    showSnackbar(e.getMessage());
-                }
-            }
+        }else {
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 

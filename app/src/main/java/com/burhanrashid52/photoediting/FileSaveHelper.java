@@ -1,46 +1,52 @@
 package com.burhanrashid52.photoediting;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
 
+import com.burhanrashid52.photoediting.base.BaseActivity;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.SaveSettings;
+
 /**
  * General contract of this class is to
- * create a file on devices running android 10 and above.
- * As android 10 introduced scope storage
+ * create a file on a device.
  * </br>
- * <p>
  * How to Use it-
- * Call {@linkplain FileSaveHelper#createFileForSdk29orHigher(String, OnFileCreateResult)}
+ * Call {@linkplain FileSaveHelper#createFile(ContentResolver,String, OnFileCreateResult)}
  * if file is created you would receive it's file path and Uri
- * and after you are done with File call {@linkplain FileSaveHelper#notifyThatFileIsNowPubliclyAvailable()}
- * <p>
+ * and after you are done with File call {@linkplain FileSaveHelper#notifyThatFileIsNowPubliclyAvailable(ContentResolver)}
  * </br>
- * <p>
- * It's designed to avoid using libraries ,handler and methods like {@linkplain android.app.Activity#runOnUiThread(Runnable)}.
- * Remember it observes the lifecycle of {@linkplain AppCompatActivity} in order to shutdown the executor.
- * </p>
- *
+ * Remember! in order to shutdown executor call {@linkplain FileSaveHelper#addObserver(LifecycleOwner)} or
+ * create object with the {@linkplain FileSaveHelper#FileSaveHelper(LifecycleOwner)}
  */
 public class FileSaveHelper implements LifecycleObserver {
-    private ContentResolver contentResolver;
-    private ExecutorService executor;
-    private MutableLiveData<FileCreateData> fileCreatedResult;
+    private final ExecutorService executor;
+    private final MutableLiveData<FileCreateData> fileCreatedResult;
     private OnFileCreateResult resultListener;
     private final Observer<FileCreateData> observer = fileCreateData -> {
         if (resultListener != null) {
@@ -51,14 +57,20 @@ public class FileSaveHelper implements LifecycleObserver {
         }
     };
 
-    public FileSaveHelper(AppCompatActivity context) {
-        if (isSdk29OrHigher()) {
-            executor = Executors.newSingleThreadExecutor();
-            this.contentResolver = context.getContentResolver();
-            fileCreatedResult = new MutableLiveData<>();
-            fileCreatedResult.observe(context, observer);
-            context.getLifecycle().addObserver(this);
-        }
+
+    public FileSaveHelper() {
+        executor = Executors.newSingleThreadExecutor();
+        fileCreatedResult = new MutableLiveData<>();
+    }
+
+    public FileSaveHelper(LifecycleOwner lifecycleOwner) {
+        this();
+        addObserver(lifecycleOwner);
+    }
+
+    public void addObserver(LifecycleOwner lifecycleOwner) {
+        fileCreatedResult.observe(lifecycleOwner, observer);
+        lifecycleOwner.getLifecycle().addObserver(this);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -74,32 +86,34 @@ public class FileSaveHelper implements LifecycleObserver {
 
 
     /**
-     * The effect of this method is
+     * The effects of this method are
      * 1- insert new Image File data in MediaStore.Images column
      * 2- create File on Disk.
-     * Remember we had exclusive access to the file and only our app can see the file
-     * unless {@linkplain FileSaveHelper#notifyThatFileIsNowPubliclyAvailable()} is called on.
-     *
      * @param fileNameToSave fileName
      * @param listener       result listener
      */
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void createFileForSdk29orHigher(String fileNameToSave, OnFileCreateResult listener) {
+
+    @SuppressLint("InlinedApi")
+    public void createFile(ContentResolver contentResolver, String fileNameToSave, OnFileCreateResult listener) {
         this.resultListener = listener;
+        final boolean isSdk29OrHigher = isSdk29OrHigher();
         executor.submit(() -> {
             Cursor cursor = null;
             String filePath = null;
             try {
-                // insert new image file data into media store
-                Uri imageCollection;
-                imageCollection = MediaStore.Images.Media
-                        .getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
                 final ContentValues newImageDetails = new ContentValues();
+                Uri imageCollection;
+                if (isSdk29OrHigher) {
+                    imageCollection = MediaStore.Images.Media.getContentUri(
+                            MediaStore.VOLUME_EXTERNAL_PRIMARY
+                    );
+                    newImageDetails.put(MediaStore.Images.Media.IS_PENDING, 1);
+                } else {
+                    imageCollection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                }
                 newImageDetails.put(MediaStore.Images.Media.DISPLAY_NAME, fileNameToSave);
-                newImageDetails.put(MediaStore.Images.Media.IS_PENDING, 1);
                 final Uri editedImageUri = contentResolver
                         .insert(imageCollection, newImageDetails);
-                // create a file on disk . simply File#createNewFile() won't work. simply to meet library needs.
                 final OutputStream outputStream = contentResolver.openOutputStream(editedImageUri);
                 outputStream.close();
                 String[] proj = {MediaStore.Images.Media.DATA};
@@ -117,24 +131,20 @@ public class FileSaveHelper implements LifecycleObserver {
                 }
             }
         });
-
     }
 
-    /**
-     * The general contract of this method is to notify that
-     * file is visible now and can be accessed by all other entities that has access to File System.
-     * call it when you are done processing the file.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void notifyThatFileIsNowPubliclyAvailable() {
-        executor.submit(() -> {
-            FileCreateData value = fileCreatedResult.getValue();
-            if (value != null) {
-                value.imageDetails.clear();
-                value.imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0);
-                contentResolver.update(value.uri, value.imageDetails, null, null);
-            }
-        });
+    @SuppressLint("InlinedApi")
+    public void notifyThatFileIsNowPubliclyAvailable(ContentResolver contentResolver) {
+        if (isSdk29OrHigher()) {
+            executor.submit(() -> {
+                FileCreateData value = fileCreatedResult.getValue();
+                if (value != null) {
+                    value.imageDetails.clear();
+                    value.imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0);
+                    contentResolver.update(value.uri, value.imageDetails, null, null);
+                }
+            });
+        }
     }
 
     private static class FileCreateData {
