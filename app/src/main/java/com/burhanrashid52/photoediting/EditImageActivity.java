@@ -1,16 +1,12 @@
 package com.burhanrashid52.photoediting;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +46,7 @@ import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.burhanrashid52.photoediting.FileSaveHelper.isSdk29OrHigher;
+import static com.burhanrashid52.photoediting.FileSaveHelper.isSdkHigherThan28;
 
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
@@ -286,9 +282,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         final String fileName = System.currentTimeMillis() + ".png";
         final boolean hasStoragePermission =
                 ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
-        if(hasStoragePermission || isSdk29OrHigher()) {
+        if(hasStoragePermission || isSdkHigherThan28()) {
             showLoading("Saving...");
-            mSaveFileHelper.createFile(getContentResolver(), fileName, (fileCreated, filePath, error, uri) -> {
+            mSaveFileHelper.createFile(fileName, (fileCreated, filePath, error, uri) -> {
                 if (fileCreated) {
                     SaveSettings saveSettings = new SaveSettings.Builder()
                             .setClearViewsEnabled(true)
@@ -320,14 +316,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         }else {
             requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
-    }
-
-    private static void galleryAddPic(Context context, String imagePath) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(imagePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
     }
 
 
