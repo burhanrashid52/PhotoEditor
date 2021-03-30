@@ -1,0 +1,56 @@
+name: Publish Sample app to play store
+
+on:
+  push:
+    branches: [ playstore ]
+
+jobs:
+  release_apk:
+    name: Build Release apk
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Build Apk
+        run: ./gradlew assembleRelease
+
+      - name: Build Release
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.KEYSTORE_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
+
+      - name: Assemble Release Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ReleaseApk
+          path: ${{ env.SIGNED_RELEASE_FILE }}
+
+  upload_apk:
+    name: Upload to Google Play
+    needs: release_apk
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Download app APK
+        uses: actions/download-artifact@v1
+        with:
+          name: ReleaseApk
+
+      - name : Upload Android Release to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.burhanrashid52.photoediting
+          releaseFile: ReleaseApk/app-release-unsigned-signed.apk
+          track: production
+          userFraction: 0.99

@@ -12,10 +12,11 @@ ext {
 
     libraryDescription = 'A Photo Editor library to edit image using paints,text,emoji and images'
 
-    siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
-    gitUrl = 'https://github.com/burhanrashid52/PhotoEditor'
+    siteUrl = 'https://burhanrashid52.github.io/PhotoEditor/'
+    gitUrl = 'https://github.com/burhanrashid52/PhotoEditor.git'
+    githubRepository= 'burhanrashid52/PhotoEditor'
 
-    libraryVersion = '1.1.0'
+    libraryVersion = '1.1.1'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'
@@ -34,7 +35,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 2
-        versionName "1.1.0"
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -72,9 +73,9 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.23.0'
-    testImplementation 'org.robolectric:robolectric:4.2'
+    testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
 // Place it at the end of the file
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+apply from: '../scripts/installv1.gradle'
+apply from: '../scripts/bintrayv1.gradle'
