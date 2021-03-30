@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import androidx.annotation.ColorInt;
@@ -57,7 +58,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private Typeface mDefaultEmojiTypeface;
 
 
-    private PhotoEditor(Builder builder) {
+    protected PhotoEditor(Builder builder) {
         this.context = builder.context;
         this.parentView = builder.parentView;
         this.imageView = builder.imageView;
@@ -659,7 +660,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         clearHelperBox();
-                        parentView.setDrawingCacheEnabled(false);
+                        brushDrawingView.destroyDrawingCache();
                     }
 
                     @SuppressLint("MissingPermission")
@@ -670,11 +671,10 @@ public class PhotoEditor implements BrushViewChangeListener {
                         try {
                             FileOutputStream out = new FileOutputStream(file, false);
                             if (parentView != null) {
-                                parentView.setDrawingCacheEnabled(true);
-                                Bitmap drawingCache = saveSettings.isTransparencyEnabled()
-                                        ? BitmapUtil.removeTransparency(parentView.getDrawingCache())
-                                        : parentView.getDrawingCache();
-                                drawingCache.compress(saveSettings.getCompressFormat(), saveSettings.getCompressQuality(), out);
+                                Bitmap capturedBitmap = saveSettings.isTransparencyEnabled()
+                                        ? BitmapUtil.removeTransparency(captureView(parentView))
+                                        : captureView(parentView);
+                                capturedBitmap.compress(saveSettings.getCompressFormat(), saveSettings.getCompressQuality(), out);
                             }
                             out.flush();
                             out.close();
@@ -738,16 +738,15 @@ public class PhotoEditor implements BrushViewChangeListener {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         clearHelperBox();
-                        parentView.setDrawingCacheEnabled(false);
+                        brushDrawingView.destroyDrawingCache();
                     }
 
                     @Override
                     protected Bitmap doInBackground(String... strings) {
                         if (parentView != null) {
-                            parentView.setDrawingCacheEnabled(true);
                             return saveSettings.isTransparencyEnabled() ?
-                                    BitmapUtil.removeTransparency(parentView.getDrawingCache())
-                                    : parentView.getDrawingCache();
+                                    BitmapUtil.removeTransparency(captureView(parentView))
+                                    : captureView(parentView);
                         } else {
                             return null;
                         }
@@ -783,6 +782,17 @@ public class PhotoEditor implements BrushViewChangeListener {
             returnedEmoji = "";
         }
         return returnedEmoji;
+    }
+
+    private Bitmap captureView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(
+                view.getWidth(),
+                view.getHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 
     /**

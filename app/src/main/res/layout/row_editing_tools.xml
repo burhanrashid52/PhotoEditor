@@ -15,6 +15,7 @@
         android:layout_height="@dimen/editor_size"
         android:layout_margin="4dp"
         android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:src="@drawable/ic_brush" />

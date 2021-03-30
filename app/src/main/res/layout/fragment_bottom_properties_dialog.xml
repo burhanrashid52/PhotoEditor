@@ -23,7 +23,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sbOpacity"
         tools:background="@android:color/black"
-        tools:listitem="@layout/color_picker_item_list" />
+        tools:listitem="@layout/color_picker_item_list"
+        android:layout_alignParentRight="true" />
 
     <SeekBar
         android:id="@+id/sbOpacity"

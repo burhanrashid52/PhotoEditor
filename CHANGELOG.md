@@ -58,3 +58,10 @@ new TextStyleBuilder()
 - New : Migrating the support libraries to AndroidX
 - New : Bumped target sdk version to 29
 - Test : Adding UI to test for the library
+
+## 1.1.0
+- Fixed : #263 and #57
+- New : Allowing `PhotoEditor` to extend with protected constructor.
+
+## 1.1.1
+- Fixed : Replace deprecated `getDrawingCache` to capturing method #324
