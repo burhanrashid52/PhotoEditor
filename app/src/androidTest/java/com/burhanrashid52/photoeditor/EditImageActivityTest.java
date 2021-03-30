@@ -1,6 +1,7 @@
 package com.burhanrashid52.photoeditor;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -112,6 +113,22 @@ public class EditImageActivityTest {
         // Redo the Emoji
         onView(withId(R.id.imgRedo)).perform(click());
         onView(withText(emojisUnicodes.get(0))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testWhenNoImageIsSavedThanToastIsVisibleOnClickedOnShareButton() {
+        mActivityRule.launchActivity(null);
+        onView(withId(R.id.imgShare)).perform(click());
+        onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()));
+    }
+
+    @Ignore("Need to Fix this test")
+    public void testShareIntentWhenImageIsAvailableOnClickedOnShareButton() throws InterruptedException {
+        EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
+        editImageActivity.mSaveImageUri = Uri.parse("somethurl");
+        Thread.sleep(2000);
+        onView(withId(R.id.imgShare)).perform(click());
+        //onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()));
     }
 
     @Test

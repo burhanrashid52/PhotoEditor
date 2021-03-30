@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/burhanrashid52/PhotoEditor'
     gitUrl = 'https://github.com/burhanrashid52/PhotoEditor'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.1.0'
 
     developerId = 'burhanrashid52'
     developerName = 'Burhanuddin Rashid'
@@ -28,13 +28,13 @@ ext {
 
 android {
 
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0.0"
+        targetSdkVersion 30
+        versionCode 2
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -55,13 +55,15 @@ android {
         options.addStringOption('Xdoclint:none', '-quiet')
         options.addStringOption('encoding', 'UTF-8')
         options.addStringOption('charSet', 'UTF-8')
+        failOnError false
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
 
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {

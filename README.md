@@ -1,7 +1,7 @@
 # PhotoEditor
 
 [![CircleCI](https://circleci.com/gh/burhanrashid52/PhotoEditor.svg?style=svg)](https://circleci.com/gh/burhanrashid52/PhotoEditor)
-[![Downloads](https://img.shields.io/badge/Download-1.0.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-1.1.0-blue.svg)](https://bintray.com/burhanrashid52/maven/photoeditor) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -21,6 +21,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - [**Undo and Redo**](#undo-and-redo) for Brush and Views.
 - [**Deleting**](#deleting) Views
 - [**Saving**](#saving) Photo after editing.
+- More [**FAQ**](#faq).
 
 
 
@@ -37,7 +38,7 @@ PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of
 ## Getting Started
 To start with this, we need to simply add the dependencies in the gradle file of our app module like this
 ```java
-implementation 'ja.burhanrashid52:photoeditor:1.0.0'
+implementation 'ja.burhanrashid52:photoeditor:1.1.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
@@ -99,7 +100,7 @@ We can customize our brush and paint with different set of property. To start dr
 | Type  | Method |
 | ------------- | ------------- |
 | Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
-| Bursh Size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
+| Brush Size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
 | Color Opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
 | Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
 | Brush Eraser  | `mPhotoEditor.brushEraser()` |
@@ -211,15 +212,58 @@ For more detail check [Saving](https://github.com/burhanrashid52/PhotoEditor/wik
 * Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
 
 
-## What's next?
-- Croping Image with Custom Aspect ratio and more customization text/emoji/stickers
-
-
 ## Questions?🤔
 Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrashid52-blue.svg)](https://twitter.com/burhanrashid52)
 [![Medium](https://img.shields.io/badge/Medium-%40burhanrashid52-brightgreen.svg)](https://medium.com/@burhanrashid52)
 [![Facebook](https://img.shields.io/badge/Facebook-Burhanuddin%20Rashid-blue.svg)](https://www.facebook.com/Bursid)
 
+## FAQ
+<details><summary>Can I use this library in my app for free?</summary>
+<p>
+
+Yes. It's an open-source library and free to use. If this library has saved your time then showing a little credit will increase my motivation towards making the library better :)
+
+</p>
+</details>
+
+<details><summary>Does it support the CROP feature?</summary>
+<p>
+
+Currently, No. I started to build in branch [PE-79](https://github.com/burhanrashid52/PhotoEditor/issues/79). But due to time constraint, I drop the idea. Any PR related to CROP is welcomed :)
+
+</p>
+</details>
+
+<details><summary>Facing issues in applying Filter?</summary>
+<p>
+
+The filter effect is applied using `GlSurfaceView` and the implementation of this feature causing a lot of issues. Need to think of some other alternative solution. Here is the issue [list](https://github.com/burhanrashid52/PhotoEditor/issues?q=is%3Aissue+is%3Aopen+filter).
+
+</p>
+</details>
+
+<details><summary>Does is support in other platforms (iOS, Web, Flutter)?</summary>
+<p>
+
+No. Currently, the focus is on making the android library better. We don't have any plans for [other Platform](https://github.com/burhanrashid52/PhotoEditor/issues/24).
+
+</p>
+</details>
+
+<details><summary>Other Know Issues</summary>
+<p>
+
+[Image Scaling](https://github.com/burhanrashid52/PhotoEditor/issues/10).
+<br>[Memory Issue in Filter](https://github.com/burhanrashid52/PhotoEditor/issues/48).
+
+</p>
+</details>
+
+### Who is using PhotoEditor?
+1. [Best Quotes & Status 2019 (99000+ Collection)](https://play.google.com/store/apps/details?id=com.swastik.quotesandstatus&hl=en_US)
+2. [Pixxo](https://play.google.com/store/apps/details?id=com.pixxo.breezil.pixxo)
+
+**Note**: I will be happy to add your app to the list. Please reach out to me with details. You know how to reach me :)
 
 
 ## Credits
@@ -231,7 +275,7 @@ If you found this project helpful or you learned something from the source code 
 
 ## MIT License
 
-Copyright (c) 2018 Burhanuddin Rashid
+Copyright (c) 2020 Burhanuddin Rashid
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

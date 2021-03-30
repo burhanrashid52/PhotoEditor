@@ -55,8 +55,8 @@ public class PhotoEditor implements BrushViewChangeListener {
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
-    @SuppressLint("ClickableViewAccessibility")
-    private PhotoEditor(Builder builder) {
+
+    protected PhotoEditor(Builder builder) {
         this.context = builder.context;
         this.parentView = builder.parentView;
         this.imageView = builder.imageView;
@@ -691,6 +691,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         super.onPreExecute();
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
+                        brushDrawingView.destroyDrawingCache();
                     }
 
                     @SuppressLint("MissingPermission")
@@ -770,6 +771,7 @@ public class PhotoEditor implements BrushViewChangeListener {
                         super.onPreExecute();
                         clearHelperBox();
                         parentView.setDrawingCacheEnabled(false);
+                        brushDrawingView.destroyDrawingCache();
                     }
 
                     @Override

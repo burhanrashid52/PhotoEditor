@@ -70,6 +70,7 @@
         android:layout_marginTop="8dp"
         android:padding="4dp"
         android:src="@drawable/ic_eraser"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/imgSticker"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/imgText" />
@@ -83,6 +84,7 @@
         android:src="@drawable/ic_sticker"
         app:layout_constraintEnd_toStartOf="@+id/imgEmoji"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
         app:layout_constraintStart_toEndOf="@+id/btnEraser" />
 
     <ImageView
