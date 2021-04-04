@@ -40,9 +40,9 @@ PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of
 
 
 ## Getting Started
-To start with this, we need to simply add the dependencies in the gradle file of our app module like this
-```java
-implementation 'ja.burhanrashid52:photoeditor:1.1.1'
+To start with this, we need to simply add the dependencies from `mavenCentral()` in the gradle file of our app module like this
+```groovy
+implementation 'com.burhanrashid52:photoeditor:1.1.1'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
