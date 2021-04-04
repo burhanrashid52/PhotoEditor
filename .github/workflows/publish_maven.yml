@@ -1,8 +1,9 @@
-name: Publish
+name: Publish libarary to maven
 
 on:
   push:
-    branches: [ PE-320 ]
+    tags:
+      - 'v.[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   publish:
