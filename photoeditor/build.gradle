@@ -56,12 +56,4 @@ ext {
     PUBLISH_ARTIFACT_ID = 'photoeditor'
 }
 
-// Set default empty string to avoid MissingPropertyException: Issue #332
-ext["signing.keyId"] = ''
-ext["signing.password"] = ''
-ext["signing.secretKeyRingFile"] = ''
-ext["ossrhUsername"] = ''
-ext["ossrhPassword"] = ''
-ext["sonatypeStagingProfileId"] = ''
-
 apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"

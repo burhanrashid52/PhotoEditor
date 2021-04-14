@@ -22,6 +22,14 @@ artifacts {
 group = PUBLISH_GROUP_ID
 version = PUBLISH_VERSION
 
+// Set default empty string to avoid MissingPropertyException: Issue #332
+ext["signing.keyId"] = ''
+ext["signing.password"] = ''
+ext["signing.secretKeyRingFile"] = ''
+ext["ossrhUsername"] = ''
+ext["ossrhPassword"] = ''
+ext["sonatypeStagingProfileId"] = ''
+
 File secretPropsFile = project.rootProject.file('local.properties')
 
 if (secretPropsFile.exists()) {
