@@ -1,31 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
-
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'photoeditor'
-
-    publishedGroupId = 'ja.burhanrashid52'
-    libraryName = 'PhotoEditor'
-    artifact = 'photoeditor'
-
-    libraryDescription = 'A Photo Editor library to edit image using paints,text,emoji and images'
-
-    siteUrl = 'https://burhanrashid52.github.io/PhotoEditor/'
-    gitUrl = 'https://github.com/burhanrashid52/PhotoEditor.git'
-    githubRepository= 'burhanrashid52/PhotoEditor'
-
-    libraryVersion = '1.1.1'
-
-    developerId = 'burhanrashid52'
-    developerName = 'Burhanuddin Rashid'
-    developerEmail = 'burhanrashid5253@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
 
 android {
 
@@ -76,6 +49,11 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
-// Place it at the end of the file
-apply from: '../scripts/installv1.gradle'
-apply from: '../scripts/bintrayv1.gradle'
+
+ext {
+    PUBLISH_GROUP_ID = 'com.burhanrashid52'
+    PUBLISH_VERSION = '1.1.1'
+    PUBLISH_ARTIFACT_ID = 'photoeditor'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"
