@@ -36,7 +36,7 @@ class MultiTouchListener implements OnTouchListener {
 
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl mOnGestureControl;
-    private boolean mIsTextPinchZoomable;
+    private boolean mIsPinchScalable;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
     private PhotoEditorViewState viewState;
@@ -44,11 +44,11 @@ class MultiTouchListener implements OnTouchListener {
     MultiTouchListener(@Nullable View deleteView,
                        RelativeLayout parentView,
                        ImageView photoEditImageView,
-                       boolean isTextPinchZoomable,
+                       boolean isPinchScalable,
                        OnPhotoEditorListener onPhotoEditorListener,
                        PhotoEditorViewState viewState
     ) {
-        mIsTextPinchZoomable = isTextPinchZoomable;
+        mIsPinchScalable = isPinchScalable;
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
         mGestureListener = new GestureDetector(new GestureListener());
         this.deleteView = deleteView;
@@ -217,7 +217,7 @@ class MultiTouchListener implements OnTouchListener {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
             mPrevSpanVector.set(detector.getCurrentSpanVector());
-            return mIsTextPinchZoomable;
+            return mIsPinchScalable;
         }
 
         @Override
@@ -232,7 +232,7 @@ class MultiTouchListener implements OnTouchListener {
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
             move(view, info);
-            return !mIsTextPinchZoomable;
+            return !mIsPinchScalable;
         }
     }
 

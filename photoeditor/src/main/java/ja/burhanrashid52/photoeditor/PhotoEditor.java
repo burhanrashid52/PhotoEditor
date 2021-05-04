@@ -52,7 +52,7 @@ public class PhotoEditor implements BrushViewChangeListener {
     private View deleteView;
     private BrushDrawingView brushDrawingView;
     private OnPhotoEditorListener mOnPhotoEditorListener;
-    private boolean isTextPinchZoomable;
+    private boolean isTextPinchScalable;
     private Typeface mDefaultTextTypeface;
     private Typeface mDefaultEmojiTypeface;
 
@@ -63,7 +63,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         this.imageView = builder.imageView;
         this.deleteView = builder.deleteView;
         this.brushDrawingView = builder.brushDrawingView;
-        this.isTextPinchZoomable = builder.isTextPinchZoomable;
+        this.isTextPinchScalable = builder.isTextPinchScalable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
         this.viewState = new PhotoEditorViewState();
@@ -105,7 +105,7 @@ public class PhotoEditor implements BrushViewChangeListener {
 
         imageView.setImageBitmap(desiredImage);
 
-        MultiTouchListener multiTouchListener = getMultiTouchListener();
+        MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -179,7 +179,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         if (styleBuilder != null)
             styleBuilder.applyStyle(textInputTv);
 
-        MultiTouchListener multiTouchListener = getMultiTouchListener();
+        MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -285,7 +285,7 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
         emojiTextView.setTextSize(56);
         emojiTextView.setText(emojiName);
-        MultiTouchListener multiTouchListener = getMultiTouchListener();
+        MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -329,15 +329,16 @@ public class PhotoEditor implements BrushViewChangeListener {
     /**
      * Create a new instance and scalable touchview
      *
+     * @param isPinchScalable true if make pinch-scalable, false otherwise.
      * @return scalable multitouch listener
      */
     @NonNull
-    private MultiTouchListener getMultiTouchListener() {
+    private MultiTouchListener getMultiTouchListener(final boolean isPinchScalable) {
         MultiTouchListener multiTouchListener = new MultiTouchListener(
                 deleteView,
                 parentView,
                 this.imageView,
-                isTextPinchZoomable,
+                isPinchScalable,
                 mOnPhotoEditorListener,
                 this.viewState);
 
@@ -905,8 +906,8 @@ public class PhotoEditor implements BrushViewChangeListener {
         private BrushDrawingView brushDrawingView;
         private Typeface textTypeface;
         private Typeface emojiTypeface;
-        //By Default pinch zoom on text is enabled
-        private boolean isTextPinchZoomable = true;
+        // By default, pinch-to-scale is enabled for text
+        private boolean isTextPinchScalable = true;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -950,13 +951,14 @@ public class PhotoEditor implements BrushViewChangeListener {
         }
 
         /**
-         * set false to disable pinch to zoom on text insertion.By deafult its true
+         * Set false to disable pinch-to-scale for text inserts.
+         * Set to "true" by default.
          *
-         * @param isTextPinchZoomable flag to make pinch to zoom
+         * @param isTextPinchScalable flag to make pinch to zoom for text inserts.
          * @return {@link Builder} instant to build {@link PhotoEditor}
          */
-        public Builder setPinchTextScalable(boolean isTextPinchZoomable) {
-            this.isTextPinchZoomable = isTextPinchZoomable;
+        public Builder setPinchTextScalable(boolean isTextPinchScalable) {
+            this.isTextPinchScalable = isTextPinchScalable;
             return this;
         }
 
