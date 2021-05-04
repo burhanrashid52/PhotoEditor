@@ -40,7 +40,7 @@ public class PinchTestHelper {
                 final int startDelta = 10;
 
                 // How far from the center point each finger should end
-                // (note: Be sure to have this large enough so that the gesture is recognized, in practice this appears to be 60)
+                // (note: Be sure to have this large enough so that the gesture is recognized)
                 final int endDelta = 20;
 
                 Point startPoint1 = new Point(middlePosition.x - startDelta, middlePosition.y);
