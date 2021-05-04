@@ -1,8 +1,10 @@
 package com.burhanrashid52.photoediting;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.test.espresso.NoMatchingViewException;
@@ -26,6 +28,7 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -33,7 +36,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
 
@@ -129,6 +134,109 @@ public class EditImageActivityTest {
         Thread.sleep(2000);
         onView(withId(R.id.imgShare)).perform(click());
         //onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void checkIfPinchTextScalableFlagWorks_False() throws InterruptedException {
+
+        // Use an intent to tell EditImageActivity to set the PhotoEditor "pinchTextScalableFlag" to "false"
+        final Intent intent = new Intent();
+        intent.putExtra(EditImageActivity.PINCH_TEXT_SCALABLE_INTENT_KEY, false);
+        mActivityRule.launchActivity(intent);
+
+        // Open the emoji menu (delay to give time to load lower menu)
+        Thread.sleep(2000);
+        onView(withText(R.string.label_emoji)).perform(click());
+
+        // Add an emoji from the menu (delay to give time for the RecyclerView to open)
+        Thread.sleep(2000);
+        onView(withId(R.id.rvEmoji))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+
+        // Select the emoji (delay to give time for the RecyclerView to close)
+        Thread.sleep(1000);
+        onView(withId((R.id.frmBorder))).perform(click());
+
+        // Capture the scale of the emoji
+        ViewGroup emojiFrameParentView = (ViewGroup) mActivityRule.getActivity().findViewById(R.id.frmBorder).getParent();
+        final float emojiScaleXBeforePinching = emojiFrameParentView.getScaleX();
+        final float emojiScaleYBeforePinching = emojiFrameParentView.getScaleY();
+
+        // Scale the emoji up by pinching
+        onView(withId((R.id.frmBorder))).perform(PinchTestHelper.pinchOut());
+
+        // Check if the emoji scaled up after pinching.
+        emojiFrameParentView = (ViewGroup) mActivityRule.getActivity().findViewById(R.id.frmBorder).getParent();
+        assertNotEquals(emojiScaleXBeforePinching, emojiFrameParentView.getScaleX());
+        assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.getScaleY());
+
+        // Remove the emoji from the screen.
+        onView(withId(R.id.imgPhotoEditorClose)).perform(click());
+
+        // Add a text to the image.
+        onView(withText(R.string.label_text)).perform(click());
+        onView(withId(R.id.add_text_edit_text)).perform(click());
+        onView(withId(R.id.add_text_edit_text)).perform(typeText("Test Text"));
+
+        // Select the text (delay to give time for the text imput screen to close)
+        Thread.sleep(2000);
+        onView(withId(R.id.add_text_done_tv)).perform(click());
+
+        // Select the text box
+        Matcher<View> testTextBox = withId(R.id.tvPhotoEditorText);
+        onView(testTextBox).perform(click());
+
+        // Capture the current scale of the text box
+        ViewGroup textFrameParentView = (ViewGroup) mActivityRule.getActivity().findViewById(R.id.frmBorder).getParent();
+        final float textScaleXBeforeScaling = textFrameParentView.getScaleX();
+        final float textScaleYBeforeScaling = textFrameParentView.getScaleY();
+
+        // Attempt to scale the text box by pinching
+        onView(testTextBox).perform(PinchTestHelper.pinchOut());
+
+        // Validate that the text box did not scale by pinching.
+        textFrameParentView = (ViewGroup) mActivityRule.getActivity().findViewById(R.id.frmBorder).getParent();
+        assertEquals(textScaleXBeforeScaling, textFrameParentView.getScaleX(), 0.01);
+        assertEquals(textScaleYBeforeScaling, textFrameParentView.getScaleY(), 0.01);
+    }
+
+    @Test
+    public void checkIfPinchTextScalableFlagWorks_True() throws InterruptedException {
+
+        // Use an intent to tell EditImageActivity to set the PhotoEditor "pinchTextScalableFlag" to "false"
+        final Intent intent = new Intent();
+        intent.putExtra(EditImageActivity.PINCH_TEXT_SCALABLE_INTENT_KEY, true);
+        mActivityRule.launchActivity(intent);
+
+        // Open the emoji menu (delay to give time to load lower menu)
+        Thread.sleep(2000);
+        onView(withText(R.string.label_text)).perform(click());
+        onView(withId(R.id.add_text_edit_text)).perform(click());
+
+        // Type the text (delay to allow keyboard to load)
+        Thread.sleep(2000);
+        onView(withId(R.id.add_text_edit_text)).perform(typeText("Test Text"));
+
+        // Select the text (delay to give time for the text imput screen to close)
+        Thread.sleep(2000);
+        onView(withId(R.id.add_text_done_tv)).perform(click());
+
+        // Select the text box
+        Matcher<View> testTextBox = withId(R.id.tvPhotoEditorText);
+        onView(testTextBox).perform(click());
+
+        // Capture the current scale of the text box
+        ViewGroup textFrameParentView = (ViewGroup) mActivityRule.getActivity().findViewById(R.id.frmBorder).getParent();
+        final float textScaleXBeforeScaling = textFrameParentView.getScaleX();
+        final float textScaleYBeforeScaling = textFrameParentView.getScaleY();
+
+        // Attempt to scale the text box by pinching
+        onView(testTextBox).perform(PinchTestHelper.pinchOut());
+
+        // Validate that the text box did not scale by pinching.
+        textFrameParentView = (ViewGroup) mActivityRule.getActivity().findViewById(R.id.frmBorder).getParent();
+        assertNotEquals(textScaleXBeforeScaling, textFrameParentView.getScaleX());
+        assertNotEquals(textScaleYBeforeScaling, textFrameParentView.getScaleY());
     }
 
     @Test

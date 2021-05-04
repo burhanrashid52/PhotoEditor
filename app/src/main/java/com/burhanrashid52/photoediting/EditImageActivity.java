@@ -59,6 +59,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
     public static final String ACTION_NEXTGEN_EDIT = "action_nextgen_edit";
+    public static final String PINCH_TEXT_SCALABLE_INTENT_KEY = "PINCH_TEXT_SCALABLE";
+
     PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
     private PropertiesBSFragment mPropertiesBSFragment;
@@ -106,12 +108,14 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mRvFilters.setLayoutManager(llmFilters);
         mRvFilters.setAdapter(mFilterViewAdapter);
 
+        // NOTE(lucianocheng): Used to set integration testing parameters to PhotoEditor
+        boolean pinchTextScalable = getIntent().getBooleanExtra(PINCH_TEXT_SCALABLE_INTENT_KEY, true);
 
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
-                .setPinchTextScalable(true) // set flag to make text scalable when pinch
+                .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build(); // build photo editor sdk
@@ -127,8 +131,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private void handleIntentImage(ImageView source) {
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.getAction().equals(Intent.ACTION_EDIT) ||
-                    intent.getAction().equals(ACTION_NEXTGEN_EDIT)) {
+            // NOTE(lucianocheng): Using "yoda conditions" here to guard against
+            //                     a null Action in the Intent.
+            if (Intent.ACTION_EDIT.equals(intent.getAction()) ||
+                    ACTION_NEXTGEN_EDIT.equals(intent.getAction())) {
                 try {
                     Uri uri = intent.getData();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
