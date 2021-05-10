@@ -65,3 +65,7 @@ new TextStyleBuilder()
 
 ## 1.1.1
 - Fixed : Replace deprecated `getDrawingCache` to capturing method #324
+
+## 1.1.2
+- Fixed : #219 One selection at time in
+- Fixed: #345 Set pinch to scale to text only
