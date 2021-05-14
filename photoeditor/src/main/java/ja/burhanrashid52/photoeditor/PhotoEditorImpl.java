@@ -10,14 +10,11 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -117,42 +114,9 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     @Override
     public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
         brushDrawingView.setBrushDrawingMode(false);
-        final View textRootView = getLayout(ViewType.TEXT);
-        final TextView textInputTv = textRootView.findViewById(R.id.tvPhotoEditorText);
-        final ImageView imgClose = textRootView.findViewById(R.id.imgPhotoEditorClose);
-        final FrameLayout frmBorder = textRootView.findViewById(R.id.frmBorder);
-
-        textInputTv.setText(text);
-        if (styleBuilder != null)
-            styleBuilder.applyStyle(textInputTv);
-
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
-        multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
-            @Override
-            public void onClick() {
-                clearHelperBox();
-                frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
-                imgClose.setVisibility(View.VISIBLE);
-                frmBorder.setTag(true);
-                viewState.setCurrentSelectedView(textRootView);
-            }
-
-            @Override
-            public void onLongClick() {
-                String textInput = textInputTv.getText().toString();
-                int currentTextColor = textInputTv.getCurrentTextColor();
-                if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onEditTextChangeListener(textRootView, textInput, currentTextColor);
-                }
-            }
-        });
-
-        textRootView.setOnTouchListener(multiTouchListener);
-        clearHelperBox();
-        addViewToParent(textRootView, ViewType.TEXT);
-
-        // Change the in-focus view
-        viewState.setCurrentSelectedView(textRootView);
+        Text textGraphic = new Text(parentView, multiTouchListener, viewState, mOnPhotoEditorListener, mDefaultTextTypeface);
+        textGraphic.buildView(text, styleBuilder);
     }
 
     @Override
@@ -198,22 +162,6 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         emoji.buildView(emojiTypeface, emojiName);
     }
 
-
-    /**
-     * Add to root view from image,emoji and text to our parent view
-     *
-     * @param rootView rootview of image,text and emoji
-     */
-    private void addViewToParent(View rootView, ViewType viewType) {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        parentView.addView(rootView, params);
-        viewState.addAddedView(rootView);
-        if (mOnPhotoEditorListener != null)
-            mOnPhotoEditorListener.onAddViewListener(viewType, viewState.getAddedViewsCount());
-    }
-
     /**
      * Create a new instance and scalable touchview
      *
@@ -233,45 +181,6 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         //multiTouchListener.setOnMultiTouchListener(this);
 
         return multiTouchListener;
-    }
-
-    /**
-     * Get root view by its type i.e image,text and emoji
-     *
-     * @param viewType image,text or emoji
-     * @return rootview
-     */
-    private View getLayout(final ViewType viewType) {
-        View rootView = null;
-        switch (viewType) {
-            case TEXT:
-                rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_text, null);
-                TextView txtText = rootView.findViewById(R.id.tvPhotoEditorText);
-                if (txtText != null && mDefaultTextTypeface != null) {
-                    txtText.setGravity(Gravity.CENTER);
-                    if (mDefaultEmojiTypeface != null) {
-                        txtText.setTypeface(mDefaultTextTypeface);
-                    }
-                }
-                break;
-        }
-
-        if (rootView != null) {
-            //We are setting tag as ViewType to identify what type of the view it is
-            //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
-            rootView.setTag(viewType);
-            final ImageView imgClose = rootView.findViewById(R.id.imgPhotoEditorClose);
-            final View finalRootView = rootView;
-            if (imgClose != null) {
-                imgClose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        viewUndo(finalRootView, viewType);
-                    }
-                });
-            }
-        }
-        return rootView;
     }
 
     @Override
@@ -335,20 +244,6 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     public void brushEraser() {
         if (brushDrawingView != null)
             brushDrawingView.brushEraser();
-    }
-
-    private void viewUndo(View removedView, ViewType viewType) {
-        if (viewState.containsAddedView(removedView)) {
-            parentView.removeView(removedView);
-            viewState.removeAddedView(removedView);
-            viewState.pushRedoView(removedView);
-            if (mOnPhotoEditorListener != null) {
-                mOnPhotoEditorListener.onRemoveViewListener(
-                        viewType,
-                        viewState.getAddedViewsCount()
-                );
-            }
-        }
     }
 
     @Override
