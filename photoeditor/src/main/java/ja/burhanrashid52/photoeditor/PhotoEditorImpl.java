@@ -92,34 +92,9 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
 
     @Override
     public void addImage(Bitmap desiredImage) {
-        final View imageRootView = getLayout(ViewType.IMAGE);
-        final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
-        final FrameLayout frmBorder = imageRootView.findViewById(R.id.frmBorder);
-        final ImageView imgClose = imageRootView.findViewById(R.id.imgPhotoEditorClose);
-
-        imageView.setImageBitmap(desiredImage);
-
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
-        multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
-            @Override
-            public void onClick() {
-                clearHelperBox();
-                frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
-                imgClose.setVisibility(View.VISIBLE);
-                frmBorder.setTag(true);
-                viewState.setCurrentSelectedView(imageRootView);
-            }
-
-            @Override
-            public void onLongClick() {
-
-            }
-        });
-
-        imageRootView.setOnTouchListener(multiTouchListener);
-        clearHelperBox();
-        addViewToParent(imageRootView, ViewType.IMAGE);
-        viewState.setCurrentSelectedView(imageRootView);
+        Sticker sticker = new Sticker(parentView, multiTouchListener, viewState, mOnPhotoEditorListener);
+        sticker.buildView(desiredImage);
     }
 
     @Override
