@@ -193,39 +193,9 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     @Override
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
-        final View emojiRootView = getLayout(ViewType.EMOJI);
-        final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
-        final FrameLayout frmBorder = emojiRootView.findViewById(R.id.frmBorder);
-        final ImageView imgClose = emojiRootView.findViewById(R.id.imgPhotoEditorClose);
-
-        if (emojiTypeface != null) {
-            emojiTextView.setTypeface(emojiTypeface);
-        }
-        emojiTextView.setTextSize(56);
-        emojiTextView.setText(emojiName);
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
-        multiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
-            @Override
-            public void onClick() {
-                clearHelperBox();
-                frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
-                imgClose.setVisibility(View.VISIBLE);
-                frmBorder.setTag(true);
-
-                // Change the in-focus view
-                viewState.setCurrentSelectedView(emojiRootView);
-            }
-
-            @Override
-            public void onLongClick() {
-            }
-        });
-        emojiRootView.setOnTouchListener(multiTouchListener);
-        clearHelperBox();
-        addViewToParent(emojiRootView, ViewType.EMOJI);
-
-        // Change the in-focus view
-        viewState.setCurrentSelectedView(emojiRootView);
+        Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mOnPhotoEditorListener, mDefaultEmojiTypeface);
+        emoji.buildView(emojiTypeface, emojiName);
     }
 
 
@@ -284,20 +254,6 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
                     }
                 }
                 break;
-            case IMAGE:
-                rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_image, null);
-                break;
-            case EMOJI:
-                rootView = mLayoutInflater.inflate(R.layout.view_photo_editor_text, null);
-                TextView txtTextEmoji = rootView.findViewById(R.id.tvPhotoEditorText);
-                if (txtTextEmoji != null) {
-                    if (mDefaultEmojiTypeface != null) {
-                        txtTextEmoji.setTypeface(mDefaultEmojiTypeface);
-                    }
-                    txtTextEmoji.setGravity(Gravity.CENTER);
-                    txtTextEmoji.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                }
-                break;
         }
 
         if (rootView != null) {
@@ -353,11 +309,6 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     public void setBrushEraserSize(float brushEraserSize) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushEraserSize(brushEraserSize);
-    }
-
-    void setBrushEraserColor(@ColorInt int color) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushEraserColor(color);
     }
 
 

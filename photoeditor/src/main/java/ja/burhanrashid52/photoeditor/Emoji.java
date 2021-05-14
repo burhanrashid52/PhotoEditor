@@ -1,20 +1,22 @@
 package ja.burhanrashid52.photoeditor;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
  * @author <https://github.com/burhanrashid52>
  */
-class Sticker {
+class Emoji {
 
     private final Context mContext;
     private final ViewGroup mPhotoEditorView;
@@ -22,29 +24,35 @@ class Sticker {
     private final PhotoEditorViewState mViewState;
     private final OnPhotoEditorListener mOnPhotoEditorListener;
     private final View mRootView;
+    private Typeface mDefaultEmojiTypeface;
 
-    public Sticker(ViewGroup photoEditorView,
-                   MultiTouchListener multiTouchListener,
-                   PhotoEditorViewState viewState,
-                   OnPhotoEditorListener onPhotoEditorListener) {
+    public Emoji(ViewGroup photoEditorView,
+                 MultiTouchListener multiTouchListener,
+                 PhotoEditorViewState viewState,
+                 OnPhotoEditorListener onPhotoEditorListener,
+                 Typeface defaultEmojiTypeface
+    ) {
         mContext = photoEditorView.getContext();
         mPhotoEditorView = photoEditorView;
         mMultiTouchListener = multiTouchListener;
         mViewState = viewState;
         mOnPhotoEditorListener = onPhotoEditorListener;
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRootView = layoutInflater.inflate(R.layout.view_photo_editor_image, null);
+        mRootView = layoutInflater.inflate(R.layout.view_photo_editor_text, null);
+        this.mDefaultEmojiTypeface = defaultEmojiTypeface;
     }
 
-    View buildView(Bitmap desiredImage) {
+    View buildView(Typeface emojiTypeface, String emojiName) {
+        final View emojiRootView = getLayout(emojiTypeface, emojiName);
+        final TextView emojiTextView = emojiRootView.findViewById(R.id.tvPhotoEditorText);
+        final FrameLayout frmBorder = emojiRootView.findViewById(R.id.frmBorder);
+        final ImageView imgClose = emojiRootView.findViewById(R.id.imgPhotoEditorClose);
 
-        final View imageRootView = getLayout();
-        final ImageView imageView = imageRootView.findViewById(R.id.imgPhotoEditorImage);
-        final FrameLayout frmBorder = imageRootView.findViewById(R.id.frmBorder);
-        final ImageView imgClose = imageRootView.findViewById(R.id.imgPhotoEditorClose);
-
-        imageView.setImageBitmap(desiredImage);
-
+        if (emojiTypeface != null) {
+            emojiTextView.setTypeface(emojiTypeface);
+        }
+        emojiTextView.setTextSize(56);
+        emojiTextView.setText(emojiName);
         mMultiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
@@ -52,34 +60,46 @@ class Sticker {
                 frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
                 imgClose.setVisibility(View.VISIBLE);
                 frmBorder.setTag(true);
-                mViewState.setCurrentSelectedView(imageRootView);
+
+                // Change the in-focus view
+                mViewState.setCurrentSelectedView(emojiRootView);
             }
 
             @Override
             public void onLongClick() {
-
             }
         });
-
-        imageRootView.setOnTouchListener(mMultiTouchListener);
+        emojiRootView.setOnTouchListener(mMultiTouchListener);
         clearHelperBox();
-        addViewToParent(imageRootView, ViewType.IMAGE);
-        mViewState.setCurrentSelectedView(imageRootView);
-        return imageRootView;
+        addViewToParent(emojiRootView, ViewType.EMOJI);
+
+        // Change the in-focus view
+        mViewState.setCurrentSelectedView(emojiRootView);
+        return emojiRootView;
     }
 
-    private View getLayout() {
-        final ViewType viewType = ViewType.IMAGE;
+    private View getLayout(Typeface emojiTypeface, String emojiName) {
+        final ViewType viewType = ViewType.EMOJI;
+        TextView txtTextEmoji = mRootView.findViewById(R.id.tvPhotoEditorText);
+        if (txtTextEmoji != null) {
+            if (mDefaultEmojiTypeface != null) {
+                txtTextEmoji.setTypeface(mDefaultEmojiTypeface);
+            }
+            txtTextEmoji.setGravity(Gravity.CENTER);
+            txtTextEmoji.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
         if (mRootView != null) {
             //We are setting tag as ViewType to identify what type of the view it is
             //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
             mRootView.setTag(viewType);
             final ImageView imgClose = mRootView.findViewById(R.id.imgPhotoEditorClose);
+            final View finalRootView = mRootView;
             if (imgClose != null) {
                 imgClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewUndo(mRootView, viewType);
+                        viewUndo(finalRootView, viewType);
                     }
                 });
             }
