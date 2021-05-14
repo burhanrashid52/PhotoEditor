@@ -34,6 +34,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.burhanrashid52.photoediting.EmojiBSFragment.getEmojis;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -73,7 +74,7 @@ public class EditImageActivityTest {
     @Test
     public void checkIfEmojiIsDisplayedWhenEmojiIsSelected() {
         Context context = mActivityRule.launchActivity(null);
-        ArrayList<String> emojis = PhotoEditor.getEmojis(context);
+        ArrayList<String> emojis = getEmojis(context);
         int emojiPosition = 1;
         String emojiUnicode = emojis.get(emojiPosition);
         onView(withText(R.string.label_emoji)).perform(click());
@@ -104,7 +105,7 @@ public class EditImageActivityTest {
     @Test
     public void checkIfUndoRedoIsWorkingCorrectWhenClickedOnUndoRedo() throws InterruptedException {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
-        ArrayList<String> emojisUnicodes = PhotoEditor.getEmojis(editImageActivity);
+        ArrayList<String> emojisUnicodes = getEmojis(editImageActivity);
 
         //Add Emoji
         onView(withText(R.string.label_emoji)).perform(click());

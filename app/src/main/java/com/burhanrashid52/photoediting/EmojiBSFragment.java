@@ -2,20 +2,23 @@ package com.burhanrashid52.photoediting;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import ja.burhanrashid52.photoeditor.PhotoEditor;
 
 public class EmojiBSFragment extends BottomSheetDialogFragment {
 
@@ -72,7 +75,7 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
 
     public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
 
-        ArrayList<String> emojisList = PhotoEditor.getEmojis(getActivity());
+        ArrayList<String> emojisList = getEmojis(getActivity());
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -109,4 +112,31 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
             }
         }
     }
+
+    /**
+     * Provide the list of emoji in form of unicode string
+     *
+     * @param context context
+     * @return list of emoji unicode
+     */
+    public static ArrayList<String> getEmojis(Context context) {
+        ArrayList<String> convertedEmojiList = new ArrayList<>();
+        String[] emojiList = context.getResources().getStringArray(R.array.photo_editor_emoji);
+        for (String emojiUnicode : emojiList) {
+            convertedEmojiList.add(convertEmoji(emojiUnicode));
+        }
+        return convertedEmojiList;
+    }
+
+    private static String convertEmoji(String emoji) {
+        String returnedEmoji;
+        try {
+            int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
+            returnedEmoji = new String(Character.toChars(convertEmojiToInt));
+        } catch (NumberFormatException e) {
+            returnedEmoji = "";
+        }
+        return returnedEmoji;
+    }
 }
+
