@@ -7,12 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.annotation.UiThread;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -26,13 +20,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 
 /**
  * <p>
- * This class in initialize by {@link PhotoEditorImpl.Builder} using a builder pattern with multiple
+ * This class in initialize by {@link PhotoEditor.Builder} using a builder pattern with multiple
  * editing attributes
  * </p>
  *
@@ -40,7 +39,7 @@ import java.util.ArrayList;
  * @version 0.1.1
  * @since 18/01/2017
  */
-public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
+class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
 
     private static final String TAG = "PhotoEditor";
     private final LayoutInflater mLayoutInflater;
@@ -90,12 +89,7 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         });
     }
 
-    /**
-     * This will add image on {@link PhotoEditorView} which you drag,rotate and scale using pinch
-     * if {@link PhotoEditorImpl.Builder#setPinchTextScalable(boolean)} enabled
-     *
-     * @param desiredImage bitmap image you want to add
-     */
+
     @Override
     public void addImage(Bitmap desiredImage) {
         final View imageRootView = getLayout(ViewType.IMAGE);
@@ -128,29 +122,12 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         viewState.setCurrentSelectedView(imageRootView);
     }
 
-    /**
-     * This add the text on the {@link PhotoEditorView} with provided parameters
-     * by default {@link TextView#setText(int)} will be 18sp
-     *
-     * @param text              text to display
-     * @param colorCodeTextView text color to be displayed
-     */
     @Override
-    @SuppressLint("ClickableViewAccessibility")
     public void addText(String text, final int colorCodeTextView) {
         addText(null, text, colorCodeTextView);
     }
 
-    /**
-     * This add the text on the {@link PhotoEditorView} with provided parameters
-     * by default {@link TextView#setText(int)} will be 18sp
-     *
-     * @param textTypeface      typeface for custom font in the text
-     * @param text              text to display
-     * @param colorCodeTextView text color to be displayed
-     */
     @Override
-    @SuppressLint("ClickableViewAccessibility")
     public void addText(@Nullable Typeface textTypeface, String text, final int colorCodeTextView) {
         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
 
@@ -162,15 +139,7 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         addText(text, styleBuilder);
     }
 
-    /**
-     * This add the text on the {@link PhotoEditorView} with provided parameters
-     * by default {@link TextView#setText(int)} will be 18sp
-     *
-     * @param text         text to display
-     * @param styleBuilder text style builder with your style
-     */
     @Override
-    @SuppressLint("ClickableViewAccessibility")
     public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
         brushDrawingView.setBrushDrawingMode(false);
         final View textRootView = getLayout(ViewType.TEXT);
@@ -211,26 +180,11 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         viewState.setCurrentSelectedView(textRootView);
     }
 
-    /**
-     * This will update text and color on provided view
-     *
-     * @param view      view on which you want update
-     * @param inputText text to update {@link TextView}
-     * @param colorCode color to update on {@link TextView}
-     */
     @Override
     public void editText(@NonNull View view, String inputText, @NonNull int colorCode) {
         editText(view, null, inputText, colorCode);
     }
 
-    /**
-     * This will update the text and color on provided view
-     *
-     * @param view         root view where text view is a child
-     * @param textTypeface update typeface for custom font in the text
-     * @param inputText    text to update {@link TextView}
-     * @param colorCode    color to update on {@link TextView}
-     */
     @Override
     public void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, @NonNull int colorCode) {
         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
@@ -242,13 +196,6 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         editText(view, inputText, styleBuilder);
     }
 
-    /**
-     * This will update the text and color on provided view
-     *
-     * @param view         root view where text view is a child
-     * @param inputText    text to update {@link TextView}
-     * @param styleBuilder style to apply on {@link TextView}
-     */
     @Override
     public void editText(@NonNull View view, String inputText, @Nullable TextStyleBuilder styleBuilder) {
         TextView inputTextView = view.findViewById(R.id.tvPhotoEditorText);
@@ -262,24 +209,12 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         }
     }
 
-    /**
-     * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
-     * if {@link PhotoEditorImpl.Builder#setPinchTextScalable(boolean)} enabled
-     *
-     * @param emojiName unicode in form of string to display emoji
-     */
     @Override
     public void addEmoji(String emojiName) {
         addEmoji(null, emojiName);
     }
 
-    /**
-     * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
-     * if {@link PhotoEditorImpl.Builder#setPinchTextScalable(boolean)} enabled
-     *
-     * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
-     * @param emojiName     unicode in form of string to display emoji
-     */
+
     @Override
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
@@ -408,41 +343,23 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         return rootView;
     }
 
-    /**
-     * Enable/Disable drawing mode to draw on {@link PhotoEditorView}
-     *
-     * @param brushDrawingMode true if mode is enabled
-     */
     @Override
     public void setBrushDrawingMode(boolean brushDrawingMode) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushDrawingMode(brushDrawingMode);
     }
 
-    /**
-     * @return true is brush mode is enabled
-     */
     @Override
     public Boolean getBrushDrawableMode() {
         return brushDrawingView != null && brushDrawingView.getBrushDrawingMode();
     }
 
-    /**
-     * set the size of bursh user want to paint on canvas i.e {@link BrushDrawingView}
-     *
-     * @param size size of brush
-     */
     @Override
     public void setBrushSize(float size) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushSize(size);
     }
 
-    /**
-     * set opacity/transparency of brush while painting on {@link BrushDrawingView}
-     *
-     * @param opacity opacity is in form of percentage
-     */
     @Override
     public void setOpacity(@IntRange(from = 0, to = 100) int opacity) {
         if (brushDrawingView != null) {
@@ -451,24 +368,12 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         }
     }
 
-    /**
-     * set brush color which user want to paint
-     *
-     * @param color color value for paint
-     */
     @Override
     public void setBrushColor(@ColorInt int color) {
         if (brushDrawingView != null)
             brushDrawingView.setBrushColor(color);
     }
 
-    /**
-     * set the eraser size
-     * <br></br>
-     * <b>Note :</b> Eraser size is different from the normal brush size
-     *
-     * @param brushEraserSize size of eraser
-     */
     @Override
     public void setBrushEraserSize(float brushEraserSize) {
         if (brushDrawingView != null)
@@ -480,19 +385,12 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
             brushDrawingView.setBrushEraserColor(color);
     }
 
-    /**
-     * @return provide the size of eraser
-     * @see PhotoEditorImpl#setBrushEraserSize(float)
-     */
+
     @Override
     public float getEraserSize() {
         return brushDrawingView != null ? brushDrawingView.getEraserSize() : 0;
     }
 
-    /**
-     * @return provide the size of eraser
-     * @see PhotoEditorImpl#setBrushSize(float)
-     */
     @Override
     public float getBrushSize() {
         if (brushDrawingView != null)
@@ -500,10 +398,6 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         return 0;
     }
 
-    /**
-     * @return provide the size of eraser
-     * @see PhotoEditorImpl#setBrushColor(int)
-     */
     @Override
     public int getBrushColor() {
         if (brushDrawingView != null)
@@ -511,14 +405,6 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         return 0;
     }
 
-    /**
-     * <p>
-     * Its enables eraser mode after that whenever user drags on screen this will erase the existing
-     * paint
-     * <br>
-     * <b>Note</b> : This eraser will work on paint views only
-     * <p>
-     */
     @Override
     public void brushEraser() {
         if (brushDrawingView != null)
@@ -539,11 +425,6 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         }
     }
 
-    /**
-     * Undo the last operation perform on the {@link PhotoEditorImpl}
-     *
-     * @return true if there nothing more to undo
-     */
     @Override
     public boolean undo() {
         if (viewState.getAddedViewsCount() > 0) {
@@ -570,11 +451,6 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         return viewState.getAddedViewsCount() != 0;
     }
 
-    /**
-     * Redo the last operation perform on the {@link PhotoEditorImpl}
-     *
-     * @return true if there nothing more to redo
-     */
     @Override
     public boolean redo() {
         if (viewState.getRedoViewsCount() > 0) {
@@ -604,10 +480,6 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
             brushDrawingView.clearAll();
     }
 
-    /**
-     * Removes all the edited operations performed {@link PhotoEditorView}
-     * This will also clear the undo and redo stack
-     */
     @Override
     public void clearAllViews() {
         for (int i = 0; i < viewState.getAddedViewsCount(); i++) {
@@ -621,11 +493,7 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         clearBrushAllViews();
     }
 
-    /**
-     * Remove all helper boxes from views
-     */
     @Override
-    @UiThread
     public void clearHelperBox() {
         for (int i = 0; i < parentView.getChildCount(); i++) {
             View childAt = parentView.getChildAt(i);
@@ -641,51 +509,24 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         viewState.clearCurrentSelectedView();
     }
 
-    /**
-     * Setup of custom effect using effect type and set parameters values
-     *
-     * @param customEffect {@link CustomEffect.Builder#setParameter(String, Object)}
-     */
     @Override
     public void setFilterEffect(CustomEffect customEffect) {
         parentView.setFilterEffect(customEffect);
     }
 
-    /**
-     * Set pre-define filter available
-     *
-     * @param filterType type of filter want to apply {@link PhotoEditorImpl}
-     */
     @Override
     public void setFilterEffect(PhotoFilter filterType) {
         parentView.setFilterEffect(filterType);
     }
 
-
-    /**
-     * Save the edited image on given path
-     *
-     * @param imagePath      path on which image to be saved
-     * @param onSaveListener callback for saving image
-     * @see OnSaveListener
-     */
     @Override
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
         saveAsFile(imagePath, new SaveSettings.Builder().build(), onSaveListener);
     }
 
-    /**
-     * Save the edited image on given path
-     *
-     * @param imagePath      path on which image to be saved
-     * @param saveSettings   builder for multiple save options {@link SaveSettings}
-     * @param onSaveListener callback for saving image
-     * @see OnSaveListener
-     */
     @Override
     @SuppressLint("StaticFieldLeak")
-    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final String imagePath,
                            @NonNull final SaveSettings saveSettings,
                            @NonNull final OnSaveListener onSaveListener) {
@@ -748,25 +589,11 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         });
     }
 
-    /**
-     * Save the edited image as bitmap
-     *
-     * @param onSaveBitmap callback for saving image as bitmap
-     * @see OnSaveBitmap
-     */
     @Override
-    @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final OnSaveBitmap onSaveBitmap) {
         saveAsBitmap(new SaveSettings.Builder().build(), onSaveBitmap);
     }
 
-    /**
-     * Save the edited image as bitmap
-     *
-     * @param saveSettings builder for multiple save options {@link SaveSettings}
-     * @param onSaveBitmap callback for saving image as bitmap
-     * @see OnSaveBitmap
-     */
     @Override
     @SuppressLint("StaticFieldLeak")
     public void saveAsBitmap(@NonNull final SaveSettings saveSettings,
@@ -825,21 +652,11 @@ public class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         return bitmap;
     }
 
-    /**
-     * Callback on editing operation perform on {@link PhotoEditorView}
-     *
-     * @param onPhotoEditorListener {@link OnPhotoEditorListener}
-     */
     @Override
     public void setOnPhotoEditorListener(@NonNull OnPhotoEditorListener onPhotoEditorListener) {
         this.mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
-    /**
-     * Check if any changes made need to save
-     *
-     * @return true if nothing is there to change
-     */
     @Override
     public boolean isCacheEmpty() {
         return viewState.getAddedViewsCount() == 0 && viewState.getRedoViewsCount() == 0;
