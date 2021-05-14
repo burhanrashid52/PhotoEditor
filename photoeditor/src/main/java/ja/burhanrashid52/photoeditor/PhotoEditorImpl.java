@@ -90,7 +90,8 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     @Override
     public void addImage(Bitmap desiredImage) {
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
-        Sticker sticker = new Sticker(parentView, multiTouchListener, viewState, mOnPhotoEditorListener);
+        Sticker sticker = new Sticker(parentView, multiTouchListener, viewState);
+        sticker.setOnPhotoEditorListener(mOnPhotoEditorListener);
         sticker.buildView(desiredImage);
     }
 
@@ -115,7 +116,8 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
         brushDrawingView.setBrushDrawingMode(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
-        Text textGraphic = new Text(parentView, multiTouchListener, viewState, mOnPhotoEditorListener, mDefaultTextTypeface);
+        Text textGraphic = new Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface);
+        textGraphic.setOnPhotoEditorListener(mOnPhotoEditorListener);
         textGraphic.buildView(text, styleBuilder);
     }
 
@@ -158,7 +160,8 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
-        Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mOnPhotoEditorListener, mDefaultEmojiTypeface);
+        Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mDefaultEmojiTypeface);
+        emoji.setOnPhotoEditorListener(mOnPhotoEditorListener);
         emoji.buildView(emojiTypeface, emojiName);
     }
 

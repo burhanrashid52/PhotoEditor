@@ -8,38 +8,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
  * @author <https://github.com/burhanrashid52>
  */
-class Text {
+class Text extends Graphic {
 
-    private final Context mContext;
-    private final ViewGroup mPhotoEditorView;
     private final MultiTouchListener mMultiTouchListener;
-    private final PhotoEditorViewState mViewState;
-    private final OnPhotoEditorListener mOnPhotoEditorListener;
     private final View mRootView;
-    private Typeface mDefaultTextTypeface;
+    private final Typeface mDefaultTextTypeface;
+    private @Nullable
+    OnPhotoEditorListener mOnPhotoEditorListener;
 
     public Text(ViewGroup photoEditorView,
                 MultiTouchListener multiTouchListener,
                 PhotoEditorViewState viewState,
-                OnPhotoEditorListener onPhotoEditorListener,
                 Typeface defaultTextTypeface
     ) {
-        mContext = photoEditorView.getContext();
-        mPhotoEditorView = photoEditorView;
+        super(photoEditorView, viewState);
+        Context context = photoEditorView.getContext();
         mMultiTouchListener = multiTouchListener;
-        mViewState = viewState;
-        mOnPhotoEditorListener = onPhotoEditorListener;
-        LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mRootView = layoutInflater.inflate(R.layout.view_photo_editor_text, null);
         this.mDefaultTextTypeface = defaultTextTypeface;
+    }
+
+    public void setOnPhotoEditorListener(@Nullable OnPhotoEditorListener onPhotoEditorListener) {
+        mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
     View buildView(String text, TextStyleBuilder styleBuilder) {
@@ -74,7 +74,7 @@ class Text {
 
         textRootView.setOnTouchListener(mMultiTouchListener);
         clearHelperBox();
-        addViewToParent(textRootView, ViewType.TEXT);
+        addViewToParent(textRootView);
 
         // Change the in-focus view
         mViewState.setCurrentSelectedView(textRootView);
@@ -101,7 +101,7 @@ class Text {
                 imgClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewUndo(finalRootView, viewType);
+                        viewUndo(finalRootView);
                     }
                 });
             }
@@ -109,42 +109,14 @@ class Text {
         return mRootView;
     }
 
-    public void clearHelperBox() {
-        for (int i = 0; i < mPhotoEditorView.getChildCount(); i++) {
-            View childAt = mPhotoEditorView.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
-            }
-        }
-        mViewState.clearCurrentSelectedView();
+
+    @Override
+    ViewType getViewType() {
+        return ViewType.TEXT;
     }
 
-    private void viewUndo(View removedView, ViewType viewType) {
-        if (mViewState.containsAddedView(removedView)) {
-            mPhotoEditorView.removeView(removedView);
-            mViewState.removeAddedView(removedView);
-            mViewState.pushRedoView(removedView);
-            if (mOnPhotoEditorListener != null) {
-                mOnPhotoEditorListener.onRemoveViewListener(
-                        viewType,
-                        mViewState.getAddedViewsCount()
-                );
-            }
-        }
-    }
-
-    private void addViewToParent(View rootView, ViewType viewType) {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        mPhotoEditorView.addView(rootView, params);
-        mViewState.addAddedView(rootView);
-        if (mOnPhotoEditorListener != null)
-            mOnPhotoEditorListener.onAddViewListener(viewType, mViewState.getAddedViewsCount());
+    @Override
+    OnPhotoEditorListener getOnPhotoEditorListener() {
+        return mOnPhotoEditorListener;
     }
 }
