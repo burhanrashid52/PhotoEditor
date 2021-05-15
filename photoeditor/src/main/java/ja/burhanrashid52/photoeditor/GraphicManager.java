@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
  * @author <https://github.com/burhanrashid52>
  */
 class GraphicManager {
-    private ViewGroup mViewGroup;
-    private PhotoEditorViewState mViewState;
+    private final ViewGroup mViewGroup;
+    private final PhotoEditorViewState mViewState;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
     public GraphicManager(ViewGroup viewGroup, PhotoEditorViewState viewState) {
@@ -41,6 +41,11 @@ class GraphicManager {
                 );
             }
         }
+    }
+
+    public void updateView(View view) {
+        mViewGroup.updateViewLayout(view, view.getLayoutParams());
+        mViewState.replaceAddedView(view);
     }
 
     public void setOnPhotoEditorListener(OnPhotoEditorListener onPhotoEditorListener) {

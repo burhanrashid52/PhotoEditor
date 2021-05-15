@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -141,9 +140,7 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
             inputTextView.setText(inputText);
             if (styleBuilder != null)
                 styleBuilder.applyStyle(inputTextView);
-
-            parentView.updateViewLayout(view, view.getLayoutParams());
-            viewState.replaceAddedView(view);
+            mGraphicManager.updateView(view);
         }
     }
 
