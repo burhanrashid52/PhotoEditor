@@ -24,13 +24,18 @@ class Text extends Graphic {
     private final Typeface mDefaultTextTypeface;
     private @Nullable
     OnPhotoEditorListener mOnPhotoEditorListener;
+    private final ViewGroup mPhotoEditorView;
+    private final PhotoEditorViewState mViewState;
 
     public Text(ViewGroup photoEditorView,
                 MultiTouchListener multiTouchListener,
                 PhotoEditorViewState viewState,
-                Typeface defaultTextTypeface
+                Typeface defaultTextTypeface,
+                GraphicManager graphicManager
     ) {
-        super(photoEditorView, viewState);
+        super(graphicManager);
+        mPhotoEditorView = photoEditorView;
+        mViewState = viewState;
         Context context = photoEditorView.getContext();
         mMultiTouchListener = multiTouchListener;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -55,7 +60,7 @@ class Text extends Graphic {
         mMultiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                clearHelperBox();
+                clearHelperBox(Text.this.mPhotoEditorView, Text.this.mViewState);
                 frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
                 imgClose.setVisibility(View.VISIBLE);
                 frmBorder.setTag(true);
@@ -73,7 +78,7 @@ class Text extends Graphic {
         });
 
         textRootView.setOnTouchListener(mMultiTouchListener);
-        clearHelperBox();
+        clearHelperBox(mPhotoEditorView, mViewState);
         addViewToParent(textRootView);
 
         // Change the in-focus view
@@ -91,20 +96,17 @@ class Text extends Graphic {
             }
         }
 
-        if (mRootView != null) {
-            //We are setting tag as ViewType to identify what type of the view it is
-            //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
-            mRootView.setTag(viewType);
-            final ImageView imgClose = mRootView.findViewById(R.id.imgPhotoEditorClose);
-            final View finalRootView = mRootView;
-            if (imgClose != null) {
-                imgClose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        viewUndo(finalRootView);
-                    }
-                });
-            }
+        //We are setting tag as ViewType to identify what type of the view it is
+        //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
+        mRootView.setTag(viewType);
+        final ImageView imgClose = mRootView.findViewById(R.id.imgPhotoEditorClose);
+        if (imgClose != null) {
+            imgClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewUndo(mRootView);
+                }
+            });
         }
         return mRootView;
     }
@@ -115,8 +117,4 @@ class Text extends Graphic {
         return ViewType.TEXT;
     }
 
-    @Override
-    OnPhotoEditorListener getOnPhotoEditorListener() {
-        return mOnPhotoEditorListener;
-    }
 }

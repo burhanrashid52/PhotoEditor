@@ -39,21 +39,20 @@ import java.io.FileOutputStream;
 class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
 
     private static final String TAG = "PhotoEditor";
-    private final LayoutInflater mLayoutInflater;
-    private Context context;
-    private PhotoEditorView parentView;
-    private PhotoEditorViewState viewState;
-    private ImageView imageView;
-    private View deleteView;
-    private BrushDrawingView brushDrawingView;
+    private final PhotoEditorView parentView;
+    private final PhotoEditorViewState viewState;
+    private final ImageView imageView;
+    private final View deleteView;
+    private final BrushDrawingView brushDrawingView;
     private OnPhotoEditorListener mOnPhotoEditorListener;
-    private boolean isTextPinchScalable;
-    private Typeface mDefaultTextTypeface;
-    private Typeface mDefaultEmojiTypeface;
+    private final boolean isTextPinchScalable;
+    private final Typeface mDefaultTextTypeface;
+    private final Typeface mDefaultEmojiTypeface;
+    private final GraphicManager mGraphicManager;
 
 
     protected PhotoEditorImpl(Builder builder) {
-        this.context = builder.context;
+        Context context = builder.context;
         this.parentView = builder.parentView;
         this.imageView = builder.imageView;
         this.deleteView = builder.deleteView;
@@ -62,9 +61,8 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
         this.viewState = new PhotoEditorViewState();
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         brushDrawingView.setBrushViewChangeListener(this);
-
+        this.mGraphicManager = new GraphicManager(builder.parentView, this.viewState);
         final GestureDetector mDetector = new GestureDetector(
                 context,
                 new PhotoEditorImageViewListener(
@@ -90,8 +88,7 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     @Override
     public void addImage(Bitmap desiredImage) {
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
-        Sticker sticker = new Sticker(parentView, multiTouchListener, viewState);
-        sticker.setOnPhotoEditorListener(mOnPhotoEditorListener);
+        Sticker sticker = new Sticker(parentView, multiTouchListener, viewState, mGraphicManager);
         sticker.buildView(desiredImage);
     }
 
@@ -116,7 +113,7 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
         brushDrawingView.setBrushDrawingMode(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
-        Text textGraphic = new Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface);
+        Text textGraphic = new Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager);
         textGraphic.setOnPhotoEditorListener(mOnPhotoEditorListener);
         textGraphic.buildView(text, styleBuilder);
     }
@@ -160,8 +157,7 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
         brushDrawingView.setBrushDrawingMode(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
-        Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mDefaultEmojiTypeface);
-        emoji.setOnPhotoEditorListener(mOnPhotoEditorListener);
+        Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mGraphicManager, mDefaultEmojiTypeface);
         emoji.buildView(emojiTypeface, emojiName);
     }
 
@@ -173,17 +169,13 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
      */
     @NonNull
     private MultiTouchListener getMultiTouchListener(final boolean isPinchScalable) {
-        MultiTouchListener multiTouchListener = new MultiTouchListener(
+        return new MultiTouchListener(
                 deleteView,
                 parentView,
                 this.imageView,
                 isPinchScalable,
                 mOnPhotoEditorListener,
                 this.viewState);
-
-        //multiTouchListener.setOnMultiTouchListener(this);
-
-        return multiTouchListener;
     }
 
     @Override
@@ -251,52 +243,12 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
 
     @Override
     public boolean undo() {
-        if (viewState.getAddedViewsCount() > 0) {
-            View removeView = viewState.getAddedView(
-                    viewState.getAddedViewsCount() - 1
-            );
-            if (removeView instanceof BrushDrawingView) {
-                return brushDrawingView != null && brushDrawingView.undo();
-            } else {
-                viewState.removeAddedView(viewState.getAddedViewsCount() - 1);
-                parentView.removeView(removeView);
-                viewState.pushRedoView(removeView);
-            }
-            if (mOnPhotoEditorListener != null) {
-                Object viewTag = removeView.getTag();
-                if (viewTag != null && viewTag instanceof ViewType) {
-                    mOnPhotoEditorListener.onRemoveViewListener(
-                            (ViewType) viewTag,
-                            viewState.getAddedViewsCount()
-                    );
-                }
-            }
-        }
-        return viewState.getAddedViewsCount() != 0;
+        return mGraphicManager.undo();
     }
 
     @Override
     public boolean redo() {
-        if (viewState.getRedoViewsCount() > 0) {
-            View redoView = viewState.getRedoView(
-                    viewState.getRedoViewsCount() - 1
-            );
-            if (redoView instanceof BrushDrawingView) {
-                return brushDrawingView != null && brushDrawingView.redo();
-            } else {
-                viewState.popRedoView();
-                parentView.addView(redoView);
-                viewState.addAddedView(redoView);
-            }
-            Object viewTag = redoView.getTag();
-            if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
-                mOnPhotoEditorListener.onAddViewListener(
-                        (ViewType) viewTag,
-                        viewState.getAddedViewsCount()
-                );
-            }
-        }
-        return viewState.getRedoViewsCount() != 0;
+        return mGraphicManager.redo();
     }
 
     private void clearBrushAllViews() {
@@ -479,6 +431,7 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     @Override
     public void setOnPhotoEditorListener(@NonNull OnPhotoEditorListener onPhotoEditorListener) {
         this.mOnPhotoEditorListener = onPhotoEditorListener;
+        mGraphicManager.setOnPhotoEditorListener(mOnPhotoEditorListener);
     }
 
     @Override

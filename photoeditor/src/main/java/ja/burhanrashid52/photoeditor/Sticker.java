@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
@@ -19,21 +17,21 @@ class Sticker extends Graphic {
 
     private final MultiTouchListener mMultiTouchListener;
     private final View mRootView;
-    private @Nullable
-    OnPhotoEditorListener mOnPhotoEditorListener;
+    private final ViewGroup mPhotoEditorView;
+    private final PhotoEditorViewState mViewState;
 
     public Sticker(ViewGroup photoEditorView,
                    MultiTouchListener multiTouchListener,
-                   PhotoEditorViewState viewState) {
-        super(photoEditorView, viewState);
+                   PhotoEditorViewState viewState,
+                   GraphicManager graphicManager
+    ) {
+        super(graphicManager);
+        mPhotoEditorView = photoEditorView;
+        mViewState = viewState;
         Context context = photoEditorView.getContext();
         mMultiTouchListener = multiTouchListener;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mRootView = layoutInflater.inflate(R.layout.view_photo_editor_image, null);
-    }
-
-    public void setOnPhotoEditorListener(@Nullable OnPhotoEditorListener onPhotoEditorListener) {
-        mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
     View buildView(Bitmap desiredImage) {
@@ -48,7 +46,7 @@ class Sticker extends Graphic {
         mMultiTouchListener.setOnGestureControl(new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                clearHelperBox();
+                clearHelperBox(Sticker.this.mPhotoEditorView, Sticker.this.mViewState);
                 frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
                 imgClose.setVisibility(View.VISIBLE);
                 frmBorder.setTag(true);
@@ -62,7 +60,7 @@ class Sticker extends Graphic {
         });
 
         imageRootView.setOnTouchListener(mMultiTouchListener);
-        clearHelperBox();
+        clearHelperBox(mPhotoEditorView, mViewState);
         addViewToParent(imageRootView);
         mViewState.setCurrentSelectedView(imageRootView);
         return imageRootView;
@@ -93,8 +91,4 @@ class Sticker extends Graphic {
         return ViewType.IMAGE;
     }
 
-    @Override
-    OnPhotoEditorListener getOnPhotoEditorListener() {
-        return mOnPhotoEditorListener;
-    }
 }
