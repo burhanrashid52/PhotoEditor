@@ -42,6 +42,7 @@ class PhotoEditorImpl implements PhotoEditor {
     private final ImageView imageView;
     private final View deleteView;
     private final BrushDrawingView brushDrawingView;
+    private final BrushDrawingStateListener mBrushDrawingStateListener;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private final boolean isTextPinchScalable;
     private final Typeface mDefaultTextTypeface;
@@ -59,9 +60,13 @@ class PhotoEditorImpl implements PhotoEditor {
         this.isTextPinchScalable = builder.isTextPinchScalable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
+
         this.viewState = new PhotoEditorViewState();
         this.mGraphicManager = new GraphicManager(builder.parentView, this.viewState);
-        Graphic brushGraphic = new BrushAdapter(builder.brushDrawingView, mGraphicManager);
+
+        mBrushDrawingStateListener = new BrushDrawingStateListener(builder.parentView, this.viewState);
+        this.brushDrawingView.setBrushViewChangeListener(mBrushDrawingStateListener);
+
         final GestureDetector mDetector = new GestureDetector(
                 context,
                 new PhotoEditorImageViewListener(
@@ -239,12 +244,12 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public boolean undo() {
-        return mGraphicManager.undo();
+        return mGraphicManager.undoView();
     }
 
     @Override
     public boolean redo() {
-        return mGraphicManager.redo();
+        return mGraphicManager.redoView();
     }
 
     @Override
@@ -406,6 +411,7 @@ class PhotoEditorImpl implements PhotoEditor {
     public void setOnPhotoEditorListener(@NonNull OnPhotoEditorListener onPhotoEditorListener) {
         this.mOnPhotoEditorListener = onPhotoEditorListener;
         mGraphicManager.setOnPhotoEditorListener(mOnPhotoEditorListener);
+        mBrushDrawingStateListener.setOnPhotoEditorListener(mOnPhotoEditorListener);
     }
 
     @Override

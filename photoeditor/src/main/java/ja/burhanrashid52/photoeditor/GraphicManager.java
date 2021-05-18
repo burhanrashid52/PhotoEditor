@@ -25,16 +25,10 @@ class GraphicManager {
 
     public void addView(Graphic graphic) {
         View view = graphic.getRootView();
-        if (view instanceof BrushDrawingView) {
-            if (mViewState.getRedoViewsCount() > 0) {
-                mViewState.popRedoView();
-            }
-        } else {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-            mViewGroup.addView(view, params);
-        }
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        mViewGroup.addView(view, params);
 
         mViewState.addAddedView(view);
         if (mOnPhotoEditorListener != null)
@@ -43,25 +37,6 @@ class GraphicManager {
 
     public void removeView(Graphic graphic) {
         View view = graphic.getRootView();
-        if (view instanceof BrushDrawingView) {
-            if (mViewState.getAddedViewsCount() > 0) {
-                View removeView = mViewState.removeAddedView(
-                        mViewState.getAddedViewsCount() - 1
-                );
-                if (!(removeView instanceof BrushDrawingView)) {
-                    mViewGroup.removeView(removeView);
-                }
-                mViewState.pushRedoView(removeView);
-            }
-            if (mOnPhotoEditorListener != null) {
-                mOnPhotoEditorListener.onRemoveViewListener(
-                        ViewType.BRUSH_DRAWING,
-                        mViewState.getAddedViewsCount()
-                );
-            }
-            return;
-        }
-
         if (mViewState.containsAddedView(view)) {
             mViewGroup.removeView(view);
             mViewState.removeAddedView(view);
@@ -84,11 +59,12 @@ class GraphicManager {
         mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
+    @Nullable
     OnPhotoEditorListener getOnPhotoEditorListener() {
         return mOnPhotoEditorListener;
     }
 
-    public boolean undo() {
+    public boolean undoView() {
         if (mViewState.getAddedViewsCount() > 0) {
             View removeView = mViewState.getAddedView(
                     mViewState.getAddedViewsCount() - 1
@@ -114,7 +90,7 @@ class GraphicManager {
         return mViewState.getAddedViewsCount() != 0;
     }
 
-    public boolean redo() {
+    public boolean redoView() {
         if (mViewState.getRedoViewsCount() > 0) {
             View redoView = mViewState.getRedoView(
                     mViewState.getRedoViewsCount() - 1
