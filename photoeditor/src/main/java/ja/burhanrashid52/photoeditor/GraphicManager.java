@@ -19,24 +19,52 @@ class GraphicManager {
         mViewState = viewState;
     }
 
-    public void addView(View view, ViewType viewType) {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        mViewGroup.addView(view, params);
+    public void addView(Graphic graphic) {
+        View view = graphic.getRootView();
+        if (view instanceof BrushDrawingView) {
+            if (mViewState.getRedoViewsCount() > 0) {
+                mViewState.popRedoView();
+            }
+        } else {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+            mViewGroup.addView(view, params);
+        }
+
         mViewState.addAddedView(view);
         if (mOnPhotoEditorListener != null)
-            mOnPhotoEditorListener.onAddViewListener(viewType, mViewState.getAddedViewsCount());
+            mOnPhotoEditorListener.onAddViewListener(graphic.getViewType(), mViewState.getAddedViewsCount());
     }
 
-    public void removeView(View view, ViewType viewType) {
+    public void removeView(Graphic graphic) {
+        View view = graphic.getRootView();
+        if (view instanceof BrushDrawingView) {
+            if (mViewState.getAddedViewsCount() > 0) {
+                View removeView = mViewState.removeAddedView(
+                        mViewState.getAddedViewsCount() - 1
+                );
+                if (!(removeView instanceof BrushDrawingView)) {
+                    mViewGroup.removeView(removeView);
+                }
+                mViewState.pushRedoView(removeView);
+            }
+            if (mOnPhotoEditorListener != null) {
+                mOnPhotoEditorListener.onRemoveViewListener(
+                        ViewType.BRUSH_DRAWING,
+                        mViewState.getAddedViewsCount()
+                );
+            }
+            return;
+        }
+
         if (mViewState.containsAddedView(view)) {
             mViewGroup.removeView(view);
             mViewState.removeAddedView(view);
             mViewState.pushRedoView(view);
             if (mOnPhotoEditorListener != null) {
                 mOnPhotoEditorListener.onRemoveViewListener(
-                        viewType,
+                        graphic.getViewType(),
                         mViewState.getAddedViewsCount()
                 );
             }
@@ -52,6 +80,10 @@ class GraphicManager {
         mOnPhotoEditorListener = onPhotoEditorListener;
     }
 
+    OnPhotoEditorListener getOnPhotoEditorListener() {
+        return mOnPhotoEditorListener;
+    }
+
     public boolean undo() {
         if (mViewState.getAddedViewsCount() > 0) {
             View removeView = mViewState.getAddedView(
@@ -59,7 +91,7 @@ class GraphicManager {
             );
             if (removeView instanceof BrushDrawingView) {
                 BrushDrawingView brushDrawingView = (BrushDrawingView) removeView;
-                return brushDrawingView != null && brushDrawingView.undo();
+                return brushDrawingView.undo();
             } else {
                 mViewState.removeAddedView(mViewState.getAddedViewsCount() - 1);
                 mViewGroup.removeView(removeView);
@@ -67,7 +99,7 @@ class GraphicManager {
             }
             if (mOnPhotoEditorListener != null) {
                 Object viewTag = removeView.getTag();
-                if (viewTag != null && viewTag instanceof ViewType) {
+                if (viewTag instanceof ViewType) {
                     mOnPhotoEditorListener.onRemoveViewListener(
                             (ViewType) viewTag,
                             mViewState.getAddedViewsCount()
@@ -85,14 +117,14 @@ class GraphicManager {
             );
             if (redoView instanceof BrushDrawingView) {
                 BrushDrawingView brushDrawingView = (BrushDrawingView) redoView;
-                return brushDrawingView != null && brushDrawingView.redo();
+                return brushDrawingView.redo();
             } else {
                 mViewState.popRedoView();
                 mViewGroup.addView(redoView);
                 mViewState.addAddedView(redoView);
             }
             Object viewTag = redoView.getTag();
-            if (mOnPhotoEditorListener != null && viewTag != null && viewTag instanceof ViewType) {
+            if (mOnPhotoEditorListener != null && viewTag instanceof ViewType) {
                 mOnPhotoEditorListener.onAddViewListener(
                         (ViewType) viewTag,
                         mViewState.getAddedViewsCount()

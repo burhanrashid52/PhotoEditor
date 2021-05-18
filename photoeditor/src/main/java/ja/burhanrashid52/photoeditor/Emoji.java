@@ -41,12 +41,13 @@ class Emoji extends Graphic {
 
         MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
         mMultiTouchListener.setOnGestureControl(onGestureControl);
-        mRootView.setOnTouchListener(mMultiTouchListener);
+        View rootView = getRootView();
+        rootView.setOnTouchListener(mMultiTouchListener);
 
         clearHelperBox(mPhotoEditorView, mViewState);
         addViewToParent();
         // Change the in-focus view
-        mViewState.setCurrentSelectedView(mRootView);
+        mViewState.setCurrentSelectedView(rootView);
     }
 
     @Override

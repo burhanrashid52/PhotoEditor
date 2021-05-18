@@ -24,6 +24,9 @@ public class GraphicManagerTest {
 
     @Test
     public void testGraphicMangerAddViews() {
+        View view = new View(mContext);
+        view.setId(1);
+
         ViewGroup viewGroup = new ViewGroup(mContext) {
             @Override
             protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -31,9 +34,25 @@ public class GraphicManagerTest {
             }
         };
         GraphicManager graphicManager = new GraphicManager(viewGroup, new PhotoEditorViewState());
-        View view = new View(mContext);
-        view.setId(1);
-        graphicManager.addView(view, ViewType.TEXT);
+        Graphic graphic = new Graphic(view, graphicManager) {
+
+            @Override
+            ViewType getViewType() {
+                return ViewType.TEXT;
+            }
+
+            @Override
+            int getLayoutId() {
+                return 1;
+            }
+
+            @Override
+            void setupView(View rootView) {
+
+            }
+        };
+
+        graphicManager.addView(graphic);
         assertEquals(viewGroup.getChildCount(), 1);
         assertNotNull(viewGroup.findViewById(1));
     }

@@ -14,7 +14,7 @@ import android.widget.ImageView;
  */
 abstract class Graphic {
 
-    protected final View mRootView;
+    private final View mRootView;
 
     private final GraphicManager mGraphicManager;
 
@@ -29,11 +29,19 @@ abstract class Graphic {
     }
 
     Graphic(Context context, GraphicManager graphicManager) {
-        mGraphicManager = graphicManager;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (getLayoutId() == 0)
+        if (getLayoutId() == 0) {
             throw new UnsupportedOperationException("Layout id cannot be zero. Please define a layout");
+        }
         mRootView = layoutInflater.inflate(getLayoutId(), null);
+        mGraphicManager = graphicManager;
+        setupView(mRootView);
+        setupRemoveView(mRootView);
+    }
+
+    Graphic(View rootView, GraphicManager graphicManager) {
+        mRootView = rootView;
+        mGraphicManager = graphicManager;
         setupView(mRootView);
         setupRemoveView(mRootView);
     }
@@ -48,14 +56,14 @@ abstract class Graphic {
             imgClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mGraphicManager.removeView(rootView, viewType);
+                    mGraphicManager.removeView(Graphic.this);
                 }
             });
         }
     }
 
     protected void addViewToParent() {
-        mGraphicManager.addView(mRootView, getViewType());
+        mGraphicManager.addView(this);
     }
 
     protected void clearHelperBox(ViewGroup viewGroup, PhotoEditorViewState viewState) {
@@ -100,5 +108,9 @@ abstract class Graphic {
                 updateView(mRootView);
             }
         };
+    }
+
+    public View getRootView() {
+        return mRootView;
     }
 }

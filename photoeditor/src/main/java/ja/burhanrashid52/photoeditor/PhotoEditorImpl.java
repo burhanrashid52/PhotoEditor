@@ -35,7 +35,7 @@ import java.io.FileOutputStream;
  * @version 0.1.1
  * @since 18/01/2017
  */
-class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
+class PhotoEditorImpl implements PhotoEditor {
 
     private static final String TAG = "PhotoEditor";
     private final PhotoEditorView parentView;
@@ -50,6 +50,7 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     private final GraphicManager mGraphicManager;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     protected PhotoEditorImpl(Builder builder) {
         Context context = builder.context;
         this.parentView = builder.parentView;
@@ -60,8 +61,8 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
         this.viewState = new PhotoEditorViewState();
-        brushDrawingView.setBrushViewChangeListener(this);
         this.mGraphicManager = new GraphicManager(builder.parentView, this.viewState);
+        Graphic brushGraphic = new BrushAdapter(builder.brushDrawingView, mGraphicManager);
         final GestureDetector mDetector = new GestureDetector(
                 context,
                 new PhotoEditorImageViewListener(
@@ -113,7 +114,6 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
         brushDrawingView.setBrushDrawingMode(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
         Text textGraphic = new Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager);
-        textGraphic.setOnPhotoEditorListener(mOnPhotoEditorListener);
         textGraphic.buildView(text, styleBuilder);
     }
 
@@ -434,53 +434,5 @@ class PhotoEditorImpl implements BrushViewChangeListener, PhotoEditor {
     @Override
     public boolean isCacheEmpty() {
         return viewState.getAddedViewsCount() == 0 && viewState.getRedoViewsCount() == 0;
-    }
-
-
-    @Override
-    public void onViewAdd(BrushDrawingView brushDrawingView) {
-        if (viewState.getRedoViewsCount() > 0) {
-            viewState.popRedoView();
-        }
-        viewState.addAddedView(brushDrawingView);
-        if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onAddViewListener(
-                    ViewType.BRUSH_DRAWING,
-                    viewState.getAddedViewsCount()
-            );
-        }
-    }
-
-    @Override
-    public void onViewRemoved(BrushDrawingView brushDrawingView) {
-        if (viewState.getAddedViewsCount() > 0) {
-            View removeView = viewState.removeAddedView(
-                    viewState.getAddedViewsCount() - 1
-            );
-            if (!(removeView instanceof BrushDrawingView)) {
-                parentView.removeView(removeView);
-            }
-            viewState.pushRedoView(removeView);
-        }
-        if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onRemoveViewListener(
-                    ViewType.BRUSH_DRAWING,
-                    viewState.getAddedViewsCount()
-            );
-        }
-    }
-
-    @Override
-    public void onStartDrawing() {
-        if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);
-        }
-    }
-
-    @Override
-    public void onStopDrawing() {
-        if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);
-        }
     }
 }

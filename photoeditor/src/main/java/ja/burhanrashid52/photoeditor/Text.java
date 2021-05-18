@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
@@ -17,8 +15,7 @@ class Text extends Graphic {
 
     private final MultiTouchListener mMultiTouchListener;
     private final Typeface mDefaultTextTypeface;
-    private @Nullable
-    OnPhotoEditorListener mOnPhotoEditorListener;
+    private final GraphicManager mGraphicManager;
     private final ViewGroup mPhotoEditorView;
     private final PhotoEditorViewState mViewState;
     private TextView txtText;
@@ -34,10 +31,7 @@ class Text extends Graphic {
         mViewState = viewState;
         mMultiTouchListener = multiTouchListener;
         mDefaultTextTypeface = defaultTextTypeface;
-    }
-
-    public void setOnPhotoEditorListener(@Nullable OnPhotoEditorListener onPhotoEditorListener) {
-        mOnPhotoEditorListener = onPhotoEditorListener;
+        mGraphicManager = graphicManager;
     }
 
     void buildView(String text, TextStyleBuilder styleBuilder) {
@@ -49,12 +43,13 @@ class Text extends Graphic {
         MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
         mMultiTouchListener.setOnGestureControl(onGestureControl);
 
-        mRootView.setOnTouchListener(mMultiTouchListener);
+        View rootView = getRootView();
+        rootView.setOnTouchListener(mMultiTouchListener);
         clearHelperBox(mPhotoEditorView, mViewState);
         addViewToParent();
 
         // Change the in-focus view
-        mViewState.setCurrentSelectedView(mRootView);
+        mViewState.setCurrentSelectedView(rootView);
     }
 
 
@@ -70,7 +65,7 @@ class Text extends Graphic {
 
     @Override
     void setupView(View rootView) {
-        txtText = mRootView.findViewById(R.id.tvPhotoEditorText);
+        txtText = rootView.findViewById(R.id.tvPhotoEditorText);
         if (txtText != null && mDefaultTextTypeface != null) {
             txtText.setGravity(Gravity.CENTER);
             txtText.setTypeface(mDefaultTextTypeface);
@@ -81,8 +76,9 @@ class Text extends Graphic {
     void updateView(View view) {
         String textInput = txtText.getText().toString();
         int currentTextColor = txtText.getCurrentTextColor();
-        if (mOnPhotoEditorListener != null) {
-            mOnPhotoEditorListener.onEditTextChangeListener(view, textInput, currentTextColor);
+        OnPhotoEditorListener photoEditorListener = mGraphicManager.getOnPhotoEditorListener();
+        if (photoEditorListener != null) {
+            photoEditorListener.onEditTextChangeListener(view, textInput, currentTextColor);
         }
     }
 }
