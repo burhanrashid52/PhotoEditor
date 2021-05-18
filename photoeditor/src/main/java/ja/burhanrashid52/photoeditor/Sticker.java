@@ -37,7 +37,7 @@ class Sticker extends Graphic {
 
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);
-        clearHelperBox(mPhotoEditorView, mViewState);
+        clearHelperBox();
         addViewToParent();
         mViewState.setCurrentSelectedView(rootView);
     }

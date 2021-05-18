@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**
@@ -66,19 +65,9 @@ abstract class Graphic {
         mGraphicManager.addView(this);
     }
 
-    protected void clearHelperBox(ViewGroup viewGroup, PhotoEditorViewState viewState) {
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View childAt = viewGroup.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
-            }
-        }
-        viewState.clearCurrentSelectedView();
+    protected void clearHelperBox() {
+        GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
+        graphicHelper.clearHelperBox();
     }
 
     protected void toggleSelection() {
@@ -97,7 +86,7 @@ abstract class Graphic {
         return new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                clearHelperBox(viewGroup, viewState);
+                clearHelperBox();
                 toggleSelection();
                 // Change the in-focus view
                 viewState.setCurrentSelectedView(mRootView);

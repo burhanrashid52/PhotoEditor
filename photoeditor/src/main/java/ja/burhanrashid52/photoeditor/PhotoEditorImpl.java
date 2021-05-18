@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -248,38 +247,16 @@ class PhotoEditorImpl implements PhotoEditor {
         return mGraphicManager.redo();
     }
 
-    private void clearBrushAllViews() {
-        if (brushDrawingView != null)
-            brushDrawingView.clearAll();
-    }
-
     @Override
     public void clearAllViews() {
-        for (int i = 0; i < viewState.getAddedViewsCount(); i++) {
-            parentView.removeView(viewState.getAddedView(i));
-        }
-        if (viewState.containsAddedView(brushDrawingView)) {
-            parentView.addView(brushDrawingView);
-        }
-        viewState.clearAddedViews();
-        viewState.clearRedoViews();
-        clearBrushAllViews();
+        GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
+        graphicHelper.clearAllViews(brushDrawingView);
     }
 
     @Override
     public void clearHelperBox() {
-        for (int i = 0; i < parentView.getChildCount(); i++) {
-            View childAt = parentView.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
-            }
-        }
-        viewState.clearCurrentSelectedView();
+        GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
+        graphicHelper.clearHelperBox();
     }
 
     @Override

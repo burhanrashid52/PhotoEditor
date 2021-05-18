@@ -4,6 +4,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+
 /**
  * Created by Burhanuddin Rashid on 15/05/21.
  *
@@ -13,6 +15,8 @@ class GraphicManager {
     private final ViewGroup mViewGroup;
     private final PhotoEditorViewState mViewState;
     private OnPhotoEditorListener mOnPhotoEditorListener;
+    private @Nullable
+    GraphicHelper mGraphicHelper;
 
     public GraphicManager(ViewGroup viewGroup, PhotoEditorViewState viewState) {
         mViewGroup = viewGroup;
@@ -132,5 +136,12 @@ class GraphicManager {
             }
         }
         return mViewState.getRedoViewsCount() != 0;
+    }
+
+    GraphicHelper getGraphicHelper() {
+        if (mGraphicHelper == null) {
+            mGraphicHelper = new GraphicHelper(mViewGroup, mViewState);
+        }
+        return mGraphicHelper;
     }
 }

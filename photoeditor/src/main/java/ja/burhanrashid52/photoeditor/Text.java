@@ -45,7 +45,7 @@ class Text extends Graphic {
 
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);
-        clearHelperBox(mPhotoEditorView, mViewState);
+        clearHelperBox();
         addViewToParent();
 
         // Change the in-focus view
