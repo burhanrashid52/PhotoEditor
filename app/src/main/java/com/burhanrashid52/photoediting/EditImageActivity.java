@@ -1,7 +1,7 @@
 package com.burhanrashid52.photoediting;
 
 import android.Manifest;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -69,10 +69,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
     private RecyclerView mRvTools, mRvFilters;
-    private EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
-    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
+    private final EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
+    private final FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
     private ConstraintLayout mRootView;
-    private ConstraintSet mConstraintSet = new ConstraintSet();
+    private final ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
 
     @Nullable
@@ -123,7 +123,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mPhotoEditor.setOnPhotoEditorListener(this);
 
         //Set Image Dynamically
-        // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
+        mPhotoEditorView.getSource().setImageResource(R.drawable.paris_tower);
 
         mSaveFileHelper = new FileSaveHelper(this);
     }
@@ -196,15 +196,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
         TextEditorDialogFragment textEditorDialogFragment =
                 TextEditorDialogFragment.show(this, text, colorCode);
-        textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
-            @Override
-            public void onDone(String inputText, int colorCode) {
-                final TextStyleBuilder styleBuilder = new TextStyleBuilder();
-                styleBuilder.withTextColor(colorCode);
+        textEditorDialogFragment.setOnTextEditorListener((inputText, newColorCode) -> {
+            final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+            styleBuilder.withTextColor(newColorCode);
 
-                mPhotoEditor.editText(rootView, inputText, styleBuilder);
-                mTxtCurrentTool.setText(R.string.label_text);
-            }
+            mPhotoEditor.editText(rootView, inputText, styleBuilder);
+            mTxtCurrentTool.setText(R.string.label_text);
         });
     }
 
@@ -228,6 +225,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         Log.d(TAG, "onStopViewChangeListener() called with: viewType = [" + viewType + "]");
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -287,8 +285,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private void saveImage() {
         final String fileName = System.currentTimeMillis() + ".png";
         final boolean hasStoragePermission =
-                ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
-        if(hasStoragePermission || isSdkHigherThan28()) {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
+        if (hasStoragePermission || isSdkHigherThan28()) {
             showLoading("Saving...");
             mSaveFileHelper.createFile(fileName, (fileCreated, filePath, error, uri) -> {
                 if (fileCreated) {
@@ -319,7 +317,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     showSnackbar(error);
                 }
             });
-        }else {
+        } else {
             requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
@@ -389,25 +387,9 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private void showSaveDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.msg_save_image));
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                saveImage();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNeutralButton("Discard", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
+        builder.setPositiveButton("Save", (dialog, which) -> saveImage());
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton("Discard", (dialog, which) -> finish());
         builder.create().show();
 
     }
@@ -427,15 +409,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 break;
             case TEXT:
                 TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
-                textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
-                    @Override
-                    public void onDone(String inputText, int colorCode) {
-                        final TextStyleBuilder styleBuilder = new TextStyleBuilder();
-                        styleBuilder.withTextColor(colorCode);
+                textEditorDialogFragment.setOnTextEditorListener((inputText, colorCode) -> {
+                    final TextStyleBuilder styleBuilder = new TextStyleBuilder();
+                    styleBuilder.withTextColor(colorCode);
 
-                        mPhotoEditor.addText(inputText, styleBuilder);
-                        mTxtCurrentTool.setText(R.string.label_text);
-                    }
+                    mPhotoEditor.addText(inputText, styleBuilder);
+                    mTxtCurrentTool.setText(R.string.label_text);
                 });
                 break;
             case ERASER:
