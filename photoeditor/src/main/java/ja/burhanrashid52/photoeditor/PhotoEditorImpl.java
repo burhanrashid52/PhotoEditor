@@ -21,9 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
 /**
  * <p>
  * This class in initialize by {@link PhotoEditor.Builder} using a builder pattern with multiple
@@ -289,52 +286,11 @@ class PhotoEditorImpl implements PhotoEditor {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                new AsyncTask<String, String, Exception>() {
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        clearHelperBox();
-                        brushDrawingView.destroyDrawingCache();
-                    }
-
-                    @SuppressLint("MissingPermission")
-                    @Override
-                    protected Exception doInBackground(String... strings) {
-                        // Create a media file name
-                        File file = new File(imagePath);
-                        try {
-                            FileOutputStream out = new FileOutputStream(file, false);
-                            if (parentView != null) {
-                                Bitmap capturedBitmap = saveSettings.isTransparencyEnabled()
-                                        ? BitmapUtil.removeTransparency(captureView(parentView))
-                                        : captureView(parentView);
-                                capturedBitmap.compress(saveSettings.getCompressFormat(), saveSettings.getCompressQuality(), out);
-                            }
-                            out.flush();
-                            out.close();
-                            Log.d(TAG, "Filed Saved Successfully");
-                            return null;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.d(TAG, "Failed to save File");
-                            return e;
-                        }
-                    }
-
-                    @Override
-                    protected void onPostExecute(Exception e) {
-                        super.onPostExecute(e);
-                        if (e == null) {
-                            //Clear all views if its enabled in save settings
-                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
-                            onSaveListener.onSuccess(imagePath);
-                        } else {
-                            onSaveListener.onFailure(e);
-                        }
-                    }
-
-                }.execute();
+                GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
+                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, graphicHelper);
+                photoSaverTask.setOnSaveListener(onSaveListener);
+                photoSaverTask.setSaveSettings(saveSettings);
+                photoSaverTask.execute(imagePath);
             }
 
             @Override
@@ -356,37 +312,11 @@ class PhotoEditorImpl implements PhotoEditor {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                new AsyncTask<String, String, Bitmap>() {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        clearHelperBox();
-                        brushDrawingView.destroyDrawingCache();
-                    }
-
-                    @Override
-                    protected Bitmap doInBackground(String... strings) {
-                        if (parentView != null) {
-                            return saveSettings.isTransparencyEnabled() ?
-                                    BitmapUtil.removeTransparency(captureView(parentView))
-                                    : captureView(parentView);
-                        } else {
-                            return null;
-                        }
-                    }
-
-                    @Override
-                    protected void onPostExecute(Bitmap bitmap) {
-                        super.onPostExecute(bitmap);
-                        if (bitmap != null) {
-                            if (saveSettings.isClearViewsEnabled()) clearAllViews();
-                            onSaveBitmap.onBitmapReady(bitmap);
-                        } else {
-                            onSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
-                        }
-                    }
-
-                }.execute();
+                GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
+                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, graphicHelper);
+                photoSaverTask.setOnSaveBitmap(onSaveBitmap);
+                photoSaverTask.setSaveSettings(saveSettings);
+                photoSaverTask.saveBitmap();
             }
 
             @Override
@@ -394,17 +324,6 @@ class PhotoEditorImpl implements PhotoEditor {
                 onSaveBitmap.onFailure(e);
             }
         });
-    }
-
-    private Bitmap captureView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                view.getWidth(),
-                view.getHeight(),
-                Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
     }
 
     @Override
