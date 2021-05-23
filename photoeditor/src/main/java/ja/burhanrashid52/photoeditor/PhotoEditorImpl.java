@@ -119,12 +119,12 @@ class PhotoEditorImpl implements PhotoEditor {
     }
 
     @Override
-    public void editText(@NonNull View view, String inputText, @NonNull int colorCode) {
+    public void editText(@NonNull View view, String inputText, int colorCode) {
         editText(view, null, inputText, colorCode);
     }
 
     @Override
-    public void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, @NonNull int colorCode) {
+    public void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, int colorCode) {
         final TextStyleBuilder styleBuilder = new TextStyleBuilder();
         styleBuilder.withTextColor(colorCode);
         if (textTypeface != null) {

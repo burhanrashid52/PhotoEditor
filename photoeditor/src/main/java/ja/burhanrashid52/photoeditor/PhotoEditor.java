@@ -68,7 +68,7 @@ public interface PhotoEditor {
      * @param inputText text to update {@link TextView}
      * @param colorCode color to update on {@link TextView}
      */
-    void editText(@NonNull View view, String inputText, @NonNull int colorCode);
+    void editText(@NonNull View view, String inputText, int colorCode);
 
     /**
      * This will update the text and color on provided view
@@ -78,7 +78,7 @@ public interface PhotoEditor {
      * @param inputText    text to update {@link TextView}
      * @param colorCode    color to update on {@link TextView}
      */
-    void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, @NonNull int colorCode);
+    void editText(@NonNull View view, @Nullable Typeface textTypeface, String inputText, int colorCode);
 
     /**
      * This will update the text and color on provided view
