@@ -10,11 +10,11 @@ import android.widget.ImageView;
  *
  * @author <https://github.com/burhanrashid52>
  */
-class GraphicHelper {
+class BoxHelper {
     private final ViewGroup mViewGroup;
     private final PhotoEditorViewState mViewState;
 
-    public GraphicHelper(ViewGroup viewGroup, PhotoEditorViewState viewState) {
+    public BoxHelper(ViewGroup viewGroup, PhotoEditorViewState viewState) {
         mViewGroup = viewGroup;
         mViewState = viewState;
     }

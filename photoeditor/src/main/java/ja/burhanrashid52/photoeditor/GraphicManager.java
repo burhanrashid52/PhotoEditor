@@ -15,8 +15,6 @@ class GraphicManager {
     private final ViewGroup mViewGroup;
     private final PhotoEditorViewState mViewState;
     private OnPhotoEditorListener mOnPhotoEditorListener;
-    private @Nullable
-    GraphicHelper mGraphicHelper;
 
     public GraphicManager(ViewGroup viewGroup, PhotoEditorViewState viewState) {
         mViewGroup = viewGroup;
@@ -112,12 +110,5 @@ class GraphicManager {
             }
         }
         return mViewState.getRedoViewsCount() != 0;
-    }
-
-    GraphicHelper getGraphicHelper() {
-        if (mGraphicHelper == null) {
-            mGraphicHelper = new GraphicHelper(mViewGroup, mViewState);
-        }
-        return mGraphicHelper;
     }
 }

@@ -4,9 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -40,6 +38,7 @@ class PhotoEditorImpl implements PhotoEditor {
     private final View deleteView;
     private final BrushDrawingView brushDrawingView;
     private final BrushDrawingStateListener mBrushDrawingStateListener;
+    private final BoxHelper mBoxHelper;
     private OnPhotoEditorListener mOnPhotoEditorListener;
     private final boolean isTextPinchScalable;
     private final Typeface mDefaultTextTypeface;
@@ -60,6 +59,7 @@ class PhotoEditorImpl implements PhotoEditor {
 
         this.viewState = new PhotoEditorViewState();
         this.mGraphicManager = new GraphicManager(builder.parentView, this.viewState);
+        this.mBoxHelper = new BoxHelper(builder.parentView, this.viewState);
 
         mBrushDrawingStateListener = new BrushDrawingStateListener(builder.parentView, this.viewState);
         this.brushDrawingView.setBrushViewChangeListener(mBrushDrawingStateListener);
@@ -91,6 +91,7 @@ class PhotoEditorImpl implements PhotoEditor {
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         Sticker sticker = new Sticker(parentView, multiTouchListener, viewState, mGraphicManager);
         sticker.buildView(desiredImage);
+        addToEditor(sticker);
     }
 
     @Override
@@ -116,6 +117,7 @@ class PhotoEditorImpl implements PhotoEditor {
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
         Text textGraphic = new Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager);
         textGraphic.buildView(text, styleBuilder);
+        addToEditor(textGraphic);
     }
 
     @Override
@@ -157,6 +159,14 @@ class PhotoEditorImpl implements PhotoEditor {
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mGraphicManager, mDefaultEmojiTypeface);
         emoji.buildView(emojiTypeface, emojiName);
+        addToEditor(emoji);
+    }
+
+    private void addToEditor(Graphic graphic) {
+        clearHelperBox();
+        mGraphicManager.addView(graphic);
+        // Change the in-focus view
+        viewState.setCurrentSelectedView(graphic.getRootView());
     }
 
     /**
@@ -251,14 +261,12 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void clearAllViews() {
-        GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
-        graphicHelper.clearAllViews(brushDrawingView);
+        mBoxHelper.clearAllViews(brushDrawingView);
     }
 
     @Override
     public void clearHelperBox() {
-        GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
-        graphicHelper.clearHelperBox();
+        mBoxHelper.clearHelperBox();
     }
 
     @Override
@@ -286,8 +294,7 @@ class PhotoEditorImpl implements PhotoEditor {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
-                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, graphicHelper);
+                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
                 photoSaverTask.setOnSaveListener(onSaveListener);
                 photoSaverTask.setSaveSettings(saveSettings);
                 photoSaverTask.execute(imagePath);
@@ -312,8 +319,7 @@ class PhotoEditorImpl implements PhotoEditor {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
-                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, graphicHelper);
+                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
                 photoSaverTask.setOnSaveBitmap(onSaveBitmap);
                 photoSaverTask.setSaveSettings(saveSettings);
                 photoSaverTask.saveBitmap();

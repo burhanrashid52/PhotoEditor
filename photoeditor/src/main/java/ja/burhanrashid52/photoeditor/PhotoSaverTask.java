@@ -30,14 +30,14 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     private @Nullable
     OnSaveBitmap mOnSaveBitmap;
     private final PhotoEditorView mPhotoEditorView;
-    private final GraphicHelper mGraphicHelper;
+    private final BoxHelper mBoxHelper;
     private final BrushDrawingView mBrushDrawingView;
 
 
-    public PhotoSaverTask(PhotoEditorView photoEditorView, GraphicHelper graphicHelper) {
+    public PhotoSaverTask(PhotoEditorView photoEditorView, BoxHelper boxHelper) {
         mPhotoEditorView = photoEditorView;
         mBrushDrawingView = photoEditorView.getBrushDrawingView();
-        mGraphicHelper = graphicHelper;
+        mBoxHelper = boxHelper;
         mSaveSettings = new SaveSettings.Builder().build();
     }
 
@@ -56,7 +56,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mGraphicHelper.clearHelperBox();
+        mBoxHelper.clearHelperBox();
         mBrushDrawingView.destroyDrawingCache();
     }
 
@@ -122,7 +122,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         if (exception == null) {
             //Clear all views if its enabled in save settings
             if (mSaveSettings.isClearViewsEnabled()) {
-                mGraphicHelper.clearAllViews(mBrushDrawingView);
+                mBoxHelper.clearAllViews(mBrushDrawingView);
             }
             if (mOnSaveListener != null) {
                 assert imagePath != null;
@@ -139,7 +139,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         Bitmap bitmap = saveResult.mBitmap;
         if (bitmap != null) {
             if (mSaveSettings.isClearViewsEnabled()) {
-                mGraphicHelper.clearAllViews(mBrushDrawingView);
+                mBoxHelper.clearAllViews(mBrushDrawingView);
             }
             if (mOnSaveBitmap != null) {
                 mOnSaveBitmap.onBitmapReady(bitmap);

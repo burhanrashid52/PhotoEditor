@@ -18,7 +18,7 @@ class Text extends Graphic {
     private final GraphicManager mGraphicManager;
     private final ViewGroup mPhotoEditorView;
     private final PhotoEditorViewState mViewState;
-    private TextView txtText;
+    private TextView mTextView;
 
     public Text(ViewGroup photoEditorView,
                 MultiTouchListener multiTouchListener,
@@ -32,24 +32,20 @@ class Text extends Graphic {
         mMultiTouchListener = multiTouchListener;
         mDefaultTextTypeface = defaultTextTypeface;
         mGraphicManager = graphicManager;
+        setupGesture();
     }
 
     void buildView(String text, TextStyleBuilder styleBuilder) {
-
-        txtText.setText(text);
+        mTextView.setText(text);
         if (styleBuilder != null)
-            styleBuilder.applyStyle(txtText);
+            styleBuilder.applyStyle(mTextView);
+    }
 
+    private void setupGesture() {
         MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
         mMultiTouchListener.setOnGestureControl(onGestureControl);
-
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);
-        clearHelperBox();
-        addViewToParent();
-
-        // Change the in-focus view
-        mViewState.setCurrentSelectedView(rootView);
     }
 
 
@@ -65,17 +61,17 @@ class Text extends Graphic {
 
     @Override
     void setupView(View rootView) {
-        txtText = rootView.findViewById(R.id.tvPhotoEditorText);
-        if (txtText != null && mDefaultTextTypeface != null) {
-            txtText.setGravity(Gravity.CENTER);
-            txtText.setTypeface(mDefaultTextTypeface);
+        mTextView = rootView.findViewById(R.id.tvPhotoEditorText);
+        if (mTextView != null && mDefaultTextTypeface != null) {
+            mTextView.setGravity(Gravity.CENTER);
+            mTextView.setTypeface(mDefaultTextTypeface);
         }
     }
 
     @Override
     void updateView(View view) {
-        String textInput = txtText.getText().toString();
-        int currentTextColor = txtText.getCurrentTextColor();
+        String textInput = mTextView.getText().toString();
+        int currentTextColor = mTextView.getCurrentTextColor();
         OnPhotoEditorListener photoEditorListener = mGraphicManager.getOnPhotoEditorListener();
         if (photoEditorListener != null) {
             photoEditorListener.onEditTextChangeListener(view, textInput, currentTextColor);

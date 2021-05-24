@@ -61,15 +61,6 @@ abstract class Graphic {
         }
     }
 
-    protected void addViewToParent() {
-        mGraphicManager.addView(this);
-    }
-
-    protected void clearHelperBox() {
-        GraphicHelper graphicHelper = mGraphicManager.getGraphicHelper();
-        graphicHelper.clearHelperBox();
-    }
-
     protected void toggleSelection() {
         View frmBorder = mRootView.findViewById(R.id.frmBorder);
         View imgClose = mRootView.findViewById(R.id.imgPhotoEditorClose);
@@ -83,10 +74,11 @@ abstract class Graphic {
     }
 
     protected MultiTouchListener.OnGestureControl buildGestureController(final ViewGroup viewGroup, final PhotoEditorViewState viewState) {
+        final BoxHelper boxHelper = new BoxHelper(viewGroup, viewState);
         return new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
-                clearHelperBox();
+                boxHelper.clearHelperBox();
                 toggleSelection();
                 // Change the in-focus view
                 viewState.setCurrentSelectedView(mRootView);

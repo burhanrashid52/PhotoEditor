@@ -30,6 +30,7 @@ class Emoji extends Graphic {
         mViewState = viewState;
         mMultiTouchListener = multiTouchListener;
         mDefaultEmojiTypeface = defaultEmojiTypeface;
+        setupGesture();
     }
 
     void buildView(Typeface emojiTypeface, String emojiName) {
@@ -38,16 +39,13 @@ class Emoji extends Graphic {
         }
         txtEmoji.setTextSize(56);
         txtEmoji.setText(emojiName);
+    }
 
+    private void setupGesture() {
         MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
         mMultiTouchListener.setOnGestureControl(onGestureControl);
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);
-
-        clearHelperBox();
-        addViewToParent();
-        // Change the in-focus view
-        mViewState.setCurrentSelectedView(rootView);
     }
 
     @Override

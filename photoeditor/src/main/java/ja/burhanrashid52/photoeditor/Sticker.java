@@ -26,20 +26,18 @@ class Sticker extends Graphic {
         mPhotoEditorView = photoEditorView;
         mViewState = viewState;
         mMultiTouchListener = multiTouchListener;
+        setupGesture();
     }
 
     void buildView(Bitmap desiredImage) {
-
         imageView.setImageBitmap(desiredImage);
+    }
 
+    private void setupGesture() {
         MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
         mMultiTouchListener.setOnGestureControl(onGestureControl);
-
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);
-        clearHelperBox();
-        addViewToParent();
-        mViewState.setCurrentSelectedView(rootView);
     }
 
 
