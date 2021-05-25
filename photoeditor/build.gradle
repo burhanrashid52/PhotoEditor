@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 4
-        versionName "1.1.3"
+        versionName "1.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -52,7 +52,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'
-    PUBLISH_VERSION = '1.1.3-beta02'
+    PUBLISH_VERSION = '1.1.4'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
 }
 
