@@ -69,3 +69,7 @@ new TextStyleBuilder()
 ## 1.1.2
 - Fixed : #219 One selection at time in
 - Fixed: #345 Set pinch to scale to text only
+
+## 1.1.4
+- Fixed : #351 Internal Refactoring
+- Removed: (Breaking Change) `PhotoEditor.getEmoji()` is no longer part of the library and it's now move to sample app.
