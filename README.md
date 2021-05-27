@@ -15,6 +15,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 
 ![](https://i.imgur.com/ZYtLHTZ.png)
 
+<a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-photoeditor-2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 <a href="https://www.buymeacoffee.com/burhanrashid52" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
@@ -280,6 +281,8 @@ This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo
 ## Buy a cup of coffee
 If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of ☕️
 [BuyMeACoffee](https://www.buymeacoffee.com/burhanrashid52)
+
+<a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-review&utm_medium=badge&utm_souce=badge-photoeditor-2#discussion-body" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/review.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 ## MIT License
 
