@@ -1,7 +1,7 @@
 name: 'Close stale issues and PRs'
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '0 0 15 * *'
 
 jobs:
   stale:
@@ -11,13 +11,13 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           start-date: '2021-01-06T00:00:00Z'
-          stale-issue-message: 'This issue is stale because it has been open 20 days with no activity. Remove stale label or comment or this will be closed in 3 days.'
+          stale-issue-message: 'This issue is stale because it has been open 20 days with no activity. Remove stale label or comment or this will be closed in 4 days.'
           stale-pr-message: 'This PR is stale because it has been open 30 days with no activity. Remove stale label or comment or this will be closed in 5 days.'
           close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
           close-pr-message: 'This PR was closed because it has been stalled for 5 days with no activity.'
-          days-before-issue-stale: 15
+          days-before-issue-stale: 20
           days-before-pr-stale: 30
-          days-before-issue-close: 3
+          days-before-issue-close: 4
           days-before-pr-close: 5
           exempt-issue-labels: 'pinned,security,bug,enhancement,help-wanted'
           exempt-pr-labels: 'pinned,security,bug,enhancement,help-wanted'
