@@ -65,6 +65,22 @@ public class EditImageActivityTest {
     }
 
     @Test
+    public void checkIfOvalIsEnabledWhenClickedOnBrushTool() {
+        EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
+        assertFalse(editImageActivity.mPhotoEditor.getBrushDrawableMode());
+        onView(withText(R.string.label_oval)).perform(click());
+        assertTrue(editImageActivity.mPhotoEditor.getBrushDrawableMode());
+    }
+
+    @Test
+    public void checkIfRectangleIsEnabledWhenClickedOnBrushTool() {
+        EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
+        assertFalse(editImageActivity.mPhotoEditor.getBrushDrawableMode());
+        onView(withText(R.string.label_rectangle)).perform(click());
+        assertTrue(editImageActivity.mPhotoEditor.getBrushDrawableMode());
+    }
+
+    @Test
     public void checkIfEraserIsEnabledWhenClickedOnEraserTool() {
         mActivityRule.launchActivity(null);
         onView(withText(R.string.label_eraser)).perform(click());

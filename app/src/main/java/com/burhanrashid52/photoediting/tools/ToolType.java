@@ -7,6 +7,8 @@ package com.burhanrashid52.photoediting.tools;
  */
 public enum ToolType {
     BRUSH,
+    OVAL,
+    RECTANGLE,
     TEXT,
     ERASER,
     FILTER,
