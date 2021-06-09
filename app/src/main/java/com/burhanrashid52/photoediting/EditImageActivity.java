@@ -403,17 +403,17 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onToolSelected(ToolType toolType) {
         switch (toolType) {
             case BRUSH:
-                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.FREE_HAND);
+                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.FREE_HAND);
                 mTxtCurrentTool.setText(R.string.label_brush);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case OVAL:
-                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.OVAL);
+                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.OVAL);
                 mTxtCurrentTool.setText(R.string.label_oval);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case RECTANGLE:
-                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.RECTANGLE);
+                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.RECTANGLE);
                 mTxtCurrentTool.setText(R.string.label_rectangle);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
@@ -428,7 +428,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 });
                 break;
             case ERASER:
-                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.FREE_HAND);
+                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.FREE_HAND);
                 mPhotoEditor.brushEraser();
                 mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;

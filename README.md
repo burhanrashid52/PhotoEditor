@@ -21,7 +21,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 
 ## Features
 
-- [**Drawing**](#drawing) on image with option to change its Brush's Color, Size, Opacity and Erasing.
+- [**Drawing**](#drawing) on image with option to change its Brush's Color, Size, Opacity, Erasing and basic shapes.
 - Apply [**Filter Effect**](#filter-effect) on image using MediaEffect
 - Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
 - Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
@@ -113,6 +113,7 @@ We can customize our brush and paint with different set of property. To start dr
 | Color Opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
 | Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
 | Brush Eraser  | `mPhotoEditor.brushEraser()` |
+| Shape (free hand, oval, rectangle)  | `mPhotoEditor.setBrushDrawingShape(brushDrawingShape)` |
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 

@@ -198,9 +198,9 @@ class PhotoEditorImpl implements PhotoEditor {
     }
 
     @Override
-    public void setBrushDrawingForm(BrushDrawingForm brushDrawingForm) {
+    public void setBrushDrawingShape(BrushDrawingShape brushDrawingShape) {
         if (brushDrawingView != null)
-            brushDrawingView.setBrushDrawingForm(brushDrawingForm);
+            brushDrawingView.setBrushDrawingShape(brushDrawingShape);
     }
 
     @Override
