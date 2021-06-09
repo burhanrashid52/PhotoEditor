@@ -52,7 +52,7 @@ public class BrushDrawingView extends View {
     private Path mPath;
     private float mTouchX, mTouchY;
     private float mLeft, mTop, mRight, mBottom;
-    private PhotoEditor.BrushDrawingForm mBrushDrawForm = PhotoEditor.BrushDrawingForm.FREE_HAND;
+    private PhotoEditor.BrushDrawingShape mBrushDrawShape = PhotoEditor.BrushDrawingShape.FREE_HAND;
     private static final float TOUCH_TOLERANCE = 4;
 
     private BrushViewChangeListener mBrushViewChangeListener;
@@ -109,8 +109,8 @@ public class BrushDrawingView extends View {
         }
     }
 
-    void setBrushDrawingForm(PhotoEditor.BrushDrawingForm brushDrawForm) {
-        this.mBrushDrawForm = brushDrawForm;
+    void setBrushDrawingShape(PhotoEditor.BrushDrawingShape brushDrawShape) {
+        this.mBrushDrawShape = brushDrawShape;
         setBrushDrawingMode(true);
     }
 
@@ -255,7 +255,7 @@ public class BrushDrawingView extends View {
     }
 
     private void touchMove(float x, float y) {
-        if (mBrushDrawForm == PhotoEditor.BrushDrawingForm.FREE_HAND) {
+        if (mBrushDrawShape == PhotoEditor.BrushDrawingShape.FREE_HAND) {
             touchMoveFreeHand(x, y);
         } else {
             touchMoveInsideRect(x, y);
@@ -279,7 +279,7 @@ public class BrushDrawingView extends View {
         float dx = Math.abs(x - mTouchX);
         float dy = Math.abs(y - mTouchY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            if (mBrushDrawForm == PhotoEditor.BrushDrawingForm.OVAL) {
+            if (mBrushDrawShape == PhotoEditor.BrushDrawingShape.OVAL) {
                 mPath = createOvalPath();
             } else {
                 mPath = createRectanglePath();
@@ -290,7 +290,7 @@ public class BrushDrawingView extends View {
     }
 
     private void touchUp() {
-        if (mBrushDrawForm == PhotoEditor.BrushDrawingForm.FREE_HAND) {
+        if (mBrushDrawShape == PhotoEditor.BrushDrawingShape.FREE_HAND) {
             mPath.lineTo(mTouchX, mTouchY);
             // Commit the path to our offscreen
             mDrawCanvas.drawPath(mPath, mDrawPaint);
