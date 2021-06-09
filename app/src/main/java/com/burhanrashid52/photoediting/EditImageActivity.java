@@ -403,8 +403,18 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onToolSelected(ToolType toolType) {
         switch (toolType) {
             case BRUSH:
-                mPhotoEditor.setBrushDrawingMode(true);
+                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.FREE_HAND);
                 mTxtCurrentTool.setText(R.string.label_brush);
+                showBottomSheetDialogFragment(mPropertiesBSFragment);
+                break;
+            case OVAL:
+                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.OVAL);
+                mTxtCurrentTool.setText(R.string.label_oval);
+                showBottomSheetDialogFragment(mPropertiesBSFragment);
+                break;
+            case RECTANGLE:
+                mPhotoEditor.setBrushDrawingForm(PhotoEditor.BrushDrawingForm.RECTANGLE);
+                mTxtCurrentTool.setText(R.string.label_rectangle);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case TEXT:
