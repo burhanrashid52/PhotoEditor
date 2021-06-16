@@ -113,7 +113,7 @@ We can customize our brush and paint with different set of property. To start dr
 | Color Opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
 | Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
 | Brush Eraser  | `mPhotoEditor.brushEraser()` |
-| Shape (free hand, oval, rectangle)  | `mPhotoEditor.setBrushDrawingShape(brushDrawingShape)` |
+| Shape (free hand, oval, rectangle)  | `mPhotoEditor.addShape(shape)` |
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 

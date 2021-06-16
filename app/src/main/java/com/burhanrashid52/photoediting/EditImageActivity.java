@@ -38,9 +38,11 @@ import java.io.File;
 import java.io.IOException;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
+import ja.burhanrashid52.photoeditor.OvalShape;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
+import ja.burhanrashid52.photoeditor.RectangleShape;
 import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
@@ -349,18 +351,21 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onColorChanged(int colorCode) {
+        mPhotoEditor.setShapeColor(colorCode);
         mPhotoEditor.setBrushColor(colorCode);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onOpacityChanged(int opacity) {
+        mPhotoEditor.setShapeOpacity(opacity);
         mPhotoEditor.setOpacity(opacity);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
+        mPhotoEditor.setShapeSize(brushSize);
         mPhotoEditor.setBrushSize(brushSize);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
@@ -403,17 +408,17 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     public void onToolSelected(ToolType toolType) {
         switch (toolType) {
             case BRUSH:
-                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.FREE_HAND);
+                mPhotoEditor.setBrushDrawingMode(true);
                 mTxtCurrentTool.setText(R.string.label_brush);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case OVAL:
-                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.OVAL);
+                mPhotoEditor.addShape(new OvalShape());
                 mTxtCurrentTool.setText(R.string.label_oval);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
             case RECTANGLE:
-                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.RECTANGLE);
+                mPhotoEditor.addShape(new RectangleShape());
                 mTxtCurrentTool.setText(R.string.label_rectangle);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
@@ -428,7 +433,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 });
                 break;
             case ERASER:
-                mPhotoEditor.setBrushDrawingShape(PhotoEditor.BrushDrawingShape.FREE_HAND);
                 mPhotoEditor.brushEraser();
                 mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;

@@ -51,8 +51,6 @@ public class BrushDrawingView extends View {
 
     private Path mPath;
     private float mTouchX, mTouchY;
-    private float mLeft, mTop, mRight, mBottom;
-    private PhotoEditor.BrushDrawingShape mBrushDrawShape = PhotoEditor.BrushDrawingShape.FREE_HAND;
     private static final float TOUCH_TOLERANCE = 4;
 
     private BrushViewChangeListener mBrushViewChangeListener;
@@ -107,11 +105,6 @@ public class BrushDrawingView extends View {
             this.setVisibility(View.VISIBLE);
             refreshBrushDrawing();
         }
-    }
-
-    void setBrushDrawingShape(PhotoEditor.BrushDrawingShape brushDrawShape) {
-        this.mBrushDrawShape = brushDrawShape;
-        setBrushDrawingMode(true);
     }
 
     void setOpacity(@IntRange(from = 0, to = 255) int opacity) {
@@ -242,8 +235,6 @@ public class BrushDrawingView extends View {
 
 
     private void touchStart(float x, float y) {
-        mLeft = x;
-        mTop = y;
         mRedoPaths.clear();
         mPath.reset();
         mPath.moveTo(x, y);
@@ -255,14 +246,6 @@ public class BrushDrawingView extends View {
     }
 
     private void touchMove(float x, float y) {
-        if (mBrushDrawShape == PhotoEditor.BrushDrawingShape.FREE_HAND) {
-            touchMoveFreeHand(x, y);
-        } else {
-            touchMoveInsideRect(x, y);
-        }
-    }
-
-    private void touchMoveFreeHand(float x, float y) {
         float dx = Math.abs(x - mTouchX);
         float dy = Math.abs(y - mTouchY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
@@ -272,29 +255,10 @@ public class BrushDrawingView extends View {
         }
     }
 
-    private void touchMoveInsideRect(float x, float y) {
-        mRight = x;
-        mBottom = y;
-
-        float dx = Math.abs(x - mTouchX);
-        float dy = Math.abs(y - mTouchY);
-        if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            if (mBrushDrawShape == PhotoEditor.BrushDrawingShape.OVAL) {
-                mPath = createOvalPath();
-            } else {
-                mPath = createRectanglePath();
-            }
-            mTouchX = x;
-            mTouchY = y;
-        }
-    }
-
     private void touchUp() {
-        if (mBrushDrawShape == PhotoEditor.BrushDrawingShape.FREE_HAND) {
-            mPath.lineTo(mTouchX, mTouchY);
-            // Commit the path to our offscreen
-            mDrawCanvas.drawPath(mPath, mDrawPaint);
-        }
+        mPath.lineTo(mTouchX, mTouchY);
+        // Commit the path to our offscreen
+        mDrawCanvas.drawPath(mPath, mDrawPaint);
         // kill this so we don't double draw
         mDrawnPaths.push(new LinePath(mPath, mDrawPaint));
         mPath = new Path();
@@ -302,25 +266,6 @@ public class BrushDrawingView extends View {
             mBrushViewChangeListener.onStopDrawing();
             mBrushViewChangeListener.onViewAdd(this);
         }
-    }
-
-    Path createRectanglePath() {
-        Path path = new Path();
-        path.moveTo(mLeft, mTop);
-        path.lineTo(mLeft, mBottom);
-        path.lineTo(mRight, mBottom);
-        path.lineTo(mRight, mTop);
-        path.close();
-        return path;
-    }
-
-    Path createOvalPath() {
-        RectF rect = new RectF(mLeft, mTop, mRight, mBottom);
-        Path path = new Path();
-        path.moveTo(mLeft, mTop);
-        path.addOval(rect, Path.Direction.CW);
-        path.close();
-        return path;
     }
 
     @VisibleForTesting
