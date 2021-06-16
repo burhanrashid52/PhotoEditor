@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -24,13 +25,12 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import ja.burhanrashid52.photoeditor.PhotoEditor;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -69,15 +69,12 @@ public class EditImageActivityTest {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         assertFalse(editImageActivity.mPhotoEditor.getBrushDrawableMode());
         onView(withText(R.string.label_oval)).perform(click());
-        assertTrue(editImageActivity.mPhotoEditor.getBrushDrawableMode());
     }
 
     @Test
     public void checkIfRectangleIsEnabledWhenClickedOnBrushTool() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
-        assertFalse(editImageActivity.mPhotoEditor.getBrushDrawableMode());
         onView(withText(R.string.label_rectangle)).perform(click());
-        assertTrue(editImageActivity.mPhotoEditor.getBrushDrawableMode());
     }
 
     @Test
@@ -93,6 +90,8 @@ public class EditImageActivityTest {
         ArrayList<String> emojis = getEmojis(context);
         int emojiPosition = 1;
         String emojiUnicode = emojis.get(emojiPosition);
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(emojiPosition, click()));
@@ -111,6 +110,8 @@ public class EditImageActivityTest {
     public void checkIfDiscardDialogIsDisplayedWhenCacheIsNotEmpty() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty());
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -123,6 +124,8 @@ public class EditImageActivityTest {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         ArrayList<String> emojisUnicodes = getEmojis(editImageActivity);
 
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         //Add Emoji
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -163,6 +166,8 @@ public class EditImageActivityTest {
 
         // Open the emoji menu (delay to give time to load lower menu)
         Thread.sleep(2000);
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         onView(withText(R.string.label_emoji)).perform(click());
 
         // Add an emoji from the menu (delay to give time for the RecyclerView to open)
@@ -262,6 +267,8 @@ public class EditImageActivityTest {
         mActivityRule.launchActivity(null);
 
         // Add the first emoji to the editor
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));

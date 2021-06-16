@@ -119,14 +119,6 @@ public interface PhotoEditor {
     Boolean getBrushDrawableMode();
 
     /**
-     * Specify the shape drawn on {@link PhotoEditorView}. Also run {@link PhotoEditor#setBrushDrawingMode} with true value.
-     * Default value is {@link BrushDrawingShape#FREE_HAND}.
-     *
-     * @param brushDrawingShape the shape to use
-     */
-    void setBrushDrawingShape(BrushDrawingShape brushDrawingShape);
-
-    /**
      * set the size of brush user want to paint on canvas i.e {@link BrushDrawingView}
      *
      * @param size size of brush
@@ -383,11 +375,18 @@ public interface PhotoEditor {
     }
 
 
+    // region Shape
     /**
-     * Enumerates the different shapes that can be drawn on a brush surface.
+     *
      */
-    enum BrushDrawingShape {
-        FREE_HAND, OVAL, RECTANGLE
-    }
+    void addShape(Shape shape);
+
+    void setShapeSize(float size);
+
+    void setShapeOpacity(@IntRange(from = 0, to = 100) int opacity);
+
+    void setShapeColor(@ColorInt int color);
+
+    // endregion
 
 }
