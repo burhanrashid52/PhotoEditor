@@ -3,17 +3,16 @@ package ja.burhanrashid52.photoeditor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class OvalShape extends AbstractShape {
+public class LineShape extends AbstractShape {
 
     private float lastX, lastY;
 
     @Override
-    protected String getTag() { return "OvalShape"; }
+    protected String getTag() { return "LineShape"; }
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -35,17 +34,16 @@ public class OvalShape extends AbstractShape {
         float dx = Math.abs(x - lastX);
         float dy = Math.abs(y - lastY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            path = createOvalPath();
+            path = createLinePath();
             lastX = x;
             lastY = y;
         }
     }
 
-    private @NonNull Path createOvalPath() {
-        RectF rect = new RectF(left, top, right, bottom);
+    private @NonNull Path createLinePath() {
         Path path = new Path();
         path.moveTo(left, top);
-        path.addOval(rect, Path.Direction.CW);
+        path.lineTo(right, bottom);
         path.close();
         return path;
     }
@@ -54,4 +52,5 @@ public class OvalShape extends AbstractShape {
     public void stopShape() {
         Log.d(getTag(), "stopShape");
     }
+
 }

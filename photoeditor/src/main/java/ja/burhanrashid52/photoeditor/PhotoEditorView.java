@@ -33,8 +33,9 @@ public class PhotoEditorView extends RelativeLayout {
 
     private FilterImageView mImgSource;
     private BrushDrawingView mBrushDrawingView;
+    private ShapeView mShapeView;
     private ImageFilterView mImageFilterView;
-    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
+    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3, shapeSrcId = 4;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -78,6 +79,11 @@ public class PhotoEditorView extends RelativeLayout {
         mBrushDrawingView = new BrushDrawingView(getContext());
         mBrushDrawingView.setVisibility(GONE);
         mBrushDrawingView.setId(brushSrcId);
+
+        // Setup shape view
+        mShapeView = new ShapeView(getContext());
+        mShapeView.setId(shapeSrcId);
+
         //Align brush to the size of image view
         RelativeLayout.LayoutParams brushParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -116,6 +122,8 @@ public class PhotoEditorView extends RelativeLayout {
         //Add brush view
         addView(mBrushDrawingView, brushParam);
 
+        //Add shape view
+        addView(mShapeView, brushParam);
     }
 
 
@@ -152,8 +160,6 @@ public class PhotoEditorView extends RelativeLayout {
         } else {
             onSaveBitmap.onBitmapReady(mImgSource.getBitmap());
         }
-
-
     }
 
     void setFilterEffect(PhotoFilter filterType) {
@@ -167,4 +173,19 @@ public class PhotoEditorView extends RelativeLayout {
         mImageFilterView.setSourceBitmap(mImgSource.getBitmap());
         mImageFilterView.setFilterEffect(customEffect);
     }
+
+    // region Shape
+    ShapeView getShapeView() {
+        return mShapeView;
+    }
+
+    public void useBrushView() {
+        mBrushDrawingView.bringToFront();
+    }
+
+    public void useShapeView() {
+        mShapeView.bringToFront();
+    }
+
+    // endregion
 }

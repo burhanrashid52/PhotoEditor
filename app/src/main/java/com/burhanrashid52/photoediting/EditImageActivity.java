@@ -38,12 +38,12 @@ import java.io.File;
 import java.io.IOException;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
-import ja.burhanrashid52.photoeditor.OvalShape;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
-import ja.burhanrashid52.photoeditor.RectangleShape;
 import ja.burhanrashid52.photoeditor.SaveSettings;
+import ja.burhanrashid52.photoeditor.ShapeBuilder;
+import ja.burhanrashid52.photoeditor.ShapeType;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 
@@ -53,6 +53,7 @@ import static com.burhanrashid52.photoediting.FileSaveHelper.isSdkHigherThan28;
 public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
         PropertiesBSFragment.Properties,
+        ShapeBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
         StickerBSFragment.StickerListener, EditingToolsAdapter.OnItemSelected, FilterListener {
 
@@ -66,6 +67,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
     private PropertiesBSFragment mPropertiesBSFragment;
+    private ShapeBSFragment mShapeBSFragment;
+    private ShapeBuilder mShapeBuilder;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
     private TextView mTxtCurrentTool;
@@ -98,9 +101,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mPropertiesBSFragment = new PropertiesBSFragment();
         mEmojiBSFragment = new EmojiBSFragment();
         mStickerBSFragment = new StickerBSFragment();
+        mShapeBSFragment = new ShapeBSFragment();
         mStickerBSFragment.setStickerListener(this);
         mEmojiBSFragment.setEmojiListener(this);
         mPropertiesBSFragment.setPropertiesChangeListener(this);
+        mShapeBSFragment.setPropertiesChangeListener(this);
 
         LinearLayoutManager llmTools = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRvTools.setLayoutManager(llmTools);
@@ -351,23 +356,28 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onColorChanged(int colorCode) {
-        mPhotoEditor.setShapeColor(colorCode);
+        mPhotoEditor.updateShape(mShapeBuilder.withShapeColor(colorCode));
         mPhotoEditor.setBrushColor(colorCode);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onOpacityChanged(int opacity) {
-        mPhotoEditor.setShapeOpacity(opacity);
+        mPhotoEditor.updateShape(mShapeBuilder.withShapeOpacity(opacity));
         mPhotoEditor.setOpacity(opacity);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
-        mPhotoEditor.setShapeSize(brushSize);
+        mPhotoEditor.updateShape(mShapeBuilder.withShapeSize(brushSize));
         mPhotoEditor.setBrushSize(brushSize);
         mTxtCurrentTool.setText(R.string.label_brush);
+    }
+
+    @Override
+    public void onShapePicked(ShapeType shapeType) {
+        mPhotoEditor.updateShape(mShapeBuilder.withShapeType(shapeType));
     }
 
     @Override
@@ -412,15 +422,12 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 mTxtCurrentTool.setText(R.string.label_brush);
                 showBottomSheetDialogFragment(mPropertiesBSFragment);
                 break;
-            case OVAL:
-                mPhotoEditor.addShape(new OvalShape());
-                mTxtCurrentTool.setText(R.string.label_oval);
-                showBottomSheetDialogFragment(mPropertiesBSFragment);
-                break;
-            case RECTANGLE:
-                mPhotoEditor.addShape(new RectangleShape());
-                mTxtCurrentTool.setText(R.string.label_rectangle);
-                showBottomSheetDialogFragment(mPropertiesBSFragment);
+            case SHAPE:
+                mPhotoEditor.setShapeDrawingMode();
+                mShapeBuilder = new ShapeBuilder();
+                mPhotoEditor.updateShape(mShapeBuilder);
+                mTxtCurrentTool.setText(R.string.label_shape);
+                showBottomSheetDialogFragment(mShapeBSFragment);
                 break;
             case TEXT:
                 TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);

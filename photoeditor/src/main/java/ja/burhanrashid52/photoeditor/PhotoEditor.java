@@ -114,6 +114,11 @@ public interface PhotoEditor {
     void setBrushDrawingMode(boolean brushDrawingMode);
 
     /**
+     * Enable/Disable drawing mode to add shapes on {@link PhotoEditorView}
+     */
+    void setShapeDrawingMode();
+
+    /**
      * @return true is brush mode is enabled
      */
     Boolean getBrushDrawableMode();
@@ -287,6 +292,7 @@ public interface PhotoEditor {
         ImageView imageView;
         View deleteView;
         BrushDrawingView brushDrawingView;
+        ShapeView shapeView;
         Typeface textTypeface;
         Typeface emojiTypeface;
         // By default, pinch-to-scale is enabled for text
@@ -304,6 +310,7 @@ public interface PhotoEditor {
             parentView = photoEditorView;
             imageView = photoEditorView.getSource();
             brushDrawingView = photoEditorView.getBrushDrawingView();
+            shapeView = photoEditorView.getShapeView();
         }
 
         Builder setDeleteView(View deleteView) {
@@ -377,16 +384,10 @@ public interface PhotoEditor {
 
     // region Shape
     /**
-     *
+     * Update the current shape to be drawn,
+     * through the use of a ShapeBuilder.
      */
-    void addShape(Shape shape);
-
-    void setShapeSize(float size);
-
-    void setShapeOpacity(@IntRange(from = 0, to = 100) int opacity);
-
-    void setShapeColor(@ColorInt int color);
-
+    void updateShape(ShapeBuilder shapebuilder);
     // endregion
 
 }

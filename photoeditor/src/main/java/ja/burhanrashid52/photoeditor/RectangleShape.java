@@ -5,13 +5,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
 
-public class RectangleShape implements Shape {
+import androidx.annotation.NonNull;
 
-    private final String TAG = "RectangleShape";
+public class RectangleShape extends AbstractShape {
 
-    private float left, top, right, bottom;
     private float lastX, lastY;
-    private Path path = new Path();
+
+    @Override
+    protected String getTag() { return "RectangleShape"; }
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
@@ -20,14 +21,13 @@ public class RectangleShape implements Shape {
 
     @Override
     public void startShape(float x, float y) {
-        Log.d(TAG, "startShape@ " + x + "," + y);
+        Log.d(getTag(), "startShape@ " + x + "," + y);
         left = x;
         top = y;
     }
 
     @Override
     public void moveShape(float x, float y) {
-        Log.d(TAG, "moveShape@ " + x + "," + y);
         right = x;
         bottom = y;
 
@@ -40,7 +40,7 @@ public class RectangleShape implements Shape {
         }
     }
 
-    private Path createRectanglePath() {
+    private @NonNull Path createRectanglePath() {
         Path path = new Path();
         path.moveTo(left, top);
         path.lineTo(left, bottom);
@@ -52,6 +52,7 @@ public class RectangleShape implements Shape {
 
     @Override
     public void stopShape() {
-        Log.d(TAG, "stopShape");
+        Log.d(getTag(), "stopShape");
     }
+
 }

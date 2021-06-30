@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,44 +15,55 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class ShapeView extends View {
+class ShapeView extends View {
 
-    private final Paint paint = new Paint();
-    private Shape shape;
+    private final String TAG = "ShapeView";
+    private final Map<Shape, Paint> shapesAndPaints = new LinkedHashMap<>();
+    private AbstractShape currentShape;
+    private ShapeBuilder currentShapeBuilder;
 
 
+    // region constructors
     public ShapeView(Context context) {
         super(context);
-        setupView();
     }
 
     public ShapeView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setupView();
     }
 
     public ShapeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setupView();
     }
+    // endregion
 
-    private void setupView() {
-        setupPaint();
-    }
-
-    private void setupPaint() {
+    // region View and events
+    private Paint createPaint() {
+        Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+
+        // apply shape builder parameters
+        paint.setStrokeWidth(currentShapeBuilder.getShapeSize());
+        paint.setAlpha(currentShapeBuilder.getShapeOpacity());
+        paint.setColor(currentShapeBuilder.getShapeColor());
+
+        return paint;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        shape.draw(canvas, paint);
+        for (Shape shape : shapesAndPaints.keySet()) {
+            Log.d(TAG, shape.toString());
+            shape.draw(canvas, shapesAndPaints.get(shape));
+        }
     }
 
     /**
@@ -67,36 +79,52 @@ public class ShapeView extends View {
         float touchY = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                shape.startShape(touchX, touchY);
+                createShape();
+                currentShape.startShape(touchX, touchY);
                 break;
             case MotionEvent.ACTION_MOVE:
-                shape.moveShape(touchX, touchY);
+                currentShape.moveShape(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
-                shape.stopShape();
+                currentShape.stopShape();
+                endShape(touchX, touchY);
                 break;
         }
         invalidate();
         return true;
     }
+    // endregion
+
+    private void createShape() {
+        final AbstractShape shape;
+        if (currentShapeBuilder.getShapeType() == ShapeType.OVAL) {
+            shape = new OvalShape();
+        } else if (currentShapeBuilder.getShapeType() == ShapeType.RECTANGLE) {
+            shape = new RectangleShape();
+        } else {
+            shape = new LineShape();
+        }
+        currentShape = shape;
+
+        shapesAndPaints.put(currentShape, createPaint());
+        Log.d(TAG, "Created shape: " + shape.toString());
+    }
+
+    private void endShape(float touchX, float touchY) {
+        if (currentShape.hasBeenTapped()) {
+            // just a touch, this is not a shape, so remove it
+            shapesAndPaints.remove(currentShape);
+            handleTap(touchX, touchY);
+        }
+    }
+
+    private void handleTap(float touchX, float touchY) {
+        // TODO find the tapped path to select it
+    }
 
     // Setters/Getters
-    public void setShape(Shape shape) {
-        this.shape = shape;
-    }
-
-    public void setSize(float size) {
-        paint.setStrokeWidth(size);
-    }
-
-    public void setOpacity(int opacity) {
-        paint.setAlpha(opacity);
-        Log.d("ShapeView", "Set opacity to " + opacity);
-    }
-
-    public void setColor(int color) {
-        paint.setColor(color);
-        Log.d("ShapeView", "Set color to " + color);
+    public void setShapeBuilder(ShapeBuilder shapeBuilder) {
+        currentShapeBuilder = shapeBuilder;
     }
 
 }
