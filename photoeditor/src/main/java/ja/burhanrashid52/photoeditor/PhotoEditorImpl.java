@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
-import static ja.burhanrashid52.photoeditor.BrushDrawingView.DEFAULT_BRUSH_SIZE;
-
 /**
  * <p>
  * This class in initialize by {@link PhotoEditor.Builder} using a builder pattern with multiple
@@ -47,7 +45,7 @@ class PhotoEditorImpl implements PhotoEditor {
     private final Typeface mDefaultEmojiTypeface;
     private final GraphicManager mGraphicManager;
     private final Context context;
-    private ShapeView shapeView;
+    private final ShapeView shapeView;
 
     @SuppressLint("ClickableViewAccessibility")
     protected PhotoEditorImpl(Builder builder) {
@@ -56,6 +54,7 @@ class PhotoEditorImpl implements PhotoEditor {
         this.imageView = builder.imageView;
         this.deleteView = builder.deleteView;
         this.brushDrawingView = builder.brushDrawingView;
+        this.shapeView = builder.shapeView;
         this.isTextPinchScalable = builder.isTextPinchScalable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
@@ -191,8 +190,18 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void setBrushDrawingMode(boolean brushDrawingMode) {
-        if (brushDrawingView != null)
+        parentView.useBrushView();
+        if (brushDrawingView != null) {
             brushDrawingView.setBrushDrawingMode(brushDrawingMode);
+        }
+    }
+
+    @Override
+    public void setShapeDrawingMode() {
+        parentView.useShapeView();
+        if (brushDrawingView != null) {
+            brushDrawingView.setBrushDrawingMode(false);
+        }
     }
 
     @Override
@@ -349,32 +358,8 @@ class PhotoEditorImpl implements PhotoEditor {
 
     // region Shape
     @Override
-    public void addShape(Shape shape) {
-        ShapeView view = new ShapeView(context);
-        view.setShape(shape);
-        shapeView = view;
-        setShapeSize(DEFAULT_BRUSH_SIZE);
-        parentView.addView(view);
-    }
-
-    @Override
-    public void setShapeSize(float size) {
-        if (shapeView != null)
-            shapeView.setSize(size);
-    }
-
-    @Override
-    public void setShapeOpacity(@IntRange(from = 0, to = 100) int opacity) {
-        if (shapeView != null) {
-            opacity = (int) ((opacity / 100.0) * 255.0);
-            shapeView.setOpacity(opacity);
-        }
-    }
-
-    @Override
-    public void setShapeColor(@ColorInt int color) {
-        if (shapeView != null)
-            shapeView.setColor(color);
+    public void updateShape(ShapeBuilder shapeBuilder) {
+        shapeView.setShapeBuilder(shapeBuilder);
     }
     // endregion
 

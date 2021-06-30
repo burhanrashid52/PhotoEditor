@@ -10,6 +10,4 @@ public interface Shape {
     void moveShape(float x, float y);
     void stopShape();
 
-    float TOUCH_TOLERANCE = 4;
 }
-

@@ -26,8 +26,7 @@ public class EditingToolsAdapter extends RecyclerView.Adapter<EditingToolsAdapte
     public EditingToolsAdapter(OnItemSelected onItemSelected) {
         mOnItemSelected = onItemSelected;
         mToolList.add(new ToolModel("Brush", R.drawable.ic_brush, ToolType.BRUSH));
-        mToolList.add(new ToolModel("Oval", R.drawable.ic_oval, ToolType.OVAL));
-        mToolList.add(new ToolModel("Rectangle", R.drawable.ic_rectangle, ToolType.RECTANGLE));
+        mToolList.add(new ToolModel("Shape", R.drawable.ic_oval, ToolType.SHAPE));
         mToolList.add(new ToolModel("Text", R.drawable.ic_text, ToolType.TEXT));
         mToolList.add(new ToolModel("Eraser", R.drawable.ic_eraser, ToolType.ERASER));
         mToolList.add(new ToolModel("Filter", R.drawable.ic_photo_filter, ToolType.FILTER));
@@ -80,12 +79,7 @@ public class EditingToolsAdapter extends RecyclerView.Adapter<EditingToolsAdapte
             super(itemView);
             imgToolIcon = itemView.findViewById(R.id.imgToolIcon);
             txtTool = itemView.findViewById(R.id.txtTool);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemSelected.onToolSelected(mToolList.get(getLayoutPosition()).mToolType);
-                }
-            });
+            itemView.setOnClickListener(v -> mOnItemSelected.onToolSelected(mToolList.get(getLayoutPosition()).mToolType));
         }
     }
 }
