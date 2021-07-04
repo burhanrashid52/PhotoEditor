@@ -34,6 +34,24 @@ public class TextStyleBuilder {
     }
 
     /**
+     * Set this textShadow style
+     *
+     * @param radius Radius of the shadow to apply on text
+     * @param dx Horizontal distance of the shadow
+     * @param dy Vertical distance of the shadow
+     * @param color Color of the shadow
+     */
+    public void withTextShadow(@NonNull float radius, float dx, float dy, int color) {
+        Map<String, Object> shadow = new HashMap<>();
+        shadow.put("RADIUS", radius);
+        shadow.put("DX", dx);
+        shadow.put("DY", dy);
+        shadow.put("COLOR", color);
+        values.put(TextStyle.SHADOW, shadow);
+
+    }
+
+    /**
      * Set this color style
      *
      * @param color Color to apply on text
@@ -117,6 +135,16 @@ public class TextStyleBuilder {
                 }
                 break;
 
+                case SHADOW: {
+                    final Map<String, Object> shadow = (Map) entry.getValue();
+                    final float radius = (float) shadow.get("RADIUS");
+                    final float dx = (float) shadow.get("DX");
+                    final float dy = (float) shadow.get("DY");
+                    final int color = (int) shadow.get("COLOR");
+                    applyTextShadow(textView, radius, dx, dy, color);
+                }
+                break;
+
                 case COLOR: {
                     final int color = (int) entry.getValue();
                     applyTextColor(textView, color);
@@ -188,6 +216,10 @@ public class TextStyleBuilder {
         textView.setTextSize(size);
     }
 
+    protected void applyTextShadow(TextView textView, float radius, float dx, float dy, int color) {
+        textView.setShadowLayer(radius, dx, dy, color);
+    }
+
     protected void applyTextColor(TextView textView, int color) {
         textView.setTextColor(color);
     }
@@ -252,6 +284,7 @@ public class TextStyleBuilder {
      */
     protected enum TextStyle {
         SIZE("TextSize"),
+        SHADOW("TextShadow"),
         COLOR("TextColor"),
         GRAVITY("Gravity"),
         FONT_FAMILY("FontFamily"),
