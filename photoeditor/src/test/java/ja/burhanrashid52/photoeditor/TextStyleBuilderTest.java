@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,12 @@ public class TextStyleBuilderTest {
         builder.withTextFont(Typeface.DEFAULT);
         builder.withBackgroundColor(321);
         builder.withTextAppearance(144);
+        
+        
+        builder.withTextStyle(Typeface.BOLD);
+        builder.withTextShadow(new TextShadow(5,5,5,123));
+        builder.withTextBorder(new TextBorder(5,123,5,123));
+        builder.withTextFlag(Paint.UNDERLINE_TEXT_FLAG);
 
         Assert.assertEquals(6, builder.getValues().size());
 
@@ -40,6 +47,11 @@ public class TextStyleBuilderTest {
 
         Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_APPEARANCE));
         Assert.assertEquals(144 , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_APPEARANCE));
+
+        Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_STYLE));
+        Assert.assertEquals(Typeface.DEFAULT , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_STYLE));
+
+
     }
 
     @Test
