@@ -1,23 +1,16 @@
-package ja.burhanrashid52.photoeditor;
+package ja.burhanrashid52.photoeditor.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class RectangleShape extends AbstractShape {
+public class LineShape extends AbstractShape {
 
     private float lastX, lastY;
 
     @Override
-    protected String getTag() { return "RectangleShape"; }
-
-    @Override
-    public void draw(Canvas canvas, Paint paint) {
-        canvas.drawPath(path, paint);
-    }
+    protected String getTag() { return "LineShape"; }
 
     @Override
     public void startShape(float x, float y) {
@@ -34,18 +27,16 @@ public class RectangleShape extends AbstractShape {
         float dx = Math.abs(x - lastX);
         float dy = Math.abs(y - lastY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            path = createRectanglePath();
+            path = createLinePath();
             lastX = x;
             lastY = y;
         }
     }
 
-    private @NonNull Path createRectanglePath() {
+    private @NonNull Path createLinePath() {
         Path path = new Path();
         path.moveTo(left, top);
-        path.lineTo(left, bottom);
         path.lineTo(right, bottom);
-        path.lineTo(right, top);
         path.close();
         return path;
     }

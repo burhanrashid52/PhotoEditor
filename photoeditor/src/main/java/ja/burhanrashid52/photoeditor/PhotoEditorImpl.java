@@ -13,11 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
+
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder;
 
 /**
  * <p>
@@ -36,7 +36,7 @@ class PhotoEditorImpl implements PhotoEditor {
     private final PhotoEditorViewState viewState;
     private final ImageView imageView;
     private final View deleteView;
-    private final BrushDrawingView brushDrawingView;
+    private final DrawingView drawingView;
     private final BrushDrawingStateListener mBrushDrawingStateListener;
     private final BoxHelper mBoxHelper;
     private OnPhotoEditorListener mOnPhotoEditorListener;
@@ -45,7 +45,6 @@ class PhotoEditorImpl implements PhotoEditor {
     private final Typeface mDefaultEmojiTypeface;
     private final GraphicManager mGraphicManager;
     private final Context context;
-    private final ShapeView shapeView;
 
     @SuppressLint("ClickableViewAccessibility")
     protected PhotoEditorImpl(Builder builder) {
@@ -53,8 +52,7 @@ class PhotoEditorImpl implements PhotoEditor {
         this.parentView = builder.parentView;
         this.imageView = builder.imageView;
         this.deleteView = builder.deleteView;
-        this.brushDrawingView = builder.brushDrawingView;
-        this.shapeView = builder.shapeView;
+        this.drawingView = builder.drawingView;
         this.isTextPinchScalable = builder.isTextPinchScalable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
@@ -64,7 +62,7 @@ class PhotoEditorImpl implements PhotoEditor {
         this.mBoxHelper = new BoxHelper(builder.parentView, this.viewState);
 
         mBrushDrawingStateListener = new BrushDrawingStateListener(builder.parentView, this.viewState);
-        this.brushDrawingView.setBrushViewChangeListener(mBrushDrawingStateListener);
+        this.drawingView.setBrushViewChangeListener(mBrushDrawingStateListener);
 
         final GestureDetector mDetector = new GestureDetector(
                 context,
@@ -115,7 +113,7 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void addText(String text, @Nullable TextStyleBuilder styleBuilder) {
-        brushDrawingView.setBrushDrawingMode(false);
+        drawingView.enableDrawing(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
         Text textGraphic = new Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager);
         textGraphic.buildView(text, styleBuilder);
@@ -157,7 +155,7 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void addEmoji(Typeface emojiTypeface, String emojiName) {
-        brushDrawingView.setBrushDrawingMode(false);
+        drawingView.enableDrawing(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         Emoji emoji = new Emoji(parentView, multiTouchListener, viewState, mGraphicManager, mDefaultEmojiTypeface);
         emoji.buildView(emojiTypeface, emojiName);
@@ -191,74 +189,14 @@ class PhotoEditorImpl implements PhotoEditor {
     @Override
     public void setBrushDrawingMode(boolean brushDrawingMode) {
         parentView.useBrushView();
-        if (brushDrawingView != null) {
-            brushDrawingView.setBrushDrawingMode(brushDrawingMode);
-        }
-    }
-
-    @Override
-    public void setShapeDrawingMode() {
-        parentView.useShapeView();
-        if (brushDrawingView != null) {
-            brushDrawingView.setBrushDrawingMode(false);
+        if (drawingView != null) {
+            drawingView.enableDrawing(brushDrawingMode);
         }
     }
 
     @Override
     public Boolean getBrushDrawableMode() {
-        return brushDrawingView != null && brushDrawingView.getBrushDrawingMode();
-    }
-
-    @Override
-    public void setBrushSize(float size) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushSize(size);
-    }
-
-    @Override
-    public void setOpacity(@IntRange(from = 0, to = 100) int opacity) {
-        if (brushDrawingView != null) {
-            opacity = (int) ((opacity / 100.0) * 255.0);
-            brushDrawingView.setOpacity(opacity);
-        }
-    }
-
-    @Override
-    public void setBrushColor(@ColorInt int color) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushColor(color);
-    }
-
-    @Override
-    public void setBrushEraserSize(float brushEraserSize) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushEraserSize(brushEraserSize);
-    }
-
-
-    @Override
-    public float getEraserSize() {
-        return brushDrawingView != null ? brushDrawingView.getEraserSize() : 0;
-    }
-
-    @Override
-    public float getBrushSize() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getBrushSize();
-        return 0;
-    }
-
-    @Override
-    public int getBrushColor() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getBrushColor();
-        return 0;
-    }
-
-    @Override
-    public void brushEraser() {
-        if (brushDrawingView != null)
-            brushDrawingView.brushEraser();
+        return drawingView != null && drawingView.isDrawingEnabled();
     }
 
     @Override
@@ -273,7 +211,7 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void clearAllViews() {
-        mBoxHelper.clearAllViews(brushDrawingView);
+        mBoxHelper.clearAllViews(drawingView);
     }
 
     @Override
@@ -359,7 +297,7 @@ class PhotoEditorImpl implements PhotoEditor {
     // region Shape
     @Override
     public void updateShape(ShapeBuilder shapeBuilder) {
-        shapeView.setShapeBuilder(shapeBuilder);
+        drawingView.setShapeBuilder(shapeBuilder);
     }
     // endregion
 

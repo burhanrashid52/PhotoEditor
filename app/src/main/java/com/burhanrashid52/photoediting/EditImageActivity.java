@@ -42,8 +42,8 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 import ja.burhanrashid52.photoeditor.SaveSettings;
-import ja.burhanrashid52.photoeditor.ShapeBuilder;
-import ja.burhanrashid52.photoeditor.ShapeType;
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder;
+import ja.burhanrashid52.photoeditor.shape.ShapeType;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 
@@ -357,21 +357,18 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onColorChanged(int colorCode) {
         mPhotoEditor.updateShape(mShapeBuilder.withShapeColor(colorCode));
-        mPhotoEditor.setBrushColor(colorCode);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onOpacityChanged(int opacity) {
         mPhotoEditor.updateShape(mShapeBuilder.withShapeOpacity(opacity));
-        mPhotoEditor.setOpacity(opacity);
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
-    public void onBrushSizeChanged(int brushSize) {
-        mPhotoEditor.updateShape(mShapeBuilder.withShapeSize(brushSize));
-        mPhotoEditor.setBrushSize(brushSize);
+    public void onShapeSizeChanged(int shapeSize) {
+        mPhotoEditor.updateShape(mShapeBuilder.withShapeSize(shapeSize));
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
@@ -417,13 +414,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onToolSelected(ToolType toolType) {
         switch (toolType) {
-            case BRUSH:
-                mPhotoEditor.setBrushDrawingMode(true);
-                mTxtCurrentTool.setText(R.string.label_brush);
-                showBottomSheetDialogFragment(mPropertiesBSFragment);
-                break;
             case SHAPE:
-                mPhotoEditor.setShapeDrawingMode();
+                mPhotoEditor.setBrushDrawingMode(true);
                 mShapeBuilder = new ShapeBuilder();
                 mPhotoEditor.updateShape(mShapeBuilder);
                 mTxtCurrentTool.setText(R.string.label_shape);
@@ -438,10 +430,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     mPhotoEditor.addText(inputText, styleBuilder);
                     mTxtCurrentTool.setText(R.string.label_text);
                 });
-                break;
-            case ERASER:
-                mPhotoEditor.brushEraser();
-                mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;
             case FILTER:
                 mTxtCurrentTool.setText(R.string.label_filter);

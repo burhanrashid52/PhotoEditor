@@ -24,7 +24,7 @@ public class PropertiesBSFragment extends BottomSheetDialogFragment implements S
 
         void onOpacityChanged(int opacity);
 
-        void onBrushSizeChanged(int brushSize);
+        void onShapeSizeChanged(int shapeSize);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class PropertiesBSFragment extends BottomSheetDialogFragment implements S
                 break;
             case R.id.sbSize:
                 if (mProperties != null) {
-                    mProperties.onBrushSizeChanged(i);
+                    mProperties.onShapeSizeChanged(i);
                 }
                 break;
         }

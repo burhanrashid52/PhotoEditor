@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import ja.burhanrashid52.photoeditor.ShapeType;
+import ja.burhanrashid52.photoeditor.shape.ShapeType;
 
 public class ShapeBSFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
@@ -29,7 +29,7 @@ public class ShapeBSFragment extends BottomSheetDialogFragment implements SeekBa
 
         void onOpacityChanged(int opacity);
 
-        void onBrushSizeChanged(int brushSize);
+        void onShapeSizeChanged(int shapeSize);
 
         void onShapePicked(ShapeType shapeType);
     }
@@ -54,12 +54,14 @@ public class ShapeBSFragment extends BottomSheetDialogFragment implements SeekBa
 
         // shape picker
         shapeGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.ovalRadioButton) {
+            if (checkedId == R.id.lineRadioButton) {
+                mProperties.onShapePicked(ShapeType.LINE);
+            } else if (checkedId == R.id.ovalRadioButton) {
                 mProperties.onShapePicked(ShapeType.OVAL);
             } else if (checkedId == R.id.rectRadioButton) {
                 mProperties.onShapePicked(ShapeType.RECTANGLE);
             } else {
-                mProperties.onShapePicked(ShapeType.LINE);
+                mProperties.onShapePicked(ShapeType.BRUSH);
             }
         });
 
@@ -93,7 +95,7 @@ public class ShapeBSFragment extends BottomSheetDialogFragment implements SeekBa
                 break;
             case R.id.shapeSize:
                 if (mProperties != null) {
-                    mProperties.onBrushSizeChanged(i);
+                    mProperties.onShapeSizeChanged(i);
                 }
                 break;
         }

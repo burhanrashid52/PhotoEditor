@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
 
 /**
  * <p>
- * This ViewGroup will have the {@link BrushDrawingView} to draw paint on it with {@link ImageView}
+ * This ViewGroup will have the {@link DrawingView} to draw paint on it with {@link ImageView}
  * which our source image
  * </p>
  *
@@ -32,10 +32,9 @@ public class PhotoEditorView extends RelativeLayout {
     private static final String TAG = "PhotoEditorView";
 
     private FilterImageView mImgSource;
-    private BrushDrawingView mBrushDrawingView;
-    private ShapeView mShapeView;
+    private DrawingView mDrawingView;
     private ImageFilterView mImageFilterView;
-    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3, shapeSrcId = 4;
+    private static final int imgSrcId = 1, shapeSrcId = 2, glFilterId = 3;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -75,14 +74,10 @@ public class PhotoEditorView extends RelativeLayout {
             }
         }
 
-        //Setup brush view
-        mBrushDrawingView = new BrushDrawingView(getContext());
-        mBrushDrawingView.setVisibility(GONE);
-        mBrushDrawingView.setId(brushSrcId);
-
-        // Setup shape view
-        mShapeView = new ShapeView(getContext());
-        mShapeView.setId(shapeSrcId);
+        //Setup drawing view
+        mDrawingView = new DrawingView(getContext());
+        mDrawingView.setVisibility(GONE);
+        mDrawingView.setId(shapeSrcId);
 
         //Align brush to the size of image view
         RelativeLayout.LayoutParams brushParam = new RelativeLayout.LayoutParams(
@@ -120,10 +115,7 @@ public class PhotoEditorView extends RelativeLayout {
         addView(mImageFilterView, imgFilterParam);
 
         //Add brush view
-        addView(mBrushDrawingView, brushParam);
-
-        //Add shape view
-        addView(mShapeView, brushParam);
+        addView(mDrawingView, brushParam);
     }
 
 
@@ -136,8 +128,8 @@ public class PhotoEditorView extends RelativeLayout {
         return mImgSource;
     }
 
-    BrushDrawingView getBrushDrawingView() {
-        return mBrushDrawingView;
+    DrawingView getDrawingView() {
+        return mDrawingView;
     }
 
 
@@ -174,17 +166,8 @@ public class PhotoEditorView extends RelativeLayout {
         mImageFilterView.setFilterEffect(customEffect);
     }
 
-    // region Shape
-    ShapeView getShapeView() {
-        return mShapeView;
-    }
-
     public void useBrushView() {
-        mBrushDrawingView.bringToFront();
-    }
-
-    public void useShapeView() {
-        mShapeView.bringToFront();
+        mDrawingView.bringToFront();
     }
 
     // endregion

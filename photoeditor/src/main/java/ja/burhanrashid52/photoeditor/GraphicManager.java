@@ -67,9 +67,9 @@ class GraphicManager {
             View removeView = mViewState.getAddedView(
                     mViewState.getAddedViewsCount() - 1
             );
-            if (removeView instanceof BrushDrawingView) {
-                BrushDrawingView brushDrawingView = (BrushDrawingView) removeView;
-                return brushDrawingView.undo();
+            if (removeView instanceof DrawingView) {
+                DrawingView drawingView = (DrawingView) removeView;
+                return drawingView.undo();
             } else {
                 mViewState.removeAddedView(mViewState.getAddedViewsCount() - 1);
                 mViewGroup.removeView(removeView);
@@ -93,9 +93,9 @@ class GraphicManager {
             View redoView = mViewState.getRedoView(
                     mViewState.getRedoViewsCount() - 1
             );
-            if (redoView instanceof BrushDrawingView) {
-                BrushDrawingView brushDrawingView = (BrushDrawingView) redoView;
-                return brushDrawingView.redo();
+            if (redoView instanceof DrawingView) {
+                DrawingView drawingView = (DrawingView) redoView;
+                return drawingView.redo();
             } else {
                 mViewState.popRedoView();
                 mViewGroup.addView(redoView);

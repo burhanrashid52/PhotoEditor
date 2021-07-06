@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor;
+package ja.burhanrashid52.photoeditor.shape;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

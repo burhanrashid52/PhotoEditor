@@ -31,12 +31,12 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     OnSaveBitmap mOnSaveBitmap;
     private final PhotoEditorView mPhotoEditorView;
     private final BoxHelper mBoxHelper;
-    private final BrushDrawingView mBrushDrawingView;
+    private final DrawingView mDrawingView;
 
 
     public PhotoSaverTask(PhotoEditorView photoEditorView, BoxHelper boxHelper) {
         mPhotoEditorView = photoEditorView;
-        mBrushDrawingView = photoEditorView.getBrushDrawingView();
+        mDrawingView = photoEditorView.getDrawingView();
         mBoxHelper = boxHelper;
         mSaveSettings = new SaveSettings.Builder().build();
     }
@@ -57,7 +57,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     protected void onPreExecute() {
         super.onPreExecute();
         mBoxHelper.clearHelperBox();
-        mBrushDrawingView.destroyDrawingCache();
+        mDrawingView.destroyDrawingCache();
     }
 
     @SuppressLint("MissingPermission")
@@ -122,7 +122,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         if (exception == null) {
             //Clear all views if its enabled in save settings
             if (mSaveSettings.isClearViewsEnabled()) {
-                mBoxHelper.clearAllViews(mBrushDrawingView);
+                mBoxHelper.clearAllViews(mDrawingView);
             }
             if (mOnSaveListener != null) {
                 assert imagePath != null;
@@ -139,7 +139,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         Bitmap bitmap = saveResult.mBitmap;
         if (bitmap != null) {
             if (mSaveSettings.isClearViewsEnabled()) {
-                mBoxHelper.clearAllViews(mBrushDrawingView);
+                mBoxHelper.clearAllViews(mDrawingView);
             }
             if (mOnSaveBitmap != null) {
                 mOnSaveBitmap.onBitmapReady(bitmap);

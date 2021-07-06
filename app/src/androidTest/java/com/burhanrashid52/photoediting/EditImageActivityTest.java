@@ -58,7 +58,7 @@ public class EditImageActivityTest {
     public void checkIfBrushIsEnabledWhenClickedOnBrushTool() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         assertFalse(editImageActivity.mPhotoEditor.getBrushDrawableMode());
-        onView(withText(R.string.label_brush)).perform(click());
+        onView(withText(R.string.label_shape)).perform(click());
         assertTrue(editImageActivity.mPhotoEditor.getBrushDrawableMode());
     }
 
@@ -67,13 +67,6 @@ public class EditImageActivityTest {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         onView(withText(R.string.label_shape)).perform(click());
         onView(withText(R.string.label_shape)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void checkIfEraserIsEnabledWhenClickedOnEraserTool() {
-        mActivityRule.launchActivity(null);
-        onView(withText(R.string.label_eraser)).perform(click());
-        onView(withText(R.string.label_eraser_mode)).check(matches(isDisplayed()));
     }
 
     @Test
