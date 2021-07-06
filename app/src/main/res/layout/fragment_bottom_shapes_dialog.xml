@@ -17,10 +17,16 @@
         app:layout_constraintTop_toBottomOf="@id/shapeType">
 
         <RadioButton
-            android:id="@+id/lineRadioButton"
+            android:id="@+id/brushRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:text="@string/label_brush" />
+
+        <RadioButton
+            android:id="@+id/lineRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/label_line" />
 
         <RadioButton

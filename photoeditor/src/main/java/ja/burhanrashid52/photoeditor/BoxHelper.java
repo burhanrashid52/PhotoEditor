@@ -34,17 +34,17 @@ class BoxHelper {
         mViewState.clearCurrentSelectedView();
     }
 
-    public void clearAllViews(BrushDrawingView brushDrawingView) {
+    public void clearAllViews(DrawingView drawingView) {
         for (int i = 0; i < mViewState.getAddedViewsCount(); i++) {
             mViewGroup.removeView(mViewState.getAddedView(i));
         }
-        if (mViewState.containsAddedView(brushDrawingView)) {
-            mViewGroup.addView(brushDrawingView);
+        if (mViewState.containsAddedView(drawingView)) {
+            mViewGroup.addView(drawingView);
         }
         mViewState.clearAddedViews();
         mViewState.clearRedoViews();
 
-        if (brushDrawingView != null)
-            brushDrawingView.clearAll();
+        if (drawingView != null)
+            drawingView.clearAll();
     }
 }

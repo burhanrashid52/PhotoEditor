@@ -1,12 +1,10 @@
-package ja.burhanrashid52.photoeditor;
+package ja.burhanrashid52.photoeditor.shape;
 
 import android.graphics.Color;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntRange;
 
-import static ja.burhanrashid52.photoeditor.BrushDrawingView.DEFAULT_BRUSH_SIZE;
-import static ja.burhanrashid52.photoeditor.BrushDrawingView.DEFAULT_OPACITY;
 
 /**
  * <p>
@@ -14,6 +12,11 @@ import static ja.burhanrashid52.photoeditor.BrushDrawingView.DEFAULT_OPACITY;
  * </p>
  */
 public class ShapeBuilder {
+
+    public static final float DEFAULT_SHAPE_SIZE = 25.0f;
+    public static final int DEFAULT_SHAPE_OPACITY = 255;
+    public static final int DEFAULT_SHAPE_COLOR = Color.BLACK;
+
 
     private ShapeType currentShapeType;
     private float currentShapeSize;
@@ -23,10 +26,10 @@ public class ShapeBuilder {
 
     public ShapeBuilder() {
         // default values
-        withShapeType(ShapeType.LINE);
-        withShapeSize(DEFAULT_BRUSH_SIZE);
-        withShapeOpacity(DEFAULT_OPACITY);
-        withShapeColor(Color.BLACK);
+        withShapeType(ShapeType.BRUSH);
+        withShapeSize(DEFAULT_SHAPE_SIZE);
+        withShapeOpacity(DEFAULT_SHAPE_OPACITY);
+        withShapeColor(DEFAULT_SHAPE_COLOR);
     }
 
     public ShapeBuilder withShapeType(ShapeType shapeType) {

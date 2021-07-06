@@ -1,24 +1,16 @@
-package ja.burhanrashid52.photoeditor;
+package ja.burhanrashid52.photoeditor.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class OvalShape extends AbstractShape {
+public class RectangleShape extends AbstractShape {
 
     private float lastX, lastY;
 
     @Override
-    protected String getTag() { return "OvalShape"; }
-
-    @Override
-    public void draw(Canvas canvas, Paint paint) {
-        canvas.drawPath(path, paint);
-    }
+    protected String getTag() { return "RectangleShape"; }
 
     @Override
     public void startShape(float x, float y) {
@@ -35,17 +27,18 @@ public class OvalShape extends AbstractShape {
         float dx = Math.abs(x - lastX);
         float dy = Math.abs(y - lastY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            path = createOvalPath();
+            path = createRectanglePath();
             lastX = x;
             lastY = y;
         }
     }
 
-    private @NonNull Path createOvalPath() {
-        RectF rect = new RectF(left, top, right, bottom);
+    private @NonNull Path createRectanglePath() {
         Path path = new Path();
         path.moveTo(left, top);
-        path.addOval(rect, Path.Direction.CW);
+        path.lineTo(left, bottom);
+        path.lineTo(right, bottom);
+        path.lineTo(right, top);
         path.close();
         return path;
     }
@@ -54,4 +47,5 @@ public class OvalShape extends AbstractShape {
     public void stopShape() {
         Log.d(getTag(), "stopShape");
     }
+
 }

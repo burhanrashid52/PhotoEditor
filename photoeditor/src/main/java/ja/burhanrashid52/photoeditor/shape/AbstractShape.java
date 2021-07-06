@@ -1,5 +1,7 @@
-package ja.burhanrashid52.photoeditor;
+package ja.burhanrashid52.photoeditor.shape;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 
@@ -10,6 +12,11 @@ abstract public class AbstractShape implements Shape {
     protected Path path = new Path();
     protected float left, top, right, bottom;
     protected abstract String getTag();
+
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
+        canvas.drawPath(path, paint);
+    }
 
     public RectF getBounds() {
         RectF bounds = new RectF();

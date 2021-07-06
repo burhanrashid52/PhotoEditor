@@ -9,12 +9,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
+
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder;
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
@@ -114,72 +114,9 @@ public interface PhotoEditor {
     void setBrushDrawingMode(boolean brushDrawingMode);
 
     /**
-     * Enable/Disable drawing mode to add shapes on {@link PhotoEditorView}
-     */
-    void setShapeDrawingMode();
-
-    /**
      * @return true is brush mode is enabled
      */
     Boolean getBrushDrawableMode();
-
-    /**
-     * set the size of brush user want to paint on canvas i.e {@link BrushDrawingView}
-     *
-     * @param size size of brush
-     */
-    void setBrushSize(float size);
-
-    /**
-     * set opacity/transparency of brush while painting on {@link BrushDrawingView}
-     *
-     * @param opacity opacity is in form of percentage
-     */
-    void setOpacity(@IntRange(from = 0, to = 100) int opacity);
-
-    /**
-     * set brush color which user want to paint
-     *
-     * @param color color value for paint
-     */
-    void setBrushColor(@ColorInt int color);
-
-    /**
-     * set the eraser size
-     * <br></br>
-     * <b>Note :</b> Eraser size is different from the normal brush size
-     *
-     * @param brushEraserSize size of eraser
-     */
-    void setBrushEraserSize(float brushEraserSize);
-
-    /**
-     * @return provide the size of eraser
-     * @see PhotoEditor#setBrushEraserSize(float)
-     */
-    float getEraserSize();
-
-    /**
-     * @return provide the size of eraser
-     * @see PhotoEditor#setBrushSize(float)
-     */
-    float getBrushSize();
-
-    /**
-     * @return provide the size of eraser
-     * @see PhotoEditor#setBrushColor(int)
-     */
-    int getBrushColor();
-
-    /**
-     * <p>
-     * Its enables eraser mode after that whenever user drags on screen this will erase the existing
-     * paint
-     * <br>
-     * <b>Note</b> : This eraser will work on paint views only
-     * <p>
-     */
-    void brushEraser();
 
     /**
      * Undo the last operation perform on the {@link PhotoEditor}
@@ -291,8 +228,7 @@ public interface PhotoEditor {
         PhotoEditorView parentView;
         ImageView imageView;
         View deleteView;
-        BrushDrawingView brushDrawingView;
-        ShapeView shapeView;
+        DrawingView drawingView;
         Typeface textTypeface;
         Typeface emojiTypeface;
         // By default, pinch-to-scale is enabled for text
@@ -309,8 +245,7 @@ public interface PhotoEditor {
             this.context = context;
             parentView = photoEditorView;
             imageView = photoEditorView.getSource();
-            brushDrawingView = photoEditorView.getBrushDrawingView();
-            shapeView = photoEditorView.getShapeView();
+            drawingView = photoEditorView.getDrawingView();
         }
 
         Builder setDeleteView(View deleteView) {

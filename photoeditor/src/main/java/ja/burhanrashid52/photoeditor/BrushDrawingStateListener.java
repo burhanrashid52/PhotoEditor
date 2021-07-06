@@ -26,11 +26,11 @@ public class BrushDrawingStateListener implements BrushViewChangeListener {
     }
 
     @Override
-    public void onViewAdd(BrushDrawingView brushDrawingView) {
+    public void onViewAdd(DrawingView drawingView) {
         if (mViewState.getRedoViewsCount() > 0) {
             mViewState.popRedoView();
         }
-        mViewState.addAddedView(brushDrawingView);
+        mViewState.addAddedView(drawingView);
         if (mOnPhotoEditorListener != null) {
             mOnPhotoEditorListener.onAddViewListener(
                     ViewType.BRUSH_DRAWING,
@@ -40,12 +40,12 @@ public class BrushDrawingStateListener implements BrushViewChangeListener {
     }
 
     @Override
-    public void onViewRemoved(BrushDrawingView brushDrawingView) {
+    public void onViewRemoved(DrawingView drawingView) {
         if (mViewState.getAddedViewsCount() > 0) {
             View removeView = mViewState.removeAddedView(
                     mViewState.getAddedViewsCount() - 1
             );
-            if (!(removeView instanceof BrushDrawingView)) {
+            if (!(removeView instanceof DrawingView)) {
                 mPhotoEditorView.removeView(removeView);
             }
             mViewState.pushRedoView(removeView);
