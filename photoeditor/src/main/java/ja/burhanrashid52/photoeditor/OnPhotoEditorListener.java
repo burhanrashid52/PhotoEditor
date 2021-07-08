@@ -50,6 +50,13 @@ public interface OnPhotoEditorListener {
      */
     void onStartViewChangeListener(ViewType viewType);
 
+    /**
+     * A callback when a user moves *or* resizes a view which can be
+     * any of {@link ViewType}
+     *
+     * @param viewType
+     */
+    void onMoveViewChangeListener(ViewType viewType);
 
     /**
      * A callback when user stop/up touching a view which can be
@@ -58,4 +65,22 @@ public interface OnPhotoEditorListener {
      * @param viewType enum which define type of view is added
      */
     void onStopViewChangeListener(ViewType viewType);
+
+    /**
+     * This is a callback when user rotates all views on the {@link PhotoEditorView}
+     *
+     */
+    void onRotateViewListener();
+
+    /**
+     * This is a callback when user mirrors any view on the {@link PhotoEditorView}
+     */
+    void onMirrorViewListener();
+
+    /**
+     * A callback when user focusing on a sticker
+     *
+     * @param view view that is in focus.
+     */
+    void onInFocusViewChangeListener(View view);
 }

@@ -1,9 +1,9 @@
 package ja.burhanrashid52.photoeditor;
 
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 /**
  * Created by Burhanuddin Rashid on 18/05/21.
@@ -11,22 +11,22 @@ import android.widget.ImageView;
  * @author <https://github.com/burhanrashid52>
  */
 class BoxHelper {
-    private final ViewGroup mViewGroup;
+    private final RelativeLayout mCanvasView;
     private final PhotoEditorViewState mViewState;
 
-    public BoxHelper(ViewGroup viewGroup, PhotoEditorViewState viewState) {
-        mViewGroup = viewGroup;
+    public BoxHelper(RelativeLayout canvasView, PhotoEditorViewState viewState) {
+        mCanvasView = canvasView;
         mViewState = viewState;
     }
 
     void clearHelperBox() {
-        for (int i = 0; i < mViewGroup.getChildCount(); i++) {
-            View childAt = mViewGroup.getChildAt(i);
+        for (int i = 0; i < mCanvasView.getChildCount(); i++) {
+            View childAt = mCanvasView.getChildAt(i);
             FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
             if (frmBorder != null) {
                 frmBorder.setBackgroundResource(0);
             }
-            ImageView imgClose = childAt.findViewById(R.id.imgPhotoEditorClose);
+            ImageView imgClose = null;
             if (imgClose != null) {
                 imgClose.setVisibility(View.GONE);
             }
@@ -36,10 +36,10 @@ class BoxHelper {
 
     public void clearAllViews(BrushDrawingView brushDrawingView) {
         for (int i = 0; i < mViewState.getAddedViewsCount(); i++) {
-            mViewGroup.removeView(mViewState.getAddedView(i));
+            mCanvasView.removeView(mViewState.getAddedView(i));
         }
         if (mViewState.containsAddedView(brushDrawingView)) {
-            mViewGroup.addView(brushDrawingView);
+            mCanvasView.addView(brushDrawingView);
         }
         mViewState.clearAddedViews();
         mViewState.clearRedoViews();

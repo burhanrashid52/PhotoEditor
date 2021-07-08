@@ -3,25 +3,29 @@ package ja.burhanrashid52.photoeditor;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 /**
  * Tracked state of user-added views (stickers, emoji, text, etc)
  */
-class PhotoEditorViewState {
+public class PhotoEditorViewState {
 
     private View currentSelectedView;
     private List<View> addedViews;
     private Stack<View> redoViews;
+    private Map<View, MultiTouchListener> multiTouchListenerByView;
 
     PhotoEditorViewState() {
         this.currentSelectedView = null;
         this.addedViews = new ArrayList<>();
         this.redoViews = new Stack<>();
+        this.multiTouchListenerByView = new HashMap<>();
     }
 
-    View getCurrentSelectedView() {
+    public View getCurrentSelectedView() {
         return currentSelectedView;
     }
 
@@ -29,7 +33,7 @@ class PhotoEditorViewState {
         this.currentSelectedView = currentSelectedView;
     }
 
-    void clearCurrentSelectedView() {
+    public void clearCurrentSelectedView() {
         this.currentSelectedView = null;
     }
 
@@ -94,5 +98,9 @@ class PhotoEditorViewState {
 
     View getRedoView(int index) {
         return redoViews.get(index);
+    }
+
+    public Map<View, MultiTouchListener> getMultiTouchListenerByView() {
+        return multiTouchListenerByView;
     }
 }

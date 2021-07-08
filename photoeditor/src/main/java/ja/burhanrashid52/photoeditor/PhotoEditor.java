@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -28,7 +29,7 @@ public interface PhotoEditor {
      *
      * @param desiredImage bitmap image you want to add
      */
-    void addImage(Bitmap desiredImage);
+    View addImage(Bitmap desiredImage);
 
     /**
      * This add the text on the {@link PhotoEditorView} with provided parameters
@@ -38,7 +39,7 @@ public interface PhotoEditor {
      * @param colorCodeTextView text color to be displayed
      */
     @SuppressLint("ClickableViewAccessibility")
-    void addText(String text, int colorCodeTextView);
+    View addText(String text, int colorCodeTextView);
 
     /**
      * This add the text on the {@link PhotoEditorView} with provided parameters
@@ -49,7 +50,7 @@ public interface PhotoEditor {
      * @param colorCodeTextView text color to be displayed
      */
     @SuppressLint("ClickableViewAccessibility")
-    void addText(@Nullable Typeface textTypeface, String text, int colorCodeTextView);
+    View addText(@Nullable Typeface textTypeface, String text, int colorCodeTextView);
 
     /**
      * This add the text on the {@link PhotoEditorView} with provided parameters
@@ -59,7 +60,7 @@ public interface PhotoEditor {
      * @param styleBuilder text style builder with your style
      */
     @SuppressLint("ClickableViewAccessibility")
-    void addText(String text, @Nullable TextStyleBuilder styleBuilder);
+    View addText(String text, @Nullable TextStyleBuilder styleBuilder);
 
     /**
      * This will update text and color on provided view
@@ -95,7 +96,7 @@ public interface PhotoEditor {
      *
      * @param emojiName unicode in form of string to display emoji
      */
-    void addEmoji(String emojiName);
+    View addEmoji(String emojiName);
 
     /**
      * Adds emoji to the {@link PhotoEditorView} which you drag,rotate and scale using pinch
@@ -104,7 +105,7 @@ public interface PhotoEditor {
      * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
      * @param emojiName     unicode in form of string to display emoji
      */
-    void addEmoji(Typeface emojiTypeface, String emojiName);
+    View addEmoji(Typeface emojiTypeface, String emojiName);
 
     /**
      * Enable/Disable drawing mode to draw on {@link PhotoEditorView}
@@ -277,15 +278,29 @@ public interface PhotoEditor {
      */
     boolean isCacheEmpty();
 
+    // NOTE(cheng): Added, departure from root.
+    void rotateImage(float rotation);
+    void removeInFocusView();
+    void mirrorInFocusView();
+    void unfocusView();
+    boolean getMainImageLockValue();
+    void lockMainImage();
+    void unlockMainImage();
+    PhotoEditorViewState getViewState();
+
     /**
      * Builder pattern to define {@link PhotoEditor} Instance
      */
     class Builder {
 
         Context context;
-        PhotoEditorView parentView;
+        PhotoEditorView editorView;
+        RelativeLayout parentView;
+        RelativeLayout canvasView;
         ImageView imageView;
         View deleteView;
+        ImageView overlayView;
+        ImageView backgroundView;
         BrushDrawingView brushDrawingView;
         Typeface textTypeface;
         Typeface emojiTypeface;
@@ -301,8 +316,12 @@ public interface PhotoEditor {
          */
         public Builder(Context context, PhotoEditorView photoEditorView) {
             this.context = context;
-            parentView = photoEditorView;
+            editorView = photoEditorView;
+            parentView = photoEditorView.getParentLayout();
+            canvasView = photoEditorView.getCanvasLayout();
             imageView = photoEditorView.getSource();
+            overlayView = photoEditorView.getImageOverlayView();
+            backgroundView = photoEditorView.getBackgroundView();
             brushDrawingView = photoEditorView.getBrushDrawingView();
         }
 

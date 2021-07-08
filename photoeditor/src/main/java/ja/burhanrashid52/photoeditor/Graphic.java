@@ -3,15 +3,15 @@ package ja.burhanrashid52.photoeditor;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
  * @author <https://github.com/burhanrashid52>
  */
-abstract class Graphic {
+public abstract class Graphic {
 
     private final View mRootView;
 
@@ -50,7 +50,7 @@ abstract class Graphic {
         //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
         final ViewType viewType = getViewType();
         rootView.setTag(viewType);
-        final ImageView imgClose = rootView.findViewById(R.id.imgPhotoEditorClose);
+        final ImageView imgClose = null;
         if (imgClose != null) {
             imgClose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -63,7 +63,7 @@ abstract class Graphic {
 
     protected void toggleSelection() {
         View frmBorder = mRootView.findViewById(R.id.frmBorder);
-        View imgClose = mRootView.findViewById(R.id.imgPhotoEditorClose);
+        View imgClose = null;
         if (frmBorder != null) {
             frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
             frmBorder.setTag(true);
@@ -73,20 +73,43 @@ abstract class Graphic {
         }
     }
 
-    protected MultiTouchListener.OnGestureControl buildGestureController(final ViewGroup viewGroup, final PhotoEditorViewState viewState) {
-        final BoxHelper boxHelper = new BoxHelper(viewGroup, viewState);
+    protected MultiTouchListener.OnGestureControl buildGestureController(
+            final RelativeLayout canvasView,
+            final PhotoEditorViewState viewState,
+            final OnPhotoEditorListener mOnPhotoEditorListener
+    ) {
+        final BoxHelper boxHelper = new BoxHelper(canvasView, viewState);
         return new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
                 boxHelper.clearHelperBox();
                 toggleSelection();
+
                 // Change the in-focus view
                 viewState.setCurrentSelectedView(mRootView);
+                if (mOnPhotoEditorListener != null)
+                    mOnPhotoEditorListener.onInFocusViewChangeListener(mRootView);
             }
 
             @Override
             public void onLongClick() {
                 updateView(mRootView);
+            }
+
+            @Override
+            public void onDown() {
+
+            }
+
+            @Override
+            public void onFling() {
+                boxHelper.clearHelperBox();
+                toggleSelection();
+
+                // Change the in-focus view
+                viewState.setCurrentSelectedView(mRootView);
+                if (mOnPhotoEditorListener != null)
+                    mOnPhotoEditorListener.onInFocusViewChangeListener(mRootView);
             }
         };
     }

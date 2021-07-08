@@ -3,7 +3,7 @@ package ja.burhanrashid52.photoeditor;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -15,18 +15,22 @@ class Emoji extends Graphic {
 
     private final MultiTouchListener mMultiTouchListener;
     private final Typeface mDefaultEmojiTypeface;
-    private final ViewGroup mPhotoEditorView;
+    private final OnPhotoEditorListener mOnPhotoEditorListener;
+    private final RelativeLayout mCanvasView;
     private final PhotoEditorViewState mViewState;
     private TextView txtEmoji;
 
-    public Emoji(ViewGroup photoEditorView,
+    public Emoji(RelativeLayout canvasView,
                  MultiTouchListener multiTouchListener,
+                 PhotoEditorView photoEditorView,
                  PhotoEditorViewState viewState,
+                 OnPhotoEditorListener onPhotoEditorListener,
                  GraphicManager graphicManager,
                  Typeface defaultEmojiTypeface
     ) {
         super(photoEditorView.getContext(), graphicManager);
-        mPhotoEditorView = photoEditorView;
+        mCanvasView = canvasView;
+        mOnPhotoEditorListener = onPhotoEditorListener;
         mViewState = viewState;
         mMultiTouchListener = multiTouchListener;
         mDefaultEmojiTypeface = defaultEmojiTypeface;
@@ -42,7 +46,11 @@ class Emoji extends Graphic {
     }
 
     private void setupGesture() {
-        MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
+        MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(
+                mCanvasView,
+                mViewState,
+                mOnPhotoEditorListener
+        );
         mMultiTouchListener.setOnGestureControl(onGestureControl);
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);

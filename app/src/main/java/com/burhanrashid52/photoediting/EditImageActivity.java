@@ -221,8 +221,28 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     @Override
+    public void onMoveViewChangeListener(ViewType viewType) {
+
+    }
+
+    @Override
     public void onStopViewChangeListener(ViewType viewType) {
         Log.d(TAG, "onStopViewChangeListener() called with: viewType = [" + viewType + "]");
+    }
+
+    @Override
+    public void onRotateViewListener() {
+
+    }
+
+    @Override
+    public void onMirrorViewListener() {
+
+    }
+
+    @Override
+    public void onInFocusViewChangeListener(View view) {
+
     }
 
     @SuppressLint("NonConstantResourceId")

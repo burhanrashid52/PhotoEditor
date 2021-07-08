@@ -3,8 +3,8 @@ package ja.burhanrashid52.photoeditor;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
@@ -16,19 +16,23 @@ class Text extends Graphic {
     private final MultiTouchListener mMultiTouchListener;
     private final Typeface mDefaultTextTypeface;
     private final GraphicManager mGraphicManager;
-    private final ViewGroup mPhotoEditorView;
+    private final OnPhotoEditorListener mOnPhotoEditorListener;
+    private final RelativeLayout mCanvasView;
     private final PhotoEditorViewState mViewState;
     private TextView mTextView;
 
-    public Text(ViewGroup photoEditorView,
+    public Text(RelativeLayout canvasView,
+                PhotoEditorView photoEditorView,
                 MultiTouchListener multiTouchListener,
                 PhotoEditorViewState viewState,
+                OnPhotoEditorListener onPhotoEditorListener,
                 Typeface defaultTextTypeface,
                 GraphicManager graphicManager
     ) {
         super(photoEditorView.getContext(), graphicManager);
-        mPhotoEditorView = photoEditorView;
+        mCanvasView = canvasView;
         mViewState = viewState;
+        mOnPhotoEditorListener = onPhotoEditorListener;
         mMultiTouchListener = multiTouchListener;
         mDefaultTextTypeface = defaultTextTypeface;
         mGraphicManager = graphicManager;
@@ -42,7 +46,11 @@ class Text extends Graphic {
     }
 
     private void setupGesture() {
-        MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(mPhotoEditorView, mViewState);
+        MultiTouchListener.OnGestureControl onGestureControl = buildGestureController(
+                mCanvasView,
+                mViewState,
+                mOnPhotoEditorListener
+        );
         mMultiTouchListener.setOnGestureControl(onGestureControl);
         View rootView = getRootView();
         rootView.setOnTouchListener(mMultiTouchListener);

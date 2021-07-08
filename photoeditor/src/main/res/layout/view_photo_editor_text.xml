@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="#000000">
 
     <FrameLayout
         android:id="@+id/frmBorder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="60dp"
         android:background="@drawable/rounded_border_tv">
 
         <TextView
             android:id="@+id/tvPhotoEditorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="12dp"
             android:textColor="#000000"
             android:textSize="18sp"
+            android:padding="5dp"
             tools:text="Burhanuddin"
             tools:textColor="@android:color/black" />
-
     </FrameLayout>
 
     <ImageView
-        android:id="@+id/imgPhotoEditorClose"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:id="@+id/imgHandleTopLeft"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="top|start"
-        android:elevation="1dp"
-        android:src="@drawable/ic_remove" />
-
+        android:src="@drawable/ic_zoom_reverse" />
+    <ImageView
+        android:id="@+id/imgHandleTopRight"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="top|end"
+        android:src="@drawable/ic_zoom_forward" />
+    <ImageView
+        android:id="@+id/imgHandleBottomRight"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_zoom_reverse"
+        />
+    <ImageView
+        android:id="@+id/imgHandleBottomLeft"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|start"
+        android:src="@drawable/ic_zoom_forward" />
 </FrameLayout>

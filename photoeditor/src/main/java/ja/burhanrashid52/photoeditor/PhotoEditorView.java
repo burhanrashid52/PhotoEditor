@@ -27,14 +27,16 @@ import android.widget.RelativeLayout;
  * @since 1/18/2018
  */
 
-public class PhotoEditorView extends RelativeLayout {
+public class PhotoEditorView extends ZoomLayout {
 
     private static final String TAG = "PhotoEditorView";
 
     private FilterImageView mImgSource;
+    private ImageView mImageOverlay, mImageBackground;
     private BrushDrawingView mBrushDrawingView;
     private ImageFilterView mImageFilterView;
-    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3;
+    private RelativeLayout mParentLayout, mCanvasLayout;
+    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3, imgOverlayId = 4, imgBackgroundId = 5, parentLayoutId = 6;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -63,8 +65,25 @@ public class PhotoEditorView extends RelativeLayout {
         mImgSource = new FilterImageView(getContext());
         mImgSource.setId(imgSrcId);
         mImgSource.setAdjustViewBounds(true);
+        mImgSource.setScaleType(ImageView.ScaleType.FIT_CENTER);
         RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        // NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
+        mImageOverlay = new ImageView(getContext());
+        mImageOverlay.setId(imgOverlayId);
+        RelativeLayout.LayoutParams imgOverlayParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        // NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
+        // TODO(kleyow): Need to add logic to handle when the image is square.
+        mImageBackground = new ImageView(getContext());
+        mImageBackground.setScaleType(ImageView.ScaleType.FIT_XY);
+        mImageBackground.setId(imgBackgroundId);
+        RelativeLayout.LayoutParams imgBackgroundParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+
         imgSrcParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoEditorView);
@@ -106,15 +125,38 @@ public class PhotoEditorView extends RelativeLayout {
             }
         });
 
+        // NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
+        mParentLayout = new RelativeLayout(getContext());
+        mParentLayout.setId(parentLayoutId);
+        RelativeLayout.LayoutParams parentLayoutParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        // `ZoomLayout` must have only one child, so this will be the container for all sub-views.
+        addView(mParentLayout, parentLayoutParam);
+
+
+        // NOTE(kleyow): Seperate the view into layers so functionality is not fighting over a
+        //               view's pivot. Better seperation of layouts here could be an improvement.
+        mCanvasLayout = new RelativeLayout(getContext());
+        mCanvasLayout.setId(parentLayoutId);
+        RelativeLayout.LayoutParams rotateLayoutParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+
+        // NOTE(kleyow): Order of addition of views is important.
+        // Add background view
+        mCanvasLayout.addView(mImageBackground, imgBackgroundParam);
 
         //Add image source
-        addView(mImgSource, imgSrcParam);
-
-        //Add Gl FilterView
-        addView(mImageFilterView, imgFilterParam);
+        mCanvasLayout.addView(mImgSource, imgSrcParam);
 
         //Add brush view
-        addView(mBrushDrawingView, brushParam);
+        mCanvasLayout.addView(mBrushDrawingView, brushParam);
+
+        mParentLayout.addView(mCanvasLayout);
+
+        // Add overlay view
+        addView(mImageOverlay, imgOverlayParam);
 
     }
 
@@ -128,8 +170,50 @@ public class PhotoEditorView extends RelativeLayout {
         return mImgSource;
     }
 
+    public void resetSourceImageSettings() {
+        // NOTE(kleyow): Need to reset image after changing the main image because Zooming changes
+        //               the settings.
+        mImgSource.setAdjustViewBounds(true);
+        mImgSource.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+    }
+
     BrushDrawingView getBrushDrawingView() {
         return mBrushDrawingView;
+    }
+
+    /**
+     * Overlay view which you want to edit
+     * NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
+     *
+     * @return source ImageView
+     */
+    public ImageView getImageOverlayView() {
+        return mImageOverlay;
+    }
+
+    /**
+     * Background view which you want to edit
+     * NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
+     *
+     * @return source ImageView
+     */
+    public ImageView getBackgroundView() {
+        return mImageBackground;
+    }
+
+    /**
+     * Parent layout which holds all sub views
+     * NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
+     *
+     * @return source RelativeLayout
+     */
+    public RelativeLayout getParentLayout() {
+        return mParentLayout;
+    }
+
+    public RelativeLayout getCanvasLayout() {
+        return mCanvasLayout;
     }
 
 
