@@ -21,8 +21,6 @@ public class TextStyleBuilderTest {
         builder.withTextFont(Typeface.DEFAULT);
         builder.withBackgroundColor(321);
         builder.withTextAppearance(144);
-        
-        
         builder.withTextStyle(Typeface.BOLD);
         builder.withTextShadow(new TextShadow(5,5,5,123));
         builder.withTextBorder(new TextBorder(5,123,5,123));
@@ -49,7 +47,16 @@ public class TextStyleBuilderTest {
         Assert.assertEquals(144 , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_APPEARANCE));
 
         Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_STYLE));
-        Assert.assertEquals(Typeface.DEFAULT , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_STYLE));
+        Assert.assertEquals(Typeface.NORMAL , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_STYLE));
+
+        Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.SHADOW));
+        Assert.assertEquals(new TextShadow(0,0,0,123) , builder.getValues().get(TextStyleBuilder.TextStyle.SHADOW));
+
+        Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.BORDER));
+        Assert.assertEquals(new TextBorder(0,123,0,123) , builder.getValues().get(TextStyleBuilder.TextStyle.BORDER));
+
+        Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_FLAG));
+        Assert.assertEquals(Paint.UNDERLINE_TEXT_FLAG , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_FLAG));
 
 
     }
