@@ -40,9 +40,14 @@ public class TextStyleBuilder {
      * @param dy Vertical distance of the shadow
      * @param color Color of the shadow
      */
-    public void withTextShadow(@NonNull float radius, @NonNull float dx, @NonNull float dy, @NonNull int color) {
-        TextShadow shadow = new TextShadow(radius, dx, dy, color);
+    public void withTextShadow(@NonNull float radius, float dx, float dy, int color) {
+        Map<String, Object> shadow = new HashMap<>();
+        shadow.put("RADIUS", radius);
+        shadow.put("DX", dx);
+        shadow.put("DY", dy);
+        shadow.put("COLOR", color);
         values.put(TextStyle.SHADOW, shadow);
+
     }
 
     /**
@@ -114,8 +119,12 @@ public class TextStyleBuilder {
                 break;
 
                 case SHADOW: {
-                    TextShadow shadow = (TextShadow) entry.getValue();
-                    applyTextShadow(textView, shadow.radius, shadow.dx, shadow.dy, shadow.color);
+                    final Map<String, Object> shadow = (Map) entry.getValue();
+                    final float radius = (float) shadow.get("RADIUS");
+                    final float dx = (float) shadow.get("DX");
+                    final float dy = (float) shadow.get("DY");
+                    final int color = (int) shadow.get("COLOR");
+                    applyTextShadow(textView, radius, dx, dy, color);
                 }
                 break;
 
@@ -197,24 +206,6 @@ public class TextStyleBuilder {
             textView.setTextAppearance(styleAppearance);
         } else {
             textView.setTextAppearance(textView.getContext(), styleAppearance);
-        }
-    }
-
-    /**
-     * Object to hold Text Shadow properties to be used
-     */
-
-    private static class TextShadow {
-        private final float radius;
-        private final float dx;
-        private final float dy;
-        private final int color;
-
-        private TextShadow(float radius, float dx, float dy, int color) {
-            this.radius = radius;
-            this.dx = dx;
-            this.dy = dy;
-            this.color = color;
         }
     }
 
