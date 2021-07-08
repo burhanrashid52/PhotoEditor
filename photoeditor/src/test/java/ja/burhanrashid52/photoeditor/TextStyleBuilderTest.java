@@ -95,6 +95,11 @@ public class TextStyleBuilderTest {
         Assert.assertFalse(builder.getValues().containsKey(TextStyleBuilder.TextStyle.BACKGROUND));
 
         Assert.assertFalse(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_APPEARANCE));
+
+        Assert.assertFalse(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_STYLE));
+        Assert.assertFalse(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_FLAG));
+        Assert.assertFalse(builder.getValues().containsKey(TextStyleBuilder.TextStyle.SHADOW));
+        Assert.assertFalse(builder.getValues().containsKey(TextStyleBuilder.TextStyle.BORDER));
     }
 
     @Test
@@ -117,6 +122,10 @@ public class TextStyleBuilderTest {
         Assert.assertTrue(builder.backgroundColorApplied);
         Assert.assertTrue(builder.textAppearanceApplied);
         Assert.assertFalse(builder.backgroundDrawableApplied);
+        Assert.assertTrue(builder.textStyle);
+        Assert.assertTrue(builder.textFlag);
+        Assert.assertTrue(builder.textShadow1);
+        Assert.assertTrue(builder.textBorder1);
     }
 
     @Test
@@ -134,6 +143,10 @@ public class TextStyleBuilderTest {
         Assert.assertFalse(builder.backgroundColorApplied);
         Assert.assertFalse(builder.textAppearanceApplied);
         Assert.assertTrue(builder.backgroundDrawableApplied);
+        Assert.assertFalse(builder.textStyle);
+        Assert.assertFalse(builder.textFlag);
+        Assert.assertFalse(builder.textShadow1);
+        Assert.assertFalse(builder.textBorder1);
     }
 
     @Test
@@ -150,6 +163,10 @@ public class TextStyleBuilderTest {
         Assert.assertFalse(builder.backgroundColorApplied);
         Assert.assertFalse(builder.textAppearanceApplied);
         Assert.assertFalse(builder.backgroundDrawableApplied);
+        Assert.assertFalse(builder.textStyle);
+        Assert.assertFalse(builder.textFlag);
+        Assert.assertFalse(builder.textShadow1);
+        Assert.assertFalse(builder.textBorder1);
     }
 
     private class MockTextStyleBuilder extends TextStyleBuilder {
@@ -160,6 +177,30 @@ public class TextStyleBuilderTest {
         boolean backgroundColorApplied = false;
         boolean backgroundDrawableApplied = false;
         boolean textAppearanceApplied = false;
+        boolean textStyle=false;
+        boolean textFlag=false;
+        boolean textShadow1=false;
+        boolean textBorder1=false;
+
+        @Override
+        protected void applyTextStyle(TextView textView, int typeface) {
+            textStyle=true;
+        }
+
+        @Override
+        protected void applyTextFlag(TextView textView, int flag) {
+            textFlag=true;
+        }
+
+        @Override
+        protected void applyTextShadow(TextView textView, TextShadow textShadow) {
+            textShadow1=true;
+        }
+
+        @Override
+        protected void applyTextBorder(TextView textView, TextBorder textBorder) {
+            textBorder1=true;
+        }
 
         @Override
         protected void applyTextSize(TextView textView, float size) {
@@ -195,5 +236,7 @@ public class TextStyleBuilderTest {
         protected void applyBackgroundDrawable(TextView textView, Drawable bg) {
             backgroundDrawableApplied = true;
         }
+
+
     }
 }
