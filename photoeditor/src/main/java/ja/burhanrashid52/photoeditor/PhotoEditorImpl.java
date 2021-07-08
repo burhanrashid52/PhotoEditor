@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -199,6 +201,63 @@ class PhotoEditorImpl implements PhotoEditor {
         return drawingView != null && drawingView.isDrawingEnabled();
     }
 
+
+    @Override
+    public void setBrushSize(float size) {
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            drawingView.getCurrentShapeBuilder().withShapeSize(size);
+        }
+    }
+
+    @Override
+    public void setOpacity(@IntRange(from = 0, to = 100) int opacity) {
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            opacity = (int) ((opacity / 100.0) * 255.0);
+            drawingView.getCurrentShapeBuilder().withShapeOpacity(opacity);
+        }
+    }
+
+    @Override
+    public void setBrushColor(@ColorInt int color) {
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            drawingView.getCurrentShapeBuilder().withShapeColor(color);
+        }
+    }
+
+    @Override
+    public float getBrushSize() {
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            return drawingView.getCurrentShapeBuilder().getShapeSize();
+        }
+        return 0;
+    }
+
+    @Override
+    public int getBrushColor() {
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            return drawingView.getCurrentShapeBuilder().getShapeColor();
+        }
+        return 0;
+    }
+
+    @Override
+    public void setBrushEraserSize(float brushEraserSize) {
+        if (drawingView != null) {
+            drawingView.setBrushEraserSize(brushEraserSize);
+        }
+    }
+
+    @Override
+    public float getEraserSize() {
+        return drawingView != null ? drawingView.getEraserSize() : 0;
+    }
+
+    @Override
+    public void brushEraser() {
+        if (drawingView != null)
+            drawingView.brushEraser();
+    }
+
     @Override
     public boolean undo() {
         return mGraphicManager.undoView();
@@ -296,7 +355,7 @@ class PhotoEditorImpl implements PhotoEditor {
 
     // region Shape
     @Override
-    public void updateShape(ShapeBuilder shapeBuilder) {
+    public void setShape(ShapeBuilder shapeBuilder) {
         drawingView.setShapeBuilder(shapeBuilder);
     }
     // endregion

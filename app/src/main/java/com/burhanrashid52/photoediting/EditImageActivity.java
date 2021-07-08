@@ -356,25 +356,25 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onColorChanged(int colorCode) {
-        mPhotoEditor.updateShape(mShapeBuilder.withShapeColor(colorCode));
+        mPhotoEditor.setShape(mShapeBuilder.withShapeColor(colorCode));
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onOpacityChanged(int opacity) {
-        mPhotoEditor.updateShape(mShapeBuilder.withShapeOpacity(opacity));
+        mPhotoEditor.setShape(mShapeBuilder.withShapeOpacity(opacity));
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onShapeSizeChanged(int shapeSize) {
-        mPhotoEditor.updateShape(mShapeBuilder.withShapeSize(shapeSize));
+        mPhotoEditor.setShape(mShapeBuilder.withShapeSize(shapeSize));
         mTxtCurrentTool.setText(R.string.label_brush);
     }
 
     @Override
     public void onShapePicked(ShapeType shapeType) {
-        mPhotoEditor.updateShape(mShapeBuilder.withShapeType(shapeType));
+        mPhotoEditor.setShape(mShapeBuilder.withShapeType(shapeType));
     }
 
     @Override
@@ -417,7 +417,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             case SHAPE:
                 mPhotoEditor.setBrushDrawingMode(true);
                 mShapeBuilder = new ShapeBuilder();
-                mPhotoEditor.updateShape(mShapeBuilder);
+                mPhotoEditor.setShape(mShapeBuilder);
                 mTxtCurrentTool.setText(R.string.label_shape);
                 showBottomSheetDialogFragment(mShapeBSFragment);
                 break;
@@ -430,6 +430,10 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                     mPhotoEditor.addText(inputText, styleBuilder);
                     mTxtCurrentTool.setText(R.string.label_text);
                 });
+                break;
+            case ERASER:
+                mPhotoEditor.brushEraser();
+                mTxtCurrentTool.setText(R.string.label_eraser_mode);
                 break;
             case FILTER:
                 mTxtCurrentTool.setText(R.string.label_filter);

@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -117,6 +119,69 @@ public interface PhotoEditor {
      * @return true is brush mode is enabled
      */
     Boolean getBrushDrawableMode();
+
+    /**
+     * Set the size of brush user want to paint on canvas i.e {@link DrawingView}
+     * @deprecated use {@code setShape} of a ShapeBuilder
+     *
+     * @param size size of brush
+     */
+    @Deprecated
+    void setBrushSize(float size);
+
+    /**
+     * set opacity/transparency of brush while painting on {@link DrawingView}
+     * @deprecated use {@code setShape} of a ShapeBuilder
+     *
+     * @param opacity opacity is in form of percentage
+     */
+    @Deprecated
+    void setOpacity(@IntRange(from = 0, to = 100) int opacity);
+
+    /**
+     * set brush color which user want to paint
+     * @deprecated use {@code setShape} of a ShapeBuilder
+     *
+     * @param color color value for paint
+     */
+    @Deprecated
+    void setBrushColor(@ColorInt int color);
+
+    /**
+     * set the eraser size
+     * <b>Note :</b> Eraser size is different from the normal brush size
+     *
+     * @param brushEraserSize size of eraser
+     */
+    void setBrushEraserSize(float brushEraserSize);
+
+    /**
+     * @return provide the size of eraser
+     * @see PhotoEditor#setBrushEraserSize(float)
+     */
+    float getEraserSize();
+
+    /**
+     * @return provide the size of eraser
+     * @see PhotoEditor#setBrushSize(float)
+     */
+    float getBrushSize();
+
+    /**
+     * @return provide the size of eraser
+     * @see PhotoEditor#setBrushColor(int)
+     */
+    int getBrushColor();
+
+    /**
+     * <p>
+     * Its enables eraser mode after that whenever user drags on screen this will erase the existing
+     * paint
+     * <br>
+     * <b>Note</b> : This eraser will work on paint views only
+     * <p>
+     */
+    void brushEraser();
 
     /**
      * Undo the last operation perform on the {@link PhotoEditor}
@@ -322,7 +387,7 @@ public interface PhotoEditor {
      * Update the current shape to be drawn,
      * through the use of a ShapeBuilder.
      */
-    void updateShape(ShapeBuilder shapebuilder);
+    void setShape(ShapeBuilder shapebuilder);
     // endregion
 
 }

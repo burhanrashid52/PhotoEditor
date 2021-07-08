@@ -41,10 +41,15 @@ public class DrawingView extends View {
     private final Stack<ShapeAndPaint> redoShapes = new Stack<>();
     private ShapeAndPaint currentShape;
     private ShapeBuilder currentShapeBuilder;
-
     private boolean isEnabled;
-
     private BrushViewChangeListener viewChangeListener;
+
+    // eraser parameters
+    private boolean isErasing = false;
+    static final float DEFAULT_ERASER_SIZE = 50.0f;
+    private float mBrushEraserSize = DEFAULT_ERASER_SIZE;
+    private Paint eraserPaint;
+    private ShapeAndPaint eraserShape;
 
     // region constructors
     public DrawingView(Context context) {
@@ -85,6 +90,9 @@ public class DrawingView extends View {
         setLayerType(LAYER_TYPE_HARDWARE, null);
         setVisibility(View.GONE);
         currentShapeBuilder = new ShapeBuilder();
+        eraserPaint = createPaint();
+        eraserPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        eraserShape = new ShapeAndPaint(new BrushShape(), eraserPaint);
     }
 
     void clearAll() {
@@ -99,9 +107,10 @@ public class DrawingView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        for (ShapeAndPaint data : drawShapes) {
-            data.getShape().draw(canvas, data.getPaint());
+        for (ShapeAndPaint shape : drawShapes) {
+            shape.getShape().draw(canvas, shape.getPaint());
         }
+        eraserShape.getShape().draw(canvas, eraserPaint);
     }
 
     /**
@@ -156,6 +165,11 @@ public class DrawingView extends View {
 
 
     private void createShape() {
+        if (isErasing) {
+            currentShape = eraserShape;
+            return;
+        }
+
         final AbstractShape shape;
         if (currentShapeBuilder.getShapeType() == ShapeType.OVAL) {
             shape = new OvalShape();
@@ -175,6 +189,10 @@ public class DrawingView extends View {
     }
 
     private void endShape(float touchX, float touchY) {
+        if (isErasing) {
+            return;
+        }
+
         if (viewChangeListener != null) {
             viewChangeListener.onStopDrawing();
             viewChangeListener.onViewAdd(this);
@@ -209,6 +227,23 @@ public class DrawingView extends View {
         return !redoShapes.empty();
     }
 
+    // region eraser
+    void brushEraser() {
+        isEnabled = true;
+        isErasing = true;
+        currentShape = eraserShape;
+        eraserPaint.setStrokeWidth(mBrushEraserSize);
+    }
+
+    void setBrushEraserSize(float brushEraserSize) {
+        mBrushEraserSize = brushEraserSize;
+    }
+
+    float getEraserSize() {
+        return mBrushEraserSize;
+    }
+    // endregion
+
     // region Setters/Getters
     public void setShapeBuilder(ShapeBuilder shapeBuilder) {
         currentShapeBuilder = shapeBuilder;
@@ -216,6 +251,7 @@ public class DrawingView extends View {
 
     void enableDrawing(boolean brushDrawMode) {
         isEnabled = brushDrawMode;
+        isErasing = !brushDrawMode;
         if (brushDrawMode) {
             setVisibility(View.VISIBLE);
         }
