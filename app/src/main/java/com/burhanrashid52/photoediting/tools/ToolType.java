@@ -8,6 +8,7 @@ package com.burhanrashid52.photoediting.tools;
 public enum ToolType {
     SHAPE,
     TEXT,
+    ERASER,
     FILTER,
     EMOJI,
     STICKER

@@ -63,6 +63,13 @@ public class EditImageActivityTest {
     }
 
     @Test
+    public void checkIfEraserIsEnabledWhenClickedOnEraserTool() {
+        mActivityRule.launchActivity(null);
+        onView(withText(R.string.label_eraser)).perform(click());
+        onView(withText(R.string.label_eraser_mode)).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void checkIfShapeIsEnabledWhenClickedOnBrushTool() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         onView(withText(R.string.label_shape)).perform(click());

@@ -110,9 +110,10 @@ We can customize our brush and paint with different set of property. To start dr
 | ------------- | ------------- |
 | Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
 | Shape (brush, line, oval, rectangle)  | `mPhotoEditor.addShape(shape)` |
-| Shape size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
-| Shape opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
-| Shape color | `mPhotoEditor.setBrushColor(colorCode)`  |
+| Shape size (px)  | `mPhotoEditor.setBrushSize(brushSize)` or through the a ShapeBuilder |
+| Shape opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)` or through the a ShapeBuilder |
+| Shape color | `mPhotoEditor.setBrushColor(colorCode)` or through the a ShapeBuilder |
+| Brush Eraser  | `mPhotoEditor.brushEraser()` |
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 

@@ -153,15 +153,17 @@ public class DrawingViewApiTest extends BaseDrawingViewTest {
         BrushViewChangeListener brushViewChangeListener = Mockito.mock(BrushViewChangeListener.class);
         DrawingView drawingView = setupDrawingViewWithChangeListener(brushViewChangeListener);
 
-        touchView(drawingView, MotionEvent.ACTION_DOWN);
-        touchView(drawingView, MotionEvent.ACTION_DOWN);
-        touchView(drawingView, MotionEvent.ACTION_DOWN);
-        touchView(drawingView, MotionEvent.ACTION_DOWN);
+        int numberOfTouch = 4;
+        for (int i = 0; i < numberOfTouch; i++) {
+            touchView(drawingView, MotionEvent.ACTION_DOWN);
+        }
 
         Canvas canvas = Mockito.mock(Canvas.class);
         drawingView.onDraw(canvas);
 
-        verify(canvas, times(4)).drawPath(any(Path.class), any(Paint.class));
+        int numberOfDraw = numberOfTouch + 1; // +1 for eraser
+        verify(canvas, times(numberOfDraw))
+                .drawPath(any(Path.class), any(Paint.class));
     }
 
 }
