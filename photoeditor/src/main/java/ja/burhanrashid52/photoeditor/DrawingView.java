@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,8 +49,6 @@ public class DrawingView extends View {
     private boolean isErasing = false;
     static final float DEFAULT_ERASER_SIZE = 50.0f;
     private float mBrushEraserSize = DEFAULT_ERASER_SIZE;
-    private Paint eraserPaint;
-    private ShapeAndPaint eraserShape;
 
     // region constructors
     public DrawingView(Context context) {
@@ -66,7 +65,6 @@ public class DrawingView extends View {
     }
     // endregion
 
-    // region View and events
     private Paint createPaint() {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -83,16 +81,18 @@ public class DrawingView extends View {
 
         return paint;
     }
-    // endregion
+
+    private Paint createEraserPaint() {
+        Paint paint = createPaint();
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        return paint;
+    }
 
     private void setupBrushDrawing() {
         //Caution: This line is to disable hardware acceleration to make eraser feature work properly
         setLayerType(LAYER_TYPE_HARDWARE, null);
         setVisibility(View.GONE);
         currentShapeBuilder = new ShapeBuilder();
-        eraserPaint = createPaint();
-        eraserPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        eraserShape = new ShapeAndPaint(new BrushShape(), eraserPaint);
     }
 
     void clearAll() {
@@ -110,7 +110,6 @@ public class DrawingView extends View {
         for (ShapeAndPaint shape : drawShapes) {
             shape.getShape().draw(canvas, shape.getPaint());
         }
-        eraserShape.getShape().draw(canvas, eraserPaint);
     }
 
     /**
@@ -165,13 +164,12 @@ public class DrawingView extends View {
 
 
     private void createShape() {
-        if (isErasing) {
-            currentShape = eraserShape;
-            return;
-        }
-
         final AbstractShape shape;
-        if (currentShapeBuilder.getShapeType() == ShapeType.OVAL) {
+        Paint paint = createPaint();
+        if (isErasing) {
+            shape = new BrushShape();
+            paint = createEraserPaint();
+        } else if (currentShapeBuilder.getShapeType() == ShapeType.OVAL) {
             shape = new OvalShape();
         } else if (currentShapeBuilder.getShapeType() == ShapeType.RECTANGLE) {
             shape = new RectangleShape();
@@ -180,7 +178,7 @@ public class DrawingView extends View {
         } else {
             shape = new BrushShape();
         }
-        currentShape = new ShapeAndPaint(shape, createPaint());
+        currentShape = new ShapeAndPaint(shape, paint);
         drawShapes.push(currentShape);
 
         if (viewChangeListener != null) {
@@ -189,18 +187,15 @@ public class DrawingView extends View {
     }
 
     private void endShape(float touchX, float touchY) {
-        if (isErasing) {
-            return;
+        if (currentShape.getShape().hasBeenTapped()) {
+            // just a tap, this is not a shape, so remove it
+            drawShapes.remove(currentShape);
+            //handleTap(touchX, touchY);
         }
 
         if (viewChangeListener != null) {
             viewChangeListener.onStopDrawing();
             viewChangeListener.onViewAdd(this);
-        }
-        if (currentShape.getShape().hasBeenTapped()) {
-            // just a tap, this is not a shape, so remove it
-            drawShapes.remove(currentShape);
-            //handleTap(touchX, touchY);
         }
     }
 
@@ -231,8 +226,6 @@ public class DrawingView extends View {
     void brushEraser() {
         isEnabled = true;
         isErasing = true;
-        currentShape = eraserShape;
-        eraserPaint.setStrokeWidth(mBrushEraserSize);
     }
 
     void setBrushEraserSize(float brushEraserSize) {
