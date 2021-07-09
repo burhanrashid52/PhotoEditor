@@ -166,9 +166,5 @@ public class PhotoEditorView extends RelativeLayout {
         mImageFilterView.setFilterEffect(customEffect);
     }
 
-    public void useBrushView() {
-        mDrawingView.bringToFront();
-    }
-
     // endregion
 }

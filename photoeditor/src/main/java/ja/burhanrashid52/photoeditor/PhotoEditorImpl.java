@@ -190,7 +190,6 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void setBrushDrawingMode(boolean brushDrawingMode) {
-        parentView.useBrushView();
         if (drawingView != null) {
             drawingView.enableDrawing(brushDrawingMode);
         }
