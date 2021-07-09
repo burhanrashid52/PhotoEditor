@@ -15,15 +15,18 @@ public class TextStyleBuilderTest {
     @Test
     public void testFillBuilderWithAllPossibleStyles() {
         final TextStyleBuilder builder = new TextStyleBuilder();
+        TextShadow textShadow=new TextShadow(0,0,0,123);
+
+        TextBorder textBorder=new TextBorder(0,123,0,123);
         builder.withTextColor(123);
         builder.withTextSize(12f);
         builder.withGravity(3);
         builder.withTextFont(Typeface.DEFAULT);
         builder.withBackgroundColor(321);
         builder.withTextAppearance(144);
-        builder.withTextStyle(Typeface.BOLD);
-        builder.withTextShadow(new TextShadow(5,5,5,123));
-        builder.withTextBorder(new TextBorder(5,123,5,123));
+        builder.withTextStyle(Typeface.NORMAL);
+        builder.withTextShadow(textShadow);
+        builder.withTextBorder(textBorder);
         builder.withTextFlag(Paint.UNDERLINE_TEXT_FLAG);
 
         Assert.assertEquals(10, builder.getValues().size());
@@ -50,10 +53,10 @@ public class TextStyleBuilderTest {
         Assert.assertEquals(Typeface.NORMAL , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_STYLE));
 
         Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.SHADOW));
-        Assert.assertEquals(new TextShadow(0,0,0,123) , builder.getValues().get(TextStyleBuilder.TextStyle.SHADOW));
+        Assert.assertEquals(textShadow, builder.getValues().get(TextStyleBuilder.TextStyle.SHADOW));
 
         Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.BORDER));
-        Assert.assertEquals(new TextBorder(0,123,0,123) , builder.getValues().get(TextStyleBuilder.TextStyle.BORDER));
+        Assert.assertEquals( textBorder, builder.getValues().get(TextStyleBuilder.TextStyle.BORDER));
 
         Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.TEXT_FLAG));
         Assert.assertEquals(Paint.UNDERLINE_TEXT_FLAG , builder.getValues().get(TextStyleBuilder.TextStyle.TEXT_FLAG));
@@ -115,7 +118,7 @@ public class TextStyleBuilderTest {
         builder.withTextFlag(Paint.ANTI_ALIAS_FLAG);
         builder.withTextShadow(new TextShadow(0,0,0,123));
         builder.withTextBorder(new TextBorder(0,123,0,123) );
-        
+
 
         final TextView textView = Mockito.mock(TextView.class);
         builder.applyStyle(textView);
