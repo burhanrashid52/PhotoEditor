@@ -26,7 +26,7 @@ public class TextStyleBuilderTest {
         builder.withTextBorder(new TextBorder(5,123,5,123));
         builder.withTextFlag(Paint.UNDERLINE_TEXT_FLAG);
 
-        Assert.assertEquals(6, builder.getValues().size());
+        Assert.assertEquals(10, builder.getValues().size());
 
         Assert.assertTrue(builder.getValues().containsKey(TextStyleBuilder.TextStyle.COLOR));
         Assert.assertEquals(123, builder.getValues().get(TextStyleBuilder.TextStyle.COLOR));
@@ -111,6 +111,11 @@ public class TextStyleBuilderTest {
         builder.withTextFont(Typeface.DEFAULT);
         builder.withBackgroundColor(321);
         builder.withTextAppearance(144);
+        builder.withTextStyle(Typeface.NORMAL);
+        builder.withTextFlag(Paint.ANTI_ALIAS_FLAG);
+        builder.withTextShadow(new TextShadow(0,0,0,123));
+        builder.withTextBorder(new TextBorder(0,123,0,123) );
+        
 
         final TextView textView = Mockito.mock(TextView.class);
         builder.applyStyle(textView);
