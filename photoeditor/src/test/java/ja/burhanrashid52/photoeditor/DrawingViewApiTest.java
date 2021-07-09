@@ -161,8 +161,7 @@ public class DrawingViewApiTest extends BaseDrawingViewTest {
         Canvas canvas = Mockito.mock(Canvas.class);
         drawingView.onDraw(canvas);
 
-        int numberOfDraw = numberOfTouch + 1; // +1 for eraser
-        verify(canvas, times(numberOfDraw))
+        verify(canvas, times(numberOfTouch))
                 .drawPath(any(Path.class), any(Paint.class));
     }
 
