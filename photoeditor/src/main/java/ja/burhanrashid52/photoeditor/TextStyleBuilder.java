@@ -43,7 +43,7 @@ public class TextStyleBuilder {
      */
     public void withTextShadow(@NonNull float radius, @NonNull float dx, @NonNull float dy, @NonNull int color) {
         TextShadow shadow = new TextShadow(radius, dx, dy, color);
-        values.put(TextStyle.SHADOW, shadow);
+        withTextShadow(shadow);
     }
 
     /**
@@ -127,12 +127,6 @@ public class TextStyleBuilder {
                 case SIZE: {
                     final float size = (float) entry.getValue();
                     applyTextSize(textView, size);
-                }
-                break;
-
-                case SHADOW: {
-                    TextShadow shadow = (TextShadow) entry.getValue();
-                    applyTextShadow(textView, shadow.radius, shadow.dx, shadow.dy, shadow.color);
                 }
                 break;
 
@@ -269,31 +263,11 @@ public class TextStyleBuilder {
         }
     }
 
-
-    /**
-     * Object to hold Text Shadow properties to be used
-     */
-
-    private static class TextShadow {
-        private final float radius;
-        private final float dx;
-        private final float dy;
-        private final int color;
-
-        private TextShadow(float radius, float dx, float dy, int color) {
-            this.radius = radius;
-            this.dx = dx;
-            this.dy = dy;
-            this.color = color;
-        }
-    }
-
     /**
      * Enum to maintain current supported style properties used on on {@link PhotoEditor#addText(String, TextStyleBuilder)} and {@link PhotoEditor#editText(View, String, TextStyleBuilder)}
      */
     protected enum TextStyle {
         SIZE("TextSize"),
-        SHADOW("TextShadow"),
         COLOR("TextColor"),
         GRAVITY("Gravity"),
         FONT_FAMILY("FontFamily"),
