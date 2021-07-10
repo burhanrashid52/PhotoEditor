@@ -73,3 +73,8 @@ new TextStyleBuilder()
 ## 1.1.4
 - Fixed : #351 Internal Refactoring
 - Removed: (Breaking Change) `PhotoEditor.getEmoji()` is no longer part of the library and it's now move to sample app.
+
+### 1.5.0
+- Deprecated : `setBrushSize()` , `setOpacity()` and `setBrushColor`. Use `ShapeBuilder`
+- New : Drawing Shapes using `ShapeBuilder`. Support Line, Brush, Oval and Rectangle out of the box.Deprecated
+- New : Allowing to add text shadow using `TextStyleBuilder.withTextShadow()`

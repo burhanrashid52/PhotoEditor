@@ -1,7 +1,7 @@
 # PhotoEditor
 
 ![Github Action](https://github.com/burhanrashid52/PhotoEditor/actions/workflows/app_build_and_test.yml/badge.svg)
-[![Downloads](https://img.shields.io/badge/Download-1.1.4-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/1.1.4/aar) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-1.5.0-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/1.5.0/aar) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -47,7 +47,7 @@ PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of
 ## Getting Started
 To start with this, we need to simply add the dependencies from `mavenCentral()` in the gradle file of our app module like this
 ```groovy
-implementation 'com.burhanrashid52:photoeditor:1.1.4'
+implementation 'com.burhanrashid52:photoeditor:1.5.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
@@ -117,7 +117,20 @@ We can customize our brush and paint with different set of property. To start dr
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 
+## Shapes
+We can draw shapes from v.1.5.0. We use `ShapeBuilder` to define shape and other properties.
 
+![](https://i.imgur.com/sEsxAFv.mp4)
+
+```java
+mShapeBuilder = new ShapeBuilder()
+         .withShapeOpacity(100)
+         .withShapeType(ShapeType.OVAL)
+         .withShapeSize(50);
+
+mPhotoEditor.setShape(mShapeBuilder)
+```
+For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.java).
 
 ## Filter Effect
 We can apply inbuild filter to the source images using 
