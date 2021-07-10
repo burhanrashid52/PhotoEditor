@@ -118,9 +118,9 @@ We can customize our brush and paint with different set of property. To start dr
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 
 ## Shapes
-We can draw shapes from v.1.5.0. We use `ShapeBuilder` to define shape and other properties.
+We can draw shapes from [v.1.5.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.5.0). We use `ShapeBuilder` to define shape and other properties.
 
-![](https://i.imgur.com/sEsxAFv.mp4)
+![](https://im2.ezgif.com/tmp/ezgif-2-5d5f7ddbe72e.gif)
 
 ```java
 mShapeBuilder = new ShapeBuilder()
