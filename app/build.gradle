@@ -7,7 +7,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 5
-        versionName "1.1.4"
+        versionName "1.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -31,7 +31,7 @@ dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to faciliate testing, and for the integration tests
     //                     to work on locally modified code.
-    //implementation 'com.burhanrashid52:photoeditor:1.1.4'
+    //implementation 'com.burhanrashid52:photoeditor:1.5.0'
     implementation project(':photoeditor')
     implementation 'androidx.cardview:cardview:1.0.0'
 
