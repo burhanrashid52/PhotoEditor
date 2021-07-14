@@ -100,9 +100,20 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     }
 
     private Bitmap buildBitmap() {
+        int height = mPhotoEditorView.getHeight();
+        int width = mPhotoEditorView.getWidth();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        try {
+            bitmap.prepareToDraw();
+            Thread.sleep(mSaveSettings.getDelayBeforeSaving());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return mSaveSettings.isTransparencyEnabled()
-                ? BitmapUtil.removeTransparency(captureView(mPhotoEditorView))
-                : captureView(mPhotoEditorView);
+                ? BitmapUtil.removeTransparency(captureView(mPhotoEditorView, bitmap))
+                : captureView(mPhotoEditorView, bitmap);
     }
 
     @Override
@@ -151,14 +162,8 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         }
     }
 
-    private Bitmap captureView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                view.getWidth(),
-                view.getHeight(),
-                Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
+    private Bitmap captureView(View view, Bitmap bitmap) {
+        view.draw(new Canvas(bitmap));
         return bitmap;
     }
 

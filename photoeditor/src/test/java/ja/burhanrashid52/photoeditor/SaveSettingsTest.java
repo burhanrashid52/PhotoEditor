@@ -50,6 +50,15 @@ public class SaveSettingsTest {
     }
 
     @Test
+    public void testDelayBeforeSavingSaveSettings() {
+        SaveSettings saveSettings = new SaveSettings.Builder()
+            .setDelayBeforeSaving(1500)
+            .build();
+
+        assertEquals(saveSettings.getDelayBeforeSaving(), 1500);
+    }
+
+    @Test
     public void testDefaultCompressAndQualitySaveSettings() {
         SaveSettings saveSettings = new SaveSettings.Builder()
                 .build();
