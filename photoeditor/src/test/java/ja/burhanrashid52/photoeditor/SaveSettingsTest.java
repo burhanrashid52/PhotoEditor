@@ -48,7 +48,7 @@ public class SaveSettingsTest {
         assertFalse(saveSettings.isClearViewsEnabled());
         assertFalse(saveSettings.isTransparencyEnabled());
     }
-
+    
     @Test
     public void testDefaultCompressAndQualitySaveSettings() {
         SaveSettings saveSettings = new SaveSettings.Builder()

@@ -29,6 +29,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     PhotoEditor.OnSaveListener mOnSaveListener;
     private @Nullable
     OnSaveBitmap mOnSaveBitmap;
+    private final Bitmap mBaseBitmap;
     private final PhotoEditorView mPhotoEditorView;
     private final BoxHelper mBoxHelper;
     private final DrawingView mDrawingView;
@@ -36,6 +37,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
 
     public PhotoSaverTask(PhotoEditorView photoEditorView, BoxHelper boxHelper) {
         mPhotoEditorView = photoEditorView;
+        mBaseBitmap = Bitmap.createBitmap(mPhotoEditorView.getWidth(), mPhotoEditorView.getHeight(), Bitmap.Config.ARGB_8888);
         mDrawingView = photoEditorView.getDrawingView();
         mBoxHelper = boxHelper;
         mSaveSettings = new SaveSettings.Builder().build();
@@ -100,9 +102,21 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     }
 
     private Bitmap buildBitmap() {
+
+        // This is needed as the mBaseBitmap may not be already ready to be drawed on
+        boolean greenFlag = false;
+        while (!greenFlag) {
+            try {
+                mPhotoEditorView.draw(new Canvas(mBaseBitmap));
+                greenFlag = true;
+            } catch (IndexOutOfBoundsException i) {
+                Log.i("Draw", "Bitmap not ready. Retrying...");
+            }
+        }
+
         return mSaveSettings.isTransparencyEnabled()
-                ? BitmapUtil.removeTransparency(captureView(mPhotoEditorView))
-                : captureView(mPhotoEditorView);
+                ? BitmapUtil.removeTransparency(mBaseBitmap)
+                : mBaseBitmap;
     }
 
     @Override
@@ -149,17 +163,6 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
                 mOnSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
             }
         }
-    }
-
-    private Bitmap captureView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                view.getWidth(),
-                view.getHeight(),
-                Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
     }
 
     public void saveBitmap() {
