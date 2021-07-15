@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 public class SaveSettings {
     private boolean isTransparencyEnabled;
     private boolean isClearViewsEnabled;
-    private int delayBeforeSaving;
     private Bitmap.CompressFormat compressFormat;
     private int compressQuality;
 
@@ -32,12 +31,9 @@ public class SaveSettings {
         return compressQuality;
     }
 
-    int getDelayBeforeSaving() { return delayBeforeSaving; }
-
     private SaveSettings(Builder builder) {
         this.isClearViewsEnabled = builder.isClearViewsEnabled;
         this.isTransparencyEnabled = builder.isTransparencyEnabled;
-        this.delayBeforeSaving = builder.delayBeforeSaving;
         this.compressFormat = builder.compressFormat;
         this.compressQuality = builder.compressQuality;
     }
@@ -45,7 +41,6 @@ public class SaveSettings {
     public static class Builder {
         private boolean isTransparencyEnabled = true;
         private boolean isClearViewsEnabled = true;
-        private int delayBeforeSaving = 0;
         private Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.PNG;
         private int compressQuality = 100;
 
@@ -69,17 +64,6 @@ public class SaveSettings {
          */
         public Builder setClearViewsEnabled(boolean clearViewsEnabled) {
             isClearViewsEnabled = clearViewsEnabled;
-            return this;
-        }
-
-        /**
-         * Define a delay between creating the final Bitmap and drawing inside it's canvas
-         *
-         * @param delayBeforeSavingMs in milliseconds , that is the time delayed
-         * @return Int
-         */
-        public Builder setDelayBeforeSaving(int delayBeforeSavingMs) {
-            delayBeforeSaving = delayBeforeSavingMs;
             return this;
         }
 

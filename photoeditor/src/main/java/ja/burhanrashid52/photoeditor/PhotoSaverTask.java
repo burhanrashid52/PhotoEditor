@@ -29,6 +29,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     PhotoEditor.OnSaveListener mOnSaveListener;
     private @Nullable
     OnSaveBitmap mOnSaveBitmap;
+    private final Bitmap mBaseBitmap;
     private final PhotoEditorView mPhotoEditorView;
     private final BoxHelper mBoxHelper;
     private final DrawingView mDrawingView;
@@ -36,6 +37,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
 
     public PhotoSaverTask(PhotoEditorView photoEditorView, BoxHelper boxHelper) {
         mPhotoEditorView = photoEditorView;
+        mBaseBitmap = Bitmap.createBitmap(mPhotoEditorView.getWidth(), mPhotoEditorView.getHeight(), Bitmap.Config.ARGB_8888);
         mDrawingView = photoEditorView.getDrawingView();
         mBoxHelper = boxHelper;
         mSaveSettings = new SaveSettings.Builder().build();
@@ -100,20 +102,21 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     }
 
     private Bitmap buildBitmap() {
-        int height = mPhotoEditorView.getHeight();
-        int width = mPhotoEditorView.getWidth();
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-        try {
-            bitmap.prepareToDraw();
-            Thread.sleep(mSaveSettings.getDelayBeforeSaving());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // This is needed as the mBaseBitmap may not be already ready to be drawed on
+        boolean greenFlag = false;
+        while (!greenFlag) {
+            try {
+                mPhotoEditorView.draw(new Canvas(mBaseBitmap));
+                greenFlag = true;
+            } catch (IndexOutOfBoundsException i) {
+                Log.i("Draw", "Bitmap not ready. Retrying...");
+            }
         }
 
         return mSaveSettings.isTransparencyEnabled()
-                ? BitmapUtil.removeTransparency(captureView(mPhotoEditorView, bitmap))
-                : captureView(mPhotoEditorView, bitmap);
+                ? BitmapUtil.removeTransparency(mBaseBitmap)
+                : mBaseBitmap;
     }
 
     @Override
@@ -160,11 +163,6 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
                 mOnSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
             }
         }
-    }
-
-    private Bitmap captureView(View view, Bitmap bitmap) {
-        view.draw(new Canvas(bitmap));
-        return bitmap;
     }
 
     public void saveBitmap() {
