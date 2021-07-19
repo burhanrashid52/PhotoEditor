@@ -14,6 +14,7 @@ public class SaveSettings {
     private boolean isClearViewsEnabled;
     private Bitmap.CompressFormat compressFormat;
     private int compressQuality;
+    private boolean syncSave;
 
     boolean isTransparencyEnabled() {
         return isTransparencyEnabled;
@@ -31,11 +32,14 @@ public class SaveSettings {
         return compressQuality;
     }
 
+    boolean isSyncSave() { return syncSave; }
+
     private SaveSettings(Builder builder) {
         this.isClearViewsEnabled = builder.isClearViewsEnabled;
         this.isTransparencyEnabled = builder.isTransparencyEnabled;
         this.compressFormat = builder.compressFormat;
         this.compressQuality = builder.compressQuality;
+        this.syncSave = builder.syncSave;
     }
 
     public static class Builder {
@@ -43,6 +47,7 @@ public class SaveSettings {
         private boolean isClearViewsEnabled = true;
         private Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.PNG;
         private int compressQuality = 100;
+        private boolean syncSave = false;
 
         /**
          * Define a flag to enable transparency while saving image
@@ -69,7 +74,7 @@ public class SaveSettings {
 
         /**
          * Set the compression format for the file to save: JPEG, PNG or WEBP
-         * @see{android.graphics.Bitmap.CompressFormat}
+         * @see android.graphics.Bitmap.CompressFormat
          * @param compressFormat JPEG, PNG or WEBP
          * @return Builder
          */
@@ -86,6 +91,17 @@ public class SaveSettings {
          */
         public Builder setCompressQuality(@IntRange(from=0,to=100) int compressQuality) {
             this.compressQuality = compressQuality;
+            return this;
+        }
+
+        /**
+         * Define a flag to force synchronous save while saving bitmaps/images
+         *
+         * @param syncSave true if enabled
+         * @return Builder
+         */
+        public Builder setSyncSave(boolean syncSave) {
+            this.syncSave = syncSave;
             return this;
         }
 

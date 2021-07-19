@@ -294,7 +294,6 @@ class PhotoEditorImpl implements PhotoEditor {
     }
 
     @Override
-    @SuppressLint("StaticFieldLeak")
     public void saveAsFile(@NonNull final String imagePath,
                            @NonNull final SaveSettings saveSettings,
                            @NonNull final OnSaveListener onSaveListener) {
@@ -302,10 +301,17 @@ class PhotoEditorImpl implements PhotoEditor {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
-                photoSaverTask.setOnSaveListener(onSaveListener);
-                photoSaverTask.setSaveSettings(saveSettings);
-                photoSaverTask.execute(imagePath);
+                if (saveSettings.isSyncSave()) {
+                    PhotoSaverDirect photoSaverDirect = new PhotoSaverDirect(parentView, mBoxHelper);
+                    photoSaverDirect.setOnSaveListener(onSaveListener);
+                    photoSaverDirect.setSaveSettings(saveSettings);
+                    photoSaverDirect.saveFile(imagePath);
+                } else {
+                    PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
+                    photoSaverTask.setOnSaveListener(onSaveListener);
+                    photoSaverTask.setSaveSettings(saveSettings);
+                    photoSaverTask.saveFile(imagePath);
+                }
             }
 
             @Override
@@ -327,10 +333,17 @@ class PhotoEditorImpl implements PhotoEditor {
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
-                PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
-                photoSaverTask.setOnSaveBitmap(onSaveBitmap);
-                photoSaverTask.setSaveSettings(saveSettings);
-                photoSaverTask.saveBitmap();
+                if (saveSettings.isSyncSave()) {
+                    PhotoSaverDirect photoSaverDirect = new PhotoSaverDirect(parentView, mBoxHelper);
+                    photoSaverDirect.setOnSaveBitmap(onSaveBitmap);
+                    photoSaverDirect.setSaveSettings(saveSettings);
+                    photoSaverDirect.saveBitmap();
+                } else {
+                    PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
+                    photoSaverTask.setOnSaveBitmap(onSaveBitmap);
+                    photoSaverTask.setSaveSettings(saveSettings);
+                    photoSaverTask.saveBitmap();
+                }
             }
 
             @Override
