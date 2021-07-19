@@ -305,7 +305,7 @@ class PhotoEditorImpl implements PhotoEditor {
                 PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
                 photoSaverTask.setOnSaveListener(onSaveListener);
                 photoSaverTask.setSaveSettings(saveSettings);
-                photoSaverTask.execute(imagePath);
+                photoSaverTask.saveFile(imagePath);
             }
 
             @Override

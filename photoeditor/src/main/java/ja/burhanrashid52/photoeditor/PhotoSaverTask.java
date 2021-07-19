@@ -1,10 +1,7 @@
 package ja.burhanrashid52.photoeditor;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,7 +16,7 @@ import java.io.IOException;
  *
  * @author <https://github.com/burhanrashid52>
  */
-class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult> {
+class PhotoSaverTask {
 
     public static final String TAG = "PhotoSaverTask";
     private @NonNull
@@ -33,6 +30,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     private final BoxHelper mBoxHelper;
     private final DrawingView mDrawingView;
 
+    private SaveResult saveResult;
 
     public PhotoSaverTask(PhotoEditorView photoEditorView, BoxHelper boxHelper) {
         mPhotoEditorView = photoEditorView;
@@ -40,8 +38,23 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         mDrawingView = photoEditorView.getDrawingView();
         mBoxHelper = boxHelper;
         mSaveSettings = new SaveSettings.Builder().build();
+        
+        // PRE
+        mBoxHelper.clearHelperBox();
+        mDrawingView.destroyDrawingCache();
+        
     }
 
+    public void saveBitmap() {
+        saveResult = saveImageAsBitmap();
+        handleBitmapCallback(saveResult);
+    }
+
+    public void saveFile(String imagePath) {
+        saveResult = saveImageInFile(imagePath);
+        handleFileCallback(saveResult);
+    }
+    
     public void setOnSaveListener(@Nullable PhotoEditor.OnSaveListener onSaveListener) {
         this.mOnSaveListener = onSaveListener;
     }
@@ -52,24 +65,6 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
 
     public void setSaveSettings(@NonNull SaveSettings saveSettings) {
         mSaveSettings = saveSettings;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        mBoxHelper.clearHelperBox();
-        mDrawingView.destroyDrawingCache();
-    }
-
-    @SuppressLint("MissingPermission")
-    @Override
-    protected SaveResult doInBackground(String... inputs) {
-        // Create a media file name
-        if (inputs.length == 0) {
-            return saveImageAsBitmap();
-        } else {
-            return saveImageInFile(inputs[0]);
-        }
     }
 
     private SaveResult saveImageAsBitmap() {
@@ -103,32 +98,14 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     private Bitmap buildBitmap() {
         // Create a new canvas with the content of the editor
         Canvas canvas = new Canvas(mBaseBitmap);
-
-        // This is needed as the mBaseBitmap may not be already ready to be drawed on
-        boolean greenFlag = false;
-        while (!greenFlag) {
-            try {
-                mPhotoEditorView.draw(canvas);
-                greenFlag = true;
-            } catch (Exception ignored) {}
-        }
-
+        mPhotoEditorView.draw(canvas);
+        
         return mSaveSettings.isTransparencyEnabled()
                 ? BitmapUtil.removeTransparency(mBaseBitmap)
                 : mBaseBitmap;
     }
 
-    @Override
-    protected void onPostExecute(SaveResult saveResult) {
-        super.onPostExecute(saveResult);
-        if (TextUtils.isEmpty(saveResult.mImagePath)) {
-            handleBitmapCallback(saveResult);
-        } else {
-            handleFileCallback(saveResult);
-        }
-
-    }
-
+   
     private void handleFileCallback(SaveResult saveResult) {
         Exception exception = saveResult.mException;
         String imagePath = saveResult.mImagePath;
@@ -162,14 +139,6 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
                 mOnSaveBitmap.onFailure(new Exception("Failed to load the bitmap"));
             }
         }
-    }
-
-    public void saveBitmap() {
-        execute();
-    }
-
-    public void saveFile(String imagePath) {
-        execute(imagePath);
     }
 
     static class SaveResult {
