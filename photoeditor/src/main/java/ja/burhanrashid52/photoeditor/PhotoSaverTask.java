@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,16 +101,16 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     }
 
     private Bitmap buildBitmap() {
+        // Create a new canvas with the content of the editor
+        Canvas canvas = new Canvas(mBaseBitmap);
 
         // This is needed as the mBaseBitmap may not be already ready to be drawed on
         boolean greenFlag = false;
         while (!greenFlag) {
             try {
-                mPhotoEditorView.draw(new Canvas(mBaseBitmap));
+                mPhotoEditorView.draw(canvas);
                 greenFlag = true;
-            } catch (IndexOutOfBoundsException i) {
-                Log.i("Draw", "Bitmap not ready. Retrying...");
-            }
+            } catch (Exception ignored) {}
         }
 
         return mSaveSettings.isTransparencyEnabled()
