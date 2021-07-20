@@ -82,6 +82,9 @@ class PhotoEditorImpl implements PhotoEditor {
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (mOnPhotoEditorListener != null) {
+                    mOnPhotoEditorListener.onTouchView(event);
+                }
                 return mDetector.onTouchEvent(event);
             }
         });
