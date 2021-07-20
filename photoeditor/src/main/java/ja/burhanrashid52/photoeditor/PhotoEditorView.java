@@ -95,9 +95,7 @@ public class PhotoEditorView extends RelativeLayout {
     private RelativeLayout.LayoutParams setupImageSource(@Nullable AttributeSet attrs) {
         mImgSource.setId(imgSrcId);
         mImgSource.setAdjustViewBounds(true);
-        //if (clipSourceImage) {
-            mImgSource.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        //}
+        mImgSource.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoEditorView);
@@ -129,10 +127,8 @@ public class PhotoEditorView extends RelativeLayout {
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
         params.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
-        //if (clipSourceImage) {
-            params.addRule(RelativeLayout.ALIGN_LEFT, imgSrcId);
-            params.addRule(RelativeLayout.ALIGN_RIGHT, imgSrcId);
-        //}
+        params.addRule(RelativeLayout.ALIGN_LEFT, imgSrcId);
+        params.addRule(RelativeLayout.ALIGN_RIGHT, imgSrcId);
         return params;
     }
 
