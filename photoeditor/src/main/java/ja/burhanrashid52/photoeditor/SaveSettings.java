@@ -95,7 +95,7 @@ public class SaveSettings {
         }
 
         /**
-         * Define a flag to force synchronous save while saving bitmaps/images
+         * Define a flag to force synchronous operations while saving bitmaps/images
          *
          * @param syncSave true if enabled
          * @return Builder
