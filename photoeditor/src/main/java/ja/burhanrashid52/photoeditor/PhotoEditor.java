@@ -358,6 +358,16 @@ public interface PhotoEditor {
         public PhotoEditor build() {
             return new PhotoEditorImpl(this);
         }
+
+        /**
+         * Set true true to clip the drawing brush to the source image.
+         *
+         * @param clip a boolean to indicate if brush drawing is clipped or not.
+         */
+        public Builder setClipSourceImage(boolean clip) {
+            parentView.setClipSourceImage(clip);
+            return this;
+        }
     }
 
 
