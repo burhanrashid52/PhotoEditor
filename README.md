@@ -80,11 +80,12 @@ To use the image editing feature we need to build a PhotoEditor which requires a
 //Use custom font using latest support library
 Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
 
-//loading font from assest
+//loading font from asset
 Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
 mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
          .setPinchTextScalable(true)
+         .setClipSourceImage(true)
          .setDefaultTextTypeface(mTextRobotoTf)
          .setDefaultEmojiTypeface(mEmojiTypeFace)
          .build();
@@ -93,7 +94,8 @@ We can customize the properties in the PhotoEditor as per our requirement
 
 | Property  | Usage |
 | ------------- | ------------- |
-| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion.By default its true
+| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion. Default: true. |
+| `setClipSourceImage()` | set true to clip the drawing brush to the source image. Default: false. |
 | `setDefaultTextTypeface()`  | set default text font to be added on image  |
 | `setDefaultEmojiTypeface()`  | set default font specifc to add emojis |
 
