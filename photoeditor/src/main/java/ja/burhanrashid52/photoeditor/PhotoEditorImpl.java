@@ -85,6 +85,8 @@ class PhotoEditorImpl implements PhotoEditor {
                 return mDetector.onTouchEvent(event);
             }
         });
+
+        this.parentView.setClipSourceImage(builder.clipSourceImage);
     }
 
 
