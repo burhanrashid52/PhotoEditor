@@ -234,7 +234,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     }
 
     @Override
-    public void onTouchView(MotionEvent event) {
+    public void onTouchSourceImage(MotionEvent event) {
         Log.d(TAG, "onTouchView() called with: event = [" + event + "]");
     }
 

@@ -61,5 +61,10 @@ public interface OnPhotoEditorListener {
      */
     void onStopViewChangeListener(ViewType viewType);
 
-    void onTouchView(MotionEvent event);
+    /**
+     * A callback when the user touches the screen.
+     *
+     * @param event the MotionEvent associated to the touch.
+     */
+    void onTouchSourceImage(MotionEvent event);
 }
