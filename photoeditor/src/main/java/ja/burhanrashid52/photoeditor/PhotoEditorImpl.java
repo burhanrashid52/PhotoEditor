@@ -83,7 +83,7 @@ class PhotoEditorImpl implements PhotoEditor {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onTouchView(event);
+                    mOnPhotoEditorListener.onTouchSourceImage(event);
                 }
                 return mDetector.onTouchEvent(event);
             }
