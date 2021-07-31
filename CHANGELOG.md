@@ -78,3 +78,7 @@ new TextStyleBuilder()
 - Deprecated : `setBrushSize()` , `setOpacity()` and `setBrushColor`. Use `ShapeBuilder`
 - New : Drawing Shapes using `ShapeBuilder`. Support Line, Brush, Oval and Rectangle out of the box.Deprecated
 - New : Allowing to add text shadow using `TextStyleBuilder.withTextShadow()`
+
+### 1.5.1
+- New : #379 Should disallow drawing on left or right of the image using `photoEditor.setClipSourceImage(true)`
+- New/Break : #383 Get a callback when the image source is touched `onTouchSourceImage(MotionEvent event);`
