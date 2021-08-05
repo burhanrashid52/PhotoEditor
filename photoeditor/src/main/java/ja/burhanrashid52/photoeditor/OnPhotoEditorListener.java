@@ -1,6 +1,8 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 
 /**
  * @author <a href="https://github.com/burhanrashid52">Burhanuddin Rashid</a>
@@ -58,4 +60,11 @@ public interface OnPhotoEditorListener {
      * @param viewType enum which define type of view is added
      */
     void onStopViewChangeListener(ViewType viewType);
+
+    /**
+     * A callback when the user touches the screen.
+     *
+     * @param event the MotionEvent associated to the touch.
+     */
+    void onTouchSourceImage(MotionEvent event);
 }

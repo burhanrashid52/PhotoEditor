@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
@@ -230,6 +231,11 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     @Override
     public void onStopViewChangeListener(ViewType viewType) {
         Log.d(TAG, "onStopViewChangeListener() called with: viewType = [" + viewType + "]");
+    }
+
+    @Override
+    public void onTouchSourceImage(MotionEvent event) {
+        Log.d(TAG, "onTouchView() called with: event = [" + event + "]");
     }
 
     @SuppressLint("NonConstantResourceId")

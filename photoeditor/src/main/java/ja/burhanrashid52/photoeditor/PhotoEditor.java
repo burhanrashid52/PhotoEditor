@@ -298,6 +298,7 @@ public interface PhotoEditor {
         Typeface emojiTypeface;
         // By default, pinch-to-scale is enabled for text
         boolean isTextPinchScalable = true;
+        boolean clipSourceImage = false;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -357,6 +358,16 @@ public interface PhotoEditor {
          */
         public PhotoEditor build() {
             return new PhotoEditorImpl(this);
+        }
+
+        /**
+         * Set true true to clip the drawing brush to the source image.
+         *
+         * @param clip a boolean to indicate if brush drawing is clipped or not.
+         */
+        public Builder setClipSourceImage(boolean clip) {
+            this.clipSourceImage = clip;
+            return this;
         }
     }
 
