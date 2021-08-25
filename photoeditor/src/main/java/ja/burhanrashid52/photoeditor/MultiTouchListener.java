@@ -244,6 +244,7 @@ public class MultiTouchListener implements OnTouchListener {
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (
+                        // NOTE(cheng): Disable lastImageTouchMouseDownEventWasOpaque below for testing.
                         frmBorderHitRectangle.contains((int) event.getX(), (int) event.getY())
                         && lastImageTouchMouseDownEventWasOpaque
                 ) {
