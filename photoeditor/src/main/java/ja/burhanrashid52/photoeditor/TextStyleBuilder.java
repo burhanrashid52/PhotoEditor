@@ -2,6 +2,7 @@ package ja.burhanrashid52.photoeditor;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import android.view.View;
@@ -30,6 +31,19 @@ public class TextStyleBuilder {
      */
     public void withTextSize(@NonNull float size) {
         values.put(TextStyle.SIZE, size);
+    }
+
+    /**
+     * Set this textShadow style
+     *
+     * @param radius Radius of the shadow to apply on text
+     * @param dx Horizontal distance of the shadow
+     * @param dy Vertical distance of the shadow
+     * @param color Color of the shadow
+     */
+    public void withTextShadow(@NonNull float radius, @NonNull float dx, @NonNull float dy, @NonNull int color) {
+        TextShadow shadow = new TextShadow(radius, dx, dy, color);
+        withTextShadow(shadow);
     }
 
     /**
@@ -86,6 +100,22 @@ public class TextStyleBuilder {
         values.put(TextStyle.TEXT_APPEARANCE, textAppearance);
     }
 
+    public void withTextStyle(int typeface){
+        values.put(TextStyle.TEXT_STYLE,typeface);
+    }
+
+    public void withTextFlag(int paintFlag){
+        values.put(TextStyle.TEXT_FLAG,paintFlag);
+    }
+
+    public void withTextShadow(TextShadow textShadow) {
+        values.put(TextStyle.SHADOW, textShadow);
+    }
+
+    public void withTextBorder(TextBorder textBorder){
+        values.put(TextStyle.BORDER,textBorder);
+    }
+
     /**
      * Method to apply all the style setup on this Builder}
      *
@@ -137,12 +167,42 @@ public class TextStyleBuilder {
                     }
                 }
                 break;
+
+                case TEXT_STYLE:{
+                    final int typeface=(int) entry.getValue();
+                    applyTextStyle(textView,typeface);
+                }
+                break;
+                case TEXT_FLAG:{
+                    int flag=(int) entry.getValue();
+                    applyTextFlag(textView,flag);
+                }
+                break;
+
+                case SHADOW: {
+                    if (entry.getValue() instanceof TextShadow){
+                        TextShadow textShadow=(TextShadow) entry.getValue();
+                        applyTextShadow(textView,textShadow);
+                    }
+
+                }
+                case BORDER: {
+                    if (entry.getValue() instanceof TextBorder){
+                        TextBorder textBorder=(TextBorder) entry.getValue();
+                        applyTextBorder(textView,textBorder);
+                    }
+
+                }
             }
         }
     }
 
     protected void applyTextSize(TextView textView, float size) {
         textView.setTextSize(size);
+    }
+
+    protected void applyTextShadow(TextView textView, float radius, float dx, float dy, int color) {
+        textView.setShadowLayer(radius, dx, dy, color);
     }
 
     protected void applyTextColor(TextView textView, int color) {
@@ -169,6 +229,32 @@ public class TextStyleBuilder {
         }
     }
 
+    // border
+    protected  void applyTextBorder(TextView textView,TextBorder textBorder){
+        GradientDrawable gd = new GradientDrawable();
+        gd.setCornerRadius(textBorder.getCorner());
+        gd.setStroke(textBorder.getStrokeWidth(), textBorder.getStrokeColor());
+        gd.setColor(textBorder.getBackGroundColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            textView.setBackground(gd);
+        }
+    }
+
+    // shadow
+    protected void applyTextShadow(TextView textView, TextShadow textShadow) {
+        textView.setShadowLayer(textShadow.getRadius(), textShadow.getDx(), textShadow.getDy(), textShadow.getColor());
+    }
+    // bold or italic
+    protected void applyTextStyle(TextView textView, int typeface) {
+        textView.setTypeface(textView.getTypeface(),typeface);
+    }
+
+    // underline or strike
+    protected void applyTextFlag(TextView textView, int flag) {
+//        textView.setPaintFlags(textView.getPaintFlags()|flag);
+        textView.getPaint().setFlags(flag);
+    }
+
     protected void applyTextAppearance(TextView textView, int styleAppearance) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             textView.setTextAppearance(styleAppearance);
@@ -186,7 +272,11 @@ public class TextStyleBuilder {
         GRAVITY("Gravity"),
         FONT_FAMILY("FontFamily"),
         BACKGROUND("Background"),
-        TEXT_APPEARANCE("TextAppearance");
+        TEXT_APPEARANCE("TextAppearance"),
+        TEXT_STYLE("TextStyle"),
+        TEXT_FLAG("TextFlag"),
+        SHADOW("Shadow"),
+        BORDER("Border");
 
         TextStyle(String property) {
             this.property = property;

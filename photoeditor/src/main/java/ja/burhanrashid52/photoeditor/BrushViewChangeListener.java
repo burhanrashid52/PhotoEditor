@@ -7,9 +7,9 @@ package ja.burhanrashid52.photoeditor;
  */
 
 interface BrushViewChangeListener {
-    void onViewAdd(BrushDrawingView brushDrawingView);
+    void onViewAdd(DrawingView drawingView);
 
-    void onViewRemoved(BrushDrawingView brushDrawingView);
+    void onViewRemoved(DrawingView drawingView);
 
     void onStartDrawing();
 

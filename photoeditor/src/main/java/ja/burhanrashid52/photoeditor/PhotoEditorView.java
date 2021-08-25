@@ -6,19 +6,19 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 /**
  * <p>
- * This ViewGroup will have the {@link BrushDrawingView} to draw paint on it with {@link ImageView}
+ * This ViewGroup will have the {@link DrawingView} to draw paint on it with {@link ImageView}
  * which our source image
  * </p>
  *
@@ -33,10 +33,11 @@ public class PhotoEditorView extends ZoomLayout {
 
     private FilterImageView mImgSource;
     private ImageView mImageOverlay, mImageBackground;
-    private BrushDrawingView mBrushDrawingView;
+    private DrawingView mDrawingView;
     private ImageFilterView mImageFilterView;
+    private boolean clipSourceImage;
     private RelativeLayout mParentLayout, mCanvasLayout;
-    private static final int imgSrcId = 1, brushSrcId = 2, glFilterId = 3, imgOverlayId = 4, imgBackgroundId = 5, parentLayoutId = 6;
+    private static final int imgSrcId = 1, shapeSrcId = 2, glFilterId = 3, imgOverlayId = 4, imgBackgroundId = 5, parentLayoutId = 6;
 
     public PhotoEditorView(Context context) {
         super(context);
@@ -59,15 +60,27 @@ public class PhotoEditorView extends ZoomLayout {
         init(attrs);
     }
 
-    @SuppressLint("Recycle")
     private void init(@Nullable AttributeSet attrs) {
         //Setup image attributes
         mImgSource = new FilterImageView(getContext());
-        mImgSource.setId(imgSrcId);
-        mImgSource.setAdjustViewBounds(true);
-        mImgSource.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams sourceParam = setupImageSource(attrs);
+
+        mImgSource.setOnImageChangedListener(new FilterImageView.OnImageChangedListener() {
+            @Override
+            public void onBitmapLoaded(@Nullable Bitmap sourceBitmap) {
+                mImageFilterView.setFilterEffect(PhotoFilter.NONE);
+                mImageFilterView.setSourceBitmap(sourceBitmap);
+                Log.d(TAG, "onBitmapLoaded() called with: sourceBitmap = [" + sourceBitmap + "]");
+            }
+        });
+
+        //Setup GLSurface attributes
+        mImageFilterView = new ImageFilterView(getContext());
+        RelativeLayout.LayoutParams filterParam = setupFilterView();
+
+        //Setup drawing view
+        mDrawingView = new DrawingView(getContext());
+        RelativeLayout.LayoutParams brushParam = setupDrawingView();
 
         // NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
         mImageOverlay = new ImageView(getContext());
@@ -83,6 +96,33 @@ public class PhotoEditorView extends ZoomLayout {
         RelativeLayout.LayoutParams imgBackgroundParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        // NOTE(kleyow): Order of addition of views is important.
+        // Add background view
+        mCanvasLayout.addView(mImageBackground, imgBackgroundParam);
+
+        //Add image source
+        mCanvasLayout.addView(mImgSource, sourceParam);
+
+        //Add Gl FilterView
+        mCanvasLayout.addView(mImageFilterView, filterParam);
+
+        //Add brush view
+        mCanvasLayout.addView(mDrawingView, brushParam);
+
+        mParentLayout.addView(mCanvasLayout);
+
+        // Add overlay view
+        addView(mImageOverlay, imgOverlayParam);
+    }
+
+
+    @SuppressLint("Recycle")
+    private RelativeLayout.LayoutParams setupImageSource(@Nullable AttributeSet attrs) {
+        mImgSource.setId(imgSrcId);
+        mImgSource.setAdjustViewBounds(true);
+        mImgSource.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        RelativeLayout.LayoutParams imgSrcParam = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         imgSrcParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         if (attrs != null) {
@@ -93,37 +133,44 @@ public class PhotoEditorView extends ZoomLayout {
             }
         }
 
-        //Setup brush view
-        mBrushDrawingView = new BrushDrawingView(getContext());
-        mBrushDrawingView.setVisibility(GONE);
-        mBrushDrawingView.setId(brushSrcId);
-        //Align brush to the size of image view
-        RelativeLayout.LayoutParams brushParam = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        brushParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        brushParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
-        brushParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
+        int widthParam = ViewGroup.LayoutParams.MATCH_PARENT;
+        if (clipSourceImage) {
+            widthParam = ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                widthParam, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-        //Setup GLSurface attributes
-        mImageFilterView = new ImageFilterView(getContext());
-        mImageFilterView.setId(glFilterId);
+        return params;
+    }
+
+
+    private RelativeLayout.LayoutParams setupDrawingView() {
+        mDrawingView.setVisibility(GONE);
+        mDrawingView.setId(shapeSrcId);
+
+        // Align drawing view to the size of image view
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
+        params.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
+        params.addRule(RelativeLayout.ALIGN_LEFT, imgSrcId);
+        params.addRule(RelativeLayout.ALIGN_RIGHT, imgSrcId);
+        return params;
+    }
+
+
+    private RelativeLayout.LayoutParams setupFilterView() {
         mImageFilterView.setVisibility(GONE);
+        mImageFilterView.setId(glFilterId);
 
         //Align brush to the size of image view
-        RelativeLayout.LayoutParams imgFilterParam = new RelativeLayout.LayoutParams(
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        imgFilterParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        imgFilterParam.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
-        imgFilterParam.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
-
-        mImgSource.setOnImageChangedListener(new FilterImageView.OnImageChangedListener() {
-            @Override
-            public void onBitmapLoaded(@Nullable Bitmap sourceBitmap) {
-                mImageFilterView.setFilterEffect(PhotoFilter.NONE);
-                mImageFilterView.setSourceBitmap(sourceBitmap);
-                Log.d(TAG, "onBitmapLoaded() called with: sourceBitmap = [" + sourceBitmap + "]");
-            }
-        });
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_TOP, imgSrcId);
+        params.addRule(RelativeLayout.ALIGN_BOTTOM, imgSrcId);
 
         // NOTE(kleyow): This is custom added code diverging from https://github.com/burhanrashid52/PhotoEditor
         mParentLayout = new RelativeLayout(getContext());
@@ -142,22 +189,7 @@ public class PhotoEditorView extends ZoomLayout {
         RelativeLayout.LayoutParams rotateLayoutParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-
-        // NOTE(kleyow): Order of addition of views is important.
-        // Add background view
-        mCanvasLayout.addView(mImageBackground, imgBackgroundParam);
-
-        //Add image source
-        mCanvasLayout.addView(mImgSource, imgSrcParam);
-
-        //Add brush view
-        mCanvasLayout.addView(mBrushDrawingView, brushParam);
-
-        mParentLayout.addView(mCanvasLayout);
-
-        // Add overlay view
-        addView(mImageOverlay, imgOverlayParam);
-
+        return params;
     }
 
 
@@ -178,8 +210,8 @@ public class PhotoEditorView extends ZoomLayout {
 
     }
 
-    BrushDrawingView getBrushDrawingView() {
-        return mBrushDrawingView;
+    DrawingView getDrawingView() {
+        return mDrawingView;
     }
 
     /**
@@ -236,8 +268,6 @@ public class PhotoEditorView extends ZoomLayout {
         } else {
             onSaveBitmap.onBitmapReady(mImgSource.getBitmap());
         }
-
-
     }
 
     void setFilterEffect(PhotoFilter filterType) {
@@ -251,4 +281,12 @@ public class PhotoEditorView extends ZoomLayout {
         mImageFilterView.setSourceBitmap(mImgSource.getBitmap());
         mImageFilterView.setFilterEffect(customEffect);
     }
+
+    void setClipSourceImage(boolean clip) {
+        clipSourceImage = clip;
+        RelativeLayout.LayoutParams param = setupImageSource(null);
+        mImgSource.setLayoutParams(param);
+    }
+
+    // endregion
 }

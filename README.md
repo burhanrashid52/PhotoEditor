@@ -1,7 +1,7 @@
 # PhotoEditor
 
 ![Github Action](https://github.com/burhanrashid52/PhotoEditor/actions/workflows/app_build_and_test.yml/badge.svg)
-[![Downloads](https://img.shields.io/badge/Download-1.1.4-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/1.1.4/aar) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-1.5.1-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/1.5.1/aar) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -21,7 +21,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 
 ## Features
 
-- [**Drawing**](#drawing) on image with option to change its Brush's Color, Size, Opacity and Erasing.
+- [**Drawing**](#drawing) on image with option to change its Brush's Color, Size, Opacity, Erasing and basic shapes.
 - Apply [**Filter Effect**](#filter-effect) on image using MediaEffect
 - Adding/Editing [**Text**](#text) with option to change its Color with Custom Fonts.
 - Adding [**Emoji**](#emoji) with Custom Emoji Fonts.
@@ -47,7 +47,7 @@ PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of
 ## Getting Started
 To start with this, we need to simply add the dependencies from `mavenCentral()` in the gradle file of our app module like this
 ```groovy
-implementation 'com.burhanrashid52:photoeditor:1.1.4'
+implementation 'com.burhanrashid52:photoeditor:1.5.1'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
@@ -80,11 +80,12 @@ To use the image editing feature we need to build a PhotoEditor which requires a
 //Use custom font using latest support library
 Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
 
-//loading font from assest
+//loading font from asset
 Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
 mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
          .setPinchTextScalable(true)
+         .setClipSourceImage(true)
          .setDefaultTextTypeface(mTextRobotoTf)
          .setDefaultEmojiTypeface(mEmojiTypeFace)
          .build();
@@ -93,7 +94,8 @@ We can customize the properties in the PhotoEditor as per our requirement
 
 | Property  | Usage |
 | ------------- | ------------- |
-| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion.By default its true
+| `setPinchTextScalable()`  | set false to disable pinch to zoom on text insertion. Default: true. |
+| `setClipSourceImage()` | set true to clip the drawing brush to the source image. Default: false. |
 | `setDefaultTextTypeface()`  | set default text font to be added on image  |
 | `setDefaultEmojiTypeface()`  | set default font specifc to add emojis |
 
@@ -109,14 +111,28 @@ We can customize our brush and paint with different set of property. To start dr
 | Type  | Method |
 | ------------- | ------------- |
 | Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
-| Brush Size (px)  | `mPhotoEditor.setBrushSize(brushSize)` |
-| Color Opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)`  |
-| Brush Color | `mPhotoEditor.setBrushColor(colorCode)`  |
+| Shape (brush, line, oval, rectangle)  | `mPhotoEditor.addShape(shape)` |
+| Shape size (px)  | `mPhotoEditor.setBrushSize(brushSize)` or through the a ShapeBuilder |
+| Shape opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)` or through the a ShapeBuilder |
+| Shape color | `mPhotoEditor.setBrushColor(colorCode)` or through the a ShapeBuilder |
 | Brush Eraser  | `mPhotoEditor.brushEraser()` |
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 
+## Shapes
+We can draw shapes from [v.1.5.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.5.0). We use `ShapeBuilder` to define shape and other properties.
 
+![](https://im2.ezgif.com/tmp/ezgif-2-5d5f7ddbe72e.gif)
+
+```java
+mShapeBuilder = new ShapeBuilder()
+         .withShapeOpacity(100)
+         .withShapeType(ShapeType.OVAL)
+         .withShapeSize(50);
+
+mPhotoEditor.setShape(mShapeBuilder)
+```
+For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.java).
 
 ## Filter Effect
 We can apply inbuild filter to the source images using 

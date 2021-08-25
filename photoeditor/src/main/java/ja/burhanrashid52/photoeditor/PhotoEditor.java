@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
 
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder;
+
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
@@ -120,29 +122,34 @@ public interface PhotoEditor {
     Boolean getBrushDrawableMode();
 
     /**
-     * set the size of brush user want to paint on canvas i.e {@link BrushDrawingView}
+     * Set the size of brush user want to paint on canvas i.e {@link DrawingView}
+     * @deprecated use {@code setShape} of a ShapeBuilder
      *
      * @param size size of brush
      */
+    @Deprecated
     void setBrushSize(float size);
 
     /**
-     * set opacity/transparency of brush while painting on {@link BrushDrawingView}
+     * set opacity/transparency of brush while painting on {@link DrawingView}
+     * @deprecated use {@code setShape} of a ShapeBuilder
      *
      * @param opacity opacity is in form of percentage
      */
+    @Deprecated
     void setOpacity(@IntRange(from = 0, to = 100) int opacity);
 
     /**
      * set brush color which user want to paint
+     * @deprecated use {@code setShape} of a ShapeBuilder
      *
      * @param color color value for paint
      */
+    @Deprecated
     void setBrushColor(@ColorInt int color);
 
     /**
      * set the eraser size
-     * <br></br>
      * <b>Note :</b> Eraser size is different from the normal brush size
      *
      * @param brushEraserSize size of eraser
@@ -301,11 +308,12 @@ public interface PhotoEditor {
         View deleteView;
         ImageView overlayView;
         ImageView backgroundView;
-        BrushDrawingView brushDrawingView;
+        DrawingView drawingView;
         Typeface textTypeface;
         Typeface emojiTypeface;
         // By default, pinch-to-scale is enabled for text
         boolean isTextPinchScalable = true;
+        boolean clipSourceImage = false;
 
         /**
          * Building a PhotoEditor which requires a Context and PhotoEditorView
@@ -322,7 +330,7 @@ public interface PhotoEditor {
             imageView = photoEditorView.getSource();
             overlayView = photoEditorView.getImageOverlayView();
             backgroundView = photoEditorView.getBackgroundView();
-            brushDrawingView = photoEditorView.getBrushDrawingView();
+            drawingView = photoEditorView.getDrawingView();
         }
 
         Builder setDeleteView(View deleteView) {
@@ -370,6 +378,16 @@ public interface PhotoEditor {
         public PhotoEditor build() {
             return new PhotoEditorImpl(this);
         }
+
+        /**
+         * Set true true to clip the drawing brush to the source image.
+         *
+         * @param clip a boolean to indicate if brush drawing is clipped or not.
+         */
+        public Builder setClipSourceImage(boolean clip) {
+            this.clipSourceImage = clip;
+            return this;
+        }
     }
 
 
@@ -392,4 +410,14 @@ public interface PhotoEditor {
          */
         void onFailure(@NonNull Exception exception);
     }
+
+
+    // region Shape
+    /**
+     * Update the current shape to be drawn,
+     * through the use of a ShapeBuilder.
+     */
+    void setShape(ShapeBuilder shapebuilder);
+    // endregion
+
 }

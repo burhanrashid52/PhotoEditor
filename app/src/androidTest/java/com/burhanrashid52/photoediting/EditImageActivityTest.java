@@ -7,9 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.test.espresso.NoMatchingViewException;
-import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -24,13 +23,12 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import ja.burhanrashid52.photoeditor.PhotoEditor;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -60,7 +58,7 @@ public class EditImageActivityTest {
     public void checkIfBrushIsEnabledWhenClickedOnBrushTool() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         assertFalse(editImageActivity.mPhotoEditor.getBrushDrawableMode());
-        onView(withText(R.string.label_brush)).perform(click());
+        onView(withText(R.string.label_shape)).perform(click());
         assertTrue(editImageActivity.mPhotoEditor.getBrushDrawableMode());
     }
 
@@ -72,11 +70,20 @@ public class EditImageActivityTest {
     }
 
     @Test
+    public void checkIfShapeIsEnabledWhenClickedOnBrushTool() {
+        EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
+        onView(withText(R.string.label_shape)).perform(click());
+        onView(withText(R.string.label_shape)).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void checkIfEmojiIsDisplayedWhenEmojiIsSelected() {
         Context context = mActivityRule.launchActivity(null);
         ArrayList<String> emojis = getEmojis(context);
         int emojiPosition = 1;
         String emojiUnicode = emojis.get(emojiPosition);
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(emojiPosition, click()));
@@ -95,6 +102,8 @@ public class EditImageActivityTest {
     public void checkIfDiscardDialogIsDisplayedWhenCacheIsNotEmpty() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty());
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -103,10 +112,12 @@ public class EditImageActivityTest {
     }
 
     @Test
-    public void checkIfUndoRedoIsWorkingCorrectWhenClickedOnUndoRedo() throws InterruptedException {
+    public void checkIfUndoRedoIsWorkingCorrectWhenClickedOnUndoRedo() {
         EditImageActivity editImageActivity = mActivityRule.launchActivity(null);
         ArrayList<String> emojisUnicodes = getEmojis(editImageActivity);
 
+        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
         //Add Emoji
         onView(withText(R.string.label_emoji)).perform(click());
         onView(withId(R.id.rvEmoji)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -147,6 +158,8 @@ public class EditImageActivityTest {
 //
 //        // Open the emoji menu (delay to give time to load lower menu)
 //        Thread.sleep(2000);
+//        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+//                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
 //        onView(withText(R.string.label_emoji)).perform(click());
 //
 //        // Add an emoji from the menu (delay to give time for the RecyclerView to open)
@@ -200,7 +213,7 @@ public class EditImageActivityTest {
 //        assertEquals(textScaleXBeforeScaling, textFrameParentView.getScaleX(), 0.01);
 //        assertEquals(textScaleYBeforeScaling, textFrameParentView.getScaleY(), 0.01);
 //    }
-
+//
 //    @Test
 //    public void checkIfPinchTextScalableFlagWorks_True() throws InterruptedException {
 //
@@ -246,6 +259,8 @@ public class EditImageActivityTest {
 //        mActivityRule.launchActivity(null);
 //
 //        // Add the first emoji to the editor
+//        onView(ViewMatchers.withId(R.id.rvConstraintTools))
+//                .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(R.string.label_emoji))));
 //        onView(withText(R.string.label_emoji)).perform(click());
 //        onView(withId(R.id.rvEmoji))
 //                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -262,20 +277,10 @@ public class EditImageActivityTest {
 //                .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 //
 //        // Assert that the first emoji is not selected (frame background is null)
-//        onView(withIndex(withId(R.id.frmBorder), 0)).check(new ViewAssertion() {
-//            @Override
-//            public void check(View view, NoMatchingViewException noViewFoundException) {
-//                assertNull(((FrameLayout) view).getBackground());
-//            }
-//        });
+//        onView(withIndex(withId(R.id.frmBorder), 0)).check((view, noViewFoundException) -> assertNull((view).getBackground()));
 //
 //        // Assert that the second emoji is selected (frame background is not null)
-//        onView(withIndex(withId(R.id.frmBorder), 1)).check(new ViewAssertion() {
-//            @Override
-//            public void check(View view, NoMatchingViewException noViewFoundException) {
-//                assertNotNull(null, ((FrameLayout) view).getBackground());
-//            }
-//        });
+//        onView(withIndex(withId(R.id.frmBorder), 1)).check((view, noViewFoundException) -> assertNotNull(null, view.getBackground()));
 //    }
 
     // Helper class for matching with multiple elements with the same ID

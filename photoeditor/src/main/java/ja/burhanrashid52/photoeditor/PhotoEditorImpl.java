@@ -22,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder;
+
 /**
  * <p>
  * This class in initialize by {@link PhotoEditor.Builder} using a builder pattern with multiple
@@ -39,7 +41,7 @@ public class PhotoEditorImpl implements PhotoEditor {
     private final PhotoEditorViewState viewState;
     private final ImageView mainImageView;
     private final View deleteView;
-    private final BrushDrawingView brushDrawingView;
+    private final DrawingView drawingView;
     private final BrushDrawingStateListener mBrushDrawingStateListener;
     private final BoxHelper mBoxHelper;
     private OnPhotoEditorListener mOnPhotoEditorListener;
@@ -63,9 +65,9 @@ public class PhotoEditorImpl implements PhotoEditor {
         this.canvasView = builder.canvasView;
         this.mainImageView = builder.imageView;
         this.deleteView = builder.deleteView;
+        this.drawingView = builder.drawingView;
         this.overlayView = builder.overlayView;
         this.backgroundView = builder.backgroundView;
-        this.brushDrawingView = builder.brushDrawingView;
         this.isTextPinchScalable = builder.isTextPinchScalable;
         this.mDefaultTextTypeface = builder.textTypeface;
         this.mDefaultEmojiTypeface = builder.emojiTypeface;
@@ -75,7 +77,7 @@ public class PhotoEditorImpl implements PhotoEditor {
         this.mBoxHelper = new BoxHelper(builder.canvasView, this.viewState);
 
         mBrushDrawingStateListener = new BrushDrawingStateListener(builder.editorView, this.viewState);
-        this.brushDrawingView.setBrushViewChangeListener(mBrushDrawingStateListener);
+        this.drawingView.setBrushViewChangeListener(mBrushDrawingStateListener);
 
         // Create scaling logic for background image.
         this.mEditorTouchListener = new EditorTouchListener(
@@ -106,7 +108,7 @@ public class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public View addImage(Bitmap desiredImage) {
-        brushDrawingView.setBrushDrawingMode(false);
+        drawingView.enableDrawing(false);
 
         final MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         Sticker sticker = new Sticker(
@@ -151,8 +153,7 @@ public class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public View addText(String text, @Nullable TextStyleBuilder styleBuilder) {
-        brushDrawingView.setBrushDrawingMode(false);
-
+        drawingView.enableDrawing(false);
         MultiTouchListener multiTouchListener = getMultiTouchListener(isTextPinchScalable);
         Text textGraphic = new Text(
                 canvasView,
@@ -214,7 +215,7 @@ public class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public View addEmoji(Typeface emojiTypeface, String emojiName) {
-        brushDrawingView.setBrushDrawingMode(false);
+        drawingView.enableDrawing(false);
         // NOTE(kleyow): Emoji disappear when they are too big for some reason.
         //               I believe screen density plays into it, investigate a suitable font size
         //               again.
@@ -276,65 +277,71 @@ public class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void setBrushDrawingMode(boolean brushDrawingMode) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushDrawingMode(brushDrawingMode);
+        if (drawingView != null) {
+            drawingView.enableDrawing(brushDrawingMode);
+        }
     }
 
     @Override
     public Boolean getBrushDrawableMode() {
-        return brushDrawingView != null && brushDrawingView.getBrushDrawingMode();
+        return drawingView != null && drawingView.isDrawingEnabled();
     }
+
 
     @Override
     public void setBrushSize(float size) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushSize(size);
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            drawingView.getCurrentShapeBuilder().withShapeSize(size);
+        }
     }
 
     @Override
     public void setOpacity(@IntRange(from = 0, to = 100) int opacity) {
-        if (brushDrawingView != null) {
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
             opacity = (int) ((opacity / 100.0) * 255.0);
-            brushDrawingView.setOpacity(opacity);
+            drawingView.getCurrentShapeBuilder().withShapeOpacity(opacity);
         }
     }
 
     @Override
     public void setBrushColor(@ColorInt int color) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushColor(color);
-    }
-
-    @Override
-    public void setBrushEraserSize(float brushEraserSize) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushEraserSize(brushEraserSize);
-    }
-
-
-    @Override
-    public float getEraserSize() {
-        return brushDrawingView != null ? brushDrawingView.getEraserSize() : 0;
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            drawingView.getCurrentShapeBuilder().withShapeColor(color);
+        }
     }
 
     @Override
     public float getBrushSize() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getBrushSize();
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            return drawingView.getCurrentShapeBuilder().getShapeSize();
+        }
         return 0;
     }
 
     @Override
     public int getBrushColor() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getBrushColor();
+        if (drawingView != null && drawingView.getCurrentShapeBuilder() != null) {
+            return drawingView.getCurrentShapeBuilder().getShapeColor();
+        }
         return 0;
     }
 
     @Override
+    public void setBrushEraserSize(float brushEraserSize) {
+        if (drawingView != null) {
+            drawingView.setBrushEraserSize(brushEraserSize);
+        }
+    }
+
+    @Override
+    public float getEraserSize() {
+        return drawingView != null ? drawingView.getEraserSize() : 0;
+    }
+
+    @Override
     public void brushEraser() {
-        if (brushDrawingView != null)
-            brushDrawingView.brushEraser();
+        if (drawingView != null)
+            drawingView.brushEraser();
     }
 
     @Override
@@ -412,7 +419,7 @@ public class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     public void clearAllViews() {
-        mBoxHelper.clearAllViews(brushDrawingView);
+        mBoxHelper.clearAllViews(drawingView);
     }
 
     @Override
@@ -510,6 +517,12 @@ public class PhotoEditorImpl implements PhotoEditor {
         return viewState.getAddedViewsCount() == 0 && viewState.getRedoViewsCount() == 0;
     }
 
+    // region Shape
+    @Override
+    public void setShape(ShapeBuilder shapeBuilder) {
+        drawingView.setShapeBuilder(shapeBuilder);
+    }
+    // endregion
 
     public void lockMainImage() {
         editorView.setLockedZoom(true);
