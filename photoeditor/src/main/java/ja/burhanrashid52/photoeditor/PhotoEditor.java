@@ -288,6 +288,7 @@ public interface PhotoEditor {
     // NOTE(cheng): Added, departure from root.
     void rotateImage(float rotation);
     void removeInFocusView();
+    void bringToFrontInFocusView();
     void mirrorInFocusView();
     void unfocusView();
     boolean getMainImageLockValue();

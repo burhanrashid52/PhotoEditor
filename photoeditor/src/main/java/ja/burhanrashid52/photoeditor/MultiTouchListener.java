@@ -256,7 +256,6 @@ public class MultiTouchListener implements OnTouchListener {
                     lastImageTouchMouseDownEventWasOpaque = false;
 
                     // NOTE(cheng): Always handle this case (returning "true") for non-stickers (text),
-                    // TODO(cheng): Add click-through support for text.
                     // NOTE(cheng): It is also important to return "true" here so the GestureListener
                     //              gets triggered, which allows for selection to take place
                     //              in the case of a "fling".
@@ -271,7 +270,7 @@ public class MultiTouchListener implements OnTouchListener {
 
                     // NOTE(cheng): Re-enabling since there was a uninstall spike / ranking dropoff
                     //              after disabling this.
-                    // TODO(cheng): Turn this into a feature, to be consistent with PhotoEditor
+                    // TODO(cheng): Turn this off once we have the "bringToFront()" button existing.
                     view.bringToFront();
                     firePhotoEditorSDKListener(
                             view,

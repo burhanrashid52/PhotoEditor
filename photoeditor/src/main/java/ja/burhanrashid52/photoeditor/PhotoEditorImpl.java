@@ -361,7 +361,6 @@ public class PhotoEditorImpl implements PhotoEditor {
         }
 
         // Remove the view from ViewState and the UI tree.
-        // TODO(cheng): Move multiTouchListenerByView into ViewState
         final Map<View, MultiTouchListener> multiTouchListenerByView =
                 viewState.getMultiTouchListenerByView();
         multiTouchListenerByView.remove(inFocusView);
@@ -410,6 +409,15 @@ public class PhotoEditorImpl implements PhotoEditor {
 
         if (mOnPhotoEditorListener != null)
             mOnPhotoEditorListener.onMirrorViewListener();
+    }
+
+    public void bringToFrontInFocusView() {
+        final View inFocusView = viewState.getCurrentSelectedView();
+        if (inFocusView == null) {
+            return;
+        }
+
+        inFocusView.bringToFront();
     }
 
 
