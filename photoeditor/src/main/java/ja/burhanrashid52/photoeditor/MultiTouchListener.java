@@ -268,10 +268,8 @@ public class MultiTouchListener implements OnTouchListener {
                         deleteView.setVisibility(View.VISIBLE);
                     }
 
-                    // NOTE(cheng): Re-enabling since there was a uninstall spike / ranking dropoff
-                    //              after disabling this.
-                    // TODO(cheng): Turn this off once we have the "bringToFront()" button existing.
-                    view.bringToFront();
+                    // NOTE(cheng): Disabling this since this is a button now
+                    // view.bringToFront();
                     firePhotoEditorSDKListener(
                             view,
                             PhotoEditorSDKListenerMode.START_VIEW_CHANGE
