@@ -1,13 +1,9 @@
 package ja.burhanrashid52.photoeditor
 
 import android.graphics.Paint
-import ja.burhanrashid52.photoeditor.TextStyleBuilder
-import ja.burhanrashid52.photoeditor.TextShadow
-import ja.burhanrashid52.photoeditor.TextBorder
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import ja.burhanrashid52.photoeditor.TextStyleBuilderTest.MockTextStyleBuilder
 import android.widget.TextView
 import org.junit.Assert
 import org.junit.Test
@@ -91,11 +87,12 @@ class TextStyleBuilderTest {
 
     @Test
     fun testApplyStyleShouldCallTheCorrectApplyMethod() {
+
         val builder = MockTextStyleBuilder()
         builder.withTextColor(123)
         builder.withTextSize(12f)
         builder.withGravity(3)
-        builder.withTextFont(Typeface.DEFAULT)
+        builder.withTextFont(Mockito.mock(Typeface::class.java))
         builder.withBackgroundColor(321)
         builder.withTextAppearance(144)
         builder.withTextStyle(Typeface.NORMAL)
