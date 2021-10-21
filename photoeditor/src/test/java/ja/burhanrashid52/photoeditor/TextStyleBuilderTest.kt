@@ -17,8 +17,8 @@ class TextStyleBuilderTest {
     @Test
     fun testFillBuilderWithAllPossibleStyles() {
         val builder = TextStyleBuilder()
-        val textShadow = TextShadow(0, 0, 0, 123)
-        val textBorder = TextBorder(0, 123, 0, 123)
+        val textShadow = TextShadow(0f, 0f, 0f, 123)
+        val textBorder = TextBorder(0f, 123, 0, 123)
         builder.withTextColor(123)
         builder.withTextSize(12f)
         builder.withGravity(3)
@@ -100,8 +100,8 @@ class TextStyleBuilderTest {
         builder.withTextAppearance(144)
         builder.withTextStyle(Typeface.NORMAL)
         builder.withTextFlag(Paint.ANTI_ALIAS_FLAG)
-        builder.withTextShadow(TextShadow(0, 0, 0, 123))
-        builder.withTextBorder(TextBorder(0, 123, 0, 123))
+        builder.withTextShadow(TextShadow(0f, 0f, 0f, 123))
+        builder.withTextBorder(TextBorder(0f, 123, 0, 123))
         val textView = Mockito.mock(TextView::class.java)
         builder.applyStyle(textView)
         Assert.assertTrue(builder.textColorApplied)
