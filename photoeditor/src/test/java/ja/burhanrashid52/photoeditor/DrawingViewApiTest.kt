@@ -13,7 +13,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers
 
 @RunWith(RobolectricTestRunner::class)
-class DrawingViewApiTest : BaseDrawingViewTest() {
+internal class DrawingViewApiTest : BaseDrawingViewTest() {
     @Test
     fun testDefaultPaintAttributes() {
         val drawingView = setupDrawingView()
