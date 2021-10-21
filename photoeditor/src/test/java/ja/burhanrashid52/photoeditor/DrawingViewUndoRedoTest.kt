@@ -8,7 +8,7 @@ import junit.framework.Assert
 import org.junit.Test
 
 @RunWith(RobolectricTestRunner::class)
-class DrawingViewUndoRedoTest : BaseDrawingViewTest() {
+internal class DrawingViewUndoRedoTest : BaseDrawingViewTest() {
     @Test
     fun testUndoReturnFalseWhenThereNothingToUndo() {
         val drawingView = DrawingView(mContext)
