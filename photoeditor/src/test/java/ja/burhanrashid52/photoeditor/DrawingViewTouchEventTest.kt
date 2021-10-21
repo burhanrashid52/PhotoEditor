@@ -9,7 +9,7 @@ import junit.framework.TestCase
 import org.junit.Test
 
 @RunWith(RobolectricTestRunner::class)
-class DrawingViewTouchEventTest : BaseDrawingViewTest() {
+internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
     @Test
     fun testDrawingShouldNotWorkWhenDisabled() {
         val brushViewChangeListener = Mockito.mock(
