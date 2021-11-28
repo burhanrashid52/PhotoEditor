@@ -1,16 +1,16 @@
 package ja.burhanrashid52.photoeditor
 
 import android.graphics.*
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import junit.framework.TestCase
 import android.view.MotionEvent
 import android.view.View
-import org.mockito.Mockito
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 import junit.framework.Assert
+import junit.framework.TestCase
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
+import org.mockito.Mockito
+import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class DrawingViewApiTest : BaseDrawingViewTest() {

@@ -71,7 +71,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         makeFullScreen()
         setContentView(R.layout.activity_edit_image)
         initViews()
-        handleIntentImage(mPhotoEditorView!!.source)
+        handleIntentImage(mPhotoEditorView!!.source!!)
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
         mPropertiesBSFragment = PropertiesBSFragment()
         mEmojiBSFragment = EmojiBSFragment()
@@ -93,7 +93,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
-        mPhotoEditor = PhotoEditor.Builder(this, mPhotoEditorView)
+        mPhotoEditor = PhotoEditor.Builder(this, mPhotoEditorView!!)
                 .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
                 //.setDefaultTextTypeface(mTextRobotoTf)
                 //.setDefaultEmojiTypeface(mEmojiTypeFace)
@@ -101,7 +101,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mPhotoEditor!!.setOnPhotoEditorListener(this)
 
         //Set Image Dynamically
-        mPhotoEditorView!!.source.setImageResource(R.drawable.paris_tower)
+        mPhotoEditorView!!.source!!.setImageResource(R.drawable.paris_tower)
         mSaveFileHelper = FileSaveHelper(this)
     }
 
@@ -152,36 +152,36 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         imgShare.setOnClickListener(this)
     }
 
-    override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
-        val textEditorDialogFragment = show(this, text, colorCode)
+    override fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int) {
+        val textEditorDialogFragment = show(this, text!!, colorCode)
         textEditorDialogFragment.setOnTextEditorListener(object: TextEditor {
             override fun onDone(inputText: String?, colorCode: Int) {
                 val styleBuilder = TextStyleBuilder()
                 styleBuilder.withTextColor(colorCode)
-                mPhotoEditor!!.editText(rootView, inputText, styleBuilder)
+                mPhotoEditor!!.editText(rootView!!, inputText, styleBuilder)
                 mTxtCurrentTool!!.setText(R.string.label_text)
             }
 
         })
     }
 
-    override fun onAddViewListener(viewType: ViewType, numberOfAddedViews: Int) {
+    override fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
         Log.d(TAG, "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
     }
 
-    override fun onRemoveViewListener(viewType: ViewType, numberOfAddedViews: Int) {
+    override fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
         Log.d(TAG, "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
     }
 
-    override fun onStartViewChangeListener(viewType: ViewType) {
+    override fun onStartViewChangeListener(viewType: ViewType?) {
         Log.d(TAG, "onStartViewChangeListener() called with: viewType = [$viewType]")
     }
 
-    override fun onStopViewChangeListener(viewType: ViewType) {
+    override fun onStopViewChangeListener(viewType: ViewType?) {
         Log.d(TAG, "onStopViewChangeListener() called with: viewType = [$viewType]")
     }
 
-    override fun onTouchSourceImage(event: MotionEvent) {
+    override fun onTouchSourceImage(event: MotionEvent?) {
         Log.d(TAG, "onTouchView() called with: event = [$event]")
     }
 
@@ -249,7 +249,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                                 hideLoading()
                                 showSnackbar("Image Saved Successfully")
                                 mSaveImageUri = Uri
-                                mPhotoEditorView!!.source.setImageURI(mSaveImageUri)
+                                mPhotoEditorView!!.source!!.setImageURI(mSaveImageUri)
                             }
 
                             override fun onFailure(exception: Exception) {
@@ -276,13 +276,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 CAMERA_REQUEST -> {
                     mPhotoEditor!!.clearAllViews()
                     val photo = data!!.extras!!["data"] as Bitmap?
-                    mPhotoEditorView!!.source.setImageBitmap(photo)
+                    mPhotoEditorView!!.source!!.setImageBitmap(photo)
                 }
                 PICK_REQUEST -> try {
                     mPhotoEditor!!.clearAllViews()
                     val uri = data!!.data
                     val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    mPhotoEditorView!!.source.setImageBitmap(bitmap)
+                    mPhotoEditorView!!.source!!.setImageBitmap(bitmap)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -369,6 +369,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             }
             ToolType.EMOJI -> showBottomSheetDialogFragment(mEmojiBSFragment)
             ToolType.STICKER -> showBottomSheetDialogFragment(mStickerBSFragment)
+            else -> {}
         }
     }
 

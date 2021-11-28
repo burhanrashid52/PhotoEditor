@@ -1,8 +1,8 @@
 package ja.burhanrashid52.photoeditor
 
-import junit.framework.TestCase
 import android.graphics.Bitmap.CompressFormat
 import junit.framework.Assert
+import junit.framework.TestCase
 import org.junit.Test
 
 class SaveSettingsTest {

@@ -1,11 +1,11 @@
 package ja.burhanrashid52.photoeditor
 
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.mockito.Mockito
 import ja.burhanrashid52.photoeditor.shape.ShapeAndPaint
 import junit.framework.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class DrawingViewUndoRedoTest : BaseDrawingViewTest() {

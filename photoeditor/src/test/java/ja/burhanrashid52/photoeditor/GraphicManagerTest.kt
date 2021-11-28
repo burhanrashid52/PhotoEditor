@@ -2,12 +2,12 @@ package ja.burhanrashid52.photoeditor
 
 import android.content.Context
 import android.view.View
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import android.view.ViewGroup
 import org.junit.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
 /**
  * Created by Burhanuddin Rashid on 15/05/21.
@@ -26,15 +26,10 @@ class GraphicManagerTest {
         }
         val graphicManager = GraphicManager(viewGroup, PhotoEditorViewState())
         val graphic: Graphic = object : Graphic(view, graphicManager) {
-            public override fun getViewType(): ViewType {
-                return ViewType.TEXT
-            }
 
-            public override fun getLayoutId(): Int {
-                return 1
-            }
-
-            public override fun setupView(rootView: View) {}
+            override val viewType: ViewType = ViewType.TEXT
+            override val layoutId: Int = 1
+            override fun setupView(rootView: View?) {}
         }
         graphicManager.addView(graphic)
         Assert.assertEquals(viewGroup.childCount.toLong(), 1)
