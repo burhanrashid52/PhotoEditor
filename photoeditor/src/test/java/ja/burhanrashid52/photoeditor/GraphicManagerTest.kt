@@ -1,5 +1,6 @@
 package ja.burhanrashid52.photoeditor
 
+import android.content.Context
 import android.view.View
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -15,7 +16,7 @@ import org.junit.Test
  */
 @RunWith(RobolectricTestRunner::class)
 class GraphicManagerTest {
-    protected var mContext = RuntimeEnvironment.systemContext
+    private var mContext: Context = RuntimeEnvironment.systemContext
     @Test
     fun testGraphicMangerAddViews() {
         val view = View(mContext)

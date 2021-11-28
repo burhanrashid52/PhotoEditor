@@ -10,8 +10,6 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Matcher
-import java.lang.RuntimeException
-import kotlin.Throws
 
 /**
  * Helper used to test "pinch" actions.
@@ -94,14 +92,10 @@ object PinchTestHelper {
         val startTime = SystemClock.uptimeMillis()
         var eventTime = startTime
         var event: MotionEvent
-        var eventX1: Float
-        var eventY1: Float
-        var eventX2: Float
-        var eventY2: Float
-        eventX1 = startPoint1.x.toFloat()
-        eventY1 = startPoint1.y.toFloat()
-        eventX2 = startPoint2.x.toFloat()
-        eventY2 = startPoint2.y.toFloat()
+        var eventX1: Float = startPoint1.x.toFloat()
+        var eventY1: Float = startPoint1.y.toFloat()
+        var eventX2: Float = startPoint2.x.toFloat()
+        var eventY2: Float = startPoint2.y.toFloat()
 
         // Specify the property for the two touch points
         val properties = arrayOfNulls<PointerProperties>(2)
@@ -169,14 +163,10 @@ object PinchTestHelper {
 
             // Step 3, 4
             val moveEventNumber = duration / eventMinInterval
-            val stepX1: Float
-            val stepY1: Float
-            val stepX2: Float
-            val stepY2: Float
-            stepX1 = (endPoint1.x - startPoint1.x) / moveEventNumber.toFloat()
-            stepY1 = (endPoint1.y - startPoint1.y) / moveEventNumber.toFloat()
-            stepX2 = (endPoint2.x - startPoint2.x) / moveEventNumber.toFloat()
-            stepY2 = (endPoint2.y - startPoint2.y) / moveEventNumber.toFloat()
+            val stepX1: Float = (endPoint1.x - startPoint1.x) / moveEventNumber.toFloat()
+            val stepY1: Float = (endPoint1.y - startPoint1.y) / moveEventNumber.toFloat()
+            val stepX2: Float = (endPoint2.x - startPoint2.x) / moveEventNumber.toFloat()
+            val stepY2: Float = (endPoint2.y - startPoint2.y) / moveEventNumber.toFloat()
             for (i in 0 until moveEventNumber) {
                 // Update the move events
                 eventTime += eventMinInterval

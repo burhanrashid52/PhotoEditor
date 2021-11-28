@@ -23,7 +23,9 @@
         <activity
             android:name="com.burhanrashid52.photoediting.EditImageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,7 +62,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.burhanrashid52.photoediting.fileprovider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
 

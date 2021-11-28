@@ -1,21 +1,16 @@
-package com.burhanrashid52.photoediting;
+package com.burhanrashid52.photoediting
 
-import android.app.Application;
-import android.content.Context;
+import android.app.Application
+import android.content.Context
 
 /**
  * Created by Burhanuddin Rashid on 1/23/2018.
  */
-
-public class PhotoApp extends Application {
-    private static PhotoApp sPhotoApp;
-    private static final String TAG = PhotoApp.class.getSimpleName();
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sPhotoApp = this;
-     /*   FontRequest fontRequest = new FontRequest(
+class PhotoApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        photoApp = this
+        /*   FontRequest fontRequest = new FontRequest(
                 "com.google.android.gms.fonts",
                 "com.google.android.gms",
                 "Noto Color Emoji Compat",
@@ -43,11 +38,12 @@ public class PhotoApp extends Application {
         EmojiCompat.init(config);*/
     }
 
-    public static PhotoApp getPhotoApp() {
-        return sPhotoApp;
-    }
+    val context: Context
+        get() = photoApp!!.context
 
-    public Context getContext() {
-        return sPhotoApp.getContext();
+    companion object {
+        var photoApp: PhotoApp? = null
+            private set
+        private val TAG = PhotoApp::class.java.simpleName
     }
 }

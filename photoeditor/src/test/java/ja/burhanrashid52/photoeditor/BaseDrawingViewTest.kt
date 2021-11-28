@@ -1,11 +1,12 @@
 package ja.burhanrashid52.photoeditor
 
+import android.content.Context
 import android.view.MotionEvent
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 import org.robolectric.RuntimeEnvironment
 
 internal open class BaseDrawingViewTest {
-    protected var mContext = RuntimeEnvironment.systemContext
+    protected var mContext: Context = RuntimeEnvironment.systemContext
     protected fun setupDrawingView(): DrawingView {
         // create view and ShapeBuilder
         val drawingView = DrawingView(mContext)
