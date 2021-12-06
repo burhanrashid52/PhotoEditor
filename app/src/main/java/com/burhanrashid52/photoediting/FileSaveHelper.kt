@@ -80,9 +80,10 @@ class FileSaveHelper(private val mContentResolver: ContentResolver) : LifecycleO
         }
     }
 
-    private fun getFilePath(cursor: Cursor?, editedImageUri: Uri?): String {
-        var cursor = cursor
+    private fun getFilePath(srcCursor: Cursor?, editedImageUri: Uri?): String {
+        var cursor: Cursor? = srcCursor
         val proj = arrayOf(MediaStore.Images.Media.DATA)
+
         cursor = mContentResolver.query(editedImageUri!!, proj, null, null, null)
         val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()

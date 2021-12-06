@@ -106,28 +106,25 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     private fun handleIntentImage(source: ImageView) {
-        val intent = intent
-        if (intent != null) {
-            // NOTE(lucianocheng): Using "yoda conditions" here to guard against
-            //                     a null Action in the Intent.
-            if (Intent.ACTION_EDIT == intent.action || ACTION_NEXTGEN_EDIT == intent.action) {
-                try {
-                    val uri = intent.data
-                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    source.setImageBitmap(bitmap)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            } else {
-                val intentType = intent.type
-                if (intentType != null && intentType.startsWith("image/")) {
-                    val imageUri = intent.data
-                    if (imageUri != null) {
-                        source.setImageURI(imageUri)
-                    }
+
+        if (Intent.ACTION_EDIT == intent.action || ACTION_NEXTGEN_EDIT == intent.action) {
+            try {
+                val uri = intent.data
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                source.setImageBitmap(bitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        } else {
+            val intentType = intent.type
+            if (intentType != null && intentType.startsWith("image/")) {
+                val imageUri = intent.data
+                if (imageUri != null) {
+                    source.setImageURI(imageUri)
                 }
             }
         }
+
     }
 
     private fun initViews() {
@@ -218,7 +215,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     private fun buildFileProviderUri(uri: Uri): Uri {
-        return FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", File(uri.path!!))
+        return FileProvider.getUriForFile(applicationContext, FILE_PROVIDER_AUTHORITY, File(uri.path!!))
     }
 
     private fun saveImage() {
@@ -227,22 +224,14 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         if (hasStoragePermission || FileSaveHelper.isSdkHigherThan28) {
             showLoading("Saving...")
             mSaveFileHelper!!.createFile(fileName, object: FileSaveHelper.OnFileCreateResult {
+                @SuppressLint("MissingPermission")
                 override fun onFileCreateResult(created: Boolean, filePath: String?, error: String?, Uri: Uri?) {
                     if (created) {
                         val saveSettings = SaveSettings.Builder()
                                 .setClearViewsEnabled(true)
                                 .setTransparencyEnabled(true)
                                 .build()
-                        if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
-                            return
-                        }
+
                         mPhotoEditor!!.saveAsFile(filePath!!, saveSettings, object : OnSaveListener {
                             override fun onSuccess(imagePath: String) {
                                 mSaveFileHelper!!.notifyThatFileIsNowPubliclyAvailable(contentResolver)
@@ -414,7 +403,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
     companion object {
         private val TAG = EditImageActivity::class.java.simpleName
-        const val FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoeditor.fileprovider"
+        const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID +".provider"
         private const val CAMERA_REQUEST = 52
         private const val PICK_REQUEST = 53
         const val ACTION_NEXTGEN_EDIT = "action_nextgen_edit"
