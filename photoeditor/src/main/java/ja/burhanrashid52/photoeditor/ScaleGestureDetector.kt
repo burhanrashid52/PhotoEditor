@@ -149,7 +149,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
                 MotionEvent.ACTION_POINTER_DOWN -> {
 
                     // We have a new multi-finger gesture
-                    if (mPrevEvent != null) mPrevEvent!!.recycle()
+                    mPrevEvent?.recycle()
                     mPrevEvent = MotionEvent.obtain(event)
                     mTimeDelta = 0
                     val index1 = event.actionIndex
@@ -280,9 +280,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
     }
 
     private fun setContext(view: View, curr: MotionEvent) {
-        if (mCurrEvent != null) {
-            mCurrEvent!!.recycle()
-        }
+        mCurrEvent?.recycle()
         mCurrEvent = MotionEvent.obtain(curr)
         mCurrLen = -1f
         mPrevLen = -1f
@@ -326,14 +324,11 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
     }
 
     private fun reset() {
-        if (mPrevEvent != null) {
-            mPrevEvent!!.recycle()
-            mPrevEvent = null
-        }
-        if (mCurrEvent != null) {
-            mCurrEvent!!.recycle()
-            mCurrEvent = null
-        }
+        mPrevEvent?.recycle()
+        mPrevEvent = null
+        mCurrEvent?.recycle()
+        mCurrEvent = null
+
         isInProgress = false
         mActiveId0 = -1
         mActiveId1 = -1

@@ -58,9 +58,7 @@ internal class MultiTouchListener(deleteView: View?,
                 mPrevRawX = event.rawX
                 mPrevRawY = event.rawY
                 mActivePointerId = event.getPointerId(0)
-                if (deleteView != null) {
-                    deleteView.visibility = View.VISIBLE
-                }
+                deleteView?.visibility = View.VISIBLE
                 view.bringToFront()
                 firePhotoEditorSDKListener(view, true)
             }
@@ -79,13 +77,11 @@ internal class MultiTouchListener(deleteView: View?,
             MotionEvent.ACTION_UP -> {
                 mActivePointerId = INVALID_POINTER_ID
                 if (deleteView != null && isViewInBounds(deleteView, x, y)) {
-                    if (onMultiTouchListener != null) onMultiTouchListener!!.onRemoveViewListener(view)
+                    onMultiTouchListener?.onRemoveViewListener(view)
                 } else if (!isViewInBounds(photoEditImageView, x, y)) {
                     view.animate().translationY(0f).translationY(0f)
                 }
-                if (deleteView != null) {
-                    deleteView.visibility = View.GONE
-                }
+                deleteView?.visibility = View.GONE
                 firePhotoEditorSDKListener(view, false)
             }
             MotionEvent.ACTION_POINTER_UP -> {
@@ -173,17 +169,13 @@ internal class MultiTouchListener(deleteView: View?,
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent): Boolean {
-            if (mOnGestureControl != null) {
-                mOnGestureControl!!.onClick()
-            }
+            mOnGestureControl?.onClick()
             return true
         }
 
         override fun onLongPress(e: MotionEvent) {
             super.onLongPress(e)
-            if (mOnGestureControl != null) {
-                mOnGestureControl!!.onLongClick()
-            }
+            mOnGestureControl?.onLongClick()
         }
     }
 
@@ -241,12 +233,7 @@ internal class MultiTouchListener(deleteView: View?,
         this.parentView = parentView
         this.photoEditImageView = photoEditImageView
         mOnPhotoEditorListener = onPhotoEditorListener
-        outRect = if (deleteView != null) {
-            Rect(deleteView.left, deleteView.top,
-                    deleteView.right, deleteView.bottom)
-        } else {
-            Rect(0, 0, 0, 0)
-        }
+        outRect = deleteView?.let { Rect(it.left, it.top, it.right, it.bottom) } ?: Rect(0, 0, 0, 0)
         this.viewState = viewState
     }
 }

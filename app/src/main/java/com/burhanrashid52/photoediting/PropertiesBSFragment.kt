@@ -52,12 +52,8 @@ class PropertiesBSFragment : BottomSheetDialogFragment(), OnSeekBarChangeListene
 
     override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
         when (seekBar.id) {
-            R.id.sbOpacity -> if (mProperties != null) {
-                mProperties!!.onOpacityChanged(i)
-            }
-            R.id.sbSize -> if (mProperties != null) {
-                mProperties!!.onShapeSizeChanged(i)
-            }
+            R.id.sbOpacity -> mProperties?.onOpacityChanged(i)
+            R.id.sbSize -> mProperties?.onShapeSizeChanged(i)
         }
     }
 

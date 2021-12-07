@@ -39,26 +39,23 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun showLoading(message: String) {
-        mProgressDialog = ProgressDialog(this)
-        mProgressDialog!!.setMessage(message)
-        mProgressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        mProgressDialog!!.setCancelable(false)
-        mProgressDialog!!.show()
+        mProgressDialog = ProgressDialog(this).apply {
+            setMessage(message)
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setCancelable(false)
+            show()
+        }
+
     }
 
     protected fun hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog!!.dismiss()
-        }
+        mProgressDialog?.dismiss()
     }
 
     protected fun showSnackbar(message: String) {
         val view = findViewById<View>(android.R.id.content)
-        if (view != null) {
-            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        }
+        view?.let { Snackbar.make(it, message, Snackbar.LENGTH_SHORT).show() }
+            ?: Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

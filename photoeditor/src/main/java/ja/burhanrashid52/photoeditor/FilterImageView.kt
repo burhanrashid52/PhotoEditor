@@ -34,76 +34,57 @@ internal class FilterImageView : AppCompatImageView {
 
     override fun setImageBitmap(bm: Bitmap) {
         super.setImageBitmap(bm)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageIcon(icon: Icon?) {
         super.setImageIcon(icon)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
+
     }
 
     override fun setImageMatrix(matrix: Matrix) {
         super.setImageMatrix(matrix)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageState(state: IntArray, merge: Boolean) {
         super.setImageState(state, merge)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageTintList(tint: ColorStateList?) {
         super.setImageTintList(tint)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageTintMode(tintMode: PorterDuff.Mode?) {
         super.setImageTintMode(tintMode)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageDrawable(drawable: Drawable?) {
         super.setImageDrawable(drawable)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageResource(resId: Int) {
         super.setImageResource(resId)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageURI(uri: Uri?) {
         super.setImageURI(uri)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageLevel(level: Int) {
         super.setImageLevel(level)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     val bitmap: Bitmap?
-        get() = if (drawable != null) {
-            (drawable as BitmapDrawable).bitmap
-        } else null
+        get() = drawable?.let {
+            (it as BitmapDrawable).bitmap
+        }
 }

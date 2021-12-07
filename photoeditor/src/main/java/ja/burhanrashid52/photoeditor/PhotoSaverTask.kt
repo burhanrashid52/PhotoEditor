@@ -53,9 +53,9 @@ internal class PhotoSaverTask(private val mPhotoEditorView: PhotoEditorView?, bo
     }
 
     private fun saveImageAsBitmap(): SaveResult {
-        return if (mPhotoEditorView != null) {
+        return mPhotoEditorView?.let {
             SaveResult(null, null, buildBitmap())
-        } else {
+        } ?: run {
             SaveResult(null, null, null)
         }
     }
@@ -64,7 +64,7 @@ internal class PhotoSaverTask(private val mPhotoEditorView: PhotoEditorView?, bo
         val file = File(mImagePath)
         return try {
             val out = FileOutputStream(file, false)
-            if (mPhotoEditorView != null) {
+            mPhotoEditorView?.let {
                 val capturedBitmap = buildBitmap()
                 capturedBitmap.compress(mSaveSettings.compressFormat, mSaveSettings.compressQuality, out)
             }
@@ -100,29 +100,21 @@ internal class PhotoSaverTask(private val mPhotoEditorView: PhotoEditorView?, bo
             if (mSaveSettings.isClearViewsEnabled) {
                 mBoxHelper.clearAllViews(mDrawingView)
             }
-            if (mOnSaveListener != null) {
-                mOnSaveListener!!.onSuccess(imagePath)
-            }
+            mOnSaveListener?.onSuccess(imagePath)
         } else {
-            if (mOnSaveListener != null) {
-                mOnSaveListener!!.onFailure(exception)
-            }
+            mOnSaveListener?.onFailure(exception)
         }
     }
 
     private fun handleBitmapCallback(saveResult: SaveResult) {
         val bitmap = saveResult.mBitmap
-        if (bitmap != null) {
+        bitmap?.let {
             if (mSaveSettings.isClearViewsEnabled) {
                 mBoxHelper.clearAllViews(mDrawingView)
             }
-            if (mOnSaveBitmap != null) {
-                mOnSaveBitmap!!.onBitmapReady(bitmap)
-            }
-        } else {
-            if (mOnSaveBitmap != null) {
-                mOnSaveBitmap!!.onFailure(Exception("Failed to load the bitmap"))
-            }
+            mOnSaveBitmap?.onBitmapReady(it)
+        } ?: run {
+            mOnSaveBitmap?.onFailure(Exception("Failed to load the bitmap"))
         }
     }
 

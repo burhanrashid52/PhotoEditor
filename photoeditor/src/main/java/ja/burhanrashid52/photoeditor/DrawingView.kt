@@ -116,20 +116,17 @@ class DrawingView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
     private fun onTouchEventDown(touchX: Float, touchY: Float) {
         createShape()
-        if (currentShape != null) {
-            currentShape!!.shape.startShape(touchX, touchY)
-        }
+
+        currentShape?.shape?.startShape(touchX, touchY)
     }
 
     private fun onTouchEventMove(touchX: Float, touchY: Float) {
-        if (currentShape != null) {
-            currentShape!!.shape.moveShape(touchX, touchY)
-        }
+        currentShape?.shape?.moveShape(touchX, touchY)
     }
 
     private fun onTouchEventUp(touchX: Float, touchY: Float) {
-        if (currentShape != null) {
-            currentShape!!.shape.stopShape()
+        currentShape?.let {
+            it.shape.stopShape()
             endShape(touchX, touchY)
         }
     }
@@ -157,9 +154,7 @@ class DrawingView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
         currentShape = ShapeAndPaint(shape, paint)
         drawShapes.push(currentShape)
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onStartDrawing()
-        }
+        viewChangeListener?.onStartDrawing()
     }
 
     private fun endShape(touchX: Float, touchY: Float) {
@@ -168,9 +163,9 @@ class DrawingView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             drawShapes.remove(currentShape)
             //handleTap(touchX, touchY);
         }
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onStopDrawing()
-            viewChangeListener!!.onViewAdd(this)
+        viewChangeListener?.let {
+            it.onStopDrawing()
+            it.onViewAdd(this)
         }
     }
 
@@ -179,9 +174,7 @@ class DrawingView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             redoShapes.push(drawShapes.pop())
             invalidate()
         }
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onViewRemoved(this)
-        }
+        viewChangeListener?.onViewRemoved(this)
         return !drawShapes.empty()
     }
 
@@ -190,9 +183,7 @@ class DrawingView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             drawShapes.push(redoShapes.pop())
             invalidate()
         }
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onViewAdd(this)
-        }
+        viewChangeListener?.onViewAdd(this)
         return !redoShapes.empty()
     }
 

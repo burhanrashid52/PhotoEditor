@@ -73,11 +73,9 @@ class StickerBSFragment : BottomSheetDialogFragment() {
 
             init {
                 itemView.setOnClickListener {
-                    if (mStickerListener != null) {
-                        mStickerListener!!.onStickerClick(
-                                BitmapFactory.decodeResource(resources,
-                                        stickerList[layoutPosition]))
-                    }
+                    mStickerListener?.onStickerClick(
+                            BitmapFactory.decodeResource(resources,
+                                    stickerList[layoutPosition]))
                     dismiss()
                 }
             }

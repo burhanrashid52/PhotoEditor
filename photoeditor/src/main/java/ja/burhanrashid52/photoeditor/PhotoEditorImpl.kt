@@ -56,9 +56,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") inter
     override fun addText(textTypeface: Typeface?, text: String?, colorCodeTextView: Int) {
         val styleBuilder = TextStyleBuilder()
         styleBuilder.withTextColor(colorCodeTextView)
-        if (textTypeface != null) {
-            styleBuilder.withTextFont(textTypeface)
-        }
+        textTypeface?.let { styleBuilder.withTextFont(it) }
         addText(text, styleBuilder)
     }
 
@@ -77,9 +75,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") inter
     override fun editText(view: View, textTypeface: Typeface?, inputText: String?, colorCode: Int) {
         val styleBuilder = TextStyleBuilder()
         styleBuilder.withTextColor(colorCode)
-        if (textTypeface != null) {
-            styleBuilder.withTextFont(textTypeface)
-        }
+        textTypeface?.let { styleBuilder.withTextFont(it) }
         editText(view, inputText, styleBuilder)
     }
 
@@ -136,29 +132,23 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") inter
 
     override fun setOpacity(@IntRange(from = 0, to = 100) opacity: Int) {
         var opacitySet = opacity
-        if (drawingView?.currentShapeBuilder != null) {
+        drawingView?.currentShapeBuilder?.let {
             opacitySet = (opacitySet / 100.0 * 255.0).toInt()
-            drawingView.currentShapeBuilder!!.withShapeOpacity(opacitySet)
+            it.withShapeOpacity(opacitySet)
         }
     }
 
     override var brushSize: Float
-        get() = if (drawingView?.currentShapeBuilder != null) {
-            drawingView.currentShapeBuilder!!.shapeSize
-        } else 0F
+        get() = drawingView?.currentShapeBuilder?.let {
+            it.shapeSize
+        } ?: 0F
         set(size) {
-            if (drawingView?.currentShapeBuilder != null) {
-                drawingView.currentShapeBuilder!!.withShapeSize(size)
-            }
+            drawingView?.currentShapeBuilder?.withShapeSize(size)
         }
     override var brushColor: Int
-        get() = if (drawingView?.currentShapeBuilder != null) {
-            drawingView.currentShapeBuilder!!.shapeColor
-        } else 0
+        get() = drawingView?.currentShapeBuilder?.shapeColor ?: 0
         set(color) {
-            if (drawingView?.currentShapeBuilder != null) {
-                drawingView.currentShapeBuilder!!.withShapeColor(color)
-            }
+            drawingView?.currentShapeBuilder?.withShapeColor(color)
         }
 
     override fun setBrushEraserSize(brushEraserSize: Float) {
@@ -273,9 +263,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") inter
                 )
         )
         imageView!!.setOnTouchListener { v, event ->
-            if (mOnPhotoEditorListener != null) {
-                mOnPhotoEditorListener!!.onTouchSourceImage(event)
-            }
+            mOnPhotoEditorListener?.onTouchSourceImage(event)
             mDetector.onTouchEvent(event)
         }
         parentView.setClipSourceImage(builder.clipSourceImage)

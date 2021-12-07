@@ -86,9 +86,7 @@ internal class ImageFilterView : GLSurfaceView, GLSurfaceView.Renderer {
             val mFilterBitmap = BitmapUtil.createBitmapFromGLSurface(this, gl)
             Log.e(TAG, "onDrawFrame: $mFilterBitmap")
             isSaveImage = false
-            if (mOnSaveBitmap != null) {
-                Handler(Looper.getMainLooper()).post { mOnSaveBitmap!!.onBitmapReady(mFilterBitmap) }
-            }
+            mOnSaveBitmap?.let { Handler(Looper.getMainLooper()).post { it.onBitmapReady(mFilterBitmap) } }
         }
     }
 
@@ -114,14 +112,15 @@ internal class ImageFilterView : GLSurfaceView, GLSurfaceView.Renderer {
         GLES20.glGenTextures(2, mTextures, 0)
 
         // Load input bitmap
-        if (mSourceBitmap != null) {
-            mImageWidth = mSourceBitmap!!.width
-            mImageHeight = mSourceBitmap!!.height
+
+        mSourceBitmap?.let {
+            mImageWidth = it.width
+            mImageHeight = it.height
             mTexRenderer.updateTextureSize(mImageWidth, mImageHeight)
 
             // Upload to texture
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0])
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mSourceBitmap, 0)
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, it, 0)
 
             // Set texture parameters
             GLToolbox.initTexParams()
@@ -133,13 +132,13 @@ internal class ImageFilterView : GLSurfaceView, GLSurfaceView.Renderer {
 
         mEffect?.release()
 
-        if (mCustomEffect != null) {
-            mEffect = effectFactory.createEffect(mCustomEffect!!.effectName)
-            val parameters = mCustomEffect!!.parameters
+        mCustomEffect?.let {
+            mEffect = effectFactory.createEffect(it.effectName)
+            val parameters = it.parameters
             for ((key, value) in parameters) {
                 mEffect!!.setParameter(key, value)
             }
-        } else {
+        } ?: run {
             // Initialize the correct effect based on the selected menu/action item
             when (mCurrentEffect) {
                 PhotoFilter.AUTO_FIX -> {

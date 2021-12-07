@@ -82,11 +82,11 @@ class PhotoEditorView : RelativeLayout {
         mImgSource!!.id = imgSrcId
         mImgSource!!.adjustViewBounds = true
         mImgSource!!.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        if (attrs != null) {
-            val a = context.obtainStyledAttributes(attrs, R.styleable.PhotoEditorView)
+        attrs?.let { x ->
+            val a = context.obtainStyledAttributes(x, R.styleable.PhotoEditorView)
             val imgSrcDrawable = a.getDrawable(R.styleable.PhotoEditorView_photo_src)
-            if (imgSrcDrawable != null) {
-                mImgSource!!.setImageDrawable(imgSrcDrawable)
+            imgSrcDrawable?.let {
+                mImgSource!!.setImageDrawable(it)
             }
         }
         var widthParam = ViewGroup.LayoutParams.MATCH_PARENT

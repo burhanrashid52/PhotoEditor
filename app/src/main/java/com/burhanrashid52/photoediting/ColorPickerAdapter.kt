@@ -66,7 +66,9 @@ class ColorPickerAdapter internal constructor(private var context: Context, colo
         var colorPickerView: View = itemView.findViewById(R.id.color_picker_view)
 
         init {
-            itemView.setOnClickListener { if (onColorPickerClickListener != null) onColorPickerClickListener!!.onColorPickerClickListener(colorPickerColors[adapterPosition]) }
+            itemView.setOnClickListener {
+                onColorPickerClickListener?.onColorPickerClickListener(colorPickerColors[adapterPosition])
+            }
         }
     }
 

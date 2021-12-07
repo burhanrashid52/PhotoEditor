@@ -30,12 +30,10 @@ class FileSaveHelper(private val mContentResolver: ContentResolver) : LifecycleO
     private val fileCreatedResult: MutableLiveData<FileMeta> = MutableLiveData()
     private var resultListener: OnFileCreateResult? = null
     private val observer = Observer { fileMeta: FileMeta ->
-        if (resultListener != null) {
-            resultListener!!.onFileCreateResult(fileMeta.isCreated,
-                    fileMeta.filePath,
-                    fileMeta.error,
-                    fileMeta.uri)
-        }
+        resultListener?.onFileCreateResult(fileMeta.isCreated,
+                fileMeta.filePath,
+                fileMeta.error,
+                fileMeta.uri)
     }
 
     constructor(activity: AppCompatActivity) : this(activity.contentResolver) {
@@ -118,10 +116,10 @@ class FileSaveHelper(private val mContentResolver: ContentResolver) : LifecycleO
         if (isSdkHigherThan28) {
             executor!!.submit {
                 val value = fileCreatedResult.value
-                if (value != null) {
-                    value.imageDetails!!.clear()
-                    value.imageDetails!!.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    contentResolver.update(value.uri!!, value.imageDetails, null, null)
+                value?.let {
+                    it.imageDetails!!.clear()
+                    it.imageDetails!!.put(MediaStore.Images.Media.IS_PENDING, 0)
+                    contentResolver.update(it.uri!!, it.imageDetails, null, null)
                 }
             }
         }

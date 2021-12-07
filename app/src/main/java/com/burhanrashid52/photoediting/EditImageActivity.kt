@@ -119,9 +119,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             val intentType = intent.type
             if (intentType != null && intentType.startsWith("image/")) {
                 val imageUri = intent.data
-                if (imageUri != null) {
-                    source.setImageURI(imageUri)
-                }
+                imageUri?.let { source.setImageURI(it) }
             }
         }
 

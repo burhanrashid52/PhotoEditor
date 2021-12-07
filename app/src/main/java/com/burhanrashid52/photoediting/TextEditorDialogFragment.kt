@@ -37,11 +37,11 @@ class TextEditorDialogFragment : DialogFragment() {
         super.onStart()
         val dialog = dialog
         //Make dialog full screen with transparent background
-        if (dialog != null) {
+        dialog?.let {
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window!!.setLayout(width, height)
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            it.window!!.setLayout(width, height)
+            it.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 

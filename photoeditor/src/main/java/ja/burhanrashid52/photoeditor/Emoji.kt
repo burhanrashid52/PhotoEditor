@@ -19,9 +19,7 @@ internal class Emoji(private val mPhotoEditorView: ViewGroup,
 ) : Graphic(mPhotoEditorView.context, graphicManager!!) {
     private var txtEmoji: TextView? = null
     fun buildView(emojiTypeface: Typeface?, emojiName: String?) {
-        if (emojiTypeface != null) {
-            txtEmoji!!.typeface = emojiTypeface
-        }
+        emojiTypeface?.let { txtEmoji!!.typeface = it }
         txtEmoji!!.textSize = 56f
         txtEmoji!!.text = emojiName
     }
@@ -40,12 +38,10 @@ internal class Emoji(private val mPhotoEditorView: ViewGroup,
 
     override fun setupView(rootView: View?) {
         txtEmoji = rootView!!.findViewById(R.id.tvPhotoEditorText)
-        if (txtEmoji != null) {
-            if (mDefaultEmojiTypeface != null) {
-                txtEmoji!!.typeface = mDefaultEmojiTypeface
-            }
-            txtEmoji!!.gravity = Gravity.CENTER
-            txtEmoji!!.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        txtEmoji?.let { emoji ->
+            mDefaultEmojiTypeface?.let { emoji.typeface = it }
+            emoji.gravity = Gravity.CENTER
+            emoji.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         }
     }
 

@@ -74,9 +74,7 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
 
             init {
                 itemView.setOnClickListener {
-                    if (mEmojiListener != null) {
-                        mEmojiListener!!.onEmojiClick(emojisList[layoutPosition])
-                    }
+                    mEmojiListener?.onEmojiClick(emojisList[layoutPosition])
                     dismiss()
                 }
             }

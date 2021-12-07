@@ -18,7 +18,7 @@ internal class GraphicManager(private val mViewGroup: ViewGroup, private val mVi
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
         mViewGroup.addView(view, params)
         mViewState.addAddedView(view)
-        if (onPhotoEditorListener != null) onPhotoEditorListener!!.onAddViewListener(graphic.viewType, mViewState.addedViewsCount)
+        onPhotoEditorListener?.onAddViewListener(graphic.viewType, mViewState.addedViewsCount)
     }
 
     fun removeView(graphic: Graphic) {
@@ -27,12 +27,10 @@ internal class GraphicManager(private val mViewGroup: ViewGroup, private val mVi
             mViewGroup.removeView(view)
             mViewState.removeAddedView(view)
             mViewState.pushRedoView(view)
-            if (onPhotoEditorListener != null) {
-                onPhotoEditorListener!!.onRemoveViewListener(
-                        graphic.viewType,
-                        mViewState.addedViewsCount
-                )
-            }
+            onPhotoEditorListener?.onRemoveViewListener(
+                    graphic.viewType,
+                    mViewState.addedViewsCount
+            )
         }
     }
 
@@ -53,13 +51,10 @@ internal class GraphicManager(private val mViewGroup: ViewGroup, private val mVi
                 mViewGroup.removeView(removeView)
                 mViewState.pushRedoView(removeView)
             }
-            if (onPhotoEditorListener != null) {
+            onPhotoEditorListener?.let {
                 val viewTag = removeView!!.tag
                 if (viewTag is ViewType) {
-                    onPhotoEditorListener!!.onRemoveViewListener(
-                            viewTag,
-                            mViewState.addedViewsCount
-                    )
+                    it.onRemoveViewListener(viewTag, mViewState.addedViewsCount)
                 }
             }
         }
