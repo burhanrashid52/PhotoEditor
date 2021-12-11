@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-path
-        name="external_files"
-        path="." />
+    <external-path name="external" path="." />
+
+    <!-- NOTE(lucianocheng): Bypasses FileProvider issue for accessing /external/images/media/ -->
+    <!-- TODO(lucianocheng): Rewrite photo save logic for earlier versions of android -->
+    <root-path name="root" path="." />
 </paths>
