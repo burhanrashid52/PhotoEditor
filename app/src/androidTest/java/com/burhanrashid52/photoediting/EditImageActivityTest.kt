@@ -48,9 +48,9 @@ class EditImageActivityTest {
     @Test
     fun checkIfBrushIsEnabledWhenClickedOnBrushTool() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        Assert.assertFalse(editImageActivity.mPhotoEditor.brushDrawableMode)
+        Assert.assertFalse(editImageActivity.mPhotoEditor!!.brushDrawableMode)
         Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
-        TestCase.assertTrue(editImageActivity.mPhotoEditor.brushDrawableMode)
+        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.brushDrawableMode)
     }
 
     @Test
@@ -107,7 +107,7 @@ class EditImageActivityTest {
     @Ignore("Flacky test. Need to optimize")
     fun checkIfDiscardDialogIsNotDisplayedWhenCacheIsEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        TestCase.assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
+        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
         Espresso.onView(ViewMatchers.withId(R.id.imgClose)).perform(ViewActions.click())
         TestCase.assertTrue(editImageActivity.isDestroyed)
     }
@@ -115,7 +115,7 @@ class EditImageActivityTest {
     @Test
     fun checkIfDiscardDialogIsDisplayedWhenCacheIsNotEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        TestCase.assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
+        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
         Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
