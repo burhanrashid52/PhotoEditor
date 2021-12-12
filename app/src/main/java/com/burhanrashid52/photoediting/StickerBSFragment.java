@@ -64,7 +64,7 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         RecyclerView rvEmoji = contentView.findViewById(R.id.rvEmoji);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 5);
         rvEmoji.setLayoutManager(gridLayoutManager);
         StickerAdapter stickerAdapter = new StickerAdapter();
         rvEmoji.setAdapter(stickerAdapter);
@@ -107,9 +107,9 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
                     @Override
                     public void onClick(View v) {
                         if (mStickerListener != null) {
-                            mStickerListener.onStickerClick(
-                                    BitmapFactory.decodeResource(getResources(),
-                                            stickerList[getLayoutPosition()]));
+                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), stickerList[getLayoutPosition()]);
+                            mStickerListener.onStickerClick(Bitmap.createScaledBitmap(bitmap,
+                                    256, 256, true));
                         }
                         dismiss();
                     }
