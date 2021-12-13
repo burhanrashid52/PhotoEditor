@@ -1,5 +1,7 @@
 package com.burhanrashid52.photoediting;
 
+import static com.burhanrashid52.photoediting.PhotoApp.getPhotoApp;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 
@@ -21,6 +23,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class EmojiBSFragment extends BottomSheetDialogFragment {
+
+    static ArrayList<String> emojisList = getEmojis(getPhotoApp());
 
     public EmojiBSFragment() {
         // Required empty public constructor
@@ -66,6 +70,8 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
         rvEmoji.setLayoutManager(gridLayoutManager);
         EmojiAdapter emojiAdapter = new EmojiAdapter();
         rvEmoji.setAdapter(emojiAdapter);
+        rvEmoji.setHasFixedSize(true);
+        rvEmoji.setItemViewCacheSize(emojisList.size());
     }
 
     public void setEmojiListener(EmojiListener emojiListener) {
@@ -74,8 +80,6 @@ public class EmojiBSFragment extends BottomSheetDialogFragment {
 
 
     public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
-
-        ArrayList<String> emojisList = getEmojis(getActivity());
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

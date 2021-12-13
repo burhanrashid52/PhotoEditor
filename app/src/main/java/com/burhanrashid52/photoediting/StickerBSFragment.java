@@ -19,6 +19,8 @@ import android.widget.ImageView;
 
 public class StickerBSFragment extends BottomSheetDialogFragment {
 
+    static int[] stickerList = new int[]{R.drawable.aa, R.drawable.bb};
+
     public StickerBSFragment() {
         // Required empty public constructor
     }
@@ -68,6 +70,8 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
         rvEmoji.setLayoutManager(gridLayoutManager);
         StickerAdapter stickerAdapter = new StickerAdapter();
         rvEmoji.setAdapter(stickerAdapter);
+        rvEmoji.setHasFixedSize(true);
+        rvEmoji.setItemViewCacheSize(stickerList.length);
     }
 
     @Override
@@ -77,8 +81,6 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
     }
 
     public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.ViewHolder> {
-
-        int[] stickerList = new int[]{R.drawable.aa, R.drawable.bb};
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
