@@ -110,7 +110,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shapeColors"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
