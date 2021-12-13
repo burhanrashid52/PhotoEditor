@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,58 @@ import android.widget.ImageView;
 
 public class StickerBSFragment extends BottomSheetDialogFragment {
 
-    static int[] stickerList = new int[]{R.drawable.aa, R.drawable.bb};
+    // Use same size stickers
+    private static int[] stickerList = new int[]{
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
+            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,};
+
+    private BitmapFactory.Options options = new BitmapFactory.Options();
+    private int itemSize;
+
+    private int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    private int convertDpToPixel(int dp)
+    {
+        return dp * (PhotoApp.getPhotoApp().getResources().getDisplayMetrics().densityDpi
+                / DisplayMetrics.DENSITY_DEFAULT);
+    }
 
     public StickerBSFragment() {
         // Required empty public constructor
@@ -29,6 +81,23 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
     public void setStickerListener(StickerListener stickerListener) {
         mStickerListener = stickerListener;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // imageView: 50 * 50 dp
+        itemSize = convertDpToPixel(50);
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(getResources(), stickerList[0], options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, itemSize, itemSize);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
     }
 
     public interface StickerListener {
@@ -66,11 +135,13 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         RecyclerView rvEmoji = contentView.findViewById(R.id.rvEmoji);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 5);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         rvEmoji.setLayoutManager(gridLayoutManager);
         StickerAdapter stickerAdapter = new StickerAdapter();
         rvEmoji.setAdapter(stickerAdapter);
         rvEmoji.setHasFixedSize(true);
+        rvEmoji.setDrawingCacheEnabled(true);
+        rvEmoji.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
         rvEmoji.setItemViewCacheSize(stickerList.length);
     }
 
@@ -90,7 +161,7 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.imgSticker.setImageResource(stickerList[position]);
+            holder.imgSticker.setImageBitmap(BitmapFactory.decodeResource(getResources(), stickerList[position], options));
         }
 
         @Override
@@ -118,20 +189,5 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
                 });
             }
         }
-    }
-
-    private String convertEmoji(String emoji) {
-        String returnedEmoji = "";
-        try {
-            int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
-            returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
-        } catch (NumberFormatException e) {
-            returnedEmoji = "";
-        }
-        return returnedEmoji;
-    }
-
-    private String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 }
