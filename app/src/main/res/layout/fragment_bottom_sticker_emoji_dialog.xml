@@ -37,7 +37,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvEmoji"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="8dp"
             app:layout_behavior="@string/bottom_sheet_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
