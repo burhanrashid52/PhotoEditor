@@ -58,9 +58,9 @@ class ColorPickerAdapter internal constructor(
     }
 
     companion object {
-        fun getDefaultColors(context: Context?): List<Int> {
+        fun getDefaultColors(context: Context): List<Int> {
             val colorPickerColors = ArrayList<Int>()
-            colorPickerColors.add(ContextCompat.getColor((context)!!, R.color.blue_color_picker))
+            colorPickerColors.add(ContextCompat.getColor((context), R.color.blue_color_picker))
             colorPickerColors.add(ContextCompat.getColor((context), R.color.brown_color_picker))
             colorPickerColors.add(ContextCompat.getColor((context), R.color.green_color_picker))
             colorPickerColors.add(ContextCompat.getColor((context), R.color.orange_color_picker))

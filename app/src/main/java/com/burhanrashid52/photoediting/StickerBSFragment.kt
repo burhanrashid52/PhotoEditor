@@ -47,6 +47,8 @@ class StickerBSFragment : BottomSheetDialogFragment() {
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
         val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
+
+        // TODO(lucianocheng): Move gridLayoutManager to xml file.
         val gridLayoutManager = GridLayoutManager(activity, 3)
         rvEmoji.layoutManager = gridLayoutManager
         val stickerAdapter = StickerAdapter()
