@@ -39,18 +39,25 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
 
         // shape picker
         shapeGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
-            if (checkedId == R.id.lineRadioButton) {
-                mProperties!!.onShapePicked(ShapeType.LINE)
-            } else if (checkedId == R.id.ovalRadioButton) {
-                mProperties!!.onShapePicked(ShapeType.OVAL)
-            } else if (checkedId == R.id.rectRadioButton) {
-                mProperties!!.onShapePicked(ShapeType.RECTANGLE)
-            } else {
-                mProperties!!.onShapePicked(ShapeType.BRUSH)
+            when(checkedId) {
+                R.id.lineRadioButton -> {
+                    mProperties!!.onShapePicked(ShapeType.LINE)
+                }
+                R.id.ovalRadioButton -> {
+                    mProperties!!.onShapePicked(ShapeType.OVAL)
+                }
+                R.id.rectRadioButton -> {
+                    mProperties!!.onShapePicked(ShapeType.RECTANGLE)
+                }
+                else -> {
+                    mProperties!!.onShapePicked(ShapeType.BRUSH)
+                }
             }
         }
         sbOpacity.setOnSeekBarChangeListener(this)
         sbBrushSize.setOnSeekBarChangeListener(this)
+
+        // TODO(lucianocheng): Move layoutManager to a xml file.
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         rvColor.layoutManager = layoutManager
         rvColor.setHasFixedSize(true)
