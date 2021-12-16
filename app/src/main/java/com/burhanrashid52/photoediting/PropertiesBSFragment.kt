@@ -37,12 +37,12 @@ class PropertiesBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChang
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         rvColor.layoutManager = layoutManager
         rvColor.setHasFixedSize(true)
-        val colorPickerAdapter = ColorPickerAdapter(activity!!)
-        colorPickerAdapter.setOnColorPickerClickListener(object : OnColorPickerClickListener {
+        val colorPickerAdapter = activity?.let { ColorPickerAdapter(it) }
+        colorPickerAdapter?.setOnColorPickerClickListener(object : OnColorPickerClickListener {
             override fun onColorPickerClickListener(colorCode: Int) {
                 if (mProperties != null) {
                     dismiss()
-                    mProperties!!.onColorChanged(colorCode)
+                    mProperties?.onColorChanged(colorCode)
                 }
             }
         })
@@ -56,10 +56,10 @@ class PropertiesBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChang
     override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
         when (seekBar.id) {
             R.id.sbOpacity -> if (mProperties != null) {
-                mProperties!!.onOpacityChanged(i)
+                mProperties?.onOpacityChanged(i)
             }
             R.id.sbSize -> if (mProperties != null) {
-                mProperties!!.onShapeSizeChanged(i)
+                mProperties?.onShapeSizeChanged(i)
             }
         }
     }

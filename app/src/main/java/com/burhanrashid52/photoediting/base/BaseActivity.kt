@@ -17,6 +17,9 @@ import com.google.android.material.snackbar.Snackbar
  */
 open class BaseActivity : AppCompatActivity() {
     private var mProgressDialog: ProgressDialog? = null
+
+    // TODO(lucianocheng): Refactor request permission to Result API.
+    //                     See https://developer.android.com/training/basics/intents/result
     fun requestPermission(permission: String): Boolean {
         val isGranted =
             ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

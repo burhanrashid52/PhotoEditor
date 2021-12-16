@@ -12,9 +12,6 @@ class PhotoApp : Application() {
         photoApp = this
     }
 
-    val context: Context
-        get() = photoApp!!.context
-
     companion object {
         var photoApp: PhotoApp? = null
             private set
