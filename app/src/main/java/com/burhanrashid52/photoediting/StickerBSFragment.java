@@ -140,8 +140,6 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
         StickerAdapter stickerAdapter = new StickerAdapter();
         rvEmoji.setAdapter(stickerAdapter);
         rvEmoji.setHasFixedSize(true);
-        rvEmoji.setDrawingCacheEnabled(true);
-        rvEmoji.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
         rvEmoji.setItemViewCacheSize(stickerList.length);
     }
 
