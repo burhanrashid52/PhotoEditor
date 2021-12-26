@@ -3,16 +3,18 @@ package com.burhanrashid52.photoediting;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,58 +22,13 @@ import android.widget.ImageView;
 
 public class StickerBSFragment extends BottomSheetDialogFragment {
 
-    // Use same size stickers
-    private static int[] stickerList = new int[]{
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,
-            R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb, R.drawable.aa, R.drawable.bb,};
-
-    private BitmapFactory.Options options = new BitmapFactory.Options();
-    private int itemSize;
-
-    private int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    private int convertDpToPixel(int dp)
-    {
-        return dp * (PhotoApp.getPhotoApp().getResources().getDisplayMetrics().densityDpi
-                / DisplayMetrics.DENSITY_DEFAULT);
-    }
+    // Image Urls from flaticon(https://www.flaticon.com/stickers-pack/food-289)
+    private static String[] stickerPathList = new String[]{
+            "https://cdn-icons-png.flaticon.com/256/4392/4392452.png",
+            "https://cdn-icons-png.flaticon.com/256/4392/4392455.png",
+            "https://cdn-icons-png.flaticon.com/256/4392/4392459.png",
+            "https://cdn-icons-png.flaticon.com/256/4392/4392462.png",
+            "https://cdn-icons-png.flaticon.com/256/4392/4392465.png",};
 
     public StickerBSFragment() {
         // Required empty public constructor
@@ -81,23 +38,6 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
     public void setStickerListener(StickerListener stickerListener) {
         mStickerListener = stickerListener;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // imageView: 50 * 50 dp
-        itemSize = convertDpToPixel(50);
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(getResources(), stickerList[0], options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, itemSize, itemSize);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
     }
 
     public interface StickerListener {
@@ -140,7 +80,7 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
         StickerAdapter stickerAdapter = new StickerAdapter();
         rvEmoji.setAdapter(stickerAdapter);
         rvEmoji.setHasFixedSize(true);
-        rvEmoji.setItemViewCacheSize(stickerList.length);
+        rvEmoji.setItemViewCacheSize(stickerPathList.length);
     }
 
     @Override
@@ -159,12 +99,16 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.imgSticker.setImageBitmap(BitmapFactory.decodeResource(getResources(), stickerList[position], options));
+            // Load sticker image from remote url
+            Glide.with(requireContext())
+                    .asBitmap()
+                    .load(stickerPathList[position])
+                    .into(holder.imgSticker);
         }
 
         @Override
         public int getItemCount() {
-            return stickerList.length;
+            return stickerPathList.length;
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -178,9 +122,20 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
                     @Override
                     public void onClick(View v) {
                         if (mStickerListener != null) {
-                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), stickerList[getLayoutPosition()]);
-                            mStickerListener.onStickerClick(Bitmap.createScaledBitmap(bitmap,
-                                    256, 256, true));
+                            Glide.with(requireContext())
+                                    .asBitmap()
+                                    .load(stickerPathList[getLayoutPosition()])
+                                    .into(new CustomTarget<Bitmap>(256, 256) {
+                                        @Override
+                                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                            mStickerListener.onStickerClick(resource);
+                                        }
+
+                                        @Override
+                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                        }
+                                    });
                         }
                         dismiss();
                     }
