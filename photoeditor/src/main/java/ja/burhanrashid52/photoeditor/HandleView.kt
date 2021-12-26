@@ -8,6 +8,11 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
 
+/**
+ * The handle view at the corner of image/text when adding a new sticker/text
+ * When the user resizes the sticker/text, the sticker handle view should adjust margin, size to keep handle size.
+ */
+
 @SuppressLint("AppCompatCustomView")
 class HandleView(context: Context, attributeSet: AttributeSet) : ImageView(context, attributeSet),
     ZoomListener {
