@@ -1,8 +1,9 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
 
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 14
@@ -32,6 +33,9 @@ android {
         failOnError false
     }
 
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -47,6 +51,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.23.0'
     testImplementation 'org.robolectric:robolectric:4.5.1'
+    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 
@@ -54,6 +60,9 @@ ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'
     PUBLISH_VERSION = '1.5.1'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
+}
+repositories {
+    mavenCentral()
 }
 
 //apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"

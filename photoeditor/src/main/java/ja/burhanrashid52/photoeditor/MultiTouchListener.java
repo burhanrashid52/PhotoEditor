@@ -1,14 +1,19 @@
 package ja.burhanrashid52.photoeditor;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import androidx.annotation.Nullable;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -164,21 +169,33 @@ public class MultiTouchListener implements OnTouchListener {
             return;
         }
 
-        // NOTE(cheng): When the image border is scaling, the margins
-        //              do not scale with it.  This means when you are
-        //              zoomed in on the main image, the margins can appear large.
-        // NOTE(cheng): We only scale the inner image when it is getting scaled down (to help
-        //              users make images smaller).  When it's getting scaled up (scale > 1.0),
-        //              users don't need help, so we keep the scale of the inner image constant
-        //              and scale only the outer border view.
-        final FrameLayout imageBorderView = view.findViewById(R.id.frmBorder);
-        imageBorderView.setScaleX((float) Math.min(scale, 1.0));
-        imageBorderView.setScaleY((float) Math.min(scale, 1.0));
+        final BorderView borderView = view.findViewById(R.id.frmBorder);
+        final HandleView handleTopLeft = view.findViewById(R.id.imgHandleTopLeft);
+        final HandleView handleTopRight = view.findViewById(R.id.imgHandleTopRight);
+        final HandleView handleBottomLeft = view.findViewById(R.id.imgHandleBottomLeft);
+        final HandleView handleBottomRight = view.findViewById(R.id.imgHandleBottomRight);
 
         // Scale the actual outer view
         // TODO(cheng): Change 'view' to 'graphicView'
         view.setScaleX(scale);
         view.setScaleY(scale);
+
+        if (borderView != null) {
+            borderView.adjustSize(1f / scale);
+        }
+
+        if (handleTopLeft != null) {
+            handleTopLeft.adjustSize(1f/ scale, Gravity.TOP | Gravity.START);
+        }
+        if (handleTopRight != null) {
+            handleTopRight.adjustSize(1f/ scale, Gravity.TOP | Gravity.END);
+        }
+        if (handleBottomLeft != null) {
+            handleBottomLeft.adjustSize(1f/ scale, Gravity.BOTTOM | Gravity.START);
+        }
+        if (handleBottomRight != null) {
+            handleBottomRight.adjustSize(1f/ scale, Gravity.BOTTOM | Gravity.END);
+        }
 
         // Rotate the actual outer view.
         float rotation = adjustAngle(initialStickerRotation + info.deltaAngle);
