@@ -22,13 +22,8 @@ class BoxHelper {
     void clearHelperBox() {
         for (int i = 0; i < mCanvasView.getChildCount(); i++) {
             View childAt = mCanvasView.getChildAt(i);
-            FrameLayout frmBorder = childAt.findViewById(R.id.frmBorder);
-            if (frmBorder != null) {
-                frmBorder.setBackgroundResource(0);
-            }
-            ImageView imgClose = null;
-            if (imgClose != null) {
-                imgClose.setVisibility(View.GONE);
+            if (childAt instanceof GraphicView) {
+                ((GraphicView) childAt).hideHandleViews();
             }
         }
         mViewState.clearCurrentSelectedView();
