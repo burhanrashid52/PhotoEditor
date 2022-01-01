@@ -11,16 +11,6 @@ import android.widget.FrameLayout
 class BorderView(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet),
     ZoomListener {
 
-    fun adjustSize(scale: Float) {
-        val margin = (resources.getDimensionPixelSize(R.dimen.border_margin) * scale).toInt()
-        val params = layoutParams as LayoutParams
-        params.bottomMargin = margin
-        params.topMargin = margin
-        params.leftMargin = margin
-        params.rightMargin = margin
-        layoutParams = params
-    }
-
     override fun onBackgroundZoomStarted() {
     }
 

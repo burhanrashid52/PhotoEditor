@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+
 import androidx.annotation.Nullable;
 
 import android.util.DisplayMetrics;
@@ -180,21 +181,17 @@ public class MultiTouchListener implements OnTouchListener {
         view.setScaleX(scale);
         view.setScaleY(scale);
 
-        if (borderView != null) {
-            borderView.adjustSize(1f / scale);
-        }
-
         if (handleTopLeft != null) {
-            handleTopLeft.adjustSize(1f/ scale, Gravity.TOP | Gravity.START);
+            handleTopLeft.adjustSize(1f / scale, Gravity.TOP | Gravity.START);
         }
         if (handleTopRight != null) {
-            handleTopRight.adjustSize(1f/ scale, Gravity.TOP | Gravity.END);
+            handleTopRight.adjustSize(1f / scale, Gravity.TOP | Gravity.END);
         }
         if (handleBottomLeft != null) {
-            handleBottomLeft.adjustSize(1f/ scale, Gravity.BOTTOM | Gravity.START);
+            handleBottomLeft.adjustSize(1f / scale, Gravity.BOTTOM | Gravity.START);
         }
         if (handleBottomRight != null) {
-            handleBottomRight.adjustSize(1f/ scale, Gravity.BOTTOM | Gravity.END);
+            handleBottomRight.adjustSize(1f / scale, Gravity.BOTTOM | Gravity.END);
         }
 
         // Rotate the actual outer view.
