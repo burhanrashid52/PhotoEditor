@@ -31,7 +31,6 @@
         android:layout_width="@dimen/handle_size"
         android:layout_height="@dimen/handle_size"
         android:layout_gravity="top|start"
-        android:layout_margin="@dimen/handle_margin"
         android:src="@drawable/ic_zoom_reverse" />
 
     <ja.burhanrashid52.photoeditor.HandleView
@@ -39,7 +38,6 @@
         android:layout_width="@dimen/handle_size"
         android:layout_height="@dimen/handle_size"
         android:layout_gravity="top|end"
-        android:layout_margin="@dimen/handle_margin"
         android:adjustViewBounds="true"
         android:src="@drawable/ic_zoom_forward" />
 
@@ -48,7 +46,6 @@
         android:layout_width="@dimen/handle_size"
         android:layout_height="@dimen/handle_size"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/handle_margin"
         android:adjustViewBounds="true"
         android:src="@drawable/ic_zoom_reverse" />
 
@@ -57,7 +54,6 @@
         android:layout_width="@dimen/handle_size"
         android:layout_height="@dimen/handle_size"
         android:layout_gravity="bottom|start"
-        android:layout_margin="@dimen/handle_margin"
         android:adjustViewBounds="true"
         android:src="@drawable/ic_zoom_forward" />
 

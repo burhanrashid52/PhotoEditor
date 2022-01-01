@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="handle_size">36dp</dimen>
-    <dimen name="handle_margin">9dp</dimen>
     <dimen name="border_margin">18dp</dimen>
 </resources>
