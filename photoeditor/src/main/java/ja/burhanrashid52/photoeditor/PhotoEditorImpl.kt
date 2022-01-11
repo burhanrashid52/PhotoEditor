@@ -1,71 +1,21 @@
 package ja.burhanrashid52.photoeditor
 
 import android.Manifest
-import ja.burhanrashid52.photoeditor.DrawingView.setBrushViewChangeListener
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener.onTouchSourceImage
-import ja.burhanrashid52.photoeditor.DrawingView.enableDrawing
-import ja.burhanrashid52.photoeditor.GraphicManager.updateView
-import ja.burhanrashid52.photoeditor.Emoji.buildView
-import ja.burhanrashid52.photoeditor.GraphicManager.addView
-import ja.burhanrashid52.photoeditor.Graphic.rootView
-import ja.burhanrashid52.photoeditor.DrawingView.isDrawingEnabled
-import ja.burhanrashid52.photoeditor.DrawingView.currentShapeBuilder
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.withShapeSize
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.withShapeOpacity
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.withShapeColor
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.shapeSize
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.shapeColor
-import ja.burhanrashid52.photoeditor.DrawingView.setBrushEraserSize
-import ja.burhanrashid52.photoeditor.DrawingView.eraserSize
-import ja.burhanrashid52.photoeditor.DrawingView.brushEraser
-import ja.burhanrashid52.photoeditor.GraphicManager.undoView
-import ja.burhanrashid52.photoeditor.GraphicManager.redoView
-import ja.burhanrashid52.photoeditor.BoxHelper.clearAllViews
-import ja.burhanrashid52.photoeditor.BoxHelper.clearHelperBox
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener.onFailure
-import ja.burhanrashid52.photoeditor.OnSaveBitmap.onFailure
-import ja.burhanrashid52.photoeditor.GraphicManager.onPhotoEditorListener
-import ja.burhanrashid52.photoeditor.BrushDrawingStateListener.setOnPhotoEditorListener
-import ja.burhanrashid52.photoeditor.DrawingView.setShapeBuilder
 import android.annotation.SuppressLint
 import android.content.Context
-import ja.burhanrashid52.photoeditor.PhotoEditor
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.PhotoEditorViewState
-import ja.burhanrashid52.photoeditor.DrawingView
-import ja.burhanrashid52.photoeditor.BrushDrawingStateListener
-import ja.burhanrashid52.photoeditor.BoxHelper
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import android.graphics.Typeface
-import ja.burhanrashid52.photoeditor.GraphicManager
 import android.graphics.Bitmap
-import ja.burhanrashid52.photoeditor.MultiTouchListener
-import ja.burhanrashid52.photoeditor.Sticker
-import ja.burhanrashid52.photoeditor.TextStyleBuilder
-import android.widget.TextView
-import ja.burhanrashid52.photoeditor.R
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.Log
-import ja.burhanrashid52.photoeditor.Emoji
-import ja.burhanrashid52.photoeditor.Graphic
-import androidx.annotation.ColorInt
-import ja.burhanrashid52.photoeditor.CustomEffect
-import ja.burhanrashid52.photoeditor.PhotoFilter
-import androidx.annotation.RequiresPermission
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
-import ja.burhanrashid52.photoeditor.SaveSettings
-import ja.burhanrashid52.photoeditor.PhotoEditorImpl
-import ja.burhanrashid52.photoeditor.OnSaveBitmap
-import ja.burhanrashid52.photoeditor.PhotoSaverTask
 import android.view.GestureDetector
 import android.view.View
-import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener
-import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
-import android.view.View.OnTouchListener
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.IntRange
+import androidx.annotation.RequiresPermission
+import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
+import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
-import java.lang.Exception
 
 /**
  *
@@ -78,12 +28,12 @@ import java.lang.Exception
  * @version 0.1.1
  * @since 18/01/2017
  */
-internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") protected constructor(
+internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") constructor(
     builder: PhotoEditor.Builder
 ) : PhotoEditor {
     private val parentView: PhotoEditorView
     private val viewState: PhotoEditorViewState
-    private val imageView: ImageView
+    private val imageView: ImageView?
     private val deleteView: View?
     private val drawingView: DrawingView?
     private val mBrushDrawingStateListener: BrushDrawingStateListener
@@ -203,7 +153,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") prote
     override var brushSize: Float
         get() = if (drawingView != null && drawingView.currentShapeBuilder != null) {
             drawingView.currentShapeBuilder!!.shapeSize
-        } else 0
+        } else 0f
         set(size) {
             if (drawingView != null && drawingView.currentShapeBuilder != null) {
                 drawingView.currentShapeBuilder!!.withShapeSize(size)
@@ -224,7 +174,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") prote
     }
 
     override val eraserSize: Float
-        get() = drawingView?.eraserSize ?: 0
+        get() = drawingView?.eraserSize ?: 0f
 
     override fun brushEraser() {
         drawingView?.brushEraser()
@@ -334,7 +284,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") prote
         mGraphicManager = GraphicManager(builder.parentView, viewState)
         mBoxHelper = BoxHelper(builder.parentView, viewState)
         mBrushDrawingStateListener = BrushDrawingStateListener(builder.parentView, viewState)
-        drawingView.setBrushViewChangeListener(mBrushDrawingStateListener)
+        drawingView?.setBrushViewChangeListener(mBrushDrawingStateListener)
         val mDetector = GestureDetector(
             context,
             PhotoEditorImageViewListener(
@@ -346,7 +296,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") prote
                 }
             )
         )
-        imageView.setOnTouchListener { v, event ->
+        imageView?.setOnTouchListener { v, event ->
             if (mOnPhotoEditorListener != null) {
                 mOnPhotoEditorListener!!.onTouchSourceImage(event)
             }

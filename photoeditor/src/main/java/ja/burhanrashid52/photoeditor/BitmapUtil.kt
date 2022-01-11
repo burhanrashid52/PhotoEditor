@@ -2,11 +2,10 @@ package ja.burhanrashid52.photoeditor
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import kotlin.Throws
-import android.opengl.GLSurfaceView
-import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLException
+import android.opengl.GLSurfaceView
 import java.nio.IntBuffer
+import javax.microedition.khronos.opengles.GL10
 
 /**
  *

@@ -1,22 +1,13 @@
 package ja.burhanrashid52.photoeditor
 
 import android.graphics.Rect
-import android.widget.RelativeLayout
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import ja.burhanrashid52.photoeditor.PhotoEditorViewState
-import android.view.View.OnTouchListener
 import android.view.GestureDetector
-import ja.burhanrashid52.photoeditor.MultiTouchListener
-import ja.burhanrashid52.photoeditor.MultiTouchListener.OnMultiTouchListener
-import ja.burhanrashid52.photoeditor.MultiTouchListener.OnGestureControl
-import ja.burhanrashid52.photoeditor.ViewType
-import ja.burhanrashid52.photoeditor.Vector2D
-import ja.burhanrashid52.photoeditor.MultiTouchListener.TransformInfo
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.ImageView
-import ja.burhanrashid52.photoeditor.MultiTouchListener.ScaleGestureListener
+import android.widget.RelativeLayout
 
 /**
  * Created on 18/01/2017.
@@ -28,7 +19,7 @@ import ja.burhanrashid52.photoeditor.MultiTouchListener.ScaleGestureListener
 internal class MultiTouchListener(
     deleteView: View?,
     parentView: RelativeLayout,
-    photoEditImageView: ImageView,
+    photoEditImageView: ImageView?,
     private val mIsPinchScalable: Boolean,
     onPhotoEditorListener: OnPhotoEditorListener?,
     viewState: PhotoEditorViewState
@@ -48,7 +39,7 @@ internal class MultiTouchListener(
     private val location = IntArray(2)
     private var outRect: Rect? = null
     private val deleteView: View?
-    private val photoEditImageView: ImageView
+    private val photoEditImageView: ImageView?
     private val parentView: RelativeLayout
     private var onMultiTouchListener: OnMultiTouchListener? = null
     private var mOnGestureControl: OnGestureControl? = null
@@ -126,11 +117,13 @@ internal class MultiTouchListener(
         }
     }
 
-    private fun isViewInBounds(view: View, x: Int, y: Int): Boolean {
-        view.getDrawingRect(outRect)
-        view.getLocationOnScreen(location)
-        outRect!!.offset(location[0], location[1])
-        return outRect!!.contains(x, y)
+    private fun isViewInBounds(view: View?, x: Int, y: Int): Boolean {
+        return view?.run {
+            getDrawingRect(outRect)
+            getLocationOnScreen(location)
+            outRect!!.offset(location[0], location[1])
+            outRect!!.contains(x, y)
+        } ?: false
     }
 
     fun setOnMultiTouchListener(onMultiTouchListener: OnMultiTouchListener?) {
@@ -141,22 +134,23 @@ internal class MultiTouchListener(
         private var mPivotX = 0f
         private var mPivotY = 0f
         private val mPrevSpanVector = Vector2D()
+
         override fun onScaleBegin(view: View, detector: ScaleGestureDetector): Boolean {
-            mPivotX = detector.focusX
-            mPivotY = detector.focusY
-            mPrevSpanVector.set(detector.currentSpanVector)
+            mPivotX = detector.getFocusX()
+            mPivotY = detector.getFocusY()
+            mPrevSpanVector.set(detector.getCurrentSpanVector())
             return mIsPinchScalable
         }
 
         override fun onScale(view: View, detector: ScaleGestureDetector): Boolean {
             val info = TransformInfo()
-            info.deltaScale = if (isScaleEnabled) detector.scaleFactor else 1.0f
+            info.deltaScale = if (isScaleEnabled) detector.getScaleFactor() else 1.0f
             info.deltaAngle = if (isRotateEnabled) Vector2D.getAngle(
                 mPrevSpanVector,
-                detector.currentSpanVector
+                detector.getCurrentSpanVector()
             ) else 0.0f
-            info.deltaX = if (isTranslateEnabled) detector.focusX - mPivotX else 0.0f
-            info.deltaY = if (isTranslateEnabled) detector.focusY - mPivotY else 0.0f
+            info.deltaX = if (isTranslateEnabled) detector.getFocusX() - mPivotX else 0.0f
+            info.deltaY = if (isTranslateEnabled) detector.getFocusY() - mPivotY else 0.0f
             info.pivotX = mPivotX
             info.pivotY = mPivotY
             info.minimumScale = minimumScale

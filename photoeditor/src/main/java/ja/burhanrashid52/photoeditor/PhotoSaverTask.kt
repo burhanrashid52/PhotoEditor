@@ -1,33 +1,18 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.PhotoEditorView.drawingView
-import ja.burhanrashid52.photoeditor.BoxHelper.clearHelperBox
-import ja.burhanrashid52.photoeditor.BitmapUtil.removeTransparency
-import ja.burhanrashid52.photoeditor.BoxHelper.clearAllViews
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener.onSuccess
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener.onFailure
-import ja.burhanrashid52.photoeditor.OnSaveBitmap.onBitmapReady
-import ja.burhanrashid52.photoeditor.OnSaveBitmap.onFailure
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.BoxHelper
-import android.os.AsyncTask
-import ja.burhanrashid52.photoeditor.PhotoSaverTask.SaveResult
-import ja.burhanrashid52.photoeditor.SaveSettings
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
-import ja.burhanrashid52.photoeditor.OnSaveBitmap
-import ja.burhanrashid52.photoeditor.DrawingView
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import ja.burhanrashid52.photoeditor.PhotoSaverTask
-import ja.burhanrashid52.photoeditor.BitmapUtil
+import android.os.AsyncTask
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import ja.burhanrashid52.photoeditor.BitmapUtil.removeTransparency
+import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
+import ja.burhanrashid52.photoeditor.PhotoSaverTask.SaveResult
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
 
 /**
  * Created by Burhanuddin Rashid on 18/05/21.
@@ -61,12 +46,12 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
     }
 
     @SuppressLint("MissingPermission")
-    protected override fun doInBackground(vararg inputs: String): SaveResult {
+    protected override fun doInBackground(vararg inputs: String?): SaveResult {
         // Create a media file name
-        return if (inputs.size == 0) {
+        return if (inputs.isEmpty()) {
             saveImageAsBitmap()
         } else {
-            saveImageInFile(inputs[0])
+            saveImageInFile(inputs.first().toString())
         }
     }
 

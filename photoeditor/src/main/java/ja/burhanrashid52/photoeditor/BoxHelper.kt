@@ -2,11 +2,8 @@ package ja.burhanrashid52.photoeditor
 
 import android.view.View
 import android.view.ViewGroup
-import ja.burhanrashid52.photoeditor.PhotoEditorViewState
 import android.widget.FrameLayout
 import android.widget.ImageView
-import ja.burhanrashid52.photoeditor.R
-import ja.burhanrashid52.photoeditor.DrawingView
 
 /**
  * Created by Burhanuddin Rashid on 18/05/21.
@@ -34,9 +31,12 @@ internal class BoxHelper(
         for (i in 0 until mViewState.addedViewsCount) {
             mViewGroup.removeView(mViewState.getAddedView(i))
         }
-        if (mViewState.containsAddedView(drawingView)) {
-            mViewGroup.addView(drawingView)
+        drawingView?.let {
+            if (mViewState.containsAddedView(it)) {
+                mViewGroup.addView(it)
+            }
         }
+
         mViewState.clearAddedViews()
         mViewState.clearRedoViews()
         drawingView?.clearAll()

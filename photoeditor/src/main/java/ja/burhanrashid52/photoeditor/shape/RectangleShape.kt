@@ -2,13 +2,11 @@ package ja.burhanrashid52.photoeditor.shape
 
 import android.graphics.Path
 import android.util.Log
-import ja.burhanrashid52.photoeditor.shape.AbstractShape
+import kotlin.math.abs
 
-class RectangleShape : AbstractShape() {
+class RectangleShape : AbstractShape("RectangleShape") {
     private var lastX = 0f
     private var lastY = 0f
-    override val tag: String
-        protected get() = "RectangleShape"
 
     override fun startShape(x: Float, y: Float) {
         Log.d(tag, "startShape@ $x,$y")
@@ -19,8 +17,8 @@ class RectangleShape : AbstractShape() {
     override fun moveShape(x: Float, y: Float) {
         right = x
         bottom = y
-        val dx = Math.abs(x - lastX)
-        val dy = Math.abs(y - lastY)
+        val dx = abs(x - lastX)
+        val dy = abs(y - lastY)
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             path = createRectanglePath()
             lastX = x

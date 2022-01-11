@@ -103,11 +103,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
-        mPhotoEditor = PhotoEditor.Builder(this, mPhotoEditorView)
-            .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
-            //.setDefaultTextTypeface(mTextRobotoTf)
-            //.setDefaultEmojiTypeface(mEmojiTypeFace)
-            .build() // build photo editor sdk
+        mPhotoEditor = mPhotoEditorView?.run {
+            PhotoEditor.Builder(this@EditImageActivity, this)
+                .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
+                //.setDefaultTextTypeface(mTextRobotoTf)
+                //.setDefaultEmojiTypeface(mEmojiTypeFace)
+                .build() // build photo editor sdk
+        }
         mPhotoEditor?.setOnPhotoEditorListener(this)
 
         //Set Image Dynamically
@@ -168,7 +170,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     override fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int) {
-        val textEditorDialogFragment = TextEditorDialogFragment.show(this, text, colorCode)
+        val textEditorDialogFragment = TextEditorDialogFragment.show(this, text.toString(), colorCode)
         textEditorDialogFragment.setOnTextEditorListener (object : TextEditorDialogFragment.TextEditorListener {
             override fun onDone(inputText: String?, colorCode: Int) {
                 val styleBuilder = TextStyleBuilder()

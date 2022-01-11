@@ -1,60 +1,44 @@
 package ja.burhanrashid52.photoeditor
 
 import android.content.Context
-import ja.burhanrashid52.photoeditor.BoxHelper.clearHelperBox
-import ja.burhanrashid52.photoeditor.GraphicManager
-import ja.burhanrashid52.photoeditor.ViewType
 import android.view.LayoutInflater
 import android.view.View
-import ja.burhanrashid52.photoeditor.R
 import android.view.ViewGroup
 import android.widget.ImageView
-import ja.burhanrashid52.photoeditor.PhotoEditorViewState
 import ja.burhanrashid52.photoeditor.MultiTouchListener.OnGestureControl
-import ja.burhanrashid52.photoeditor.BoxHelper
-import java.lang.UnsupportedOperationException
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
  * @author <https:></https:>//github.com/burhanrashid52>
  */
-internal abstract class Graphic {
+internal abstract class Graphic(
+    val context: Context,
+    val layoutId: Int,
+    val viewType: ViewType,
+    val graphicManager: GraphicManager?) {
+
     val rootView: View
-    private val mGraphicManager: GraphicManager
-    abstract val viewType: ViewType
-    abstract val layoutId: Int
-    abstract fun setupView(rootView: View?)
+
     open fun updateView(view: View?) {
         //Optional for subclass to override
     }
 
-    constructor(context: Context, graphicManager: GraphicManager) {
-        val layoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    init {
         if (layoutId == 0) {
             throw UnsupportedOperationException("Layout id cannot be zero. Please define a layout")
         }
-        rootView = layoutInflater.inflate(layoutId, null)
-        mGraphicManager = graphicManager
+        rootView = LayoutInflater.from(context).inflate(layoutId, null)
         setupView(rootView)
         setupRemoveView(rootView)
-    }
-
-    constructor(rootView: View, graphicManager: GraphicManager) {
-        this.rootView = rootView
-        mGraphicManager = graphicManager
-        setupView(this.rootView)
-        setupRemoveView(this.rootView)
     }
 
     private fun setupRemoveView(rootView: View) {
         //We are setting tag as ViewType to identify what type of the view it is
         //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
-        val viewType = viewType
         rootView.tag = viewType
         val imgClose = rootView.findViewById<ImageView>(R.id.imgPhotoEditorClose)
-        imgClose?.setOnClickListener { mGraphicManager.removeView(this@Graphic) }
+        imgClose?.setOnClickListener { graphicManager?.removeView(this@Graphic) }
     }
 
     protected fun toggleSelection() {
@@ -87,4 +71,6 @@ internal abstract class Graphic {
             }
         }
     }
+
+    open fun setupView(rootView: View) {}
 }

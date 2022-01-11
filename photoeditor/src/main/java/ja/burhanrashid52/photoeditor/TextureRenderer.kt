@@ -15,11 +15,9 @@
  */
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.GLToolbox.createProgram
-import ja.burhanrashid52.photoeditor.GLToolbox.checkGlError
-import ja.burhanrashid52.photoeditor.GLToolbox
-import ja.burhanrashid52.photoeditor.TextureRenderer
 import android.opengl.GLES20
+import ja.burhanrashid52.photoeditor.GLToolbox.checkGlError
+import ja.burhanrashid52.photoeditor.GLToolbox.createProgram
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -52,12 +50,12 @@ internal class TextureRenderer {
             TEX_VERTICES.size * FLOAT_SIZE_BYTES
         )
             .order(ByteOrder.nativeOrder()).asFloatBuffer()
-        mTexVertices.put(TEX_VERTICES).position(0)
+        mTexVertices?.put(TEX_VERTICES)?.position(0)
         mPosVertices = ByteBuffer.allocateDirect(
             POS_VERTICES.size * FLOAT_SIZE_BYTES
         )
             .order(ByteOrder.nativeOrder()).asFloatBuffer()
-        mPosVertices.put(POS_VERTICES).position(0)
+        mPosVertices?.put(POS_VERTICES)?.position(0)
     }
 
     fun tearDown() {

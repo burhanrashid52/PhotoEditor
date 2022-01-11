@@ -1,10 +1,8 @@
 package ja.burhanrashid52.photoeditor
 
 import android.content.Context
-import androidx.appcompat.widget.AppCompatImageView
-import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
-import android.graphics.Bitmap
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
@@ -12,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatImageView
 
 /**
  * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)

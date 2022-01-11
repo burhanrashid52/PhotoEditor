@@ -1,12 +1,5 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.PhotoEditorViewState
-import ja.burhanrashid52.photoeditor.BrushViewChangeListener
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import ja.burhanrashid52.photoeditor.DrawingView
-import ja.burhanrashid52.photoeditor.ViewType
-
 /**
  * Created by Burhanuddin Rashid on 17/05/21.
  *

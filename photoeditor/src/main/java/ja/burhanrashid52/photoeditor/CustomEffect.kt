@@ -1,9 +1,8 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.CustomEffect
 import android.text.TextUtils
-import java.lang.RuntimeException
-import java.util.HashMap
+import ja.burhanrashid52.photoeditor.CustomEffect.Builder
+import java.util.*
 
 /**
  * Define your custom effect using [Builder] class
@@ -27,8 +26,8 @@ class CustomEffect private constructor(builder: Builder) {
      * Set customize effect to image using this builder class
      */
     class Builder(effectName: String) {
-        private val mEffectName: String
-        private val parametersMap: MutableMap<String, Any> = HashMap()
+        val mEffectName: String
+        val parametersMap: MutableMap<String, Any> = HashMap()
 
         /**
          * set parameter to the attributes with its value
@@ -66,7 +65,7 @@ class CustomEffect private constructor(builder: Builder) {
     // TODO(cheng): Implement Builder Pattern
     //              https://stackoverflow.com/questions/36140791/how-to-implement-builder-pattern-in-kotlin
     init {
-        effectName = builder.getEffectName()
-        parameters = builder.getParametersMap()
+        effectName = builder.mEffectName
+        parameters = builder.parametersMap
     }
 }

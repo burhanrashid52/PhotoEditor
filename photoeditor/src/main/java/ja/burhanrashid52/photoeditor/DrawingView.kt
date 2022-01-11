@@ -1,29 +1,11 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.shapeSize
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.shapeOpacity
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.shapeColor
-import ja.burhanrashid52.photoeditor.shape.ShapeAndPaint.shape
-import ja.burhanrashid52.photoeditor.shape.AbstractShape.draw
-import ja.burhanrashid52.photoeditor.shape.ShapeAndPaint.paint
-import ja.burhanrashid52.photoeditor.shape.Shape.startShape
-import ja.burhanrashid52.photoeditor.shape.Shape.moveShape
-import ja.burhanrashid52.photoeditor.shape.Shape.stopShape
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder.shapeType
-import ja.burhanrashid52.photoeditor.BrushViewChangeListener.onStartDrawing
-import ja.burhanrashid52.photoeditor.shape.AbstractShape.hasBeenTapped
-import ja.burhanrashid52.photoeditor.BrushViewChangeListener.onStopDrawing
-import ja.burhanrashid52.photoeditor.BrushViewChangeListener.onViewAdd
-import ja.burhanrashid52.photoeditor.BrushViewChangeListener.onViewRemoved
-import kotlin.jvm.JvmOverloads
-import ja.burhanrashid52.photoeditor.BrushViewChangeListener
-import ja.burhanrashid52.photoeditor.DrawingView
-import android.graphics.PorterDuffXfermode
-import android.graphics.PorterDuff
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.util.AttributeSet
 import android.util.Pair
 import android.view.MotionEvent
@@ -50,11 +32,9 @@ class DrawingView @JvmOverloads constructor(
     private val drawShapes = Stack<ShapeAndPaint?>()
     private val redoShapes = Stack<ShapeAndPaint?>()
 
-    @get:VisibleForTesting
     var currentShape: ShapeAndPaint? = null
         private set
 
-    @get:VisibleForTesting
     var currentShapeBuilder: ShapeBuilder? = null
         private set
     var isDrawingEnabled = false
@@ -236,7 +216,6 @@ class DrawingView @JvmOverloads constructor(
     }
 
     // endregion
-    @get:VisibleForTesting
     val drawingPath: Pair<Stack<ShapeAndPaint?>, Stack<ShapeAndPaint?>>
         get() = Pair(drawShapes, redoShapes)
 

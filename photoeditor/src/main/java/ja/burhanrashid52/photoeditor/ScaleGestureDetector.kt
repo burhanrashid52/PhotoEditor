@@ -18,7 +18,7 @@ package ja.burhanrashid52.photoeditor
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import ja.burhanrashid52.photoeditor.Vector2D
+import ja.burhanrashid52.photoeditor.ScaleGestureDetector.OnScaleGestureListener
 
 /**
  * Detects transformation gestures involving more than one pointer ("multitouch")
@@ -55,7 +55,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
          * only wants to update scaling factors if the change is
          * greater than 0.01.
          */
-        fun onScale(view: View?, detector: ScaleGestureDetector?): Boolean
+        fun onScale(view: View, detector: ScaleGestureDetector): Boolean
 
         /**
          * Responds to the beginning of a scaling gesture. Reported by
@@ -69,7 +69,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
          * sense, onScaleBegin() may return false to ignore the
          * rest of the gesture.
          */
-        fun onScaleBegin(view: View?, detector: ScaleGestureDetector?): Boolean
+        fun onScaleBegin(view: View, detector: ScaleGestureDetector): Boolean
 
         /**
          * Responds to the end of a scale gesture. Reported by existing
@@ -82,7 +82,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
          * @param detector The detector reporting the event - use this to
          * retrieve extended info about event state.
          */
-        fun onScaleEnd(view: View?, detector: ScaleGestureDetector?)
+        fun onScaleEnd(view: View, detector: ScaleGestureDetector)
     }
 
     /**
@@ -90,15 +90,15 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
      * of scaling-related events. This implements all methods in
      */
     internal open class SimpleOnScaleGestureListener : OnScaleGestureListener {
-        override fun onScale(view: View?, detector: ScaleGestureDetector?): Boolean {
+        override fun onScale(view: View, detector: ScaleGestureDetector): Boolean {
             return false
         }
 
-        override fun onScaleBegin(view: View?, detector: ScaleGestureDetector?): Boolean {
+        override fun onScaleBegin(view: View, detector: ScaleGestureDetector): Boolean {
             return true
         }
 
-        override fun onScaleEnd(view: View?, detector: ScaleGestureDetector?) {
+        override fun onScaleEnd(view: View, detector: ScaleGestureDetector) {
             // Intentionally empty
         }
     }
@@ -355,7 +355,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
      * @return X coordinate of the focal point in pixels.
      */
     fun getFocusX(): Float {
-        return field
+        return mFocusX
     }
 
     /**

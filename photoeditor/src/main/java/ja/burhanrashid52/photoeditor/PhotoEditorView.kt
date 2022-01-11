@@ -1,34 +1,16 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.FilterImageView.setOnImageChangedListener
-import ja.burhanrashid52.photoeditor.ImageFilterView.setFilterEffect
-import ja.burhanrashid52.photoeditor.ImageFilterView.setSourceBitmap
-import ja.burhanrashid52.photoeditor.FilterImageView.setImageDrawable
-import ja.burhanrashid52.photoeditor.ImageFilterView.saveBitmap
-import ja.burhanrashid52.photoeditor.FilterImageView.setImageBitmap
-import ja.burhanrashid52.photoeditor.OnSaveBitmap.onBitmapReady
-import ja.burhanrashid52.photoeditor.OnSaveBitmap.onFailure
-import ja.burhanrashid52.photoeditor.FilterImageView.bitmap
-import android.widget.RelativeLayout
-import ja.burhanrashid52.photoeditor.FilterImageView
-import ja.burhanrashid52.photoeditor.DrawingView
-import androidx.annotation.RequiresApi
-import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
-import android.graphics.Bitmap
-import ja.burhanrashid52.photoeditor.PhotoFilter
-import ja.burhanrashid52.photoeditor.PhotoEditorView
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.TypedArray
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import ja.burhanrashid52.photoeditor.R
 import android.view.ViewGroup
 import android.widget.ImageView
-import ja.burhanrashid52.photoeditor.OnSaveBitmap
-import ja.burhanrashid52.photoeditor.CustomEffect
-import java.lang.Exception
+import android.widget.RelativeLayout
+import androidx.annotation.RequiresApi
+import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
 
 /**
  *

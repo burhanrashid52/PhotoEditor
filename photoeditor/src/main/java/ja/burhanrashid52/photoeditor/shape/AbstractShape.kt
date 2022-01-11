@@ -5,7 +5,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 
-abstract class AbstractShape : Shape {
+abstract class AbstractShape(protected val tag: String) : Shape {
     @JvmField
     protected var TOUCH_TOLERANCE = 4f
     @JvmField
@@ -18,7 +18,7 @@ abstract class AbstractShape : Shape {
     protected var right = 0f
     @JvmField
     protected var bottom = 0f
-    protected abstract val tag: String
+
     override fun draw(canvas: Canvas, paint: Paint) {
         canvas.drawPath(path, paint)
     }

@@ -3,11 +3,9 @@ package ja.burhanrashid52.photoeditor.shape
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.Log
-import ja.burhanrashid52.photoeditor.shape.AbstractShape
+import kotlin.math.abs
 
-class BrushShape : AbstractShape() {
-    override val tag: String
-        protected get() = "BrushShape"
+class BrushShape : AbstractShape("BrushShape") {
 
     override fun draw(canvas: Canvas, paint: Paint) {
         canvas.drawPath(path, paint)
@@ -21,8 +19,8 @@ class BrushShape : AbstractShape() {
     }
 
     override fun moveShape(x: Float, y: Float) {
-        val dx = Math.abs(x - left)
-        val dy = Math.abs(y - top)
+        val dx = abs(x - left)
+        val dy = abs(y - top)
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             path.quadTo(left, top, (x + left) / 2, (y + top) / 2)
             left = x

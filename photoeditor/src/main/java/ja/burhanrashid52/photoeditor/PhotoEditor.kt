@@ -1,29 +1,16 @@
 package ja.burhanrashid52.photoeditor
 
 import android.Manifest
-import android.graphics.Bitmap
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.view.View
 import android.widget.ImageView
-import ja.burhanrashid52.photoeditor.TextStyleBuilder
-import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
-import androidx.annotation.UiThread
-import ja.burhanrashid52.photoeditor.CustomEffect
-import ja.burhanrashid52.photoeditor.PhotoFilter
 import androidx.annotation.RequiresPermission
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
-import ja.burhanrashid52.photoeditor.SaveSettings
-import ja.burhanrashid52.photoeditor.OnSaveBitmap
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.DrawingView
-import ja.burhanrashid52.photoeditor.PhotoEditor
-import ja.burhanrashid52.photoeditor.PhotoEditorImpl
+import androidx.annotation.UiThread
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
-import java.lang.Exception
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
@@ -299,11 +286,11 @@ interface PhotoEditor {
      */
     class Builder(var context: Context, var parentView: PhotoEditorView) {
         @JvmField
-        var imageView: ImageView
+        var imageView: ImageView? = null
         @JvmField
         var deleteView: View? = null
         @JvmField
-        var drawingView: DrawingView
+        var drawingView: DrawingView? = null
         @JvmField
         var textTypeface: Typeface? = null
         @JvmField
@@ -378,8 +365,8 @@ interface PhotoEditor {
          * @param photoEditorView [PhotoEditorView]
          */
         init {
-            imageView = parentView.source
-            drawingView = parentView.drawingView
+            imageView = parentView?.source
+            drawingView = parentView?.drawingView
         }
     }
 

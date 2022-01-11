@@ -1,7 +1,6 @@
 package ja.burhanrashid52.photoeditor.shape
 
 import android.graphics.Color
-import ja.burhanrashid52.photoeditor.shape.ShapeType
 import androidx.annotation.ColorInt
 
 /**
@@ -16,7 +15,6 @@ class ShapeBuilder {
     var shapeSize = 0f
         private set
 
-    @get:IntRange(from = 0, to = 255)
     @androidx.annotation.IntRange(from = 0, to = 255)
     var shapeOpacity = 0
         private set

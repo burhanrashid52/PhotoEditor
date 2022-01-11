@@ -1,13 +1,11 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.TextShadow
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import ja.burhanrashid52.photoeditor.TextBorder
-import android.widget.TextView
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import java.util.HashMap
+import android.widget.TextView
+import java.util.*
 
 /**
  *

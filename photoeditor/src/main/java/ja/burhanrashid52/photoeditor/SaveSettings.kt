@@ -1,9 +1,7 @@
 package ja.burhanrashid52.photoeditor
 
 import android.graphics.Bitmap.CompressFormat
-import android.graphics.Bitmap
 import androidx.annotation.IntRange
-import ja.burhanrashid52.photoeditor.SaveSettings
 
 /**
  * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
@@ -17,10 +15,10 @@ class SaveSettings private constructor(builder: Builder) {
     val compressQuality: Int
 
     class Builder {
-        private var isTransparencyEnabled = true
-        private var isClearViewsEnabled = true
-        private var compressFormat = CompressFormat.PNG
-        private var compressQuality = 100
+        var isTransparencyEnabled = true
+        var isClearViewsEnabled = true
+        var compressFormat = CompressFormat.PNG
+        var compressQuality = 100
 
         /**
          * Define a flag to enable transparency while saving image

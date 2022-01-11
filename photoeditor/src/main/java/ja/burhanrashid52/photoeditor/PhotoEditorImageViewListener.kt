@@ -1,7 +1,5 @@
 package ja.burhanrashid52.photoeditor
 
-import ja.burhanrashid52.photoeditor.PhotoEditorViewState
-import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 

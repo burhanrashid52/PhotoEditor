@@ -16,8 +16,6 @@
 package ja.burhanrashid52.photoeditor
 
 import android.opengl.GLES20
-import ja.burhanrashid52.photoeditor.GLToolbox
-import java.lang.RuntimeException
 
 internal object GLToolbox {
     private fun loadShader(shaderType: Int, source: String): Int {

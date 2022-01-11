@@ -1,7 +1,6 @@
 package ja.burhanrashid52.photoeditor
 
 import android.graphics.PointF
-import ja.burhanrashid52.photoeditor.Vector2D
 
 internal class Vector2D : PointF {
     constructor() : super() {}

@@ -1,15 +1,13 @@
 package ja.burhanrashid52.photoeditor.shape
 
 import android.graphics.Path
-import ja.burhanrashid52.photoeditor.shape.AbstractShape
 import android.graphics.RectF
 import android.util.Log
+import kotlin.math.abs
 
-class OvalShape : AbstractShape() {
+class OvalShape : AbstractShape("OvalShape") {
     private var lastX = 0f
     private var lastY = 0f
-    override val tag: String
-        protected get() = "OvalShape"
 
     override fun startShape(x: Float, y: Float) {
         Log.d(tag, "startShape@ $x,$y")
@@ -20,8 +18,8 @@ class OvalShape : AbstractShape() {
     override fun moveShape(x: Float, y: Float) {
         right = x
         bottom = y
-        val dx = Math.abs(x - lastX)
-        val dy = Math.abs(y - lastY)
+        val dx = abs(x - lastX)
+        val dy = abs(y - lastY)
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             path = createOvalPath()
             lastX = x

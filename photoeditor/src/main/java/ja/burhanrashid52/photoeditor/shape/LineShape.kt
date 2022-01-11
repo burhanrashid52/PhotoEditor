@@ -2,13 +2,10 @@ package ja.burhanrashid52.photoeditor.shape
 
 import android.graphics.Path
 import android.util.Log
-import ja.burhanrashid52.photoeditor.shape.AbstractShape
 
-class LineShape : AbstractShape() {
+class LineShape : AbstractShape("LineShape") {
     private var lastX = 0f
     private var lastY = 0f
-    override val tag: String
-        protected get() = "LineShape"
 
     override fun startShape(x: Float, y: Float) {
         Log.d(tag, "startShape@ $x,$y")
