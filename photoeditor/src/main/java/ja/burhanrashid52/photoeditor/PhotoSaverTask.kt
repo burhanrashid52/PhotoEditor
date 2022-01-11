@@ -46,7 +46,7 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
     }
 
     @SuppressLint("MissingPermission")
-    protected override fun doInBackground(vararg inputs: String?): SaveResult {
+    override fun doInBackground(vararg inputs: String?): SaveResult {
         // Create a media file name
         return if (inputs.isEmpty()) {
             saveImageAsBitmap()
@@ -151,10 +151,6 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
 
     fun saveBitmap() {
         execute()
-    }
-
-    fun saveFile(imagePath: String?) {
-        execute(imagePath)
     }
 
     internal class SaveResult(

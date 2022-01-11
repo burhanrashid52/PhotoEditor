@@ -31,19 +31,20 @@ import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") constructor(
     builder: PhotoEditor.Builder
 ) : PhotoEditor {
-    private val parentView: PhotoEditorView
-    private val viewState: PhotoEditorViewState
-    private val imageView: ImageView?
-    private val deleteView: View?
-    private val drawingView: DrawingView?
-    private val mBrushDrawingStateListener: BrushDrawingStateListener
-    private val mBoxHelper: BoxHelper
+    private val parentView: PhotoEditorView = builder.parentView
+    private val viewState: PhotoEditorViewState = PhotoEditorViewState()
+    private val imageView: ImageView? = builder.imageView
+    private val deleteView: View? = builder.deleteView
+    private val drawingView: DrawingView? = builder.drawingView
+    private val mBrushDrawingStateListener: BrushDrawingStateListener = BrushDrawingStateListener(builder.parentView, viewState)
+    private val mBoxHelper: BoxHelper = BoxHelper(builder.parentView, viewState)
     private var mOnPhotoEditorListener: OnPhotoEditorListener? = null
-    private val isTextPinchScalable: Boolean
-    private val mDefaultTextTypeface: Typeface?
-    private val mDefaultEmojiTypeface: Typeface?
-    private val mGraphicManager: GraphicManager
-    private val context: Context
+    private val isTextPinchScalable: Boolean = builder.isTextPinchScalable
+    private val mDefaultTextTypeface: Typeface? = builder.textTypeface
+    private val mDefaultEmojiTypeface: Typeface? = builder.emojiTypeface
+    private val mGraphicManager: GraphicManager = GraphicManager(builder.parentView, viewState)
+    private val context: Context = builder.context
+
     override fun addImage(desiredImage: Bitmap?) {
         val multiTouchListener = getMultiTouchListener(true)
         val sticker = Sticker(parentView, multiTouchListener, viewState, mGraphicManager)
@@ -143,29 +144,29 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         get() = drawingView != null && drawingView.isDrawingEnabled
 
     override fun setOpacity(@IntRange(from = 0, to = 100) opacity: Int) {
-        var opacity = opacity
-        if (drawingView != null && drawingView.currentShapeBuilder != null) {
-            opacity = (opacity / 100.0 * 255.0).toInt()
-            drawingView.currentShapeBuilder!!.withShapeOpacity(opacity)
+        var opacityValue = opacity
+        if (drawingView?.currentShapeBuilder != null) {
+            opacityValue = (opacityValue / 100.0 * 255.0).toInt()
+            drawingView.currentShapeBuilder!!.withShapeOpacity(opacityValue)
         }
     }
 
     override var brushSize: Float
-        get() = if (drawingView != null && drawingView.currentShapeBuilder != null) {
-            drawingView.currentShapeBuilder!!.shapeSize
+        get() = if (drawingView?.currentShapeBuilder != null) {
+            drawingView.currentShapeBuilder?.shapeSize ?: 0f
         } else 0f
         set(size) {
-            if (drawingView != null && drawingView.currentShapeBuilder != null) {
-                drawingView.currentShapeBuilder!!.withShapeSize(size)
+            if (drawingView?.currentShapeBuilder != null) {
+                drawingView.currentShapeBuilder?.withShapeSize(size)
             }
         }
     override var brushColor: Int
-        get() = if (drawingView != null && drawingView.currentShapeBuilder != null) {
-            drawingView.currentShapeBuilder!!.shapeColor
+        get() = if (drawingView?.currentShapeBuilder != null) {
+            drawingView.currentShapeBuilder?.shapeColor ?: 0
         } else 0
         set(color) {
-            if (drawingView != null && drawingView.currentShapeBuilder != null) {
-                drawingView.currentShapeBuilder!!.withShapeColor(color)
+            if (drawingView?.currentShapeBuilder != null) {
+                drawingView.currentShapeBuilder?.withShapeColor(color)
             }
         }
 
@@ -264,7 +265,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
 
     // region Shape
     override fun setShape(shapeBuilder: ShapeBuilder?) {
-        drawingView!!.setShapeBuilder(shapeBuilder)
+        drawingView?.setShapeBuilder(shapeBuilder)
     } // endregion
 
     companion object {
@@ -272,18 +273,6 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     init {
-        context = builder.context
-        parentView = builder.parentView
-        imageView = builder.imageView
-        deleteView = builder.deleteView
-        drawingView = builder.drawingView
-        isTextPinchScalable = builder.isTextPinchScalable
-        mDefaultTextTypeface = builder.textTypeface
-        mDefaultEmojiTypeface = builder.emojiTypeface
-        viewState = PhotoEditorViewState()
-        mGraphicManager = GraphicManager(builder.parentView, viewState)
-        mBoxHelper = BoxHelper(builder.parentView, viewState)
-        mBrushDrawingStateListener = BrushDrawingStateListener(builder.parentView, viewState)
         drawingView?.setBrushViewChangeListener(mBrushDrawingStateListener)
         val mDetector = GestureDetector(
             context,

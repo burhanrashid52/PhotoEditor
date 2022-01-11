@@ -18,9 +18,6 @@ import java.util.*
  */
 open class TextStyleBuilder {
     private val values: MutableMap<TextStyle, Any> = HashMap()
-    protected fun getValues(): Map<TextStyle, Any> {
-        return values
-    }
 
     /**
      * Set this textSize style
