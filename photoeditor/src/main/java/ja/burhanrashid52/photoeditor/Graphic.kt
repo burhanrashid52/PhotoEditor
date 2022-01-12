@@ -33,6 +33,7 @@ internal abstract class Graphic(
         setupRemoveView(rootView)
     }
 
+
     private fun setupRemoveView(rootView: View) {
         //We are setting tag as ViewType to identify what type of the view it is
         //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
@@ -54,10 +55,10 @@ internal abstract class Graphic(
     }
 
     protected fun buildGestureController(
-        viewGroup: ViewGroup?,
+        viewGroup: ViewGroup,
         viewState: PhotoEditorViewState
     ): OnGestureControl {
-        val boxHelper = BoxHelper(viewGroup!!, viewState)
+        val boxHelper = BoxHelper(viewGroup, viewState)
         return object : OnGestureControl {
             override fun onClick() {
                 boxHelper.clearHelperBox()

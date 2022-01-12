@@ -22,7 +22,8 @@ internal class GraphicManager(
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
         mViewGroup.addView(view, params)
         mViewState.addAddedView(view)
-        if (onPhotoEditorListener != null) onPhotoEditorListener!!.onAddViewListener(
+
+        onPhotoEditorListener?.onAddViewListener(
             graphic.viewType,
             mViewState.addedViewsCount
         )
@@ -34,12 +35,10 @@ internal class GraphicManager(
             mViewGroup.removeView(view)
             mViewState.removeAddedView(view)
             mViewState.pushRedoView(view)
-            if (onPhotoEditorListener != null) {
-                onPhotoEditorListener!!.onRemoveViewListener(
-                    graphic.viewType,
-                    mViewState.addedViewsCount
-                )
-            }
+            onPhotoEditorListener?.onRemoveViewListener(
+                graphic.viewType,
+                mViewState.addedViewsCount
+            )
         }
     }
 
@@ -60,14 +59,11 @@ internal class GraphicManager(
                 mViewGroup.removeView(removeView)
                 mViewState.pushRedoView(removeView)
             }
-            if (onPhotoEditorListener != null) {
-                val viewTag = removeView.tag
-                if (viewTag is ViewType) {
-                    onPhotoEditorListener!!.onRemoveViewListener(
-                        viewTag,
-                        mViewState.addedViewsCount
-                    )
-                }
+            when (val viewTag = removeView.tag) {
+                is ViewType -> onPhotoEditorListener?.onRemoveViewListener(
+                    viewTag,
+                    mViewState.addedViewsCount
+                )
             }
         }
         return mViewState.addedViewsCount != 0
@@ -85,9 +81,8 @@ internal class GraphicManager(
                 mViewGroup.addView(redoView)
                 mViewState.addAddedView(redoView)
             }
-            val viewTag = redoView.tag
-            if (onPhotoEditorListener != null && viewTag is ViewType) {
-                onPhotoEditorListener!!.onAddViewListener(
+            when (val viewTag = redoView.tag) {
+                is ViewType -> onPhotoEditorListener?.onAddViewListener(
                     viewTag,
                     mViewState.addedViewsCount
                 )

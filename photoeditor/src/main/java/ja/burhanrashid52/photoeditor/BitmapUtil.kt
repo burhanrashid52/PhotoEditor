@@ -24,8 +24,8 @@ internal object BitmapUtil {
      * @param source edited image
      * @return bitmap without any transparency
      */
-    @JvmStatic
-    fun removeTransparency(source: Bitmap): Bitmap {
+    fun removeTransparency(source: Bitmap?): Bitmap? {
+        if (source == null) return source
         var firstX = 0
         var firstY = 0
         var lastX = source.width
@@ -75,7 +75,6 @@ internal object BitmapUtil {
      * @return save bitmap
      * @throws OutOfMemoryError error when system is out of memory to load and save bitmap
      */
-    @JvmStatic
     @Throws(OutOfMemoryError::class)
     fun createBitmapFromGLSurface(glSurfaceView: GLSurfaceView, gl: GL10): Bitmap? {
         val x = 0

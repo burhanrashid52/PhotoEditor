@@ -2,13 +2,14 @@ package ja.burhanrashid52.photoeditor
 
 import android.graphics.PointF
 import kotlin.math.atan2
+import kotlin.math.sqrt
 
 internal class Vector2D : PointF {
     constructor() : super() {}
     constructor(x: Float, y: Float) : super(x, y) {}
 
     private fun normalize() {
-        val length = Math.sqrt((x * x + y * y).toDouble()).toFloat()
+        val length = sqrt((x * x + y * y).toDouble()).toFloat()
         x /= length
         y /= length
     }

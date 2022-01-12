@@ -6,24 +6,17 @@ import android.graphics.Path
 import android.graphics.RectF
 
 abstract class AbstractShape(protected val tag: String) : Shape {
-    @JvmField
-    protected var TOUCH_TOLERANCE = 4f
-    @JvmField
     protected var path = Path()
-    @JvmField
     protected var left = 0f
-    @JvmField
     protected var top = 0f
-    @JvmField
     protected var right = 0f
-    @JvmField
     protected var bottom = 0f
 
     override fun draw(canvas: Canvas, paint: Paint) {
         canvas.drawPath(path, paint)
     }
 
-    val bounds: RectF
+    private val bounds: RectF
         get() {
             val bounds = RectF()
             path.computeBounds(bounds, true)
@@ -41,5 +34,9 @@ abstract class AbstractShape(protected val tag: String) : Shape {
                 " - top: " + top +
                 " - right: " + right +
                 " - bottom: " + bottom
+    }
+
+    companion object {
+        const val TOUCH_TOLERANCE = 4f
     }
 }

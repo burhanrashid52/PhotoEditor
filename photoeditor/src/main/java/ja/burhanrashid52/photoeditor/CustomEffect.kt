@@ -15,7 +15,7 @@ class CustomEffect private constructor(builder: Builder) {
     /**
      * @return Custom effect name from [android.media.effect.EffectFactory.createEffect]
      */
-    val effectName: String
+    val effectName: String = builder.mEffectName
 
     /**
      * @return map of key and value of parameters for [android.media.effect.Effect.setParameter]
@@ -65,7 +65,6 @@ class CustomEffect private constructor(builder: Builder) {
     // TODO(cheng): Implement Builder Pattern
     //              https://stackoverflow.com/questions/36140791/how-to-implement-builder-pattern-in-kotlin
     init {
-        effectName = builder.mEffectName
         parameters = builder.parametersMap
     }
 }

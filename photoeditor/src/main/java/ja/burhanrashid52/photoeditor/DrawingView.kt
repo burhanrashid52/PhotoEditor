@@ -31,20 +31,15 @@ class DrawingView @JvmOverloads constructor(
 ) : View(context, attrs, defStyle) {
     private val drawShapes = Stack<ShapeAndPaint?>()
     private val redoShapes = Stack<ShapeAndPaint?>()
-
-    var currentShape: ShapeAndPaint? = null
-        private set
-
-    var currentShapeBuilder: ShapeBuilder? = null
-        private set
+    internal var currentShape: ShapeAndPaint? = null
     var isDrawingEnabled = false
         private set
     private var viewChangeListener: BrushViewChangeListener? = null
+    var currentShapeBuilder: ShapeBuilder? = null
 
     // eraser parameters
     private var isErasing = false
     var eraserSize = DEFAULT_ERASER_SIZE
-        private set
 
     // endregion
     private fun createPaint(): Paint {
@@ -57,9 +52,12 @@ class DrawingView @JvmOverloads constructor(
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
 
         // apply shape builder parameters
-        paint.strokeWidth = currentShapeBuilder!!.shapeSize
-        paint.alpha = currentShapeBuilder!!.shapeOpacity
-        paint.color = currentShapeBuilder!!.shapeColor
+        currentShapeBuilder?.apply {
+            paint.strokeWidth = this.shapeSize
+            paint.alpha = this.shapeOpacity
+            paint.color = this.shapeColor
+        }
+
         return paint
     }
 
@@ -88,7 +86,7 @@ class DrawingView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         for (shape in drawShapes) {
-            shape!!.shape.draw(canvas, shape.paint)
+            shape?.shape?.draw(canvas, shape.paint)
         }
     }
 
@@ -117,20 +115,16 @@ class DrawingView @JvmOverloads constructor(
 
     private fun onTouchEventDown(touchX: Float, touchY: Float) {
         createShape()
-        if (currentShape != null && currentShape!!.shape != null) {
-            currentShape!!.shape.startShape(touchX, touchY)
-        }
+        currentShape?.shape?.startShape(touchX, touchY)
     }
 
     private fun onTouchEventMove(touchX: Float, touchY: Float) {
-        if (currentShape != null && currentShape!!.shape != null) {
-            currentShape!!.shape.moveShape(touchX, touchY)
-        }
+        currentShape?.shape?.moveShape(touchX, touchY)
     }
 
     private fun onTouchEventUp(touchX: Float, touchY: Float) {
-        if (currentShape != null && currentShape!!.shape != null) {
-            currentShape!!.shape.stopShape()
+        currentShape?.apply {
+            shape.stopShape()
             endShape(touchX, touchY)
         }
     }
@@ -138,34 +132,38 @@ class DrawingView @JvmOverloads constructor(
     private fun createShape() {
         val shape: AbstractShape
         var paint = createPaint()
-        if (isErasing) {
-            shape = BrushShape()
-            paint = createEraserPaint()
-        } else if (currentShapeBuilder!!.shapeType === ShapeType.OVAL) {
-            shape = OvalShape()
-        } else if (currentShapeBuilder!!.shapeType === ShapeType.RECTANGLE) {
-            shape = RectangleShape()
-        } else if (currentShapeBuilder!!.shapeType === ShapeType.LINE) {
-            shape = LineShape()
-        } else {
-            shape = BrushShape()
+        when {
+            isErasing -> {
+                shape = BrushShape()
+                paint = createEraserPaint()
+            }
+            currentShapeBuilder?.shapeType === ShapeType.OVAL -> {
+                shape = OvalShape()
+            }
+            currentShapeBuilder?.shapeType === ShapeType.RECTANGLE -> {
+                shape = RectangleShape()
+            }
+            currentShapeBuilder?.shapeType === ShapeType.LINE -> {
+                shape = LineShape()
+            }
+            else -> {
+                shape = BrushShape()
+            }
         }
         currentShape = ShapeAndPaint(shape, paint)
         drawShapes.push(currentShape)
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onStartDrawing()
-        }
+        viewChangeListener?.onStartDrawing()
     }
 
     private fun endShape(touchX: Float, touchY: Float) {
-        if (currentShape!!.shape.hasBeenTapped()) {
+        if (currentShape?.shape?.hasBeenTapped() == true) {
             // just a tap, this is not a shape, so remove it
             drawShapes.remove(currentShape)
             //handleTap(touchX, touchY);
         }
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onStopDrawing()
-            viewChangeListener!!.onViewAdd(this)
+        viewChangeListener?.apply {
+            onStopDrawing()
+            onViewAdd(this@DrawingView)
         }
     }
 
@@ -174,9 +172,7 @@ class DrawingView @JvmOverloads constructor(
             redoShapes.push(drawShapes.pop())
             invalidate()
         }
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onViewRemoved(this)
-        }
+        viewChangeListener?.onViewRemoved(this)
         return !drawShapes.empty()
     }
 
@@ -185,9 +181,7 @@ class DrawingView @JvmOverloads constructor(
             drawShapes.push(redoShapes.pop())
             invalidate()
         }
-        if (viewChangeListener != null) {
-            viewChangeListener!!.onViewAdd(this)
-        }
+        viewChangeListener?.onViewAdd(this)
         return !redoShapes.empty()
     }
 
@@ -197,15 +191,8 @@ class DrawingView @JvmOverloads constructor(
         isErasing = true
     }
 
-    fun setBrushEraserSize(brushEraserSize: Float) {
-        eraserSize = brushEraserSize
-    }
-
     // endregion
     // region Setters/Getters
-    fun setShapeBuilder(shapeBuilder: ShapeBuilder?) {
-        currentShapeBuilder = shapeBuilder
-    }
 
     fun enableDrawing(brushDrawMode: Boolean) {
         isDrawingEnabled = brushDrawMode

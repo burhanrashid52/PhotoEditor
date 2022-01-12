@@ -11,5 +11,8 @@ package ja.burhanrashid52.photoeditor
  * @since 18/01/2017.
  */
 enum class ViewType {
-    BRUSH_DRAWING, TEXT, IMAGE, EMOJI
+    BRUSH_DRAWING,
+    TEXT,
+    IMAGE,
+    EMOJI
 }

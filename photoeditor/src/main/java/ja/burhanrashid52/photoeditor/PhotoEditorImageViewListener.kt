@@ -20,35 +20,23 @@ internal class PhotoEditorImageViewListener(
         return viewState.currentSelectedView != null
     }
 
-    override fun onDown(e: MotionEvent): Boolean {
-        return viewState.currentSelectedView != null
-    }
+    override fun onDown(e: MotionEvent) = viewState.currentSelectedView != null
 
     override fun onFling(
         event1: MotionEvent,
         event2: MotionEvent,
         velocityX: Float,
         velocityY: Float
-    ): Boolean {
-        return viewState.currentSelectedView != null
-    }
+    ): Boolean = viewState.currentSelectedView != null
 
     override fun onScroll(
         event1: MotionEvent, event2: MotionEvent, distanceX: Float,
         distanceY: Float
-    ): Boolean {
-        return viewState.currentSelectedView != null
-    }
+    ) = viewState.currentSelectedView != null
 
-    override fun onDoubleTap(event: MotionEvent): Boolean {
-        return viewState.currentSelectedView != null
-    }
+    override fun onDoubleTap(event: MotionEvent) = viewState.currentSelectedView != null
 
-    override fun onDoubleTapEvent(event: MotionEvent): Boolean {
-        return viewState.currentSelectedView != null
-    }
+    override fun onDoubleTapEvent(event: MotionEvent) = viewState.currentSelectedView != null
 
-    override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-        return viewState.currentSelectedView != null
-    }
+    override fun onSingleTapConfirmed(event: MotionEvent) = viewState.currentSelectedView != null
 }

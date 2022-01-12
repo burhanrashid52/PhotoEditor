@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.util.AttributeSet
+import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 
 /**
@@ -17,19 +18,13 @@ import androidx.appcompat.widget.AppCompatImageView
  * @version 0.1.2
  * @since 5/21/2018
  */
-internal class FilterImageView : AppCompatImageView {
+internal class FilterImageView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : AppCompatImageView(context, attrs, defStyle) {
+
     private var mOnImageChangedListener: OnImageChangedListener? = null
-
-    constructor(context: Context?) : super(context!!) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(
-        context!!, attrs
-    ) {
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context!!, attrs, defStyleAttr
-    ) {
-    }
 
     fun setOnImageChangedListener(onImageChangedListener: OnImageChangedListener?) {
         mOnImageChangedListener = onImageChangedListener
@@ -41,76 +36,60 @@ internal class FilterImageView : AppCompatImageView {
 
     override fun setImageBitmap(bm: Bitmap) {
         super.setImageBitmap(bm)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageIcon(icon: Icon?) {
         super.setImageIcon(icon)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageMatrix(matrix: Matrix) {
         super.setImageMatrix(matrix)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageState(state: IntArray, merge: Boolean) {
         super.setImageState(state, merge)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageTintList(tint: ColorStateList?) {
         super.setImageTintList(tint)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
+
     }
 
     override fun setImageTintMode(tintMode: PorterDuff.Mode?) {
         super.setImageTintMode(tintMode)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     override fun setImageDrawable(drawable: Drawable?) {
         super.setImageDrawable(drawable)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
+
     }
 
     override fun setImageResource(resId: Int) {
         super.setImageResource(resId)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
+
     }
 
     override fun setImageURI(uri: Uri?) {
         super.setImageURI(uri)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
+
     }
 
     override fun setImageLevel(level: Int) {
         super.setImageLevel(level)
-        if (mOnImageChangedListener != null) {
-            mOnImageChangedListener!!.onBitmapLoaded(bitmap)
-        }
+        mOnImageChangedListener?.onBitmapLoaded(bitmap)
     }
 
     val bitmap: Bitmap?
-        get() = if (drawable != null) {
+        get() = if (drawable is BitmapDrawable) {
             (drawable as BitmapDrawable).bitmap
         } else null
 }

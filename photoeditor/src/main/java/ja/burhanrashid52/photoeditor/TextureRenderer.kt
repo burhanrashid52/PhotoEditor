@@ -116,28 +116,26 @@ internal class TextureRenderer {
     }
 
     private fun computeOutputVertices() {
-        if (mPosVertices != null) {
-            val imgAspectRatio = mTexWidth / mTexHeight.toFloat()
-            val viewAspectRatio = mViewWidth / mViewHeight.toFloat()
-            val relativeAspectRatio = viewAspectRatio / imgAspectRatio
-            val x0: Float
-            val y0: Float
-            val x1: Float
-            val y1: Float
-            if (relativeAspectRatio > 1.0f) {
-                x0 = -1.0f / relativeAspectRatio
-                y0 = -1.0f
-                x1 = 1.0f / relativeAspectRatio
-                y1 = 1.0f
-            } else {
-                x0 = -1.0f
-                y0 = -relativeAspectRatio
-                x1 = 1.0f
-                y1 = relativeAspectRatio
-            }
-            val coords = floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
-            mPosVertices!!.put(coords).position(0)
+        val imgAspectRatio = mTexWidth / mTexHeight.toFloat()
+        val viewAspectRatio = mViewWidth / mViewHeight.toFloat()
+        val relativeAspectRatio = viewAspectRatio / imgAspectRatio
+        val x0: Float
+        val y0: Float
+        val x1: Float
+        val y1: Float
+        if (relativeAspectRatio > 1.0f) {
+            x0 = -1.0f / relativeAspectRatio
+            y0 = -1.0f
+            x1 = 1.0f / relativeAspectRatio
+            y1 = 1.0f
+        } else {
+            x0 = -1.0f
+            y0 = -relativeAspectRatio
+            x1 = 1.0f
+            y1 = relativeAspectRatio
         }
+        val coords = floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
+        mPosVertices?.put(coords)?.position(0)
     }
 
     companion object {

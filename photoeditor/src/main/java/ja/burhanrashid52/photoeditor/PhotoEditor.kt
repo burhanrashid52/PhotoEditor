@@ -393,5 +393,5 @@ interface PhotoEditor {
      * Update the current shape to be drawn,
      * through the use of a ShapeBuilder.
      */
-    fun setShape(shapebuilder: ShapeBuilder?) // endregion
+    fun setShape(shapeBuilder: ShapeBuilder?) // endregion
 }

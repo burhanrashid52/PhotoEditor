@@ -2,6 +2,7 @@ package ja.burhanrashid52.photoeditor.shape
 
 import android.graphics.Path
 import android.util.Log
+import kotlin.math.abs
 
 class LineShape : AbstractShape("LineShape") {
     private var lastX = 0f
@@ -16,8 +17,8 @@ class LineShape : AbstractShape("LineShape") {
     override fun moveShape(x: Float, y: Float) {
         right = x
         bottom = y
-        val dx = Math.abs(x - lastX)
-        val dy = Math.abs(y - lastY)
+        val dx = abs(x - lastX)
+        val dy = abs(y - lastY)
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             path = createLinePath()
             lastX = x

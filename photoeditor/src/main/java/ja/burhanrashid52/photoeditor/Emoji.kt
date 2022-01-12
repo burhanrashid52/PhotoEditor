@@ -25,11 +25,13 @@ internal class Emoji(
 ) {
     private var txtEmoji: TextView? = null
     fun buildView(emojiTypeface: Typeface?, emojiName: String?) {
-        if (emojiTypeface != null) {
-            txtEmoji!!.typeface = emojiTypeface
+        txtEmoji?.apply {
+            if (emojiTypeface != null) {
+                typeface = emojiTypeface
+            }
+            textSize = 56f
+            text = emojiName
         }
-        txtEmoji!!.textSize = 56f
-        txtEmoji!!.text = emojiName
     }
 
     private fun setupGesture() {

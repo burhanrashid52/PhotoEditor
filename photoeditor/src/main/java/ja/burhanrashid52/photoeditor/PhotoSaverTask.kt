@@ -42,7 +42,7 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
     override fun onPreExecute() {
         super.onPreExecute()
         mBoxHelper.clearHelperBox()
-        mDrawingView!!.destroyDrawingCache()
+        mDrawingView?.destroyDrawingCache()
     }
 
     @SuppressLint("MissingPermission")
@@ -56,11 +56,7 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
     }
 
     private fun saveImageAsBitmap(): SaveResult {
-        return if (mPhotoEditorView != null) {
-            SaveResult(null, null, buildBitmap())
-        } else {
-            SaveResult(null, null, null)
-        }
+        return SaveResult(null, null, buildBitmap())
     }
 
     private fun saveImageInFile(mImagePath: String): SaveResult {
@@ -69,7 +65,7 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
             val out = FileOutputStream(file, false)
             if (mPhotoEditorView != null) {
                 val capturedBitmap = buildBitmap()
-                capturedBitmap.compress(
+                capturedBitmap?.compress(
                     mSaveSettings.compressFormat,
                     mSaveSettings.compressQuality,
                     out
@@ -86,11 +82,9 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
         }
     }
 
-    private fun buildBitmap(): Bitmap {
+    private fun buildBitmap(): Bitmap? {
         return if (mSaveSettings.isTransparencyEnabled) removeTransparency(
-            captureView(
-                mPhotoEditorView
-            )
+            captureView(mPhotoEditorView)
         ) else captureView(mPhotoEditorView)
     }
 
@@ -111,14 +105,10 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
             if (mSaveSettings.isClearViewsEnabled) {
                 mBoxHelper.clearAllViews(mDrawingView)
             }
-            if (mOnSaveListener != null) {
-                assert(imagePath != null)
-                mOnSaveListener!!.onSuccess(imagePath!!)
-            }
+            assert(imagePath != null)
+            mOnSaveListener?.onSuccess(imagePath!!)
         } else {
-            if (mOnSaveListener != null) {
-                mOnSaveListener!!.onFailure(exception)
-            }
+            mOnSaveListener?.onFailure(exception)
         }
     }
 
@@ -128,19 +118,19 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
             if (mSaveSettings.isClearViewsEnabled) {
                 mBoxHelper.clearAllViews(mDrawingView)
             }
-            if (mOnSaveBitmap != null) {
-                mOnSaveBitmap!!.onBitmapReady(bitmap)
-            }
+            mOnSaveBitmap?.onBitmapReady(bitmap)
+
         } else {
-            if (mOnSaveBitmap != null) {
-                mOnSaveBitmap!!.onFailure(Exception("Failed to load the bitmap"))
-            }
+            mOnSaveBitmap?.onFailure(Exception("Failed to load the bitmap"))
         }
     }
 
-    private fun captureView(view: View?): Bitmap {
+    private fun captureView(view: View?): Bitmap? {
+        if (view == null) {
+            return null
+        }
         val bitmap = Bitmap.createBitmap(
-            view!!.width,
+            view.width,
             view.height,
             Bitmap.Config.ARGB_8888
         )

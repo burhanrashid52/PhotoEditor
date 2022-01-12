@@ -8,6 +8,8 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Created on 18/01/2017.
@@ -82,9 +84,7 @@ internal class MultiTouchListener(
             MotionEvent.ACTION_UP -> {
                 mActivePointerId = INVALID_POINTER_ID
                 if (deleteView != null && isViewInBounds(deleteView, x, y)) {
-                    if (onMultiTouchListener != null) onMultiTouchListener!!.onRemoveViewListener(
-                        view
-                    )
+                    onMultiTouchListener?.onRemoveViewListener(view)
                 } else if (!isViewInBounds(photoEditImageView, x, y)) {
                     view.animate().translationY(0f).translationY(0f)
                 }
@@ -121,8 +121,8 @@ internal class MultiTouchListener(
         return view?.run {
             getDrawingRect(outRect)
             getLocationOnScreen(location)
-            outRect!!.offset(location[0], location[1])
-            outRect!!.contains(x, y)
+            outRect?.offset(location[0], location[1])
+            outRect?.contains(x, y)
         } ?: false
     }
 
@@ -187,37 +187,36 @@ internal class MultiTouchListener(
 
     private inner class GestureListener : SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent): Boolean {
-            if (mOnGestureControl != null) {
-                mOnGestureControl!!.onClick()
-            }
+            mOnGestureControl?.onClick()
+
             return true
         }
 
         override fun onLongPress(e: MotionEvent) {
             super.onLongPress(e)
-            if (mOnGestureControl != null) {
-                mOnGestureControl!!.onLongClick()
-            }
+            mOnGestureControl?.onLongClick()
         }
     }
 
     companion object {
         private const val INVALID_POINTER_ID = -1
         private fun adjustAngle(degrees: Float): Float {
-            var degrees = degrees
-            if (degrees > 180.0f) {
-                degrees -= 360.0f
-            } else if (degrees < -180.0f) {
-                degrees += 360.0f
+            return when {
+                degrees > 180.0f -> {
+                    degrees - 360.0f
+                }
+                degrees < -180.0f -> {
+                    degrees + 360.0f
+                }
+                else -> degrees
             }
-            return degrees
         }
 
         private fun move(view: View, info: TransformInfo) {
             computeRenderOffset(view, info.pivotX, info.pivotY)
             adjustTranslation(view, info.deltaX, info.deltaY)
             var scale = view.scaleX * info.deltaScale
-            scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale))
+            scale = max(info.minimumScale, min(info.maximumScale, scale))
             view.scaleX = scale
             view.scaleY = scale
             val rotation = adjustAngle(view.rotation + info.deltaAngle)

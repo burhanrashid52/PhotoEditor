@@ -23,7 +23,7 @@ internal class Sticker(
 ) {
     private var imageView: ImageView? = null
     fun buildView(desiredImage: Bitmap?) {
-        imageView!!.setImageBitmap(desiredImage)
+        imageView?.setImageBitmap(desiredImage)
     }
 
     private fun setupGesture() {

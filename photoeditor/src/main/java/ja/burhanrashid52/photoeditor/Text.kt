@@ -25,8 +25,10 @@ internal class Text(
 ) {
     private var mTextView: TextView? = null
     fun buildView(text: String?, styleBuilder: TextStyleBuilder?) {
-        mTextView!!.text = text
-        styleBuilder?.applyStyle(mTextView!!)
+        mTextView?.apply {
+            this.text = text
+            styleBuilder?.applyStyle(this)
+        }
     }
 
     private fun setupGesture() {
@@ -45,8 +47,8 @@ internal class Text(
     }
 
     override fun updateView(view: View?) {
-        val textInput = mTextView!!.text.toString()
-        val currentTextColor = mTextView!!.currentTextColor
+        val textInput = mTextView?.text.toString()
+        val currentTextColor = mTextView?.currentTextColor ?: 0
         val photoEditorListener = mGraphicManager.onPhotoEditorListener
         photoEditorListener?.onEditTextChangeListener(view, textInput, currentTextColor)
     }

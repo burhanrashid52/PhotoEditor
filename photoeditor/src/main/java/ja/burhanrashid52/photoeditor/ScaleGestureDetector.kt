@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import ja.burhanrashid52.photoeditor.ScaleGestureDetector.OnScaleGestureListener
+import kotlin.math.sqrt
 
 /**
  * Detects transformation gestures involving more than one pointer ("multitouch")
@@ -111,7 +112,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
         private set
     private var mPrevEvent: MotionEvent? = null
     private var mCurrEvent: MotionEvent? = null
-    private val mCurrSpanVector: Vector2D
+    private val mCurrSpanVector: Vector2D = Vector2D()
     private var mFocusX = 0f
     private var mFocusY = 0f
     private var mPrevFingerDiffX = 0f
@@ -148,7 +149,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
                 MotionEvent.ACTION_POINTER_DOWN -> {
 
                     // We have a new multi-finger gesture
-                    if (mPrevEvent != null) mPrevEvent!!.recycle()
+                    mPrevEvent?.recycle()
                     mPrevEvent = MotionEvent.obtain(event)
                     mTimeDelta = 0
                     val index1 = event.actionIndex
@@ -218,7 +219,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
                                 gestureEnded = true
                             }
                         }
-                        mPrevEvent!!.recycle()
+                        mPrevEvent?.recycle()
                         mPrevEvent = MotionEvent.obtain(event)
                         setContext(view, event)
                     } else {
@@ -253,7 +254,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
                     if (mCurrPressure / mPrevPressure > PRESSURE_THRESHOLD) {
                         val updatePrevious = mListener.onScale(view, this)
                         if (updatePrevious) {
-                            mPrevEvent!!.recycle()
+                            mPrevEvent?.recycle()
                             mPrevEvent = MotionEvent.obtain(event)
                         }
                     }
@@ -283,16 +284,18 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
     }
 
     private fun setContext(view: View, curr: MotionEvent) {
-        if (mCurrEvent != null) {
-            mCurrEvent!!.recycle()
-        }
+        mCurrEvent?.recycle()
         mCurrEvent = MotionEvent.obtain(curr)
         mCurrLen = -1f
         mPrevLen = -1f
         mScaleFactor = -1f
         mCurrSpanVector[0.0f] = 0.0f
-        val prev = mPrevEvent
-        val prevIndex0 = prev!!.findPointerIndex(mActiveId0)
+
+        if (mPrevEvent == null) {
+            return
+        }
+        val prev = mPrevEvent!!
+        val prevIndex0 = prev.findPointerIndex(mActiveId0)
         val prevIndex1 = prev.findPointerIndex(mActiveId1)
         val currIndex0 = curr.findPointerIndex(mActiveId0)
         val currIndex1 = curr.findPointerIndex(mActiveId1)
@@ -329,14 +332,10 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
     }
 
     private fun reset() {
-        if (mPrevEvent != null) {
-            mPrevEvent!!.recycle()
-            mPrevEvent = null
-        }
-        if (mCurrEvent != null) {
-            mCurrEvent!!.recycle()
-            mCurrEvent = null
-        }
+        mPrevEvent?.recycle()
+        mPrevEvent = null
+        mCurrEvent?.recycle()
+        mCurrEvent = null
         isInProgress = false
         mActiveId0 = -1
         mActiveId1 = -1
@@ -422,7 +421,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
         if (mPrevLen == -1f) {
             val pvx = mPrevFingerDiffX
             val pvy = mPrevFingerDiffY
-            mPrevLen = Math.sqrt((pvx * pvx + pvy * pvy).toDouble()).toFloat()
+            mPrevLen = sqrt((pvx * pvx + pvy * pvy).toDouble()).toFloat()
         }
         return mPrevLen
     }
@@ -477,7 +476,7 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
      * @return Current event time in milliseconds.
      */
     fun getEventTime(): Long {
-        return mCurrEvent!!.eventTime
+        return mCurrEvent?.eventTime ?: 0L
     }
 
     companion object {
@@ -495,7 +494,4 @@ internal class ScaleGestureDetector(private val mListener: OnScaleGestureListene
         private const val PRESSURE_THRESHOLD = 0.67f
     }
 
-    init {
-        mCurrSpanVector = Vector2D()
-    }
 }
