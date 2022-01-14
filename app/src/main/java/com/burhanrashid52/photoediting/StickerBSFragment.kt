@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 
 class StickerBSFragment : BottomSheetDialogFragment() {
     private var mStickerListener: StickerListener? = null
@@ -53,40 +58,63 @@ class StickerBSFragment : BottomSheetDialogFragment() {
         rvEmoji.layoutManager = gridLayoutManager
         val stickerAdapter = StickerAdapter()
         rvEmoji.adapter = stickerAdapter
+        rvEmoji.setHasFixedSize(true)
+        rvEmoji.setItemViewCacheSize(stickerPathList.size)
     }
 
     inner class StickerAdapter : RecyclerView.Adapter<StickerAdapter.ViewHolder>() {
-        var stickerList = intArrayOf(R.drawable.aa, R.drawable.bb)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.row_sticker, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.row_sticker, parent, false)
             return ViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.imgSticker.setImageResource(stickerList[position])
+            // Load sticker image from remote url
+            Glide.with(requireContext())
+                    .asBitmap()
+                    .load(stickerPathList[position])
+                    .into(holder.imgSticker)
         }
 
         override fun getItemCount(): Int {
-            return stickerList.size
+            return stickerPathList.size
         }
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            var imgSticker: ImageView = itemView.findViewById(R.id.imgSticker)
+            val imgSticker: ImageView = itemView.findViewById(R.id.imgSticker)
 
             init {
                 itemView.setOnClickListener {
                     if (mStickerListener != null) {
-                        mStickerListener!!.onStickerClick(
-                            BitmapFactory.decodeResource(
-                                resources,
-                                stickerList[layoutPosition]
-                            )
-                        )
+                        Glide.with(requireContext())
+                                .asBitmap()
+                                .load(stickerPathList[layoutPosition])
+                                .into(object : CustomTarget<Bitmap?>(256, 256) {
+                                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+                                        mStickerListener!!.onStickerClick(resource)
+                                    }
+
+                                    override fun onLoadCleared(placeholder: Drawable?) {}
+                                })
                     }
                     dismiss()
                 }
             }
         }
+    }
+
+    companion object {
+        // Image Urls from flaticon(https://www.flaticon.com/stickers-pack/food-289)
+        private val stickerPathList = arrayOf(
+                "https://cdn-icons-png.flaticon.com/256/4392/4392452.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392455.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392459.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392462.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392465.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392467.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392469.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392471.png",
+                "https://cdn-icons-png.flaticon.com/256/4392/4392522.png",
+        )
     }
 }

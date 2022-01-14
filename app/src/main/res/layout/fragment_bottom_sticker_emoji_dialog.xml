@@ -6,7 +6,6 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +36,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvEmoji"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="8dp"
             app:layout_behavior="@string/bottom_sheet_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -57,7 +56,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginRight="8dp" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
