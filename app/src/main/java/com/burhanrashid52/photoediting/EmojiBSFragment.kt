@@ -13,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.burhanrashid52.photoediting.PhotoApp.Companion.photoApp
 import java.lang.NumberFormatException
 import java.util.ArrayList
 
@@ -49,6 +50,8 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
         rvEmoji.layoutManager = gridLayoutManager
         val emojiAdapter = EmojiAdapter()
         rvEmoji.adapter = emojiAdapter
+        rvEmoji.setHasFixedSize(true)
+        rvEmoji.setItemViewCacheSize(emojisList.size)
     }
 
     fun setEmojiListener(emojiListener: EmojiListener?) {
@@ -56,10 +59,8 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
     }
 
     inner class EmojiAdapter : RecyclerView.Adapter<EmojiAdapter.ViewHolder>() {
-        var emojisList = getEmojis(activity)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.row_emoji, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.row_emoji, parent, false)
             return ViewHolder(view)
         }
 
@@ -86,6 +87,8 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+        var emojisList = getEmojis(photoApp)
+
         /**
          * Provide the list of emoji in form of unicode string
          *
@@ -102,13 +105,12 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
         }
 
         private fun convertEmoji(emoji: String): String {
-            val returnedEmoji: String = try {
+            return try {
                 val convertEmojiToInt = emoji.substring(2).toInt(16)
                 String(Character.toChars(convertEmojiToInt))
             } catch (e: NumberFormatException) {
                 ""
             }
-            return returnedEmoji
         }
     }
 }

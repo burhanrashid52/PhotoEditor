@@ -13,8 +13,8 @@ class PhotoApp : Application() {
     }
 
     companion object {
-        var photoApp: PhotoApp? = null
-            private set
+        @JvmStatic
+        lateinit var photoApp: PhotoApp
         private val TAG = PhotoApp::class.java.simpleName
     }
 }
