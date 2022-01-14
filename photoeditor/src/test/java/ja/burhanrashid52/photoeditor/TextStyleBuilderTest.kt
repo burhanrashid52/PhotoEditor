@@ -191,7 +191,7 @@ class TextStyleBuilderTest {
             gravityApplied = true
         }
 
-        override fun applyFontFamily(textView: TextView, typeface: Typeface) {
+        override fun applyFontFamily(textView: TextView, typeface: Typeface?) {
             textFontApplied = true
         }
 
@@ -203,7 +203,7 @@ class TextStyleBuilderTest {
             backgroundColorApplied = true
         }
 
-        override fun applyBackgroundDrawable(textView: TextView, bg: Drawable) {
+        override fun applyBackgroundDrawable(textView: TextView, bg: Drawable?) {
             backgroundDrawableApplied = true
         }
     }

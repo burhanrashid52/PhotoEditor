@@ -17,7 +17,7 @@ import java.util.*
  * @since 14/05/2019
  */
 open class TextStyleBuilder {
-    private val values: MutableMap<TextStyle, Any> = HashMap()
+    val values = mutableMapOf<TextStyle, Any>()
 
     /**
      * Set this textSize style
@@ -253,7 +253,7 @@ open class TextStyleBuilder {
     /**
      * Enum to maintain current supported style properties used on on [PhotoEditor.addText] and [PhotoEditor.editText]
      */
-    protected enum class TextStyle(val property: String) {
+    enum class TextStyle(val property: String) {
         SIZE("TextSize"), COLOR("TextColor"), GRAVITY("Gravity"), FONT_FAMILY("FontFamily"), BACKGROUND(
             "Background"
         ),

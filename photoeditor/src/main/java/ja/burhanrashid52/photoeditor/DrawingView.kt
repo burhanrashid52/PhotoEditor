@@ -84,7 +84,7 @@ class DrawingView @JvmOverloads constructor(
         viewChangeListener = brushViewChangeListener
     }
 
-    override fun onDraw(canvas: Canvas) {
+    public override fun onDraw(canvas: Canvas) {
         for (shape in drawShapes) {
             shape?.shape?.draw(canvas, shape.paint)
         }
