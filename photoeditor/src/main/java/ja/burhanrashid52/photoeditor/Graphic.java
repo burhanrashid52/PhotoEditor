@@ -80,7 +80,7 @@ public abstract class Graphic {
                 toggleSelection();
 
                 // Change the in-focus view
-                viewState.setCurrentSelectedView(mRootView);
+                viewState.setGraphic(Graphic.this);
                 if (mOnPhotoEditorListener != null)
                     mOnPhotoEditorListener.onInFocusViewChangeListener(mRootView);
             }
@@ -101,7 +101,7 @@ public abstract class Graphic {
                 toggleSelection();
 
                 // Change the in-focus view
-                viewState.setCurrentSelectedView(mRootView);
+                viewState.setGraphic(Graphic.this);
                 if (mOnPhotoEditorListener != null)
                     mOnPhotoEditorListener.onInFocusViewChangeListener(mRootView);
             }

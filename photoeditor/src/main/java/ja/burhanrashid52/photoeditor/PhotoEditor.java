@@ -289,6 +289,7 @@ public interface PhotoEditor {
     void rotateImage(float rotation);
     void removeInFocusView();
     void bringToFrontInFocusView();
+    void requestChangeTextInFocusView();
     void mirrorInFocusView();
     void unfocusView();
     boolean getMainImageLockValue();

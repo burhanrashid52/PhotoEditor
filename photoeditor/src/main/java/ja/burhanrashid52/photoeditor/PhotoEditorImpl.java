@@ -254,7 +254,7 @@ public class PhotoEditorImpl implements PhotoEditor {
         clearHelperBox();
         mGraphicManager.addView(graphic);
         // Change the in-focus view
-        viewState.setCurrentSelectedView(graphic.getRootView());
+        viewState.setGraphic(graphic);
     }
 
     /**
@@ -420,6 +420,13 @@ public class PhotoEditorImpl implements PhotoEditor {
         inFocusView.bringToFront();
     }
 
+    @Override
+    public void requestChangeTextInFocusView() {
+        final Graphic graphic = viewState.getCurrentGraphic();
+        if (graphic.getViewType() == ViewType.TEXT) {
+            graphic.updateView(graphic.getRootView());
+        }
+    }
 
     public void unfocusView() {
         clearHelperBox();
