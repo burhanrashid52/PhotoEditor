@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.shape.ShapeType
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
 
 class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeListener {
     private var mProperties: Properties? = null
@@ -39,7 +39,7 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
 
         // shape picker
         shapeGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
-            when(checkedId) {
+            when (checkedId) {
                 R.id.lineRadioButton -> {
                     mProperties!!.onShapePicked(ShapeType.LINE)
                 }
@@ -48,6 +48,9 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
                 }
                 R.id.rectRadioButton -> {
                     mProperties!!.onShapePicked(ShapeType.RECTANGLE)
+                }
+                R.id.arrowRadioButton -> {
+                    mProperties!!.onShapePicked(ShapeType.ARROW)
                 }
                 else -> {
                     mProperties!!.onShapePicked(ShapeType.BRUSH)
