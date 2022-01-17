@@ -59,7 +59,6 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
     }
 
     inner class EmojiAdapter : RecyclerView.Adapter<EmojiAdapter.ViewHolder>() {
-        var emojisList = getEmojis(activity)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.row_emoji, parent, false)
@@ -89,7 +88,7 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        var emojisList = getEmojis(photoApp)
+        private var emojisList = getEmojis(photoApp)
 
         /**
          * Provide the list of emoji in form of unicode string
