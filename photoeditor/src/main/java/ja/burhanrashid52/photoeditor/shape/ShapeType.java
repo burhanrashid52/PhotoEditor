@@ -7,5 +7,6 @@ public enum ShapeType {
     BRUSH,
     OVAL,
     RECTANGLE,
-    LINE
+    LINE,
+    ARROW
 }
