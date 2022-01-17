@@ -254,12 +254,16 @@ open class TextStyleBuilder {
      * Enum to maintain current supported style properties used on on [PhotoEditor.addText] and [PhotoEditor.editText]
      */
     enum class TextStyle(val property: String) {
-        SIZE("TextSize"), COLOR("TextColor"), GRAVITY("Gravity"), FONT_FAMILY("FontFamily"), BACKGROUND(
-            "Background"
-        ),
-        TEXT_APPEARANCE("TextAppearance"), TEXT_STYLE("TextStyle"), TEXT_FLAG("TextFlag"), SHADOW("Shadow"), BORDER(
-            "Border"
-        );
+        SIZE("TextSize"),
+        COLOR("TextColor"),
+        GRAVITY("Gravity"),
+        FONT_FAMILY("FontFamily"),
+        BACKGROUND("Background"),
+        TEXT_APPEARANCE("TextAppearance"),
+        TEXT_STYLE("TextStyle"),
+        TEXT_FLAG("TextFlag"),
+        SHADOW("Shadow"),
+        BORDER("Border");
 
     }
 }
