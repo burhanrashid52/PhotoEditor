@@ -61,9 +61,7 @@ class CustomEffect private constructor(builder: Builder) {
             mEffectName = effectName
         }
     }
-
-    // TODO(cheng): Implement Builder Pattern
-    //              https://stackoverflow.com/questions/36140791/how-to-implement-builder-pattern-in-kotlin
+    
     init {
         parameters = builder.parametersMap
     }
