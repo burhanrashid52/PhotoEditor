@@ -12,7 +12,7 @@ class EnumTest {
 
     @Test
     fun testNumberOfShapeTypes() {
-        Assert.assertEquals(ShapeType.values().size.toLong(), 4)
+        Assert.assertEquals(ShapeType.values().size.toLong(), 5)
     }
 
     @Test

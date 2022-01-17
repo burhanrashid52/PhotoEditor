@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +17,7 @@ import androidx.annotation.VisibleForTesting;
 import java.util.Stack;
 
 import ja.burhanrashid52.photoeditor.shape.AbstractShape;
+import ja.burhanrashid52.photoeditor.shape.ArrowShape;
 import ja.burhanrashid52.photoeditor.shape.BrushShape;
 import ja.burhanrashid52.photoeditor.shape.LineShape;
 import ja.burhanrashid52.photoeditor.shape.OvalShape;
@@ -175,6 +175,8 @@ public class DrawingView extends View {
             shape = new RectangleShape();
         } else if (currentShapeBuilder.getShapeType() == ShapeType.LINE) {
             shape = new LineShape();
+        } else if (currentShapeBuilder.getShapeType() == ShapeType.ARROW) {
+            shape = new ArrowShape();
         } else {
             shape = new BrushShape();
         }
