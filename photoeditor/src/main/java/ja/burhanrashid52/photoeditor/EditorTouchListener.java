@@ -138,7 +138,7 @@ class EditorTouchListener implements OnTouchListener {
                 scalingInProgress = false;
 
                 if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onStopViewChangeListener(ViewType.IMAGE);
+                    mOnPhotoEditorListener.onStopViewChangeListener(((ViewType) viewState.getCurrentSelectedView().getTag()));
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
