@@ -13,7 +13,6 @@ import java.util.Stack;
  */
 public class PhotoEditorViewState {
 
-    private Graphic currentGraphic;
     private View currentSelectedView;
     private List<View> addedViews;
     private Stack<View> redoViews;
@@ -30,13 +29,8 @@ public class PhotoEditorViewState {
         return currentSelectedView;
     }
 
-    void setGraphic(Graphic graphic) {
-        this.currentSelectedView = graphic.getRootView();
-        this.currentGraphic = graphic;
-    }
-
-    public Graphic getCurrentGraphic() {
-        return currentGraphic;
+    void setCurrentSelectedView(View currentSelectedView) {
+        this.currentSelectedView = currentSelectedView;
     }
 
     public void clearCurrentSelectedView() {
