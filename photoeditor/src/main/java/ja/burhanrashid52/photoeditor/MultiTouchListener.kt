@@ -69,7 +69,8 @@ internal class MultiTouchListener(
                 view.bringToFront()
                 firePhotoEditorSDKListener(view, true)
             }
-            MotionEvent.ACTION_MOVE ->                 // Only enable dragging on focused stickers.
+            MotionEvent.ACTION_MOVE ->
+                // Only enable dragging on focused stickers.
                 if (view === viewState.currentSelectedView) {
                     val pointerIndexMove = event.findPointerIndex(mActivePointerId)
                     if (pointerIndexMove != -1) {
