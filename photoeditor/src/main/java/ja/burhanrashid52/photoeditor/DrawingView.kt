@@ -130,26 +130,28 @@ class DrawingView @JvmOverloads constructor(
     }
 
     private fun createShape() {
-        val shape: AbstractShape
         var paint = createPaint()
-        when {
-            isErasing -> {
-                shape = BrushShape()
-                paint = createEraserPaint()
-            }
-            currentShapeBuilder?.shapeType === ShapeType.OVAL -> {
-                shape = OvalShape()
-            }
-            currentShapeBuilder?.shapeType === ShapeType.RECTANGLE -> {
-                shape = RectangleShape()
-            }
-            currentShapeBuilder?.shapeType === ShapeType.LINE -> {
-                shape = LineShape()
-            }
-            else -> {
-                shape = BrushShape()
+        var shape: AbstractShape = BrushShape()
+
+        if (isErasing) {
+            paint = createEraserPaint()
+        } else {
+            when(currentShapeBuilder?.shapeType){
+                ShapeType.OVAL -> {
+                    shape = OvalShape()
+                }
+                ShapeType.BRUSH -> {
+                    shape = BrushShape()
+                }
+                ShapeType.RECTANGLE -> {
+                    shape = RectangleShape()
+                }
+                ShapeType.LINE -> {
+                    shape = LineShape()
+                }
             }
         }
+
         currentShape = ShapeAndPaint(shape, paint)
         drawShapes.push(currentShape)
         viewChangeListener?.onStartDrawing()
