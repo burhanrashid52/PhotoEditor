@@ -137,12 +137,8 @@ class EditorTouchListener implements OnTouchListener {
                 // Unlock the view from translating when all fingers are lifted.
                 scalingInProgress = false;
 
-                if (viewState.getCurrentSelectedView() == null) {
-                    return false;
-                }
-
                 if (mOnPhotoEditorListener != null) {
-                    mOnPhotoEditorListener.onStopViewChangeListener(((ViewType) viewState.getCurrentSelectedView().getTag()));
+                    mOnPhotoEditorListener.onStopViewChangeListener(ViewType.IMAGE);
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
