@@ -1,10 +1,14 @@
 package ja.burhanrashid52.photoeditor
 
+import android.content.Context
 import android.view.View
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import android.view.ViewGroup
+import androidx.test.core.app.ApplicationProvider
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.junit.Assert
 import org.junit.Test
 
@@ -15,28 +19,27 @@ import org.junit.Test
  */
 @RunWith(RobolectricTestRunner::class)
 class GraphicManagerTest {
-    protected var mContext = RuntimeEnvironment.systemContext
+
+    private var mContext = ApplicationProvider.getApplicationContext<Context>()
+
     @Test
     fun testGraphicMangerAddViews() {
-        val view = View(mContext)
-        view.id = 1
+        val id = R.layout.view_photo_editor_text
+        val childId = R.id.frmBorder
         val viewGroup: ViewGroup = object : ViewGroup(mContext) {
             override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
         }
         val graphicManager = GraphicManager(viewGroup, PhotoEditorViewState())
-        val graphic: Graphic = object : Graphic(view, graphicManager) {
-            public override fun getViewType(): ViewType {
-                return ViewType.TEXT
-            }
+        val graphic: Graphic = object : Graphic(
+            context = mContext,
+            layoutId = id,
+            viewType = ViewType.TEXT,
+            graphicManager = graphicManager
+        ) {
 
-            public override fun getLayoutId(): Int {
-                return 1
-            }
-
-            public override fun setupView(rootView: View) {}
         }
         graphicManager.addView(graphic)
-        Assert.assertEquals(viewGroup.childCount.toLong(), 1)
-        Assert.assertNotNull(viewGroup.findViewById(1))
+        assertEquals(viewGroup.childCount.toLong(), 1)
+        assertNotNull(viewGroup.findViewById(childId))
     }
 }

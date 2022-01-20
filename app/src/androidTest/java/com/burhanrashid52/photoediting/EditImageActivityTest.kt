@@ -19,10 +19,11 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.filters.LargeTest
 import androidx.test.runner.AndroidJUnit4
+import junit.framework.TestCase.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import org.junit.Assert
+import org.junit.Assert.assertNotEquals
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -48,9 +49,9 @@ class EditImageActivityTest {
     @Test
     fun checkIfBrushIsEnabledWhenClickedOnBrushTool() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        Assert.assertFalse(editImageActivity.mPhotoEditor!!.brushDrawableMode)
+        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode, false)
         Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
-        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.brushDrawableMode)
+        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode ,true)
     }
 
     @Test
@@ -249,8 +250,8 @@ class EditImageActivityTest {
         // Check if the emoji scaled up after pinching.
         emojiFrameParentView =
             mActivityRule.activity.findViewById<View>(R.id.frmBorder).parent as ViewGroup
-        Assert.assertNotEquals(emojiScaleXBeforePinching, emojiFrameParentView.scaleX)
-        Assert.assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.scaleY)
+        assertNotEquals(emojiScaleXBeforePinching, emojiFrameParentView.scaleX)
+        assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.scaleY)
 
         // Remove the emoji from the screen.
         Espresso.onView(ViewMatchers.withId(R.id.imgPhotoEditorClose)).perform(ViewActions.click())
@@ -281,12 +282,12 @@ class EditImageActivityTest {
         // Validate that the text box did not scale by pinching.
         textFrameParentView =
             mActivityRule.activity.findViewById<View>(R.id.frmBorder).parent as ViewGroup
-        Assert.assertEquals(
+        assertEquals(
             textScaleXBeforeScaling.toDouble(),
             textFrameParentView.scaleX.toDouble(),
             0.01
         )
-        Assert.assertEquals(
+        assertEquals(
             textScaleYBeforeScaling.toDouble(),
             textFrameParentView.scaleY.toDouble(),
             0.01
@@ -332,8 +333,8 @@ class EditImageActivityTest {
         // Validate that the text box did not scale by pinching.
         textFrameParentView =
             mActivityRule.activity.findViewById<View>(R.id.frmBorder).parent as ViewGroup
-        Assert.assertNotEquals(textScaleXBeforeScaling, textFrameParentView.scaleX)
-        Assert.assertNotEquals(textScaleYBeforeScaling, textFrameParentView.scaleY)
+        assertNotEquals(textScaleXBeforeScaling, textFrameParentView.scaleX)
+        assertNotEquals(textScaleYBeforeScaling, textFrameParentView.scaleY)
     }
 
     @Test
@@ -379,7 +380,7 @@ class EditImageActivityTest {
         // Assert that the first emoji is not selected (frame background is null)
         Espresso.onView(withIndex(ViewMatchers.withId(R.id.frmBorder), 0))
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
-                Assert.assertNull(
+                assertNull(
                     view.background
                 )
             }

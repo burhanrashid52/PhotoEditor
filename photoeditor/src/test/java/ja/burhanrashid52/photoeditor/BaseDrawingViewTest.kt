@@ -11,7 +11,7 @@ internal open class BaseDrawingViewTest {
         val drawingView = DrawingView(mContext)
         drawingView.enableDrawing(true)
         val shapeBuilder = ShapeBuilder()
-        drawingView.setShapeBuilder(shapeBuilder)
+        drawingView.currentShapeBuilder = shapeBuilder
 
         // Get the created Shape
         return drawingView

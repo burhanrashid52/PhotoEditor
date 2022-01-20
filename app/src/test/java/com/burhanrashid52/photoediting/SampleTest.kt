@@ -1,11 +1,11 @@
 package com.burhanrashid52.photoediting
 
-import org.junit.Assert
+import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
 class SampleTest {
     @Test
     fun testAddition() {
-        Assert.assertEquals(6, (3 + 3).toLong())
+        assertEquals(6, (3 + 3).toLong())
     }
 }
