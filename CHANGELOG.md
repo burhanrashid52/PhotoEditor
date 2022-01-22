@@ -82,3 +82,6 @@ new TextStyleBuilder()
 ### 1.5.1
 - New : #379 Should disallow drawing on left or right of the image using `photoEditor.setClipSourceImage(true)`
 - New/Break : #383 Get a callback when the image source is touched `onTouchSourceImage(MotionEvent event);`
+
+### 2.0.0
+- New : Migrated the app and library to Kotlin

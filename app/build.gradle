@@ -7,8 +7,8 @@ android {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 14
         targetSdkVersion 31
-        versionCode 6
-        versionName "1.5.1"
+        versionCode 7
+        versionName "2.0.0"
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,7 +39,7 @@ dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to faciliate testing, and for the integration tests
     //                     to work on locally modified code.
-    //implementation 'com.burhanrashid52:photoeditor:1.5.1'
+    //implementation 'com.burhanrashid52:photoeditor:2.0.0'
     implementation project(':photoeditor')
     implementation 'androidx.cardview:cardview:1.0.0'
 
