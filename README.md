@@ -39,11 +39,6 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - Increase efficiency
 - Easy image editing
 
-
-## AndroidX
-PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to v.0.4.0. Any fix in PR are Welcome :)
-
-
 ## Getting Started
 To start with this, we need to simply add the dependencies from `mavenCentral()` in the gradle file of our app module like this
 ```groovy
@@ -51,6 +46,12 @@ implementation 'com.burhanrashid52:photoeditor:2.0.0'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
+## Migrations
+### AndroidX
+PhotoEditor [v.1.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.0.0) is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to [v.0.4.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.0.4.0). Any fix in PR are Welcome :)
+
+### Kotlin
+PhotoEditor [v.2.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.2.0.0) is fully migrated to Kotlin. You can use [v.1.5.1](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.5.1) for Java version. There is no breaking API changes in these two version.
 
 ## Setting up the View
 First we need to add `PhotoEditorView` in our xml layout
