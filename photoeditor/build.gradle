@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 
 android {
 
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 6
         versionName "2.0.0-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
