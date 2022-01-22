@@ -9,6 +9,7 @@ android {
         targetSdkVersion 31
         versionCode 6
         versionName "1.5.1"
+        multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // https://stackoverflow.com/a/69043734
