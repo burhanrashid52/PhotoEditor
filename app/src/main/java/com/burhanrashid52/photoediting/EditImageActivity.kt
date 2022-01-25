@@ -16,6 +16,7 @@ import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import com.burhanrashid52.photoediting.base.BaseActivity
@@ -53,6 +54,7 @@ import androidx.annotation.RequiresPermission
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
     PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener,
     OnItemSelected, FilterListener {
+
     var mPhotoEditor: PhotoEditor? = null
     private var mPhotoEditorView: PhotoEditorView? = null
     private var mPropertiesBSFragment: PropertiesBSFragment? = null
@@ -73,6 +75,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     @VisibleForTesting
     var mSaveImageUri: Uri? = null
     private var mSaveFileHelper: FileSaveHelper? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeFullScreen()
@@ -100,11 +103,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
-        mPhotoEditor = PhotoEditor.Builder(this, mPhotoEditorView)
-            .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
-            //.setDefaultTextTypeface(mTextRobotoTf)
-            //.setDefaultEmojiTypeface(mEmojiTypeFace)
-            .build() // build photo editor sdk
+        mPhotoEditor = mPhotoEditorView?.run {
+            PhotoEditor.Builder(this@EditImageActivity, this)
+                .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
+                //.setDefaultTextTypeface(mTextRobotoTf)
+                //.setDefaultEmojiTypeface(mEmojiTypeFace)
+                .build() // build photo editor sdk
+        }
         mPhotoEditor?.setOnPhotoEditorListener(this)
 
         //Set Image Dynamically
@@ -164,35 +169,37 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         imgShare.setOnClickListener(this)
     }
 
-    override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
-        val textEditorDialogFragment = TextEditorDialogFragment.show(this, text, colorCode)
+    override fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int) {
+        val textEditorDialogFragment = TextEditorDialogFragment.show(this, text.toString(), colorCode)
         textEditorDialogFragment.setOnTextEditorListener (object : TextEditorDialogFragment.TextEditorListener {
             override fun onDone(inputText: String?, colorCode: Int) {
                 val styleBuilder = TextStyleBuilder()
                 styleBuilder.withTextColor(colorCode)
-                mPhotoEditor?.editText(rootView, inputText, styleBuilder)
+                if (rootView != null) {
+                    mPhotoEditor?.editText(rootView, inputText, styleBuilder)
+                }
                 mTxtCurrentTool?.setText(R.string.label_text)
             }
         })
     }
 
-    override fun onAddViewListener(viewType: ViewType, numberOfAddedViews: Int) {
+    override fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
         Log.d(TAG, "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
     }
 
-    override fun onRemoveViewListener(viewType: ViewType, numberOfAddedViews: Int) {
+    override fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
         Log.d(TAG, "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
     }
 
-    override fun onStartViewChangeListener(viewType: ViewType) {
+    override fun onStartViewChangeListener(viewType: ViewType?) {
         Log.d(TAG, "onStartViewChangeListener() called with: viewType = [$viewType]")
     }
 
-    override fun onStopViewChangeListener(viewType: ViewType) {
+    override fun onStopViewChangeListener(viewType: ViewType?) {
         Log.d(TAG, "onStopViewChangeListener() called with: viewType = [$viewType]")
     }
 
-    override fun onTouchSourceImage(event: MotionEvent) {
+    override fun onTouchSourceImage(event: MotionEvent?) {
         Log.d(TAG, "onTouchView() called with: event = [$event]")
     }
 

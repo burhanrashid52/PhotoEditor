@@ -8,9 +8,11 @@ import android.view.MotionEvent
 import android.view.View
 import org.mockito.Mockito
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
-import junit.framework.Assert
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
 import org.junit.Test
 import org.mockito.ArgumentMatchers
+import java.lang.AssertionError
 
 @RunWith(RobolectricTestRunner::class)
 internal class DrawingViewApiTest : BaseDrawingViewTest() {
@@ -18,14 +20,16 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
     fun testDefaultPaintAttributes() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        val drawingPaint = drawingView.currentShape.paint
-        Assert.assertEquals(drawingPaint.color, ShapeBuilder.DEFAULT_SHAPE_COLOR)
-        Assert.assertEquals(drawingPaint.style, Paint.Style.STROKE)
-        Assert.assertEquals(drawingPaint.strokeJoin, Paint.Join.ROUND)
-        Assert.assertEquals(drawingPaint.strokeCap, Paint.Cap.ROUND)
-        Assert.assertEquals(drawingPaint.strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
-        Assert.assertEquals(drawingPaint.alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
-        TestCase.assertTrue(drawingPaint.xfermode is PorterDuffXfermode)
+        drawingView.currentShape?.paint?.apply {
+            assertEquals(color, ShapeBuilder.DEFAULT_SHAPE_COLOR)
+            assertEquals(style, Paint.Style.STROKE)
+            assertEquals(strokeJoin, Paint.Join.ROUND)
+            assertEquals(strokeCap, Paint.Cap.ROUND)
+            assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+            TestCase.assertTrue(xfermode is PorterDuffXfermode)
+        } ?: AssertionError("The paint is null")
+
 
         // Spy is not working properly
         /*Paint spyPaint = Mockito.spy(drawingPaint);
@@ -36,23 +40,24 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
     fun testPaintAttributesAfterDrawingModeIsEnabled() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        val drawingPaint = drawingView.currentShape.paint
-        Assert.assertEquals(drawingPaint.style, Paint.Style.STROKE)
-        Assert.assertEquals(drawingPaint.strokeJoin, Paint.Join.ROUND)
-        Assert.assertEquals(drawingPaint.strokeCap, Paint.Cap.ROUND)
-        Assert.assertEquals(drawingPaint.strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
-        Assert.assertEquals(drawingPaint.alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
-        TestCase.assertTrue(drawingPaint.xfermode is PorterDuffXfermode)
-        val spyPaint = Mockito.spy(drawingPaint)
-        Mockito.verify(spyPaint, Mockito.times(0)).color =
-            ShapeBuilder.DEFAULT_SHAPE_COLOR
+        drawingView.currentShape?.paint?.apply {
+            assertEquals(style, Paint.Style.STROKE)
+            assertEquals(strokeJoin, Paint.Join.ROUND)
+            assertEquals(strokeCap, Paint.Cap.ROUND)
+            assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+            TestCase.assertTrue(xfermode is PorterDuffXfermode)
+            val spyPaint = Mockito.spy(this)
+            Mockito.verify(spyPaint, Mockito.times(0)).color =
+                ShapeBuilder.DEFAULT_SHAPE_COLOR
+        } ?: AssertionError("The paint is null")
     }
 
     @Test
     fun testByDefaultDrawingModeIsDisabled() {
         val drawingView = DrawingView(mContext)
-        Assert.assertFalse(drawingView.isDrawingEnabled)
-        Assert.assertEquals(drawingView.visibility, View.GONE)
+        assertFalse(drawingView.isDrawingEnabled)
+        assertEquals(drawingView.visibility, View.GONE)
     }
 
     @Test
@@ -60,36 +65,39 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
         val drawingView = setupDrawingView()
         drawingView.enableDrawing(true)
         TestCase.assertTrue(drawingView.isDrawingEnabled)
-        Assert.assertEquals(drawingView.visibility, View.VISIBLE)
+        assertEquals(drawingView.visibility, View.VISIBLE)
     }
 
     @Test
     fun testWhenDrawingModeIsSetDisabled() {
         val drawingView = setupDrawingView()
         drawingView.enableDrawing(false)
-        Assert.assertFalse(drawingView.isDrawingEnabled)
+        assertFalse(drawingView.isDrawingEnabled)
     }
 
     @Test
     fun testDefaultShapeSize() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        val drawingPaint = drawingView.currentShape.paint
-        Assert.assertEquals(
-            drawingView.currentShapeBuilder.shapeSize,
-            ShapeBuilder.DEFAULT_SHAPE_SIZE
-        )
-        Assert.assertEquals(drawingPaint.strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
+
+
+        drawingView.currentShape?.paint?.apply {
+            assertEquals(
+                drawingView.currentShapeBuilder?.shapeSize,
+                ShapeBuilder.DEFAULT_SHAPE_SIZE
+            )
+            assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
+        } ?: AssertionError("The paint is null")
     }
 
     @Test
     fun testCorrectShapeSizeIsSet() {
         val drawingView = setupDrawingView()
         val shapeSize = 75f
-        drawingView.currentShapeBuilder.withShapeSize(shapeSize)
+        drawingView.currentShapeBuilder?.withShapeSize(shapeSize)
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        Assert.assertEquals(drawingView.currentShapeBuilder.shapeSize, shapeSize)
-        Assert.assertEquals(drawingView.currentShape.paint.strokeWidth, shapeSize)
+        assertEquals(drawingView.currentShapeBuilder?.shapeSize, shapeSize)
+        assertEquals(drawingView.currentShape?.paint?.strokeWidth, shapeSize)
         TestCase.assertTrue(drawingView.isDrawingEnabled)
     }
 
@@ -97,22 +105,24 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
     fun testDefaultOpacityValue() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        val drawingPaint = drawingView.currentShape.paint
-        Assert.assertEquals(
-            drawingView.currentShapeBuilder.shapeOpacity,
-            ShapeBuilder.DEFAULT_SHAPE_OPACITY
-        )
-        Assert.assertEquals(drawingPaint.alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+
+        drawingView.currentShape?.paint?.apply {
+            assertEquals(
+                drawingView.currentShapeBuilder?.shapeOpacity,
+                ShapeBuilder.DEFAULT_SHAPE_OPACITY
+            )
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+        } ?: AssertionError("The paint is null")
     }
 
     @Test
     fun testCorrectOpacityValueIsSet() {
         val drawingView = setupDrawingView()
         val shapeOpacity = 240
-        drawingView.currentShapeBuilder.withShapeOpacity(shapeOpacity)
+        drawingView.currentShapeBuilder?.withShapeOpacity(shapeOpacity)
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        Assert.assertEquals(drawingView.currentShapeBuilder.shapeOpacity, shapeOpacity)
-        Assert.assertEquals(drawingView.currentShape.paint.alpha, shapeOpacity)
+        assertEquals(drawingView.currentShapeBuilder?.shapeOpacity, shapeOpacity)
+        assertEquals(drawingView.currentShape?.paint?.alpha, shapeOpacity)
         TestCase.assertTrue(drawingView.isDrawingEnabled)
     }
 
@@ -120,12 +130,14 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
     fun testDefaultBrushColorValue() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        val drawingPaint = drawingView.currentShape.paint
-        Assert.assertEquals(
-            drawingView.currentShapeBuilder.shapeColor,
-            ShapeBuilder.DEFAULT_SHAPE_COLOR
-        )
-        Assert.assertEquals(drawingPaint.color, ShapeBuilder.DEFAULT_SHAPE_COLOR)
+        drawingView.currentShape?.paint?.apply {
+            assertEquals(
+                drawingView.currentShapeBuilder?.shapeColor,
+                ShapeBuilder.DEFAULT_SHAPE_COLOR
+            )
+            assertEquals(color, ShapeBuilder.DEFAULT_SHAPE_COLOR)
+        } ?: AssertionError("The paint is null")
+
     }
 
     @Test
@@ -133,10 +145,10 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
         val shapeColor = Color.RED
-        drawingView.currentShapeBuilder.withShapeColor(shapeColor)
+        drawingView.currentShapeBuilder?.withShapeColor(shapeColor)
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        Assert.assertEquals(drawingView.currentShapeBuilder.shapeColor, shapeColor)
-        Assert.assertEquals(drawingView.currentShape.paint.color, shapeColor)
+        assertEquals(drawingView.currentShapeBuilder?.shapeColor, shapeColor)
+        assertEquals(drawingView.currentShape?.paint?.color, shapeColor)
         TestCase.assertTrue(drawingView.isDrawingEnabled)
     }
 

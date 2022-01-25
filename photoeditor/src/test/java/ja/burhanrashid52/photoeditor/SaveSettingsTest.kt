@@ -2,7 +2,8 @@ package ja.burhanrashid52.photoeditor
 
 import junit.framework.TestCase
 import android.graphics.Bitmap.CompressFormat
-import junit.framework.Assert
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
 import org.junit.Test
 
 class SaveSettingsTest {
@@ -18,7 +19,7 @@ class SaveSettingsTest {
         val saveSettings = SaveSettings.Builder()
             .setTransparencyEnabled(false)
             .build()
-        Assert.assertFalse(saveSettings.isTransparencyEnabled)
+        assertFalse(saveSettings.isTransparencyEnabled)
         TestCase.assertTrue(saveSettings.isClearViewsEnabled)
     }
 
@@ -27,7 +28,7 @@ class SaveSettingsTest {
         val saveSettings = SaveSettings.Builder()
             .setClearViewsEnabled(false)
             .build()
-        Assert.assertFalse(saveSettings.isClearViewsEnabled)
+        assertFalse(saveSettings.isClearViewsEnabled)
         TestCase.assertTrue(saveSettings.isTransparencyEnabled)
     }
 
@@ -37,16 +38,16 @@ class SaveSettingsTest {
             .setClearViewsEnabled(false)
             .setTransparencyEnabled(false)
             .build()
-        Assert.assertFalse(saveSettings.isClearViewsEnabled)
-        Assert.assertFalse(saveSettings.isTransparencyEnabled)
+        assertFalse(saveSettings.isClearViewsEnabled)
+        assertFalse(saveSettings.isTransparencyEnabled)
     }
 
     @Test
     fun testDefaultCompressAndQualitySaveSettings() {
         val saveSettings = SaveSettings.Builder()
             .build()
-        Assert.assertEquals(saveSettings.compressFormat, CompressFormat.PNG)
-        Assert.assertEquals(saveSettings.compressQuality, 100)
+        assertEquals(saveSettings.compressFormat, CompressFormat.PNG)
+        assertEquals(saveSettings.compressQuality, 100)
     }
 
     @Test
@@ -57,7 +58,7 @@ class SaveSettingsTest {
             .setCompressFormat(compressFormat)
             .setCompressQuality(compressQuality)
             .build()
-        Assert.assertEquals(saveSettings.compressFormat, compressFormat)
-        Assert.assertEquals(saveSettings.compressQuality, compressQuality)
+        assertEquals(saveSettings.compressFormat, compressFormat)
+        assertEquals(saveSettings.compressQuality, compressQuality)
     }
 }

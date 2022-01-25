@@ -4,8 +4,8 @@ import android.view.MotionEvent
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito
-import junit.framework.Assert
 import junit.framework.TestCase
+import junit.framework.TestCase.assertFalse
 import org.junit.Test
 
 @RunWith(RobolectricTestRunner::class)
@@ -32,7 +32,7 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         val drawingPath = drawingView.drawingPath
         val drawnPath = drawingPath.first
         val redoPaths = drawingPath.second
-        Assert.assertFalse(drawnPath.empty())
+        assertFalse(drawnPath.empty())
         TestCase.assertTrue(redoPaths.empty())
     }
 
@@ -91,10 +91,11 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         drawingView.dispatchTouchEvent(touchEventMove)
         val touchEventUp = MotionEvent.obtain(200, 300, MotionEvent.ACTION_UP, 150.0f, 100.0f, 0)
         drawingView.dispatchTouchEvent(touchEventUp)
-        val drawingPath = drawingView.drawingPath
+
+        /* val drawingPath = drawingView.drawingPath
         val drawnPath = drawingPath.first
 
-        /*LinePath linePath = drawnPath.pop();
+        LinePath linePath = drawnPath.pop();
         ShadowPath shadowPath = shadowOf(linePath.getDrawPath());
 
         ShadowPath.Point pointOne = shadowPath.getPoints().get(0);
@@ -106,6 +107,6 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         assertEquals(pointTwo.getType(), ShadowPath.Point.Type.LINE_TO);
         assertEquals(pointTwo.getX(), touchMoveX);
         assertEquals(pointTwo.getY(), touchMoveY);
-*/
+        */
     }
 }
