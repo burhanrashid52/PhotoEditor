@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
+            android:layout_margin="@dimen/border_margin"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter" />
     </ja.burhanrashid52.photoeditor.BorderView>
