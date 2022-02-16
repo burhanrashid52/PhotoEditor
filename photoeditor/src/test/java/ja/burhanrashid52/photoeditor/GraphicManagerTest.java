@@ -28,7 +28,7 @@ public class GraphicManagerTest {
         View view = new View(mContext);
         view.setId(1);
 
-        ViewGroup viewGroup = new ViewGroup(mContext) {
+        RelativeLayout viewGroup = new RelativeLayout(mContext) {
             @Override
             protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
