@@ -1,15 +1,14 @@
 package ja.burhanrashid52.photoeditor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
+import android.view.Gravity
 import android.widget.FrameLayout
+import android.widget.ImageView
 
-/**
- * The border view that wraps the image/text inside.
- * When the user resizes the sticker/text, the border view should adjust margin to keep ratio with sticker handle views.
- */
-class BorderView(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet),
-    ZoomListener {
+class BorderView(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet), ZoomListener {
 
     fun adjustSize(scale: Float) {
         val margin = (resources.getDimensionPixelSize(R.dimen.border_margin) * scale).toInt()
