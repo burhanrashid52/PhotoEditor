@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
-import kotlin.math.max
 
 /**
  * The handle view at the corner of image/text when adding a new sticker/text
@@ -20,8 +19,7 @@ class HandleView(context: Context, attributeSet: AttributeSet) : ImageView(conte
 
     fun adjustSize(scale: Float, gravity: Int = Gravity.TOP or Gravity.START) {
         val size = (resources.getDimensionPixelSize(R.dimen.handle_size) * scale).toInt()
-        val borderMargin = resources.getDimensionPixelSize(R.dimen.border_margin)
-        val margin = max(borderMargin - size / 2, 0)
+        val margin = (resources.getDimensionPixelSize(R.dimen.handle_margin) * scale).toInt()
         val params = FrameLayout.LayoutParams(size, size)
         params.bottomMargin = margin
         params.topMargin = margin
