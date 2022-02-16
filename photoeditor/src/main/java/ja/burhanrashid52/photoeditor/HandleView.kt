@@ -3,10 +3,11 @@ package ja.burhanrashid52.photoeditor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
+import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
 import kotlin.math.max
-import kotlin.math.min
 
 /**
  * The handle view at the corner of image/text when adding a new sticker/text
@@ -17,22 +18,16 @@ import kotlin.math.min
 class HandleView(context: Context, attributeSet: AttributeSet) : ImageView(context, attributeSet),
     ZoomListener {
 
-    fun adjustSize(scale: Float) {
-        val backgroundScale = 1f / ZoomManager.scale
-        val size =
-            (resources.getDimensionPixelSize(R.dimen.handle_size) * scale * backgroundScale).toInt()
+    fun adjustSize(scale: Float, gravity: Int = Gravity.TOP or Gravity.START) {
+        val size = (resources.getDimensionPixelSize(R.dimen.handle_size) * scale).toInt()
         val borderMargin = resources.getDimensionPixelSize(R.dimen.border_margin)
         val margin = max(borderMargin - size / 2, 0)
         val params = FrameLayout.LayoutParams(size, size)
-
         params.bottomMargin = margin
         params.topMargin = margin
         params.leftMargin = margin
         params.rightMargin = margin
-        if (layoutParams is FrameLayout.LayoutParams) {
-            params.gravity = (layoutParams as FrameLayout.LayoutParams).gravity
-        }
-
+        params.gravity = gravity
         layoutParams = params
     }
 
@@ -55,6 +50,7 @@ class HandleView(context: Context, attributeSet: AttributeSet) : ImageView(conte
     }
 
     private fun adjustScale() {
-        adjustSize(1f)
+        scaleX = 1f / ZoomManager.scale
+        scaleY = 1f / ZoomManager.scale
     }
 }

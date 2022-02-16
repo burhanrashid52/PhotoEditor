@@ -182,16 +182,16 @@ public class MultiTouchListener implements OnTouchListener {
         view.setScaleY(scale);
 
         if (handleTopLeft != null) {
-            handleTopLeft.adjustSize(1f / scale);
+            handleTopLeft.adjustSize(1f / scale, Gravity.TOP | Gravity.START);
         }
         if (handleTopRight != null) {
-            handleTopRight.adjustSize(1f / scale);
+            handleTopRight.adjustSize(1f / scale, Gravity.TOP | Gravity.END);
         }
         if (handleBottomLeft != null) {
-            handleBottomLeft.adjustSize(1f / scale);
+            handleBottomLeft.adjustSize(1f / scale, Gravity.BOTTOM | Gravity.START);
         }
         if (handleBottomRight != null) {
-            handleBottomRight.adjustSize(1f / scale);
+            handleBottomRight.adjustSize(1f / scale, Gravity.BOTTOM | Gravity.END);
         }
 
         // Rotate the actual outer view.
