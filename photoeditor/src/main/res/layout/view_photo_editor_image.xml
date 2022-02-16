@@ -9,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="@dimen/border_padding"
         android:layout_margin="@dimen/border_margin"
         android:background="@drawable/rounded_border_tv"
         tools:layout_height="200dp"
