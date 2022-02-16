@@ -12,12 +12,12 @@ import androidx.annotation.Nullable;
  * @author <https://github.com/burhanrashid52>
  */
 class GraphicManager {
-    private final RelativeLayout mCanvasView;
+    private final ViewGroup mViewGroup;
     private final PhotoEditorViewState mViewState;
     private OnPhotoEditorListener mOnPhotoEditorListener;
 
-    public GraphicManager(RelativeLayout canvasView, PhotoEditorViewState viewState) {
-        mCanvasView = canvasView;
+    public GraphicManager(ViewGroup viewGroup, PhotoEditorViewState viewState) {
+        mViewGroup = viewGroup;
         mViewState = viewState;
     }
 
@@ -25,11 +25,8 @@ class GraphicManager {
         View view = graphic.getRootView();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        // NOTE(cheng): Commenting this out since this makes it impossible to resize/move the graphic
-        //              after it has been added.
-        // params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        mCanvasView.addView(view, params);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        mViewGroup.addView(view, params);
 
         mViewState.addAddedView(view);
         if (mOnPhotoEditorListener != null)
@@ -39,7 +36,7 @@ class GraphicManager {
     public void removeView(Graphic graphic) {
         View view = graphic.getRootView();
         if (mViewState.containsAddedView(view)) {
-            mCanvasView.removeView(view);
+            mViewGroup.removeView(view);
             mViewState.removeAddedView(view);
             mViewState.pushRedoView(view);
             if (mOnPhotoEditorListener != null) {
@@ -52,7 +49,7 @@ class GraphicManager {
     }
 
     public void updateView(View view) {
-        mCanvasView.updateViewLayout(view, view.getLayoutParams());
+        mViewGroup.updateViewLayout(view, view.getLayoutParams());
         mViewState.replaceAddedView(view);
     }
 
@@ -75,7 +72,7 @@ class GraphicManager {
                 return drawingView.undo();
             } else {
                 mViewState.removeAddedView(mViewState.getAddedViewsCount() - 1);
-                mCanvasView.removeView(removeView);
+                mViewGroup.removeView(removeView);
                 mViewState.pushRedoView(removeView);
             }
             if (mOnPhotoEditorListener != null) {
@@ -101,7 +98,7 @@ class GraphicManager {
                 return drawingView.redo();
             } else {
                 mViewState.popRedoView();
-                mCanvasView.addView(redoView);
+                mViewGroup.addView(redoView);
                 mViewState.addAddedView(redoView);
             }
             Object viewTag = redoView.getTag();

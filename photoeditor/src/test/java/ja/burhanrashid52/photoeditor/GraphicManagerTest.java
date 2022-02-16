@@ -3,6 +3,7 @@ package ja.burhanrashid52.photoeditor;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
