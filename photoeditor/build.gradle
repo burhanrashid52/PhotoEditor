@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
 
@@ -41,7 +40,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.test:core-ktx:1.4.0'
 
@@ -61,9 +60,6 @@ ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'
     PUBLISH_VERSION = '2.0.0'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
-}
-repositories {
-    mavenCentral()
 }
 
 //apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"

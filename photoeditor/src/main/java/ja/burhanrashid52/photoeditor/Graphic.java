@@ -62,8 +62,14 @@ public abstract class Graphic {
     }
 
     protected void toggleSelection() {
-        if (mRootView instanceof GraphicView) {
-            ((GraphicView) mRootView).showHandleViews();
+        View frmBorder = mRootView.findViewById(R.id.frmBorder);
+        View imgClose = null;
+        if (frmBorder != null) {
+            frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
+            frmBorder.setTag(true);
+        }
+        if (imgClose != null) {
+            imgClose.setVisibility(View.VISIBLE);
         }
     }
 
