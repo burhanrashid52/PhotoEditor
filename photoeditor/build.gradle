@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
 
-    compileSdkVersion 31
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 14
@@ -61,9 +60,6 @@ ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'
     PUBLISH_VERSION = '2.0.0'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
-}
-repositories {
-    mavenCentral()
 }
 
 //apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"

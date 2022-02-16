@@ -3,7 +3,6 @@ package ja.burhanrashid52.photoeditor;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,7 @@ public class GraphicManagerTest {
         View view = new View(mContext);
         view.setId(1);
 
-        RelativeLayout viewGroup = new RelativeLayout(mContext) {
+        ViewGroup viewGroup = new ViewGroup(mContext) {
             @Override
             protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
