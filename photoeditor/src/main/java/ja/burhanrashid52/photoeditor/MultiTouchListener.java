@@ -317,11 +317,6 @@ public class MultiTouchListener implements OnTouchListener {
                                     view.getX(),
                                     view.getY()
                             );
-
-                            firePhotoEditorSDKListener(
-                                    view,
-                                    PhotoEditorSDKListenerMode.MOVE_VIEW_CHANGE
-                            );
                         }
                     }
                 }
