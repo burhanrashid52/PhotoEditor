@@ -1,60 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ja.burhanrashid52.photoeditor.GraphicView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    tools:background="#80000000">
+    tools:background="#000000">
 
-    <ja.burhanrashid52.photoeditor.BorderView
+    <FrameLayout
         android:id="@+id/frmBorder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/border_margin"
-        android:background="@drawable/rounded_border_tv"
-        android:padding="20dp">
+        android:layout_margin="60dp"
+        android:background="@drawable/rounded_border_tv">
 
         <TextView
             android:id="@+id/tvPhotoEditorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="12dp"
             android:textColor="#000000"
             android:textSize="18sp"
+            android:padding="5dp"
             tools:text="Burhanuddin"
             tools:textColor="@android:color/black" />
-    </ja.burhanrashid52.photoeditor.BorderView>
+    </FrameLayout>
 
-    <ja.burhanrashid52.photoeditor.HandleView
+    <ImageView
         android:id="@+id/imgHandleTopLeft"
-        android:layout_width="@dimen/handle_size"
-        android:layout_height="@dimen/handle_size"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="top|start"
         android:src="@drawable/ic_zoom_reverse" />
-
-    <ja.burhanrashid52.photoeditor.HandleView
+    <ImageView
         android:id="@+id/imgHandleTopRight"
-        android:layout_width="@dimen/handle_size"
-        android:layout_height="@dimen/handle_size"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="top|end"
-        android:adjustViewBounds="true"
         android:src="@drawable/ic_zoom_forward" />
-
-    <ja.burhanrashid52.photoeditor.HandleView
+    <ImageView
         android:id="@+id/imgHandleBottomRight"
-        android:layout_width="@dimen/handle_size"
-        android:layout_height="@dimen/handle_size"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom|end"
-        android:adjustViewBounds="true"
-        android:src="@drawable/ic_zoom_reverse" />
-
-    <ja.burhanrashid52.photoeditor.HandleView
+        android:src="@drawable/ic_zoom_reverse"
+        />
+    <ImageView
         android:id="@+id/imgHandleBottomLeft"
-        android:layout_width="@dimen/handle_size"
-        android:layout_height="@dimen/handle_size"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom|start"
-        android:adjustViewBounds="true"
         android:src="@drawable/ic_zoom_forward" />
-
-</ja.burhanrashid52.photoeditor.GraphicView>
+</FrameLayout>

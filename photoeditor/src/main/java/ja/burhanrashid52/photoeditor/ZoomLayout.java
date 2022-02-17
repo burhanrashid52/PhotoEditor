@@ -86,7 +86,6 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                             startX = motionEvent.getX() - prevDx;
                             startY = motionEvent.getY() - prevDy;
                         }
-                        ZoomManager.INSTANCE.notifyZoomStart();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (mode == Mode.DRAG) {
@@ -175,7 +174,6 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         child().setPivotY(0f);
         child().setTranslationX(dx);
         child().setTranslationY(dy);
-        ZoomManager.INSTANCE.notifyZoomChange(scale);
     }
 
     public static float getMinZoom(){
