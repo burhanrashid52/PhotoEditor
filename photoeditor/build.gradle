@@ -8,6 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 31
+        versionCode 7
+        versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // https://stackoverflow.com/a/69043734
@@ -62,8 +64,8 @@ ext {
     PUBLISH_VERSION = '2.0.0'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
 }
+
+//apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"
 repositories {
     mavenCentral()
 }
-
-//apply from: "${rootProject.projectDir}/scripts/publish-mavencentral.gradle"

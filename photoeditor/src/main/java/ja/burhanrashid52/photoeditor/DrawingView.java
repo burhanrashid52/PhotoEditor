@@ -41,7 +41,7 @@ public class DrawingView extends View {
     private final Stack<ShapeAndPaint> drawShapes = new Stack<>();
     private final Stack<ShapeAndPaint> redoShapes = new Stack<>();
     private ShapeAndPaint currentShape;
-    private ShapeBuilder currentShapeBuilder;
+    protected ShapeBuilder currentShapeBuilder;
     private boolean isEnabled;
     private BrushViewChangeListener viewChangeListener;
 
