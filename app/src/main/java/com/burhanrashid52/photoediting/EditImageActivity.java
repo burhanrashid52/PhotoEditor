@@ -11,7 +11,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -88,8 +87,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     private FileSaveHelper mSaveFileHelper;
 
-    private GraphicHelper mGraphicHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,11 +134,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mPhotoEditorView.getSource().setImageResource(R.drawable.paris_tower);
 
         mSaveFileHelper = new FileSaveHelper(this);
-
-        mGraphicHelper = new GraphicHelper(
-                mPhotoEditor,
-                this
-        );
     }
 
     private void handleIntentImage(ImageView source) {
@@ -419,12 +411,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
     @Override
     public void onStickerClick(Bitmap bitmap) {
-        View view = mPhotoEditor.addImage(bitmap);
+        mPhotoEditor.addImage(bitmap);
         mTxtCurrentTool.setText(R.string.label_sticker);
-
-        mGraphicHelper.addTouchHandleCallbacks(view);
-
-        Helper.INSTANCE.realignNewGraphicToCanvas(mPhotoEditorView, view);
     }
 
     @Override
@@ -529,6 +517,4 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             super.onBackPressed();
         }
     }
-
-
 }
