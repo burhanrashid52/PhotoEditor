@@ -5,6 +5,7 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Assert
 import org.junit.Test
 
+// NOTE(cheng): This test won't run because the Gradle version got upgraded. Fix it.
 class EnumTest {
     @Test
     fun testNumberOfViewTypes() {
