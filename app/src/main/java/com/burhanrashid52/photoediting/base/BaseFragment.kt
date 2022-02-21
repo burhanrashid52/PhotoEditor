@@ -11,14 +11,4 @@ import androidx.fragment.app.Fragment
  * @version 0.1.2
  * @since 5/25/2018
  */
-abstract class BaseFragment : Fragment() {
-    protected abstract val layoutId: Int
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        require(layoutId != 0) { "Invalid layout id" }
-        return inflater.inflate(layoutId, container, false)
-    }
-}
+abstract class BaseFragment(layoutId: Int) : Fragment(layoutId)

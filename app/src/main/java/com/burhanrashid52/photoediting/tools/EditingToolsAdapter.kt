@@ -1,15 +1,12 @@
 package com.burhanrashid52.photoediting.tools
 
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
-import androidx.recyclerview.widget.RecyclerView
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.ToolModel
-import com.burhanrashid52.photoediting.tools.ToolType
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import com.burhanrashid52.photoediting.R
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.burhanrashid52.photoediting.R
 import java.util.ArrayList
 
 /**
@@ -48,13 +45,11 @@ class EditingToolsAdapter(private val mOnItemSelected: OnItemSelected) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imgToolIcon: ImageView
-        var txtTool: TextView
+        val imgToolIcon: ImageView = itemView.findViewById(R.id.imgToolIcon)
+        val txtTool: TextView = itemView.findViewById(R.id.txtTool)
 
         init {
-            imgToolIcon = itemView.findViewById(R.id.imgToolIcon)
-            txtTool = itemView.findViewById(R.id.txtTool)
-            itemView.setOnClickListener { v: View? ->
+            itemView.setOnClickListener { _: View? ->
                 mOnItemSelected.onToolSelected(
                     mToolList[layoutPosition].mToolType
                 )

@@ -1,20 +1,18 @@
 package com.burhanrashid52.photoediting.filters
 
 import android.content.Context
-import ja.burhanrashid52.photoeditor.PhotoFilter
-import androidx.recyclerview.widget.RecyclerView
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.burhanrashid52.photoediting.R
 import android.graphics.Bitmap
-import android.widget.TextView
-import android.content.res.AssetManager
 import android.graphics.BitmapFactory
 import android.util.Pair
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.burhanrashid52.photoediting.R
+import ja.burhanrashid52.photoeditor.PhotoFilter
 import java.io.IOException
-import java.io.InputStream
 import java.util.ArrayList
 
 /**
@@ -43,29 +41,26 @@ class FilterViewAdapter(private val mFilterListener: FilterListener) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var mImageFilterView: ImageView
-        var mTxtFilterName: TextView
+        val mImageFilterView: ImageView = itemView.findViewById(R.id.imgFilterView)
+        val mTxtFilterName: TextView = itemView.findViewById(R.id.txtFilterName)
 
         init {
-            mImageFilterView = itemView.findViewById(R.id.imgFilterView)
-            mTxtFilterName = itemView.findViewById(R.id.txtFilterName)
-            itemView.setOnClickListener(View.OnClickListener {
+            itemView.setOnClickListener{
                 mFilterListener.onFilterSelected(
                     mPairList[layoutPosition].second
                 )
-            })
+            }
         }
     }
 
     private fun getBitmapFromAsset(context: Context, strName: String): Bitmap? {
         val assetManager = context.assets
-        var istr: InputStream? = null
-        try {
-            istr = assetManager.open(strName)
-            return BitmapFactory.decodeStream(istr)
+        return try {
+            val istr = assetManager.open(strName)
+            BitmapFactory.decodeStream(istr)
         } catch (e: IOException) {
             e.printStackTrace()
-            return null
+            null
         }
     }
 

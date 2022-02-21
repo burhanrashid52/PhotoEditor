@@ -1,83 +1,21 @@
 package com.burhanrashid52.photoediting
 
-import com.burhanrashid52.photoediting.GraphicHelper.addTouchHandleCallbacks
-import com.burhanrashid52.photoediting.Helper.realignNewGraphicToCanvas
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
-import com.burhanrashid52.photoediting.ColorPickerAdapter
-import android.view.ViewGroup
-import com.burhanrashid52.photoediting.R
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.LayerDrawable
-import androidx.core.content.ContextCompat
-import com.burhanrashid52.photoediting.base.BaseActivity
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
-import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
-import ja.burhanrashid52.photoeditor.PhotoEditor
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import com.burhanrashid52.photoediting.PropertiesBSFragment
-import com.burhanrashid52.photoediting.ShapeBSFragment
-import com.burhanrashid52.photoediting.EmojiBSFragment
-import com.burhanrashid52.photoediting.StickerBSFragment
-import android.widget.TextView
-import android.graphics.Typeface
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter
-import com.burhanrashid52.photoediting.filters.FilterViewAdapter
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import com.burhanrashid52.photoediting.FileSaveHelper
-import com.burhanrashid52.photoediting.GraphicHelper
-import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.burhanrashid52.photoediting.EditImageActivity
-import android.content.Intent
-import android.graphics.Bitmap
-import android.provider.MediaStore
-import com.burhanrashid52.photoediting.TextEditorDialogFragment
-import com.burhanrashid52.photoediting.TextEditorDialogFragment.TextEditor
-import ja.burhanrashid52.photoeditor.TextStyleBuilder
-import ja.burhanrashid52.photoeditor.ViewType
 import android.annotation.SuppressLint
-import androidx.core.content.FileProvider
-import android.content.pm.PackageManager
-import com.burhanrashid52.photoediting.FileSaveHelper.OnFileCreateResult
-import ja.burhanrashid52.photoeditor.SaveSettings
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
-import android.app.Activity
-import ja.burhanrashid52.photoeditor.shape.ShapeType
-import ja.burhanrashid52.photoeditor.PhotoFilter
-import com.burhanrashid52.photoediting.tools.ToolType
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import android.view.animation.AnticipateOvershootInterpolator
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.recyclerview.widget.GridLayoutManager
-import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiAdapter
 import android.content.ContentResolver
-import com.burhanrashid52.photoediting.FileSaveHelper.FileMeta
-import androidx.appcompat.app.AppCompatActivity
 import android.content.ContentValues
 import android.database.Cursor
-import kotlin.Throws
-import com.burhanrashid52.photoediting.PhotoApp
-import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.SeekBar
-import android.widget.RadioGroup
-import com.burhanrashid52.photoediting.StickerBSFragment.StickerAdapter
-import android.graphics.BitmapFactory
-import android.widget.EditText
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
-import kotlin.jvm.JvmOverloads
-import androidx.annotation.ColorInt
-import androidx.lifecycle.*
+import android.provider.MediaStore
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import kotlin.Throws
 import java.io.IOException
-import java.io.OutputStream
 import java.lang.Exception
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -92,14 +30,13 @@ import java.util.concurrent.Executors
  * and after you are done with File call [FileSaveHelper.notifyThatFileIsNowPubliclyAvailable]
  *
  * Remember! in order to shutdown executor call [FileSaveHelper.addObserver] or
- * create object with the [FileSaveHelper.FileSaveHelper]
+ * create object with the [FileSaveHelper]
  */
-class FileSaveHelper constructor(private val mContentResolver: ContentResolver) :
-    LifecycleObserver {
-    private val executor: ExecutorService?
-    private val fileCreatedResult: MutableLiveData<FileMeta>
+class FileSaveHelper(private val mContentResolver: ContentResolver) : LifecycleObserver {
+    private val executor: ExecutorService? = Executors.newSingleThreadExecutor()
+    private val fileCreatedResult: MutableLiveData<FileMeta> = MutableLiveData()
     private var resultListener: OnFileCreateResult? = null
-    private val observer: Observer<FileMeta> = Observer({ fileMeta: FileMeta ->
+    private val observer = Observer { fileMeta: FileMeta ->
         if (resultListener != null) {
             resultListener!!.onFileCreateResult(
                 fileMeta.isCreated,
@@ -108,22 +45,20 @@ class FileSaveHelper constructor(private val mContentResolver: ContentResolver) 
                 fileMeta.uri
             )
         }
-    })
+    }
 
-    constructor(activity: AppCompatActivity) : this(activity.getContentResolver()) {
+    constructor(activity: AppCompatActivity) : this(activity.contentResolver) {
         addObserver(activity)
     }
 
     private fun addObserver(lifecycleOwner: LifecycleOwner) {
         fileCreatedResult.observe(lifecycleOwner, observer)
-        lifecycleOwner.getLifecycle().addObserver(this)
+        lifecycleOwner.lifecycle.addObserver(this)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun release() {
-        if (null != executor) {
-            executor.shutdownNow()
-        }
+        executor?.shutdownNow()
     }
 
     /**
@@ -136,34 +71,37 @@ class FileSaveHelper constructor(private val mContentResolver: ContentResolver) 
      */
     fun createFile(fileNameToSave: String, listener: OnFileCreateResult?) {
         resultListener = listener
-        executor!!.submit(Runnable({
-            val cursor: Cursor? = null
-            val filePath: String
+        executor!!.submit {
+            var cursor: Cursor? = null
             try {
-                val newImageDetails: ContentValues = ContentValues()
-                val imageCollection: Uri = buildUriCollection(newImageDetails)
-                val editedImageUri: Uri? =
+
+                // Build the edited image URI for the MediaStore
+                val newImageDetails = ContentValues()
+                val imageCollection = buildUriCollection(newImageDetails)
+                val editedImageUri =
                     getEditedImageUri(fileNameToSave, newImageDetails, imageCollection)
-                filePath = getFilePath(cursor, editedImageUri)
+
+                // Query the MediaStore for the image file path from the image Uri
+                cursor = mContentResolver.query(
+                    editedImageUri,
+                    arrayOf(MediaStore.Images.Media.DATA),
+                    null,
+                    null,
+                    null
+                )
+                val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                cursor.moveToFirst()
+                val filePath = cursor.getString(columnIndex)
+
+                // Post the file created result with the resolved image file path
                 updateResult(true, filePath, null, editedImageUri, newImageDetails)
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 updateResult(false, null, ex.message, null, null)
             } finally {
-                if (cursor != null) {
-                    cursor.close()
-                }
+                cursor?.close()
             }
-        }))
-    }
-
-    private fun getFilePath(cursor: Cursor?, editedImageUri: Uri?): String {
-        var cursor: Cursor? = cursor
-        val proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        cursor = mContentResolver.query((editedImageUri)!!, proj, null, null, null)
-        val column_index: Int = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
-        return cursor.getString(column_index)
+        }
     }
 
     @Throws(IOException::class)
@@ -171,10 +109,10 @@ class FileSaveHelper constructor(private val mContentResolver: ContentResolver) 
         fileNameToSave: String,
         newImageDetails: ContentValues,
         imageCollection: Uri
-    ): Uri? {
+    ): Uri {
         newImageDetails.put(MediaStore.Images.Media.DISPLAY_NAME, fileNameToSave)
-        val editedImageUri: Uri? = mContentResolver.insert(imageCollection, newImageDetails)
-        val outputStream: OutputStream? = mContentResolver.openOutputStream((editedImageUri)!!)
+        val editedImageUri = mContentResolver.insert(imageCollection, newImageDetails)
+        val outputStream = mContentResolver.openOutputStream(editedImageUri!!)
         outputStream!!.close()
         return editedImageUri
     }
@@ -182,7 +120,7 @@ class FileSaveHelper constructor(private val mContentResolver: ContentResolver) 
     @SuppressLint("InlinedApi")
     private fun buildUriCollection(newImageDetails: ContentValues): Uri {
         val imageCollection: Uri
-        if (isSdkHigherThan28) {
+        if (isSdkHigherThan28()) {
             imageCollection = MediaStore.Images.Media.getContentUri(
                 MediaStore.VOLUME_EXTERNAL_PRIMARY
             )
@@ -195,32 +133,32 @@ class FileSaveHelper constructor(private val mContentResolver: ContentResolver) 
 
     @SuppressLint("InlinedApi")
     fun notifyThatFileIsNowPubliclyAvailable(contentResolver: ContentResolver) {
-        if (isSdkHigherThan28) {
-            executor!!.submit(Runnable({
-                val value: FileMeta? = fileCreatedResult.getValue()
+        if (isSdkHigherThan28()) {
+            executor!!.submit {
+                val value = fileCreatedResult.value
                 if (value != null) {
                     value.imageDetails!!.clear()
                     value.imageDetails!!.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    contentResolver.update((value.uri)!!, value.imageDetails, null, null)
+                    contentResolver.update(value.uri!!, value.imageDetails, null, null)
                 }
-            }))
+            }
         }
     }
 
-    private class FileMeta constructor(
+    private class FileMeta(
         var isCreated: Boolean, var filePath: String?,
         var uri: Uri?, var error: String?,
         var imageDetails: ContentValues?
     )
 
-    open interface OnFileCreateResult {
+    interface OnFileCreateResult {
         /**
          * @param created  whether file creation is success or failure
          * @param filePath filepath on disk. null in case of failure
          * @param error    in case file creation is failed . it would represent the cause
          * @param Uri      Uri to the newly created file. null in case of failure
          */
-        fun onFileCreateResult(created: Boolean, filePath: String?, error: String?, Uri: Uri?)
+        fun onFileCreateResult(created: Boolean, filePath: String?, error: String?, uri: Uri?)
     }
 
     private fun updateResult(
@@ -234,14 +172,9 @@ class FileSaveHelper constructor(private val mContentResolver: ContentResolver) 
     }
 
     companion object {
-        val isSdkHigherThan28: Boolean
-            get() {
-                return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            }
+        fun isSdkHigherThan28(): Boolean {
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+        }
     }
 
-    init {
-        executor = Executors.newSingleThreadExecutor()
-        fileCreatedResult = MutableLiveData()
-    }
 }
