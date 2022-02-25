@@ -1,15 +1,11 @@
 package ja.burhanrashid52.photoeditor
 
 import android.content.Context
-import android.view.View
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
-import android.view.ViewGroup
 import androidx.test.core.app.ApplicationProvider
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
-import org.junit.Assert
 import org.junit.Test
 
 /**
@@ -26,10 +22,8 @@ class GraphicManagerTest {
     fun testGraphicMangerAddViews() {
         val id = R.layout.view_photo_editor_text
         val childId = R.id.frmBorder
-        val viewGroup: ViewGroup = object : ViewGroup(mContext) {
-            override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
-        }
-        val graphicManager = GraphicManager(viewGroup, PhotoEditorViewState())
+        val photoEditorView = PhotoEditorView(mContext)
+        val graphicManager = GraphicManager(photoEditorView, PhotoEditorViewState())
         val graphic: Graphic = object : Graphic(
             context = mContext,
             layoutId = id,
@@ -39,7 +33,10 @@ class GraphicManagerTest {
 
         }
         graphicManager.addView(graphic)
-        assertEquals(viewGroup.childCount.toLong(), 1)
-        assertNotNull(viewGroup.findViewById(childId))
+
+        // NOTE(lucianocheng): Expect 4 views: Image, Filter, Brush,
+        //                     and the Graphic we just added.
+        assertEquals(4, photoEditorView.childCount.toLong())
+        assertNotNull(photoEditorView.findViewById(childId))
     }
 }

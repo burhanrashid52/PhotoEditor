@@ -31,24 +31,24 @@ import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") constructor(
     builder: PhotoEditor.Builder
 ) : PhotoEditor {
-    private val parentView: PhotoEditorView = builder.parentView
+    private val photoEditorView: PhotoEditorView = builder.photoEditorView
     private val viewState: PhotoEditorViewState = PhotoEditorViewState()
     private val imageView: ImageView? = builder.imageView
     private val deleteView: View? = builder.deleteView
     private val drawingView: DrawingView? = builder.drawingView
     private val mBrushDrawingStateListener: BrushDrawingStateListener =
-        BrushDrawingStateListener(builder.parentView, viewState)
-    private val mBoxHelper: BoxHelper = BoxHelper(builder.parentView, viewState)
+        BrushDrawingStateListener(builder.photoEditorView, viewState)
+    private val mBoxHelper: BoxHelper = BoxHelper(builder.photoEditorView, viewState)
     private var mOnPhotoEditorListener: OnPhotoEditorListener? = null
     private val isTextPinchScalable: Boolean = builder.isTextPinchScalable
     private val mDefaultTextTypeface: Typeface? = builder.textTypeface
     private val mDefaultEmojiTypeface: Typeface? = builder.emojiTypeface
-    private val mGraphicManager: GraphicManager = GraphicManager(builder.parentView, viewState)
+    private val mGraphicManager: GraphicManager = GraphicManager(builder.photoEditorView, viewState)
     private val context: Context = builder.context
 
     override fun addImage(desiredImage: Bitmap?) {
         val multiTouchListener = getMultiTouchListener(true)
-        val sticker = Sticker(parentView, multiTouchListener, viewState, mGraphicManager)
+        val sticker = Sticker(photoEditorView, multiTouchListener, viewState, mGraphicManager)
         sticker.buildView(desiredImage)
         addToEditor(sticker)
     }
@@ -70,7 +70,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(isTextPinchScalable)
         val textGraphic =
-            Text(parentView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager)
+            Text(photoEditorView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager)
         textGraphic.buildView(text, styleBuilder)
         addToEditor(textGraphic)
     }
@@ -108,7 +108,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(true)
         val emoji =
-            Emoji(parentView, multiTouchListener, viewState, mGraphicManager, mDefaultEmojiTypeface)
+            Emoji(photoEditorView, multiTouchListener, viewState, mGraphicManager, mDefaultEmojiTypeface)
         emoji.buildView(emojiTypeface, emojiName)
         addToEditor(emoji)
     }
@@ -129,7 +129,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     private fun getMultiTouchListener(isPinchScalable: Boolean): MultiTouchListener {
         return MultiTouchListener(
             deleteView,
-            parentView,
+            photoEditorView,
             imageView,
             isPinchScalable,
             mOnPhotoEditorListener,
@@ -189,11 +189,11 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     override fun setFilterEffect(customEffect: CustomEffect?) {
-        parentView.setFilterEffect(customEffect)
+        photoEditorView.setFilterEffect(customEffect)
     }
 
     override fun setFilterEffect(filterType: PhotoFilter?) {
-        parentView.setFilterEffect(filterType)
+        photoEditorView.setFilterEffect(filterType)
     }
 
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
@@ -208,9 +208,9 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         onSaveListener: OnSaveListener
     ) {
         Log.d(TAG, "Image Path: $imagePath")
-        parentView.saveFilter(object : OnSaveBitmap {
+        photoEditorView.saveFilter(object : OnSaveBitmap {
             override fun onBitmapReady(saveBitmap: Bitmap?) {
-                val photoSaverTask = PhotoSaverTask(parentView, mBoxHelper)
+                val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper)
                 photoSaverTask.setOnSaveListener(onSaveListener)
                 photoSaverTask.setSaveSettings(saveSettings)
                 photoSaverTask.execute(imagePath)
@@ -233,9 +233,9 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         saveSettings: SaveSettings,
         onSaveBitmap: OnSaveBitmap
     ) {
-        parentView.saveFilter(object : OnSaveBitmap {
+        photoEditorView.saveFilter(object : OnSaveBitmap {
             override fun onBitmapReady(saveBitmap: Bitmap?) {
-                val photoSaverTask = PhotoSaverTask(parentView, mBoxHelper)
+                val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper)
                 photoSaverTask.setOnSaveBitmap(onSaveBitmap)
                 photoSaverTask.setSaveSettings(saveSettings)
                 photoSaverTask.saveBitmap()
@@ -282,6 +282,6 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
             mOnPhotoEditorListener?.onTouchSourceImage(event)
             mDetector.onTouchEvent(event)
         }
-        parentView.setClipSourceImage(builder.clipSourceImage)
+        photoEditorView.setClipSourceImage(builder.clipSourceImage)
     }
 }

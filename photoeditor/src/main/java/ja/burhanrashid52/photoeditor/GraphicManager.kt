@@ -10,7 +10,7 @@ import android.widget.RelativeLayout
  * @author <https:></https:>//github.com/burhanrashid52>
  */
 internal class GraphicManager(
-    private val mViewGroup: ViewGroup,
+    private val mPhotoEditorView: PhotoEditorView,
     private val mViewState: PhotoEditorViewState
 ) {
     var onPhotoEditorListener: OnPhotoEditorListener? = null
@@ -20,7 +20,7 @@ internal class GraphicManager(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-        mViewGroup.addView(view, params)
+        mPhotoEditorView.addView(view, params)
         mViewState.addAddedView(view)
 
         onPhotoEditorListener?.onAddViewListener(
@@ -32,7 +32,7 @@ internal class GraphicManager(
     fun removeView(graphic: Graphic) {
         val view = graphic.rootView
         if (mViewState.containsAddedView(view)) {
-            mViewGroup.removeView(view)
+            mPhotoEditorView.removeView(view)
             mViewState.removeAddedView(view)
             mViewState.pushRedoView(view)
             onPhotoEditorListener?.onRemoveViewListener(
@@ -43,7 +43,7 @@ internal class GraphicManager(
     }
 
     fun updateView(view: View) {
-        mViewGroup.updateViewLayout(view, view.layoutParams)
+        mPhotoEditorView.updateViewLayout(view, view.layoutParams)
         mViewState.replaceAddedView(view)
     }
 
@@ -56,7 +56,7 @@ internal class GraphicManager(
                 return removeView.undo()
             } else {
                 mViewState.removeAddedView(mViewState.addedViewsCount - 1)
-                mViewGroup.removeView(removeView)
+                mPhotoEditorView.removeView(removeView)
                 mViewState.pushRedoView(removeView)
             }
             when (val viewTag = removeView.tag) {
@@ -78,7 +78,7 @@ internal class GraphicManager(
                 return redoView.redo()
             } else {
                 mViewState.popRedoView()
-                mViewGroup.addView(redoView)
+                mPhotoEditorView.addView(redoView)
                 mViewState.addAddedView(redoView)
             }
             when (val viewTag = redoView.tag) {
