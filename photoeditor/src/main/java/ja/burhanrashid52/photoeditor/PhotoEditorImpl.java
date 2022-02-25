@@ -222,9 +222,9 @@ public class PhotoEditorImpl implements PhotoEditor {
 
         MultiTouchListener multiTouchListener = getMultiTouchListener(true);
         Emoji emoji = new Emoji(
+                editorView,
                 canvasView,
                 multiTouchListener,
-                editorView,
                 viewState,
                 mOnPhotoEditorListener,
                 mGraphicManager,

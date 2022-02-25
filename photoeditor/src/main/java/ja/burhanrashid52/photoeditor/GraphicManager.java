@@ -9,9 +9,11 @@ import androidx.annotation.Nullable;
 /**
  * Created by Burhanuddin Rashid on 15/05/21.
  *
+ * NOTE(cheng): Making this temporarily public to make compile with kotlin
+ *
  * @author <https://github.com/burhanrashid52>
  */
-class GraphicManager {
+public class GraphicManager {
     private final RelativeLayout mCanvasView;
     private final PhotoEditorViewState mViewState;
     private OnPhotoEditorListener mOnPhotoEditorListener;
