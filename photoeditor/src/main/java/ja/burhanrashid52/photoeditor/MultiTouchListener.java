@@ -432,7 +432,8 @@ public class MultiTouchListener implements OnTouchListener {
         void onRemoveViewListener(View removedView);
     }
 
-    interface OnGestureControl {
+    // NOTE(cheng): Making this public temporarily to get past a kotlin compile issue.
+    public interface OnGestureControl {
         void onClick();
 
         void onLongClick();
