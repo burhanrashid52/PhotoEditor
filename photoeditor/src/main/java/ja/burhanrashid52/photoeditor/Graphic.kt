@@ -3,7 +3,6 @@ package ja.burhanrashid52.photoeditor
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import ja.burhanrashid52.photoeditor.MultiTouchListener.OnGestureControl
 
@@ -55,10 +54,10 @@ internal abstract class Graphic(
     }
 
     protected fun buildGestureController(
-        viewGroup: ViewGroup,
+        photoEditorView: PhotoEditorView,
         viewState: PhotoEditorViewState
     ): OnGestureControl {
-        val boxHelper = BoxHelper(viewGroup, viewState)
+        val boxHelper = BoxHelper(photoEditorView, viewState)
         return object : OnGestureControl {
             override fun onClick() {
                 boxHelper.clearHelperBox()

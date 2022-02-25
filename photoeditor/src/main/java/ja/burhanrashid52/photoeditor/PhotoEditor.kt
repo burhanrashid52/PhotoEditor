@@ -284,7 +284,7 @@ interface PhotoEditor {
     /**
      * Builder pattern to define [PhotoEditor] Instance
      */
-    class Builder(var context: Context, var parentView: PhotoEditorView) {
+    class Builder(var context: Context, var photoEditorView: PhotoEditorView) {
         @JvmField
         var imageView: ImageView? = null
         @JvmField
@@ -365,8 +365,8 @@ interface PhotoEditor {
          * @param photoEditorView [PhotoEditorView]
          */
         init {
-            imageView = parentView?.source
-            drawingView = parentView?.drawingView
+            imageView = photoEditorView?.source
+            drawingView = photoEditorView?.drawingView
         }
     }
 

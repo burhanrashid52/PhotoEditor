@@ -7,7 +7,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import kotlin.math.max
 import kotlin.math.min
 
@@ -20,7 +19,7 @@ import kotlin.math.min
  */
 internal class MultiTouchListener(
     deleteView: View?,
-    parentView: RelativeLayout,
+    photoEditorView: PhotoEditorView,
     photoEditImageView: ImageView?,
     private val mIsPinchScalable: Boolean,
     onPhotoEditorListener: OnPhotoEditorListener?,
@@ -42,7 +41,7 @@ internal class MultiTouchListener(
     private var outRect: Rect? = null
     private val deleteView: View?
     private val photoEditImageView: ImageView?
-    private val parentView: RelativeLayout
+    private val photoEditorView: PhotoEditorView
     private var onMultiTouchListener: OnMultiTouchListener? = null
     private var mOnGestureControl: OnGestureControl? = null
     private val mOnPhotoEditorListener: OnPhotoEditorListener?
@@ -252,7 +251,7 @@ internal class MultiTouchListener(
         mScaleGestureDetector = ScaleGestureDetector(ScaleGestureListener())
         mGestureListener = GestureDetector(GestureListener())
         this.deleteView = deleteView
-        this.parentView = parentView
+        this.photoEditorView = photoEditorView
         this.photoEditImageView = photoEditImageView
         mOnPhotoEditorListener = onPhotoEditorListener
         outRect = if (deleteView != null) {

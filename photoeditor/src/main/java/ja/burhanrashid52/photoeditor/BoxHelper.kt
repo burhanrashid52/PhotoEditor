@@ -1,7 +1,6 @@
 package ja.burhanrashid52.photoeditor
 
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 
@@ -11,12 +10,12 @@ import android.widget.ImageView
  * @author <https:></https:>//github.com/burhanrashid52>
  */
 internal class BoxHelper(
-    private val mViewGroup: ViewGroup,
+    private val mPhotoEditorView: PhotoEditorView,
     private val mViewState: PhotoEditorViewState
 ) {
     fun clearHelperBox() {
-        for (i in 0 until mViewGroup.childCount) {
-            val childAt = mViewGroup.getChildAt(i)
+        for (i in 0 until mPhotoEditorView.childCount) {
+            val childAt = mPhotoEditorView.getChildAt(i)
             val frmBorder = childAt.findViewById<FrameLayout>(R.id.frmBorder)
             frmBorder?.setBackgroundResource(0)
             val imgClose = childAt.findViewById<ImageView>(R.id.imgPhotoEditorClose)
@@ -27,11 +26,11 @@ internal class BoxHelper(
 
     fun clearAllViews(drawingView: DrawingView?) {
         for (i in 0 until mViewState.addedViewsCount) {
-            mViewGroup.removeView(mViewState.getAddedView(i))
+            mPhotoEditorView.removeView(mViewState.getAddedView(i))
         }
         drawingView?.let {
             if (mViewState.containsAddedView(it)) {
-                mViewGroup.addView(it)
+                mPhotoEditorView.addView(it)
             }
         }
 

@@ -3,7 +3,6 @@ package ja.burhanrashid52.photoeditor
 import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 
 /**
@@ -12,7 +11,7 @@ import android.widget.TextView
  * @author <https:></https:>//github.com/burhanrashid52>
  */
 internal class Text(
-    private val mPhotoEditorView: ViewGroup,
+    private val mPhotoEditorView: PhotoEditorView,
     private val mMultiTouchListener: MultiTouchListener,
     private val mViewState: PhotoEditorViewState,
     private val mDefaultTextTypeface: Typeface?,
