@@ -329,7 +329,7 @@ public class PhotoEditorImpl implements PhotoEditor {
     @Override
     public void setBrushEraserSize(float brushEraserSize) {
         if (drawingView != null) {
-            drawingView.setBrushEraserSize(brushEraserSize);
+            drawingView.setEraserSize(brushEraserSize);
         }
     }
 
@@ -528,7 +528,7 @@ public class PhotoEditorImpl implements PhotoEditor {
     // region Shape
     @Override
     public void setShape(ShapeBuilder shapeBuilder) {
-        drawingView.setShapeBuilder(shapeBuilder);
+        drawingView.setCurrentShapeBuilder(shapeBuilder);
     }
     // endregion
 
