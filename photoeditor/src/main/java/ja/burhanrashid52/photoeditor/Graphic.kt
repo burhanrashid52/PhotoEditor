@@ -55,7 +55,7 @@ internal abstract class Graphic(
     }
 
     protected fun buildGestureController(
-        canvasView: RelativeLayout?,
+        canvasView: RelativeLayout,
         viewState: PhotoEditorViewState,
         onPhotoEditorListener: OnPhotoEditorListener?
     ): OnGestureControl {
