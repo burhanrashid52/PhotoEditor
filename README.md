@@ -31,6 +31,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - [**Deleting**](#deleting) Views
 - [**Saving**](#saving) Photo after editing.
 - More [**FAQ**](#faq).
+- [Lesson Learned from building successful android library PhotoEditor: Droidcon Berlin 2021](#lesson-learned-from-building-successful-android-library-photoeditor-droidcon-berlin-2021)
 
 
 
@@ -300,6 +301,10 @@ If you found this project helpful or you learned something from the source code 
 [BuyMeACoffee](https://www.buymeacoffee.com/burhanrashid52)
 
 <a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-review&utm_medium=badge&utm_souce=badge-photoeditor-2#discussion-body" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/review.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
+## Lesson Learned from building successful android library PhotoEditor: Droidcon Berlin 2021
+
+[![Lesson Learned from building successful android library PhotoEditor](https://burhanrashid52.com/wp-content/uploads/2021/11/246719409_10220774611897971_6342954485444508610_n-940x510.jpg)](https://player.vimeo.com/video/643904719 "Lesson Learned from building successful android library PhotoEditor")
 
 ## MIT License
 
