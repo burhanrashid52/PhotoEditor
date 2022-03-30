@@ -1,33 +1,34 @@
 package ja.burhanrashid52.photoeditor
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.os.AsyncTask
-import android.text.TextUtils
-import android.util.Log
+import android.graphics.Rect
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.view.PixelCopy
 import android.view.View
-import ja.burhanrashid52.photoeditor.BitmapUtil.removeTransparency
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
-import ja.burhanrashid52.photoeditor.PhotoSaverTask.SaveResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 /**
  * Created by Burhanuddin Rashid on 18/05/21.
  *
  * @author <https:></https:>//github.com/burhanrashid52>
  */
-internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHelper) :
-    AsyncTask<String?, String?, SaveResult>() {
+internal class PhotoSaverTask (photoEditorView: PhotoEditorView, boxHelper: BoxHelper){
     private var mSaveSettings: SaveSettings
-    private var mOnSaveListener: OnSaveListener? = null
+    private var mOnSaveListener: PhotoEditor.OnSaveListener? = null
     private var mOnSaveBitmap: OnSaveBitmap? = null
     private val mPhotoEditorView: PhotoEditorView?
     private val mBoxHelper: BoxHelper
     private val mDrawingView: DrawingView?
-    fun setOnSaveListener(onSaveListener: OnSaveListener?) {
+
+    fun setOnSaveListener(onSaveListener: PhotoEditor.OnSaveListener?) {
         mOnSaveListener = onSaveListener
     }
 
@@ -39,81 +40,109 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
         mSaveSettings = saveSettings
     }
 
-    override fun onPreExecute() {
-        super.onPreExecute()
+    fun execute(vararg inputs: String?){
         mBoxHelper.clearHelperBox()
         mDrawingView?.destroyDrawingCache()
-    }
 
-    @SuppressLint("MissingPermission")
-    override fun doInBackground(vararg inputs: String?): SaveResult {
-        // Create a media file name
-        return if (inputs.isEmpty()) {
-            saveImageAsBitmap()
-        } else {
-            saveImageInFile(inputs.first().toString())
+        CoroutineScope(Dispatchers.Default).launch {
+            if(inputs.isEmpty()){
+                saveImageAsBitmap(::handleBitmapCallback)
+            }else{
+                saveImageInFile(inputs.first().toString(), ::handleFileCallback)
+            }
         }
     }
 
-    private fun saveImageAsBitmap(): SaveResult {
-        return SaveResult(null, null, buildBitmap())
+    private fun saveImageAsBitmap(onSaveResult: (Exception?, Bitmap?) -> Unit) {
+        captureView(mPhotoEditorView, onSaveResult)
     }
 
-    private fun saveImageInFile(mImagePath: String): SaveResult {
-        val file = File(mImagePath)
-        return try {
+    private fun saveImageInFile(
+        mImagePath: String,
+        onSaveResult: (Exception?, String?) -> Unit
+    ) {
+        val file= File(mImagePath)
+        try {
             val out = FileOutputStream(file, false)
             if (mPhotoEditorView != null) {
-                val capturedBitmap = buildBitmap()
-                capturedBitmap?.compress(
-                    mSaveSettings.compressFormat,
-                    mSaveSettings.compressQuality,
-                    out
+                captureView(mPhotoEditorView){ exception, bitmap ->
+                    bitmap?.let {
+                        it.compress(
+                            mSaveSettings.compressFormat,
+                            mSaveSettings.compressQuality,
+                            out
+                        )
+                        out.flush()
+                        out.close()
+
+                        onSaveResult(null, mImagePath)
+                    }?: onSaveResult(exception, null)
+                }
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+            onSaveResult(e, null)
+        }
+    }
+
+    private fun captureView(view: View?, onSaveResult: (Exception?, Bitmap?) -> Unit){
+        if(view==null){
+            onSaveResult(Exception("View is null"), null)
+        }else{
+            val bitmap = Bitmap.createBitmap(
+                view.width,
+                view.height,
+                Bitmap.Config.ARGB_8888
+            )
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                val location= IntArray(2)
+                view.getLocationInWindow(location)
+                PixelCopy.request(
+                    (view.context as Activity).window,
+                    Rect(location[0], location[1],location[0]+view.width, location[1]+view.height),
+                    bitmap,
+                    {
+                        onSaveResult(
+                            null,
+                            if(mSaveSettings.isTransparencyEnabled) {
+                                BitmapUtil.removeTransparency(bitmap)
+                            }else{
+                                bitmap
+                            }
+                        )
+                    },
+                    Handler(Looper.getMainLooper())
+                )
+            }else{
+                val canvas = Canvas(bitmap)
+                view.draw(canvas)
+                onSaveResult(
+                    null,
+                    if(mSaveSettings.isTransparencyEnabled) {
+                        BitmapUtil.removeTransparency(bitmap)
+                    }else{
+                        bitmap
+                    }
                 )
             }
-            out.flush()
-            out.close()
-            Log.d(TAG, "Filed Saved Successfully")
-            SaveResult(null, mImagePath, null)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e(TAG, "Failed to save File")
-            SaveResult(e, mImagePath, null)
         }
     }
 
-    private fun buildBitmap(): Bitmap? {
-        return if (mSaveSettings.isTransparencyEnabled) removeTransparency(
-            captureView(mPhotoEditorView)
-        ) else captureView(mPhotoEditorView)
-    }
 
-    override fun onPostExecute(saveResult: SaveResult) {
-        super.onPostExecute(saveResult)
-        if (TextUtils.isEmpty(saveResult.mImagePath)) {
-            handleBitmapCallback(saveResult)
-        } else {
-            handleFileCallback(saveResult)
-        }
-    }
-
-    private fun handleFileCallback(saveResult: SaveResult) {
-        val exception = saveResult.mException
-        val imagePath = saveResult.mImagePath
-        if (exception == null) {
+    private fun handleFileCallback(ex: Exception?, path: String?) {
+        if (ex == null) {
             //Clear all views if its enabled in save settings
             if (mSaveSettings.isClearViewsEnabled) {
                 mBoxHelper.clearAllViews(mDrawingView)
             }
-            assert(imagePath != null)
-            mOnSaveListener?.onSuccess(imagePath!!)
+            assert(path != null)
+            mOnSaveListener?.onSuccess(path!!)
         } else {
-            mOnSaveListener?.onFailure(exception)
+            mOnSaveListener?.onFailure(ex)
         }
     }
 
-    private fun handleBitmapCallback(saveResult: SaveResult) {
-        val bitmap = saveResult.mBitmap
+    private fun handleBitmapCallback(ex: Exception?, bitmap:Bitmap?) {
         if (bitmap != null) {
             if (mSaveSettings.isClearViewsEnabled) {
                 mBoxHelper.clearAllViews(mDrawingView)
@@ -121,34 +150,13 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
             mOnSaveBitmap?.onBitmapReady(bitmap)
 
         } else {
-            mOnSaveBitmap?.onFailure(Exception("Failed to load the bitmap"))
+            mOnSaveBitmap?.onFailure(ex)
         }
     }
 
-    private fun captureView(view: View?): Bitmap? {
-        if (view == null) {
-            return null
-        }
-        val bitmap = Bitmap.createBitmap(
-            view.width,
-            view.height,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        return bitmap
-    }
-
-    fun saveBitmap() {
+    fun saveBitmap(){
         execute()
     }
-
-    internal class SaveResult(
-        val mException: Exception?,
-        val mImagePath: String?,
-        val mBitmap: Bitmap?
-    )
-
     companion object {
         const val TAG = "PhotoSaverTask"
     }
