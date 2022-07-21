@@ -6,15 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.shape.ShapeType
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
+import com.burhanrashid52.photoediting.databinding.FragmentBottomShapesDialogBinding
 
 class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeListener {
     private var mProperties: Properties? = null
-
+    private var fragmentBottomShapesDialogBinding:FragmentBottomShapesDialogBinding?=null
     interface Properties {
         fun onColorChanged(colorCode: Int)
         fun onOpacityChanged(opacity: Int)
@@ -32,10 +34,11 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val rvColor: RecyclerView = view.findViewById(R.id.shapeColors)
-        val sbOpacity = view.findViewById<SeekBar>(R.id.shapeOpacity)
-        val sbBrushSize = view.findViewById<SeekBar>(R.id.shapeSize)
-        val shapeGroup = view.findViewById<RadioGroup>(R.id.shapeRadioGroup)
+        fragmentBottomShapesDialogBinding=DataBindingUtil.bind(view)
+        val rvColor: RecyclerView=fragmentBottomShapesDialogBinding!!.shapeColors
+        val sbOpacity: SeekBar =fragmentBottomShapesDialogBinding!!.shapeOpacity
+        val sbBrushSize: SeekBar=fragmentBottomShapesDialogBinding!!.shapeSize
+        val shapeGroup : RadioGroup =fragmentBottomShapesDialogBinding!!.shapeRadioGroup
 
         // shape picker
         shapeGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
