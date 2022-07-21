@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.core.content.ContextCompat
+import com.burhanrashid52.photoediting.databinding.ColorPickerItemListBinding
 import java.util.ArrayList
 
 /**
@@ -18,6 +19,7 @@ class ColorPickerAdapter internal constructor(
     private var inflater: LayoutInflater
     private val colorPickerColors: List<Int>
     private var onColorPickerClickListener: OnColorPickerClickListener? = null
+    private lateinit var colorPickerItemListBinding: ColorPickerItemListBinding
 
     internal constructor(context: Context) : this(context, getDefaultColors(context)) {
         this.context = context
@@ -25,8 +27,9 @@ class ColorPickerAdapter internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = inflater.inflate(R.layout.color_picker_item_list, parent, false)
-        return ViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        colorPickerItemListBinding = ColorPickerItemListBinding.inflate(inflater)
+        return ViewHolder(colorPickerItemListBinding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -41,9 +44,8 @@ class ColorPickerAdapter internal constructor(
         this.onColorPickerClickListener = onColorPickerClickListener
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var colorPickerView: View = itemView.findViewById(R.id.color_picker_view)
-
+    inner class ViewHolder(val colorPickerItemListBinding: ColorPickerItemListBinding) : RecyclerView.ViewHolder(colorPickerItemListBinding.root) {
+        var colorPickerView: View=colorPickerItemListBinding.colorPickerView
         init {
             itemView.setOnClickListener {
                 if (onColorPickerClickListener != null) onColorPickerClickListener!!.onColorPickerClickListener(
