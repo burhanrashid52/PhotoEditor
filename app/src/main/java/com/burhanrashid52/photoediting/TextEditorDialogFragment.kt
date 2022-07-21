@@ -18,7 +18,9 @@ import kotlin.jvm.JvmOverloads
 import androidx.appcompat.app.AppCompatActivity
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import com.burhanrashid52.photoediting.databinding.AddTextDialogBinding
 
 /**
  * Created by Burhanuddin Rashid on 1/16/2018.
@@ -29,7 +31,7 @@ class TextEditorDialogFragment : DialogFragment() {
     private var mInputMethodManager: InputMethodManager? = null
     private var mColorCode = 0
     private var mTextEditorListener: TextEditorListener? = null
-
+    private lateinit var addTextDialogBinding:AddTextDialogBinding
     interface TextEditorListener {
         fun onDone(inputText: String?, colorCode: Int)
     }
@@ -56,14 +58,15 @@ class TextEditorDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mAddTextEditText = view.findViewById(R.id.add_text_edit_text)
+        addTextDialogBinding=AddTextDialogBinding.bind(view)
+        mAddTextEditText=addTextDialogBinding.addTextEditText
         mInputMethodManager =
             activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv)
+
+        mAddTextDoneTextView=addTextDialogBinding.addTextDoneTv
 
         //Setup the color picker for text color
-        val addTextColorPickerRecyclerView: RecyclerView =
-            view.findViewById(R.id.add_text_color_picker_recycler_view)
+        val addTextColorPickerRecyclerView: RecyclerView =addTextDialogBinding.addTextColorPickerRecyclerView
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         addTextColorPickerRecyclerView.layoutManager = layoutManager
         addTextColorPickerRecyclerView.setHasFixedSize(true)
