@@ -50,6 +50,8 @@ import java.io.File
 import java.io.IOException
 import java.lang.Exception
 import androidx.annotation.RequiresPermission
+import androidx.databinding.DataBindingUtil
+import com.burhanrashid52.photoediting.databinding.ActivityEditImageBinding
 
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
     PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener,
@@ -147,25 +149,26 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     private fun initViews() {
-        mPhotoEditorView = findViewById(R.id.photoEditorView)
-        mTxtCurrentTool = findViewById(R.id.txtCurrentTool)
-        mRvTools = findViewById(R.id.rvConstraintTools)
-        mRvFilters = findViewById(R.id.rvFilterView)
-        mRootView = findViewById(R.id.rootView)
+        val activityEditImageBinding:ActivityEditImageBinding=DataBindingUtil.setContentView(this,R.layout.activity_edit_image)
+        mPhotoEditorView=activityEditImageBinding.photoEditorView
+        mTxtCurrentTool=activityEditImageBinding.txtCurrentTool
+        mRvTools=activityEditImageBinding.rvConstraintTools
+        mRvFilters=activityEditImageBinding.rvFilterView
+        mRootView=activityEditImageBinding.rootView
 
-        val imgUndo: ImageView = findViewById(R.id.imgUndo)
+        val imgUndo=activityEditImageBinding.imgUndo
         imgUndo.setOnClickListener(this)
-        val imgRedo: ImageView = findViewById(R.id.imgRedo)
+        val imgRedo=activityEditImageBinding.imgRedo
         imgRedo.setOnClickListener(this)
-        val imgCamera: ImageView = findViewById(R.id.imgCamera)
+        val imgCamera=activityEditImageBinding.imgCamera
         imgCamera.setOnClickListener(this)
-        val imgGallery: ImageView = findViewById(R.id.imgGallery)
+        val imgGallery=activityEditImageBinding.imgGallery
         imgGallery.setOnClickListener(this)
-        val imgSave: ImageView = findViewById(R.id.imgSave)
+        val imgSave=activityEditImageBinding.imgSave
         imgSave.setOnClickListener(this)
-        val imgClose: ImageView = findViewById(R.id.imgClose)
+        val imgClose=activityEditImageBinding.imgClose
         imgClose.setOnClickListener(this)
-        val imgShare: ImageView = findViewById(R.id.imgShare)
+        val imgShare=activityEditImageBinding.imgShare
         imgShare.setOnClickListener(this)
     }
 
