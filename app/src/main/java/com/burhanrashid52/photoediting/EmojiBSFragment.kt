@@ -8,17 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.burhanrashid52.photoediting.PhotoApp.Companion.photoApp
+import com.burhanrashid52.photoediting.databinding.FragmentBottomStickerEmojiDialogBinding
+import com.burhanrashid52.photoediting.databinding.RowEmojiBinding
 import java.lang.NumberFormatException
 import java.util.ArrayList
 
 class EmojiBSFragment : BottomSheetDialogFragment() {
     private var mEmojiListener: EmojiListener? = null
+    private lateinit var rowEmojiBinding:RowEmojiBinding
+    private var fragmentBottomStickerEmojiDialogBinding: FragmentBottomStickerEmojiDialogBinding? =null
 
     interface EmojiListener {
         fun onEmojiClick(emojiUnicode: String?)
@@ -45,7 +50,9 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
-        val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
+        fragmentBottomStickerEmojiDialogBinding= DataBindingUtil.bind(contentView)
+        //val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
+        val rvEmoji: RecyclerView =fragmentBottomStickerEmojiDialogBinding!!.rvEmoji
         val gridLayoutManager = GridLayoutManager(activity, 5)
         rvEmoji.layoutManager = gridLayoutManager
         val emojiAdapter = EmojiAdapter()
@@ -60,9 +67,10 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
 
     inner class EmojiAdapter : RecyclerView.Adapter<EmojiAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.row_emoji, parent, false)
-            return ViewHolder(view)
+            val inflater = LayoutInflater.from(parent.context)
+            rowEmojiBinding = RowEmojiBinding.inflate(inflater)
+            //val view = LayoutInflater.from(parent.context).inflate(R.layout.row_emoji, parent, false)
+            return ViewHolder(rowEmojiBinding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -73,9 +81,9 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
             return emojisList.size
         }
 
-        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val txtEmoji: TextView = itemView.findViewById(R.id.txtEmoji)
-
+        inner class ViewHolder(private val rowEmojiBinding: RowEmojiBinding) : RecyclerView.ViewHolder(rowEmojiBinding.root) {
+            //val txtEmoji: TextView = itemView.findViewById(R.id.txtEmoji)
+            val txtEmoji:TextView=rowEmojiBinding.txtEmoji
             init {
                 itemView.setOnClickListener {
                     if (mEmojiListener != null) {
