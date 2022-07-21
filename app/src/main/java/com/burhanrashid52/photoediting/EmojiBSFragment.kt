@@ -23,7 +23,7 @@ import java.util.ArrayList
 class EmojiBSFragment : BottomSheetDialogFragment() {
     private var mEmojiListener: EmojiListener? = null
     private lateinit var rowEmojiBinding:RowEmojiBinding
-    private var fragmentBottomStickerEmojiDialogBinding: FragmentBottomStickerEmojiDialogBinding? =null
+    private lateinit var fragmentBottomStickerEmojiDialogBinding: FragmentBottomStickerEmojiDialogBinding
 
     interface EmojiListener {
         fun onEmojiClick(emojiUnicode: String?)
@@ -50,9 +50,8 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
-        fragmentBottomStickerEmojiDialogBinding= DataBindingUtil.bind(contentView)
-        //val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
-        val rvEmoji: RecyclerView =fragmentBottomStickerEmojiDialogBinding!!.rvEmoji
+        fragmentBottomStickerEmojiDialogBinding= FragmentBottomStickerEmojiDialogBinding.bind(contentView)
+        val rvEmoji: RecyclerView =fragmentBottomStickerEmojiDialogBinding.rvEmoji
         val gridLayoutManager = GridLayoutManager(activity, 5)
         rvEmoji.layoutManager = gridLayoutManager
         val emojiAdapter = EmojiAdapter()

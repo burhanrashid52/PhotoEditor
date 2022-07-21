@@ -23,7 +23,7 @@ import com.burhanrashid52.photoediting.databinding.RowStickerBinding
 class StickerBSFragment : BottomSheetDialogFragment() {
     private var mStickerListener: StickerListener? = null
     private lateinit var rowStickerBinding : RowStickerBinding
-    private var fragmentBottomStickerEmojiDialogBinding: FragmentBottomStickerEmojiDialogBinding? =null
+    private lateinit var fragmentBottomStickerEmojiDialogBinding: FragmentBottomStickerEmojiDialogBinding
     fun setStickerListener(stickerListener: StickerListener?) {
         mStickerListener = stickerListener
     }
@@ -53,8 +53,8 @@ class StickerBSFragment : BottomSheetDialogFragment() {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
-        fragmentBottomStickerEmojiDialogBinding=DataBindingUtil.bind(contentView)
-        val rvEmoji: RecyclerView= fragmentBottomStickerEmojiDialogBinding!!.rvEmoji
+        fragmentBottomStickerEmojiDialogBinding=FragmentBottomStickerEmojiDialogBinding.bind(contentView)
+        val rvEmoji: RecyclerView= fragmentBottomStickerEmojiDialogBinding.rvEmoji
         val gridLayoutManager = GridLayoutManager(activity, 3)
         rvEmoji.layoutManager = gridLayoutManager
         val stickerAdapter = StickerAdapter()
