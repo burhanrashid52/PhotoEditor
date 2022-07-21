@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
+import com.burhanrashid52.photoediting.databinding.FragmentBottomPropertiesDialogBinding
 
 class PropertiesBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeListener {
     private var mProperties: Properties? = null
-
+    private lateinit var fragmentBottomPropertiesDialogBinding: FragmentBottomPropertiesDialogBinding
     interface Properties {
         fun onColorChanged(colorCode: Int)
         fun onOpacityChanged(opacity: Int)
@@ -29,9 +31,10 @@ class PropertiesBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChang
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val rvColor: RecyclerView = view.findViewById(R.id.rvColors)
-        val sbOpacity = view.findViewById<SeekBar>(R.id.sbOpacity)
-        val sbBrushSize = view.findViewById<SeekBar>(R.id.sbSize)
+        fragmentBottomPropertiesDialogBinding=FragmentBottomPropertiesDialogBinding.bind(view)
+        val rvColor:RecyclerView=fragmentBottomPropertiesDialogBinding.rvColors
+        val sbOpacity =fragmentBottomPropertiesDialogBinding.sbOpacity
+        val sbBrushSize=fragmentBottomPropertiesDialogBinding.sbSize
         sbOpacity.setOnSeekBarChangeListener(this)
         sbBrushSize.setOnSeekBarChangeListener(this)
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
