@@ -3,14 +3,12 @@ package com.burhanrashid52.photoediting
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -19,9 +17,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.burhanrashid52.photoediting.databinding.FragmentBottomStickerEmojiDialogBinding
+import com.burhanrashid52.photoediting.databinding.RowStickerBinding
 
 class StickerBSFragment : BottomSheetDialogFragment() {
     private var mStickerListener: StickerListener? = null
+    private lateinit var rowStickerBinding : RowStickerBinding
+    private var fragmentBottomStickerEmojiDialogBinding: FragmentBottomStickerEmojiDialogBinding? =null
     fun setStickerListener(stickerListener: StickerListener?) {
         mStickerListener = stickerListener
     }
@@ -51,7 +53,8 @@ class StickerBSFragment : BottomSheetDialogFragment() {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
-        val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
+        fragmentBottomStickerEmojiDialogBinding=DataBindingUtil.bind(contentView)
+        val rvEmoji: RecyclerView= fragmentBottomStickerEmojiDialogBinding!!.rvEmoji
         val gridLayoutManager = GridLayoutManager(activity, 3)
         rvEmoji.layoutManager = gridLayoutManager
         val stickerAdapter = StickerAdapter()
@@ -62,25 +65,24 @@ class StickerBSFragment : BottomSheetDialogFragment() {
 
     inner class StickerAdapter : RecyclerView.Adapter<StickerAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.row_sticker, parent, false)
-            return ViewHolder(view)
+            val inflater = LayoutInflater.from(parent.context)
+            rowStickerBinding = RowStickerBinding.inflate(inflater)
+            return ViewHolder(rowStickerBinding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            // Load sticker image from remote url
             Glide.with(requireContext())
                     .asBitmap()
                     .load(stickerPathList[position])
-                    .into(holder.imgSticker)
+                    .into(holder.rowStickerBinding.imgSticker)
         }
 
         override fun getItemCount(): Int {
             return stickerPathList.size
         }
 
-        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val imgSticker: ImageView = itemView.findViewById(R.id.imgSticker)
-
+        inner class ViewHolder(val rowStickerBinding: RowStickerBinding) : RecyclerView.ViewHolder(rowStickerBinding.root) {
+            val imgStickerBinding=rowStickerBinding.imgSticker
             init {
                 itemView.setOnClickListener {
                     if (mStickerListener != null) {
@@ -102,7 +104,6 @@ class StickerBSFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        // Image Urls from flaticon(https://www.flaticon.com/stickers-pack/food-289)
         private val stickerPathList = arrayOf(
                 "https://cdn-icons-png.flaticon.com/256/4392/4392452.png",
                 "https://cdn-icons-png.flaticon.com/256/4392/4392455.png",
