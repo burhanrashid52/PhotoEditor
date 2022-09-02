@@ -6,10 +6,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -17,39 +17,32 @@ import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
-import com.burhanrashid52.photoediting.base.BaseActivity
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
-import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
-import ja.burhanrashid52.photoeditor.PhotoEditor
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import androidx.recyclerview.widget.RecyclerView
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter
-import com.burhanrashid52.photoediting.filters.FilterViewAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.recyclerview.widget.LinearLayoutManager
-import ja.burhanrashid52.photoeditor.TextStyleBuilder
-import ja.burhanrashid52.photoeditor.ViewType
-import androidx.core.content.FileProvider
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
+import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
+import com.burhanrashid52.photoediting.base.BaseActivity
 import com.burhanrashid52.photoediting.filters.FilterListener
-import ja.burhanrashid52.photoeditor.SaveSettings
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
-import ja.burhanrashid52.photoeditor.shape.ShapeType
-import ja.burhanrashid52.photoeditor.PhotoFilter
+import com.burhanrashid52.photoediting.filters.FilterViewAdapter
+import com.burhanrashid52.photoediting.tools.EditingToolsAdapter
+import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
 import com.burhanrashid52.photoediting.tools.ToolType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import ja.burhanrashid52.photoeditor.*
+import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
+import ja.burhanrashid52.photoeditor.shape.ShapeType
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
-import androidx.annotation.RequiresPermission
 
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
     PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener,
@@ -71,11 +64,39 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private var mRootView: ConstraintLayout? = null
     private val mConstraintSet = ConstraintSet()
     private var mIsFilterVisible = false
+    private val photoUri: Uri by lazy {
+        FileProvider.getUriForFile(
+            this,
+            FILE_PROVIDER_AUTHORITY,
+            File(filesDir, IMAGE_FILE_NAME)
+        )
+    }
+    private val takePhoto =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { saving ->
+            if (saving) {
+                setImageScene(photoUri)
+            } else {
+                showSnackbar(getString(R.string.msg_camera_problem))
+            }
+        }
+
+    private val takeImageFromGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            setImageScene(
+                it ?: run {
+                    showSnackbar(getString(R.string.gallery_image_load_problem))
+                    return@registerForActivityResult
+                }
+            )
+        }
+
+    private val Uri.bitmap
+        get() = ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, this))
 
     @VisibleForTesting
     var mSaveImageUri: Uri? = null
-    private var mSaveFileHelper: FileSaveHelper? = null
 
+    private var mSaveFileHelper: FileSaveHelper? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeFullScreen()
@@ -117,19 +138,20 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mSaveFileHelper = FileSaveHelper(this)
     }
 
+    private fun setImageScene(photoUri1: Uri) {
+        mPhotoEditor?.clearAllViews()
+        mPhotoEditorView?.source?.setImageBitmap(photoUri1.bitmap)
+    }
+
     private fun handleIntentImage(source: ImageView?) {
         if (intent == null) {
-            return;
+            return
         }
 
         when (intent.action) {
             Intent.ACTION_EDIT, ACTION_NEXTGEN_EDIT -> {
                 try {
-                    val uri = intent.data
-                    val bitmap = MediaStore.Images.Media.getBitmap(
-                        contentResolver, uri
-                    )
-                    source?.setImageBitmap(bitmap)
+                    source?.setImageBitmap(intent.data?.bitmap)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -170,8 +192,10 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     override fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int) {
-        val textEditorDialogFragment = TextEditorDialogFragment.show(this, text.toString(), colorCode)
-        textEditorDialogFragment.setOnTextEditorListener (object : TextEditorDialogFragment.TextEditorListener {
+        val textEditorDialogFragment =
+            TextEditorDialogFragment.show(this, text.toString(), colorCode)
+        textEditorDialogFragment.setOnTextEditorListener(object :
+            TextEditorDialogFragment.TextEditorListener {
             override fun onDone(inputText: String?, colorCode: Int) {
                 val styleBuilder = TextStyleBuilder()
                 styleBuilder.withTextColor(colorCode)
@@ -184,11 +208,17 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     override fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
-        Log.d(TAG, "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
+        Log.d(
+            TAG,
+            "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
+        )
     }
 
     override fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
-        Log.d(TAG, "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
+        Log.d(
+            TAG,
+            "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
+        )
     }
 
     override fun onStartViewChangeListener(viewType: ViewType?) {
@@ -211,16 +241,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             R.id.imgSave -> saveImage()
             R.id.imgClose -> onBackPressed()
             R.id.imgShare -> shareImage()
-            R.id.imgCamera -> {
-                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(cameraIntent, CAMERA_REQUEST)
-            }
-            R.id.imgGallery -> {
-                val intent = Intent()
-                intent.type = "image/*"
-                intent.action = Intent.ACTION_GET_CONTENT
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST)
-            }
+            R.id.imgCamera -> takePhoto.launch(photoUri)
+            R.id.imgGallery -> takeImageFromGallery.launch("image/*")
         }
     }
 
@@ -303,31 +325,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         }
     }
 
-    // TODO(lucianocheng): Replace onActivityResult with Result API from Google
-    //                     See https://developer.android.com/training/basics/intents/result
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            when (requestCode) {
-                CAMERA_REQUEST -> {
-                    mPhotoEditor?.clearAllViews()
-                    val photo = data?.extras?.get("data") as Bitmap?
-                    mPhotoEditorView?.source?.setImageBitmap(photo)
-                }
-                PICK_REQUEST -> try {
-                    mPhotoEditor?.clearAllViews()
-                    val uri = data?.data
-                    val bitmap = MediaStore.Images.Media.getBitmap(
-                        contentResolver, uri
-                    )
-                    mPhotoEditorView?.source?.setImageBitmap(bitmap)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
     override fun onColorChanged(colorCode: Int) {
         mPhotoEditor?.setShape(mShapeBuilder?.withShapeColor(colorCode))
         mTxtCurrentTool?.setText(R.string.label_brush)
@@ -389,7 +386,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             }
             ToolType.TEXT -> {
                 val textEditorDialogFragment = TextEditorDialogFragment.show(this)
-                textEditorDialogFragment.setOnTextEditorListener(object : TextEditorDialogFragment.TextEditorListener {
+                textEditorDialogFragment.setOnTextEditorListener(object :
+                    TextEditorDialogFragment.TextEditorListener {
                     override fun onDone(inputText: String?, colorCode: Int) {
                         val styleBuilder = TextStyleBuilder()
                         styleBuilder.withTextColor(colorCode)
@@ -421,7 +419,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private fun showFilter(isVisible: Boolean) {
         mIsFilterVisible = isVisible
         mConstraintSet.clone(mRootView)
-        val rvFilterId: Int = mRvFilters?.id ?: throw IllegalArgumentException("RV Filter ID Expected")
+        val rvFilterId: Int =
+            mRvFilters?.id ?: throw IllegalArgumentException("RV Filter ID Expected")
         if (isVisible) {
             mConstraintSet.clear(rvFilterId, ConstraintSet.START)
             mConstraintSet.connect(
@@ -447,7 +446,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     override fun onBackPressed() {
-        val isCacheEmpty = mPhotoEditor?.isCacheEmpty ?: throw IllegalArgumentException("isCacheEmpty Expected")
+        val isCacheEmpty =
+            mPhotoEditor?.isCacheEmpty ?: throw IllegalArgumentException("isCacheEmpty Expected")
 
         if (mIsFilterVisible) {
             showFilter(false)
@@ -462,9 +462,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     companion object {
         private val TAG = EditImageActivity::class.java.simpleName
         const val FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoediting.fileprovider"
-        private const val CAMERA_REQUEST = 52
-        private const val PICK_REQUEST = 53
         const val ACTION_NEXTGEN_EDIT = "action_nextgen_edit"
         const val PINCH_TEXT_SCALABLE_INTENT_KEY = "PINCH_TEXT_SCALABLE"
+        private const val IMAGE_FILE_NAME = "picFromCamera"
     }
 }

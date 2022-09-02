@@ -16,6 +16,8 @@
     <string name="app_intent_name">PhotoEditor</string>
     <string name="msg_save_image_to_share">Please save image to share</string>
     <string name="msg_share_image">Share Image</string>
+    <string name="msg_camera_problem">Can`t take picture</string>
+    <string name="gallery_image_load_problem">Load image from files problem</string>
 
     <string-array name="photo_editor_emoji">
 
