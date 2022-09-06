@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Photo Editor</string>
+    <string name="label_brush">Brosses</string>
+    <string name="label_shape">Formes</string>
+    <string name="label_oval">Ovale</string>
+    <string name="label_rectangle">Rectangle</string>
+    <string name="label_line">Ligne</string>
+    <string name="label_emoji">Frimousses</string>
+    <string name="label_sticker">Autocollant</string>
+    <string name="label_eraser">Gomme</string>
+    <string name="label_eraser_mode">Mode Gomme</string>
+    <string name="label_text">Texte</string>
+    <string name="label_filter">Filtres</string>
+    <string name="label_adjust">Ajuster</string>
+    <string name="msg_save_image">Souhaitez-vous quitter sans enregistrer l\'image ?</string>
+    <string name="app_intent_name">PhotoEditor</string>
+    <string name="msg_save_image_to_share">Veuillez enregistrer l\'image pour la partager</string>
+    <string name="msg_share_image">Partager l\'image</string>
+
+</resources>
