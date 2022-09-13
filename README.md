@@ -307,6 +307,9 @@ If you found this project helpful or you learned something from the source code 
 
 [![Lesson Learned from building successful android library PhotoEditor](https://burhanrashid52.com/wp-content/uploads/2021/11/246719409_10220774611897971_6342954485444508610_n-940x510.jpg)](https://player.vimeo.com/video/643904719 "Lesson Learned from building successful android library PhotoEditor")
 
+### [Open source Support](https://jb.gg/OpenSourceSupport) by [JetBrains](https://www.jetbrains.com)
+
+
 ## MIT License
 
 Copyright (c) 2022 Burhanuddin Rashid
