@@ -154,7 +154,7 @@ class DrawingView @JvmOverloads constructor(
 
         currentShape = ShapeAndPaint(shape, paint)
         drawShapes.push(currentShape)
-        viewChangeListener?.onStartDrawing()
+        viewChangeListener?.onStartDrawing(this@DrawingView)
     }
 
     private fun endShape(touchX: Float, touchY: Float) {
@@ -164,7 +164,7 @@ class DrawingView @JvmOverloads constructor(
             //handleTap(touchX, touchY);
         }
         viewChangeListener?.apply {
-            onStopDrawing()
+            onStopDrawing(this@DrawingView)
             onViewAdd(this@DrawingView)
         }
     }

@@ -27,7 +27,7 @@ class GraphicManagerTest {
         val graphic: Graphic = object : Graphic(
             context = mContext,
             layoutId = id,
-            viewType = ViewType.TEXT,
+            viewType = ViewType.Text,
             graphicManager = graphicManager
         ) {
 

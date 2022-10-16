@@ -23,8 +23,9 @@ interface PhotoEditor {
      * if [PhotoEditor.Builder.setPinchTextScalable] enabled
      *
      * @param desiredImage bitmap image you want to add
+     * @param viewType     identifier for the rootView of the bitmap image
      */
-    fun addImage(desiredImage: Bitmap?)
+    fun addImage(desiredImage: Bitmap?, viewType: ViewType = ViewType.Image)
 
     /**
      * This add the text on the [PhotoEditorView] with provided parameters
