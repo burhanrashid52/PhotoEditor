@@ -85,3 +85,7 @@ new TextStyleBuilder()
 
 ### 2.0.0
 - New : Migrated the app and library to Kotlin
+
+### 2.1.0-alpha01
+- New: Add custom ViewType
+- New: Add rootView to OnPhotoEditorListener events
