@@ -19,10 +19,13 @@ class BrushDrawingStateListener internal constructor(
             mViewState.popRedoView()
         }
         mViewState.addAddedView(drawingView)
-        mOnPhotoEditorListener?.onAddViewListener(
-            ViewType.BRUSH_DRAWING,
-            mViewState.addedViewsCount
-        )
+        drawingView.post {
+            mOnPhotoEditorListener?.onAddViewListener(
+                drawingView,
+                ViewType.BrushDrawer,
+                mViewState.addedViewsCount
+            )
+        }
     }
 
     override fun onViewRemoved(drawingView: DrawingView) {
@@ -36,17 +39,18 @@ class BrushDrawingStateListener internal constructor(
             mViewState.pushRedoView(removeView)
         }
         mOnPhotoEditorListener?.onRemoveViewListener(
-            ViewType.BRUSH_DRAWING,
+            drawingView,
+            ViewType.BrushDrawer,
             mViewState.addedViewsCount
         )
     }
 
-    override fun onStartDrawing() {
-        mOnPhotoEditorListener?.onStartViewChangeListener(ViewType.BRUSH_DRAWING)
+    override fun onStartDrawing(drawingView: DrawingView) {
+        mOnPhotoEditorListener?.onStartViewChangeListener(drawingView, ViewType.BrushDrawer)
 
     }
 
-    override fun onStopDrawing() {
-        mOnPhotoEditorListener?.onStopViewChangeListener(ViewType.BRUSH_DRAWING)
+    override fun onStopDrawing(drawingView: DrawingView) {
+        mOnPhotoEditorListener?.onStopViewChangeListener(drawingView, ViewType.BrushDrawer)
     }
 }

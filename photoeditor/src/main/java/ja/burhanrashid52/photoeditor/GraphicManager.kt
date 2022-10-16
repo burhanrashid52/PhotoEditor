@@ -23,10 +23,13 @@ internal class GraphicManager(
         mPhotoEditorView.addView(view, params)
         mViewState.addAddedView(view)
 
-        onPhotoEditorListener?.onAddViewListener(
-            graphic.viewType,
-            mViewState.addedViewsCount
-        )
+        graphic.rootView.post {
+            onPhotoEditorListener?.onAddViewListener(
+                graphic.rootView,
+                graphic.viewType,
+                mViewState.addedViewsCount
+            )
+        }
     }
 
     fun removeView(graphic: Graphic) {
@@ -36,6 +39,7 @@ internal class GraphicManager(
             mViewState.removeAddedView(view)
             mViewState.pushRedoView(view)
             onPhotoEditorListener?.onRemoveViewListener(
+                graphic.rootView,
                 graphic.viewType,
                 mViewState.addedViewsCount
             )
@@ -61,6 +65,7 @@ internal class GraphicManager(
             }
             when (val viewTag = removeView.tag) {
                 is ViewType -> onPhotoEditorListener?.onRemoveViewListener(
+                    removeView,
                     viewTag,
                     mViewState.addedViewsCount
                 )
@@ -82,10 +87,13 @@ internal class GraphicManager(
                 mViewState.addAddedView(redoView)
             }
             when (val viewTag = redoView.tag) {
-                is ViewType -> onPhotoEditorListener?.onAddViewListener(
-                    viewTag,
-                    mViewState.addedViewsCount
-                )
+                is ViewType -> redoView.post {
+                    onPhotoEditorListener?.onAddViewListener(
+                        redoView,
+                        viewTag,
+                        mViewState.addedViewsCount
+                    )
+                }
             }
         }
         return mViewState.redoViewsCount != 0

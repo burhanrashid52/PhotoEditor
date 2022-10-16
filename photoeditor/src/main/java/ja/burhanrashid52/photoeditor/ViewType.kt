@@ -10,9 +10,10 @@ package ja.burhanrashid52.photoeditor
  * @version 0.1.1
  * @since 18/01/2017.
  */
-enum class ViewType {
-    BRUSH_DRAWING,
-    TEXT,
-    IMAGE,
-    EMOJI
+sealed interface ViewType {
+    object BrushDrawer : ViewType
+    object Text : ViewType
+    object Image : ViewType
+    object Emoji : ViewType
+    data class Custom<T>(val data: T) : ViewType
 }

@@ -13,11 +13,12 @@ internal class Sticker(
     private val mPhotoEditorView: PhotoEditorView,
     private val mMultiTouchListener: MultiTouchListener,
     private val mViewState: PhotoEditorViewState,
-    graphicManager: GraphicManager?
+    graphicManager: GraphicManager?,
+    viewType: ViewType
 ) : Graphic(
     context = mPhotoEditorView.context,
     graphicManager = graphicManager,
-    viewType = ViewType.IMAGE,
+    viewType = viewType,
     layoutId = R.layout.view_photo_editor_image
 ) {
     private var imageView: ImageView? = null

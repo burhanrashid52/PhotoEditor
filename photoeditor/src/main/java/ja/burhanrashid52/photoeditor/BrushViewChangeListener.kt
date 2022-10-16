@@ -9,6 +9,6 @@ package ja.burhanrashid52.photoeditor
 interface BrushViewChangeListener {
     fun onViewAdd(drawingView: DrawingView)
     fun onViewRemoved(drawingView: DrawingView)
-    fun onStartDrawing()
-    fun onStopDrawing()
+    fun onStartDrawing(drawingView: DrawingView)
+    fun onStopDrawing(drawingView: DrawingView)
 }

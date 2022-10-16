@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -197,26 +198,32 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         })
     }
 
-    override fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
-        Log.d(
-            TAG,
-            "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
-        )
+    override fun onAddViewListener(rootView: View?, viewType: ViewType?, numberOfAddedViews: Int) {
+        val viewRect = Rect()
+        rootView?.getGlobalVisibleRect(viewRect)
+        Log.d(TAG, "onAddViewListener() called with: viewRect = $viewRect, viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
     }
 
-    override fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
-        Log.d(
-            TAG,
-            "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
-        )
+    override fun onRemoveViewListener(
+        rootView: View?,
+        viewType: ViewType?,
+        numberOfAddedViews: Int
+    ) {
+        val viewRect = Rect()
+        rootView?.getGlobalVisibleRect(viewRect)
+        Log.d(TAG, "onRemoveViewListener() called with: viewRect = $viewRect, tag = ${rootView?.tag}, viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]")
     }
 
-    override fun onStartViewChangeListener(viewType: ViewType?) {
-        Log.d(TAG, "onStartViewChangeListener() called with: viewType = [$viewType]")
+    override fun onStartViewChangeListener(rootView: View?, viewType: ViewType?) {
+        val viewRect = Rect()
+        rootView?.getGlobalVisibleRect(viewRect)
+        Log.d(TAG, "onStartViewChangeListener() called with: viewRect = $viewRect, viewType = [$viewType]")
     }
 
-    override fun onStopViewChangeListener(viewType: ViewType?) {
-        Log.d(TAG, "onStopViewChangeListener() called with: viewType = [$viewType]")
+    override fun onStopViewChangeListener(rootView: View?, viewType: ViewType?) {
+        val viewRect = Rect()
+        rootView?.getGlobalVisibleRect(viewRect)
+        Log.d(TAG, "onStopViewChangeListener() called with: viewRect = $viewRect, viewType = [$viewType]")
     }
 
     override fun onTouchSourceImage(event: MotionEvent?) {
@@ -369,8 +376,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     override fun onStickerClick(bitmap: Bitmap?) {
-        mPhotoEditor.addImage(bitmap)
-        mTxtCurrentTool.setText(R.string.label_sticker)
+        mPhotoEditor?.addImage(bitmap, ViewType.Custom("CUSTOM_TAG"))
+        mTxtCurrentTool?.setText(R.string.label_sticker)
     }
 
     @SuppressLint("MissingPermission")

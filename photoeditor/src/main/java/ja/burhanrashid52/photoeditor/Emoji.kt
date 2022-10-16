@@ -19,7 +19,7 @@ internal class Emoji(
 ) : Graphic(
     context = mPhotoEditorView.context,
     graphicManager = graphicManager,
-    viewType = ViewType.EMOJI,
+    viewType = ViewType.Emoji,
     layoutId = R.layout.view_photo_editor_text
 ) {
     private var txtEmoji: TextView? = null
