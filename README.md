@@ -289,6 +289,7 @@ No. Currently, the focus is on making the android library better. We don't have 
 ### Who is using PhotoEditor?
 1. [Pixxo](https://play.google.com/store/apps/details?id=com.pixxo.breezil.pixxo)
 2. [Couple Blog: Long distance](https://play.google.com/store/apps/details?id=com.coupleblog)
+3. [Screenshot Tile (NoRoot)](https://f-droid.org/packages/com.github.cvzi.screenshottile/)
 
 **Note**: I will be happy to add your app to the list. Please reach out to me with details. You know how to reach me :)
 
