@@ -2,7 +2,7 @@ package com.burhanrashid52.photoediting.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class AddStoryResponse(
+data class AddNewStoryResponse(
     @field:SerializedName("error")
     val error: Boolean,
 
