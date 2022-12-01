@@ -102,6 +102,7 @@ class StickerBSFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+        //TODO
         // Image Urls from flaticon(https://www.flaticon.com/stickers-pack/food-289)
         private val stickerPathList = arrayOf(
                 "https://cdn-icons-png.flaticon.com/256/4392/4392452.png",
