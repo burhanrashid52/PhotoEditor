@@ -149,6 +149,7 @@ class DrawingView @JvmOverloads constructor(
                 ShapeType.LINE -> {
                     shape = LineShape()
                 }
+                else -> {}
             }
         }
 
