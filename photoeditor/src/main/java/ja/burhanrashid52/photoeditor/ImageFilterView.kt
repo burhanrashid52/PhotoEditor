@@ -215,6 +215,7 @@ internal class ImageFilterView @JvmOverloads constructor(
                         mEffect = createEffect(EffectFactory.EFFECT_VIGNETTE)
                         mEffect?.setParameter("scale", .5f)
                     }
+                    else -> {}
                 }
             }
         }
