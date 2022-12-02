@@ -112,7 +112,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         }
         mPhotoEditor?.setOnPhotoEditorListener(this)
 
-        //Set Image Dynamically
+        //Set Image Dynamically //TODO
         mPhotoEditorView?.source?.setImageResource(R.drawable.paris_tower)
         mSaveFileHelper = FileSaveHelper(this)
     }
