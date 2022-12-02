@@ -6,7 +6,7 @@ package ja.burhanrashid52.photoeditor
  * Type of pre-defined filter effect for [ImageFilterView]
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/example)
  * @version 0.1.2
  * @see android.media.effect.EffectFactory
  *

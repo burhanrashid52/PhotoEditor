@@ -20,7 +20,7 @@ import java.util.*
  * as per attributes provided to the paint
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/example)
  * @version 0.1.1
  * @since 12/1/18
  */

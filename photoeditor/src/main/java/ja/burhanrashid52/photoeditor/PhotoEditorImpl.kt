@@ -24,7 +24,7 @@ import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
  * editing attributes
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/example)
  * @version 0.1.1
  * @since 18/01/2017
  */

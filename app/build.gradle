@@ -6,8 +6,8 @@ apply plugin: 'kotlin-parcelize'
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "com.burhanrashid52.photoediting"
-        minSdkVersion 14
+        applicationId "com.example.photoediting"
+        minSdkVersion 16
         targetSdkVersion 31
         versionCode 7
         versionName "2.0.0"
@@ -41,7 +41,7 @@ dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to faciliate testing, and for the integration tests
     //                     to work on locally modified code.
-    //implementation 'com.burhanrashid52:photoeditor:2.0.0'
+    //implementation 'com.example:photoeditor:2.0.0'
     implementation project(':photoeditor')
     implementation 'androidx.cardview:cardview:1.0.0'
 

@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Define your custom effect using [Builder] class
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/example)
  * @version 0.1.2
  * @since 5/22/2018
  */

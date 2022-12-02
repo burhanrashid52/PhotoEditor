@@ -3,7 +3,7 @@ package ja.burhanrashid52.photoeditor
 /**
  * Created by Burhanuddin Rashid on 17/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/example>
  */
 class BrushDrawingStateListener internal constructor(
     private val mPhotoEditorView: PhotoEditorView,

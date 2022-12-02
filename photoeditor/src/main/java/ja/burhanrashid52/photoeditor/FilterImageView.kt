@@ -14,7 +14,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/example)
  * @version 0.1.2
  * @since 5/21/2018
  */

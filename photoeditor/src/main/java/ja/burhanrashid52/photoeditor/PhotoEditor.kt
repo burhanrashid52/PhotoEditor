@@ -15,7 +15,7 @@ import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/example>
  */
 interface PhotoEditor {
     /**

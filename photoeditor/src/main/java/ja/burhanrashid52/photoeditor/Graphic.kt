@@ -9,7 +9,7 @@ import ja.burhanrashid52.photoeditor.MultiTouchListener.OnGestureControl
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/example>
  */
 internal abstract class Graphic(
     val context: Context,

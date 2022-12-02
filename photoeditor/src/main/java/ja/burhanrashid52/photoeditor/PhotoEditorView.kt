@@ -17,7 +17,7 @@ import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
  * which our source image
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/example)
  * @version 0.1.1
  * @since 1/18/2018
  */
