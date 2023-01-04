@@ -12,11 +12,6 @@ class EnumTest {
     }
 
     @Test
-    fun testNumberOfShapeTypes() {
-        assertEquals(ShapeType.values().size.toLong(), 4)
-    }
-
-    @Test
     fun testNumberOfPhotoFilterTypes() {
         assertEquals(PhotoFilter.values().size.toLong(), 24)
     }

@@ -136,18 +136,21 @@ class DrawingView @JvmOverloads constructor(
         if (isErasing) {
             paint = createEraserPaint()
         } else {
-            when(currentShapeBuilder?.shapeType){
-                ShapeType.OVAL -> {
+            when (val shapeType = currentShapeBuilder?.shapeType) {
+                ShapeType.Oval -> {
                     shape = OvalShape()
                 }
-                ShapeType.BRUSH -> {
+                ShapeType.Brush -> {
                     shape = BrushShape()
                 }
-                ShapeType.RECTANGLE -> {
+                ShapeType.Rectangle -> {
                     shape = RectangleShape()
                 }
-                ShapeType.LINE -> {
+                ShapeType.Line -> {
                     shape = LineShape()
+                }
+                is ShapeType.Arrow -> {
+                    shape = LineShape(shapeType.pointerPosition)
                 }
             }
         }

@@ -41,16 +41,19 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
         shapeGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
             when(checkedId) {
                 R.id.lineRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.LINE)
+                    mProperties!!.onShapePicked(ShapeType.Line)
+                }
+                R.id.arrowRadioButton -> {
+                    mProperties!!.onShapePicked(ShapeType.Arrow())
                 }
                 R.id.ovalRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.OVAL)
+                    mProperties!!.onShapePicked(ShapeType.Oval)
                 }
                 R.id.rectRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.RECTANGLE)
+                    mProperties!!.onShapePicked(ShapeType.Rectangle)
                 }
                 else -> {
-                    mProperties!!.onShapePicked(ShapeType.BRUSH)
+                    mProperties!!.onShapePicked(ShapeType.Brush)
                 }
             }
         }
