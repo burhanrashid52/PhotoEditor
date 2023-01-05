@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
@@ -38,14 +39,15 @@ import com.burhanrashid52.photoediting.tools.ToolType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
 import ja.burhanrashid52.photoeditor.PhotoEditorView
 import ja.burhanrashid52.photoeditor.PhotoFilter
+import ja.burhanrashid52.photoeditor.SaveFileResult
 import ja.burhanrashid52.photoeditor.SaveSettings
 import ja.burhanrashid52.photoeditor.TextStyleBuilder
 import ja.burhanrashid52.photoeditor.ViewType
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 import ja.burhanrashid52.photoeditor.shape.ShapeType
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 
@@ -286,34 +288,29 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     error: String?,
                     uri: Uri?
                 ) {
-                    if (created && filePath != null) {
-                        val saveSettings = SaveSettings.Builder()
-                            .setClearViewsEnabled(true)
-                            .setTransparencyEnabled(true)
-                            .build()
+                    lifecycleScope.launch {
+                        if (created && filePath != null) {
+                            val saveSettings = SaveSettings.Builder()
+                                .setClearViewsEnabled(true)
+                                .setTransparencyEnabled(true)
+                                .build()
 
-                        mPhotoEditor.saveAsFile(
-                            filePath,
-                            saveSettings,
-                            object : OnSaveListener {
-                                override fun onSuccess(imagePath: String) {
-                                    mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(
-                                        contentResolver
-                                    )
-                                    hideLoading()
-                                    showSnackbar("Image Saved Successfully")
-                                    mSaveImageUri = uri
-                                    mPhotoEditorView.source.setImageURI(mSaveImageUri)
-                                }
+                            val result = mPhotoEditor.saveAsFile(filePath, saveSettings)
 
-                                override fun onFailure(exception: Exception) {
-                                    hideLoading()
-                                    showSnackbar("Failed to save Image")
-                                }
-                            })
-                    } else {
-                        hideLoading()
-                        error?.let { showSnackbar(error) }
+                            if (result is SaveFileResult.Success) {
+                                mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(contentResolver)
+                                hideLoading()
+                                showSnackbar("Image Saved Successfully")
+                                mSaveImageUri = uri
+                                mPhotoEditorView.source.setImageURI(mSaveImageUri)
+                            } else {
+                                hideLoading()
+                                showSnackbar("Failed to save Image")
+                            }
+                        } else {
+                            hideLoading()
+                            error?.let { showSnackbar(error) }
+                        }
                     }
                 }
             })

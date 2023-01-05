@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  *
@@ -125,25 +127,21 @@ class PhotoEditorView @JvmOverloads constructor(
     val source: ImageView
         get() = mImgSource
 
-    fun saveFilter(onSaveBitmap: OnSaveBitmap) {
+    private fun saveFilter(onBitmapReady: ((Bitmap) -> Unit)) {
         if (mImageFilterView.visibility == VISIBLE) {
-            mImageFilterView.saveBitmap(object : OnSaveBitmap {
-                override fun onBitmapReady(saveBitmap: Bitmap?) {
-                    Log.e(TAG, "saveFilter: $saveBitmap")
-                    saveBitmap?.let {
-                        mImgSource.setImageBitmap(it)
-                    }
-                    mImageFilterView.visibility = GONE
-                    onSaveBitmap.onBitmapReady(saveBitmap)
-                }
-
-                override fun onFailure(e: Exception?) {
-                    onSaveBitmap.onFailure(e)
-                }
-            })
+            mImageFilterView.saveBitmap { saveBitmap ->
+                Log.e(TAG, "saveFilter: $saveBitmap")
+                mImgSource.setImageBitmap(saveBitmap)
+                mImageFilterView.visibility = GONE
+                onBitmapReady.invoke(saveBitmap)
+            }
         } else {
-            onSaveBitmap.onBitmapReady(mImgSource.bitmap)
+            onBitmapReady.invoke(mImgSource.bitmap!!)
         }
+    }
+
+    suspend fun saveFilter() = suspendCoroutine<Bitmap> { continuation ->
+        saveFilter { continuation.resume(it) }
     }
 
     fun setFilterEffect(filterType: PhotoFilter) {

@@ -2,7 +2,6 @@ package ja.burhanrashid52.photoeditor
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.opengl.GLException
 import android.opengl.GLSurfaceView
 import java.nio.IntBuffer
 import javax.microedition.khronos.opengles.GL10
@@ -24,8 +23,7 @@ internal object BitmapUtil {
      * @param source edited image
      * @return bitmap without any transparency
      */
-    fun removeTransparency(source: Bitmap?): Bitmap? {
-        if (source == null) return source
+    fun removeTransparency(source: Bitmap): Bitmap {
         var firstX = 0
         var firstY = 0
         var lastX = source.width
@@ -76,7 +74,7 @@ internal object BitmapUtil {
      * @throws OutOfMemoryError error when system is out of memory to load and save bitmap
      */
     @Throws(OutOfMemoryError::class)
-    fun createBitmapFromGLSurface(glSurfaceView: GLSurfaceView, gl: GL10): Bitmap? {
+    fun createBitmapFromGLSurface(glSurfaceView: GLSurfaceView, gl: GL10): Bitmap {
         val x = 0
         val y = 0
         val w = glSurfaceView.width
@@ -85,23 +83,19 @@ internal object BitmapUtil {
         val bitmapSource = IntArray(w * h)
         val intBuffer = IntBuffer.wrap(bitmapBuffer)
         intBuffer.position(0)
-        try {
-            gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer)
-            var offset1: Int
-            var offset2: Int
-            for (i in 0 until h) {
-                offset1 = i * w
-                offset2 = (h - i - 1) * w
-                for (j in 0 until w) {
-                    val texturePixel = bitmapBuffer[offset1 + j]
-                    val blue = texturePixel shr 16 and 0xff
-                    val red = texturePixel shl 16 and 0x00ff0000
-                    val pixel = texturePixel and -0xff0100 or red or blue
-                    bitmapSource[offset2 + j] = pixel
-                }
+        gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer)
+        var offset1: Int
+        var offset2: Int
+        for (i in 0 until h) {
+            offset1 = i * w
+            offset2 = (h - i - 1) * w
+            for (j in 0 until w) {
+                val texturePixel = bitmapBuffer[offset1 + j]
+                val blue = texturePixel shr 16 and 0xff
+                val red = texturePixel shl 16 and 0x00ff0000
+                val pixel = texturePixel and -0xff0100 or red or blue
+                bitmapSource[offset2 + j] = pixel
             }
-        } catch (e: GLException) {
-            return null
         }
         return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888)
     }
