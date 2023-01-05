@@ -223,49 +223,44 @@ interface PhotoEditor {
      * Save the edited image on given path
      *
      * @param imagePath      path on which image to be saved
-     * @param onSaveListener callback for saving image
-     * @see OnSaveListener
-     */
-    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
-    fun saveAsFile(imagePath: String, onSaveListener: OnSaveListener)
-
-    /**
-     * Save the edited image on given path
-     *
-     * @param imagePath      path on which image to be saved
      * @param saveSettings   builder for multiple save options [SaveSettings]
-     * @param onSaveListener callback for saving image
-     * @see OnSaveListener
      */
-    @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
-    fun saveAsFile(
+    suspend fun saveAsFile(
         imagePath: String,
-        saveSettings: SaveSettings,
-        onSaveListener: OnSaveListener
-    )
-
-    /**
-     * Save the edited image as bitmap
-     *
-     * @param onSaveBitmap callback for saving image as bitmap
-     * @see OnSaveBitmap
-     */
-    @SuppressLint("StaticFieldLeak")
-    fun saveAsBitmap(onSaveBitmap: OnSaveBitmap)
+        saveSettings: SaveSettings = SaveSettings.Builder().build()
+    ): SaveFileResult
 
     /**
      * Save the edited image as bitmap
      *
      * @param saveSettings builder for multiple save options [SaveSettings]
-     * @param onSaveBitmap callback for saving image as bitmap
-     * @see OnSaveBitmap
      */
-    @SuppressLint("StaticFieldLeak")
-    fun saveAsBitmap(
-        saveSettings: SaveSettings,
-        onSaveBitmap: OnSaveBitmap
+    suspend fun saveAsBitmap(saveSettings: SaveSettings = SaveSettings.Builder().build()): Bitmap
+
+    @Deprecated(
+        "This function is deprecated and will be removed in a future release.",
+        ReplaceWith("saveAsFile(imagePath, saveSettings)")
     )
+    fun saveAsFile(imagePath: String, saveSettings: SaveSettings, onSaveListener: OnSaveListener)
+
+    @Deprecated(
+        "This function is deprecated and will be removed in a future release.",
+        ReplaceWith("saveAsFile(imagePath)")
+    )
+    fun saveAsFile(imagePath: String, onSaveListener: OnSaveListener)
+
+    @Deprecated(
+        "This function is deprecated and will be removed in a future release.",
+        ReplaceWith("saveAsBitmap(saveSettings)")
+    )
+    fun saveAsBitmap(saveSettings: SaveSettings, onSaveBitmap: OnSaveBitmap)
+
+    @Deprecated(
+        "This function is deprecated and will be removed in a future release.",
+        ReplaceWith("saveAsBitmap()")
+    )
+    fun saveAsBitmap(onSaveBitmap: OnSaveBitmap)
 
     /**
      * Callback on editing operation perform on [PhotoEditorView]
@@ -287,18 +282,23 @@ interface PhotoEditor {
     class Builder(var context: Context, var photoEditorView: PhotoEditorView) {
         @JvmField
         var imageView: ImageView? = null
+
         @JvmField
         var deleteView: View? = null
+
         @JvmField
         var drawingView: DrawingView? = null
+
         @JvmField
         var textTypeface: Typeface? = null
+
         @JvmField
         var emojiTypeface: Typeface? = null
 
         // By default, pinch-to-scale is enabled for text
         @JvmField
         var isTextPinchScalable = true
+
         @JvmField
         var clipSourceImage = false
         fun setDeleteView(deleteView: View?): Builder {
@@ -373,6 +373,7 @@ interface PhotoEditor {
     /**
      * A callback to save the edited image asynchronously
      */
+    @Deprecated("This interface is deprecated and will be removed in a future release.")
     interface OnSaveListener {
         /**
          * Call when edited image is saved successfully on given path
@@ -388,6 +389,7 @@ interface PhotoEditor {
          */
         fun onFailure(exception: Exception)
     }
+
     // region Shape
     /**
      * Update the current shape to be drawn,

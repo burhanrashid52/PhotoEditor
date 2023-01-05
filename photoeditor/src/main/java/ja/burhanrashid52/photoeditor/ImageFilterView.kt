@@ -12,7 +12,6 @@ import android.opengl.GLUtils
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import ja.burhanrashid52.photoeditor.BitmapUtil.createBitmapFromGLSurface
 import ja.burhanrashid52.photoeditor.GLToolbox.initTexParams
 import javax.microedition.khronos.egl.EGLConfig
@@ -42,8 +41,7 @@ internal class ImageFilterView @JvmOverloads constructor(
     private var mCurrentEffect: PhotoFilter = PhotoFilter.NONE
     private var mSourceBitmap: Bitmap? = null
     private var mCustomEffect: CustomEffect? = null
-    private var mOnSaveBitmap: OnSaveBitmap? = null
-    private var isSaveImage = false
+    private var mOnBitmapReady: ((Bitmap) -> Unit)? = null
 
     init {
         setEGLContextClientVersion(2)
@@ -79,11 +77,11 @@ internal class ImageFilterView @JvmOverloads constructor(
             applyEffect()
         }
         renderResult()
-        if (isSaveImage) {
-            val mFilterBitmap = createBitmapFromGLSurface(this, gl)
-            Log.e(TAG, "onDrawFrame: $mFilterBitmap")
-            isSaveImage = false
-            Handler(Looper.getMainLooper()).post { mOnSaveBitmap?.onBitmapReady(mFilterBitmap) }
+
+        mOnBitmapReady?.also { onBitmapReady ->
+            mOnBitmapReady = null
+            val filterBitmap = createBitmapFromGLSurface(this, gl)
+            Handler(Looper.getMainLooper()).post { onBitmapReady.invoke(filterBitmap) }
         }
     }
 
@@ -98,9 +96,8 @@ internal class ImageFilterView @JvmOverloads constructor(
         requestRender()
     }
 
-    fun saveBitmap(onSaveBitmap: OnSaveBitmap?) {
-        mOnSaveBitmap = onSaveBitmap
-        isSaveImage = true
+    fun saveBitmap(onBitmapReady: ((Bitmap) -> Unit)) {
+        mOnBitmapReady = onBitmapReady
         requestRender()
     }
 
