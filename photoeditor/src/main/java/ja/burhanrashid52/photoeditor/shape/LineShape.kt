@@ -53,13 +53,7 @@ class LineShape(
         return path
     }
 
-    private fun drawArrow(
-        path: Path,
-        fromX: Double,
-        fromY: Double,
-        toX: Double,
-        toY: Double
-    ) {
+    private fun drawArrow(path: Path, fromX: Double, fromY: Double, toX: Double, toY: Double) {
         // Based on: https://stackoverflow.com/a/41734848/1219654
 
         val angleRad = (PI * ARROW_ANGLE / 180.0)
