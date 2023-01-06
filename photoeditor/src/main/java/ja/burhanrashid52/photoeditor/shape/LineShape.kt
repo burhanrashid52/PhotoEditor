@@ -6,6 +6,7 @@ import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.max
 import kotlin.math.sin
 
 
@@ -63,17 +64,19 @@ class LineShape(
 
         val angleRad = (PI * ARROW_ANGLE / 180.0)
         val lineAngle = atan2(toY - fromY, toX - fromX)
+        val arrowRadius =
+            (max(abs(toX - fromX), abs(toY - fromY)) / 2).coerceAtMost(ARROW_MAX_RADIUS)
 
         path.moveTo(toX.toFloat(), toY.toFloat())
         path.lineTo(
-            (toX - ARROW_RADIUS * cos(lineAngle - angleRad / 2.0)).toFloat(),
-            (toY - ARROW_RADIUS * sin(lineAngle - angleRad / 2.0)).toFloat()
+            (toX - arrowRadius * cos(lineAngle - angleRad / 2.0)).toFloat(),
+            (toY - arrowRadius * sin(lineAngle - angleRad / 2.0)).toFloat()
         )
 
         path.moveTo(toX.toFloat(), toY.toFloat())
         path.lineTo(
-            (toX - ARROW_RADIUS * cos(lineAngle + angleRad / 2.0)).toFloat(),
-            (toY - ARROW_RADIUS * sin(lineAngle + angleRad / 2.0)).toFloat()
+            (toX - arrowRadius * cos(lineAngle + angleRad / 2.0)).toFloat(),
+            (toY - arrowRadius * sin(lineAngle + angleRad / 2.0)).toFloat()
         )
     }
 
@@ -84,7 +87,7 @@ class LineShape(
     private companion object {
 
         const val ARROW_ANGLE = 60.0
-        const val ARROW_RADIUS = 80.0
+        const val ARROW_MAX_RADIUS = 80.0
 
     }
 
