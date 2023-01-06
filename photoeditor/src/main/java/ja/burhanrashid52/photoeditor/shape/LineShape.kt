@@ -11,7 +11,7 @@ import kotlin.math.sin
 
 
 class LineShape(
-    private val pointerPosition: ArrowPointerPosition? = null
+    private val pointerLocation: ArrowPointerLocation? = null
 ) : AbstractShape("LineShape") {
 
     private var lastX = 0f
@@ -38,12 +38,12 @@ class LineShape(
     private fun createLinePath(): Path {
         val path = Path()
 
-        if (pointerPosition == ArrowPointerPosition.START || pointerPosition == ArrowPointerPosition.BOTH) {
-            drawArrow(path, left.toDouble(), top.toDouble(), right.toDouble(), bottom.toDouble())
+        if (pointerLocation == ArrowPointerLocation.START || pointerLocation == ArrowPointerLocation.BOTH) {
+            drawArrow(path, right.toDouble(), bottom.toDouble(), left.toDouble(), top.toDouble())
         }
 
-        if (pointerPosition == ArrowPointerPosition.END || pointerPosition == ArrowPointerPosition.BOTH) {
-            drawArrow(path, right.toDouble(), bottom.toDouble(), left.toDouble(), top.toDouble())
+        if (pointerLocation == ArrowPointerLocation.END || pointerLocation == ArrowPointerLocation.BOTH) {
+            drawArrow(path, left.toDouble(), top.toDouble(), right.toDouble(), bottom.toDouble())
         }
 
         path.moveTo(left, top)

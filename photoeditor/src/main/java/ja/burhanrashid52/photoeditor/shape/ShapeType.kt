@@ -9,6 +9,6 @@ sealed interface ShapeType {
     object Oval : ShapeType
     object Rectangle : ShapeType
     object Line : ShapeType
-    class Arrow(val pointerPosition: ArrowPointerPosition = ArrowPointerPosition.START) : ShapeType
+    class Arrow(val pointerLocation: ArrowPointerLocation = ArrowPointerLocation.START) : ShapeType
 
 }

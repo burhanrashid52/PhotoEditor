@@ -150,7 +150,7 @@ class DrawingView @JvmOverloads constructor(
                     shape = LineShape()
                 }
                 is ShapeType.Arrow -> {
-                    shape = LineShape(shapeType.pointerPosition)
+                    shape = LineShape(shapeType.pointerLocation)
                 }
             }
         }
