@@ -56,8 +56,11 @@ class LineShape(
     private fun drawArrow(path: Path, fromX: Float, fromY: Float, toX: Float, toY: Float) {
         // Based on: https://stackoverflow.com/a/41734848/1219654
 
-        val lineAngle = atan2(toY - fromY, toX - fromX)
-        val arrowRadius = (hypot(toX - fromX, toY - fromY) / 2.0f).coerceAtMost(MAX_ARROW_RADIUS)
+        val xDistance = toX - fromX
+        val yDistance = toY - fromY
+
+        val lineAngle = atan2(yDistance, xDistance)
+        val arrowRadius = (hypot(xDistance, yDistance) / 2.0f).coerceAtMost(MAX_ARROW_RADIUS)
 
         val anglePointerA = lineAngle - ANGLE_RAD
         val anglePointerB = lineAngle + ANGLE_RAD
