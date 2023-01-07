@@ -39,11 +39,11 @@ class LineShape(
         val path = Path()
 
         if (pointerLocation == ArrowPointerLocation.START || pointerLocation == ArrowPointerLocation.BOTH) {
-            drawArrow(path, right.toDouble(), bottom.toDouble(), left.toDouble(), top.toDouble())
+            drawArrow(path, right, bottom, left, top)
         }
 
         if (pointerLocation == ArrowPointerLocation.END || pointerLocation == ArrowPointerLocation.BOTH) {
-            drawArrow(path, left.toDouble(), top.toDouble(), right.toDouble(), bottom.toDouble())
+            drawArrow(path, left, top, right, bottom)
         }
 
         path.moveTo(left, top)
@@ -53,24 +53,23 @@ class LineShape(
         return path
     }
 
-    private fun drawArrow(path: Path, fromX: Double, fromY: Double, toX: Double, toY: Double) {
+    private fun drawArrow(path: Path, fromX: Float, fromY: Float, toX: Float, toY: Float) {
         // Based on: https://stackoverflow.com/a/41734848/1219654
 
-        val angleRad = (PI * ARROW_ANGLE / 180.0)
         val lineAngle = atan2(toY - fromY, toX - fromX)
         val arrowRadius =
-            (max(abs(toX - fromX), abs(toY - fromY)) / 2).coerceAtMost(ARROW_MAX_RADIUS)
+            (max(abs(toX - fromX), abs(toY - fromY)) / 2.0f).coerceAtMost(ARROW_MAX_RADIUS)
 
-        path.moveTo(toX.toFloat(), toY.toFloat())
+        path.moveTo(toX, toY)
         path.lineTo(
-            (toX - arrowRadius * cos(lineAngle - angleRad / 2.0)).toFloat(),
-            (toY - arrowRadius * sin(lineAngle - angleRad / 2.0)).toFloat()
+            (toX - arrowRadius * cos(lineAngle - ANGLE_RAD / 2.0f)),
+            (toY - arrowRadius * sin(lineAngle - ANGLE_RAD / 2.0f))
         )
 
-        path.moveTo(toX.toFloat(), toY.toFloat())
+        path.moveTo(toX, toY)
         path.lineTo(
-            (toX - arrowRadius * cos(lineAngle + angleRad / 2.0)).toFloat(),
-            (toY - arrowRadius * sin(lineAngle + angleRad / 2.0)).toFloat()
+            (toX - arrowRadius * cos(lineAngle + ANGLE_RAD / 2.0f)),
+            (toY - arrowRadius * sin(lineAngle + ANGLE_RAD / 2.0f))
         )
     }
 
@@ -81,7 +80,8 @@ class LineShape(
     private companion object {
 
         const val ARROW_ANGLE = 60.0
-        const val ARROW_MAX_RADIUS = 80.0
+        const val ANGLE_RAD = (PI * ARROW_ANGLE / 180.0).toFloat()
+        const val ARROW_MAX_RADIUS = 80.0f
 
     }
 
