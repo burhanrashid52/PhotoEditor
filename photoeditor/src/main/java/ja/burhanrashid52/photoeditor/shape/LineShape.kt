@@ -60,16 +60,19 @@ class LineShape(
         val arrowRadius =
             (max(abs(toX - fromX), abs(toY - fromY)) / 2.0f).coerceAtMost(ARROW_MAX_RADIUS)
 
+        val anglePointerA = lineAngle - ANGLE_RAD
+        val anglePointerB = lineAngle + ANGLE_RAD
+
         path.moveTo(toX, toY)
         path.lineTo(
-            (toX - arrowRadius * cos(lineAngle - ANGLE_RAD / 2.0f)),
-            (toY - arrowRadius * sin(lineAngle - ANGLE_RAD / 2.0f))
+            (toX - arrowRadius * cos(anglePointerA)),
+            (toY - arrowRadius * sin(anglePointerA))
         )
 
         path.moveTo(toX, toY)
         path.lineTo(
-            (toX - arrowRadius * cos(lineAngle + ANGLE_RAD / 2.0f)),
-            (toY - arrowRadius * sin(lineAngle + ANGLE_RAD / 2.0f))
+            (toX - arrowRadius * cos(anglePointerB)),
+            (toY - arrowRadius * sin(anglePointerB))
         )
     }
 
@@ -79,7 +82,7 @@ class LineShape(
 
     private companion object {
 
-        const val ARROW_ANGLE = 60.0
+        const val ARROW_ANGLE = 30.0
         const val ANGLE_RAD = (PI * ARROW_ANGLE / 180.0).toFloat()
         const val ARROW_MAX_RADIUS = 80.0f
 
