@@ -6,7 +6,7 @@ import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
-import kotlin.math.max
+import kotlin.math.hypot
 import kotlin.math.sin
 
 
@@ -57,8 +57,7 @@ class LineShape(
         // Based on: https://stackoverflow.com/a/41734848/1219654
 
         val lineAngle = atan2(toY - fromY, toX - fromX)
-        val arrowRadius =
-            (max(abs(toX - fromX), abs(toY - fromY)) / 2.0f).coerceAtMost(ARROW_MAX_RADIUS)
+        val arrowRadius = (hypot(toX - fromX, toY - fromY) / 2.0f).coerceAtMost(MAX_ARROW_RADIUS)
 
         val anglePointerA = lineAngle - ANGLE_RAD
         val anglePointerB = lineAngle + ANGLE_RAD
@@ -84,7 +83,7 @@ class LineShape(
 
         const val ARROW_ANGLE = 30.0
         const val ANGLE_RAD = (PI * ARROW_ANGLE / 180.0).toFloat()
-        const val ARROW_MAX_RADIUS = 80.0f
+        const val MAX_ARROW_RADIUS = 80.0f
 
     }
 
