@@ -54,8 +54,8 @@ class DrawingView @JvmOverloads constructor(
         // apply shape builder parameters
         currentShapeBuilder?.apply {
             paint.strokeWidth = this.shapeSize
-            paint.alpha = this.shapeOpacity
             paint.color = this.shapeColor
+            paint.alpha = this.shapeOpacity
         }
 
         return paint
