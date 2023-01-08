@@ -54,8 +54,10 @@ class DrawingView @JvmOverloads constructor(
         // apply shape builder parameters
         currentShapeBuilder?.apply {
             paint.strokeWidth = this.shapeSize
+            // 'paint.color' must be called before 'paint.alpha',
+            // otherwise 'paint.alpha' value will be overwritten.
             paint.color = this.shapeColor
-            paint.alpha = this.shapeOpacity
+            shapeOpacity?.also { paint.alpha = it }
         }
 
         return paint
@@ -136,7 +138,7 @@ class DrawingView @JvmOverloads constructor(
         if (isErasing) {
             paint = createEraserPaint()
         } else {
-            when(currentShapeBuilder?.shapeType){
+            when (currentShapeBuilder?.shapeType) {
                 ShapeType.OVAL -> {
                     shape = OvalShape()
                 }
