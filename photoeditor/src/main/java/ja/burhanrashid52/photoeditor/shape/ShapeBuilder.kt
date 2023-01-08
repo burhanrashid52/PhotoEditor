@@ -16,7 +16,7 @@ class ShapeBuilder {
         private set
 
     @androidx.annotation.IntRange(from = 0, to = 255)
-    var shapeOpacity = 0
+    var shapeOpacity: Int? = null
         private set
 
     @get:ColorInt
