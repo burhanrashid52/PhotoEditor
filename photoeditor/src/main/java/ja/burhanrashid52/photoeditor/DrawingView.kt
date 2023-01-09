@@ -127,7 +127,7 @@ class DrawingView @JvmOverloads constructor(
     private fun onTouchEventUp(touchX: Float, touchY: Float) {
         currentShape?.apply {
             shape.stopShape()
-            endShape()
+            endShape(touchX, touchY)
         }
     }
 
@@ -138,7 +138,7 @@ class DrawingView @JvmOverloads constructor(
         if (isErasing) {
             paint = createEraserPaint()
         } else {
-            when (currentShapeBuilder?.shapeType) {
+            when (currentShapeBuilder?.shapeType){
                 ShapeType.OVAL -> {
                     shape = OvalShape()
                 }
@@ -159,7 +159,7 @@ class DrawingView @JvmOverloads constructor(
         viewChangeListener?.onStartDrawing()
     }
 
-    private fun endShape() {
+    private fun endShape(touchX: Float, touchY: Float) {
         if (currentShape?.shape?.hasBeenTapped() == true) {
             // just a tap, this is not a shape, so remove it
             drawShapes.remove(currentShape)
