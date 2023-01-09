@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.widget.TextView
 import java.util.*
 
@@ -17,7 +16,6 @@ import java.util.*
  * @author [Christian Caballero](https://github.com/Sulfkain)
  * @since 14/05/2019
  */
-@Suppress("DEPRECATION")
 open class TextStyleBuilder {
     val values = mutableMapOf<TextStyle, Any>()
 
@@ -210,7 +208,7 @@ open class TextStyleBuilder {
     }
 
     protected open fun applyBackgroundDrawable(textView: TextView, bg: Drawable?) {
-        if (Build.VERSION.SDK_INT >= JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             textView.background = bg
         } else {
             textView.setBackgroundDrawable(bg)
@@ -223,7 +221,7 @@ open class TextStyleBuilder {
         gd.cornerRadius = textBorder.corner
         gd.setStroke(textBorder.strokeWidth, textBorder.strokeColor)
         gd.setColor(textBorder.backGroundColor)
-        if (Build.VERSION.SDK_INT >= JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             textView.background = gd
         }
     }
@@ -244,7 +242,6 @@ open class TextStyleBuilder {
         textView.paint.flags = flag
     }
 
-    @Suppress("DEPRECATION")
     protected open fun applyTextAppearance(textView: TextView, styleAppearance: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             textView.setTextAppearance(styleAppearance)
