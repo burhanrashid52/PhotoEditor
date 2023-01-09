@@ -109,7 +109,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
         drawingView.currentShape?.paint?.apply {
             assertEquals(
                 drawingView.currentShapeBuilder?.shapeOpacity,
-                ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0
+                ShapeBuilder.DEFAULT_SHAPE_OPACITY
             )
             assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
         } ?: AssertionError("The paint is null")
