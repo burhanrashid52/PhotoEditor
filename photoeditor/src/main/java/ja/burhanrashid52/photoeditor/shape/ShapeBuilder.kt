@@ -38,7 +38,7 @@ class ShapeBuilder {
         @androidx.annotation.IntRange(
             from = 0,
             to = 255
-        ) opacity: Int
+        ) opacity: Int?
     ): ShapeBuilder {
         shapeOpacity = opacity
         return this
@@ -51,7 +51,7 @@ class ShapeBuilder {
 
     companion object {
         const val DEFAULT_SHAPE_SIZE = 25.0f
-        const val DEFAULT_SHAPE_OPACITY = 255
+        val DEFAULT_SHAPE_OPACITY = null
         const val DEFAULT_SHAPE_COLOR = Color.BLACK
     }
 
