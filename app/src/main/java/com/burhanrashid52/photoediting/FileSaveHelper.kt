@@ -32,6 +32,7 @@ import java.util.concurrent.Executors
  * Remember! in order to shutdown executor call [FileSaveHelper.addObserver] or
  * create object with the [FileSaveHelper]
  */
+@Suppress("DEPRECATION")
 class FileSaveHelper(private val mContentResolver: ContentResolver) : LifecycleObserver {
     private val executor: ExecutorService? = Executors.newSingleThreadExecutor()
     private val fileCreatedResult: MutableLiveData<FileMeta> = MutableLiveData()
@@ -83,11 +84,11 @@ class FileSaveHelper(private val mContentResolver: ContentResolver) : LifecycleO
 
                 // Query the MediaStore for the image file path from the image Uri
                 cursor = mContentResolver.query(
-                    editedImageUri,
-                    arrayOf(MediaStore.Images.Media.DATA),
-                    null,
-                    null,
-                    null
+                    /* uri = */ editedImageUri,
+                    /* projection = */ arrayOf(MediaStore.Images.Media.DATA),
+                    /* selection = */ null,
+                    /* selectionArgs = */ null,
+                    /* sortOrder = */ null
                 )
                 val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
                 cursor.moveToFirst()

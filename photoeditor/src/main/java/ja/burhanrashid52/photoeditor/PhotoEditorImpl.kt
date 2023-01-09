@@ -28,6 +28,7 @@ import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
  * @version 0.1.1
  * @since 18/01/2017
  */
+@Suppress("DEPRECATION")
 internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") constructor(
     builder: PhotoEditor.Builder
 ) : PhotoEditor {

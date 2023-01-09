@@ -19,6 +19,7 @@ import java.io.IOException
  *
  * @author <https:></https:>//github.com/burhanrashid52>
  */
+@Suppress("DEPRECATION")
 internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHelper) :
     AsyncTask<String?, String?, SaveResult>() {
     private var mSaveSettings: SaveSettings
@@ -39,6 +40,7 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
         mSaveSettings = saveSettings
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onPreExecute() {
         super.onPreExecute()
         mBoxHelper.clearHelperBox()
@@ -88,6 +90,7 @@ internal class PhotoSaverTask(photoEditorView: PhotoEditorView, boxHelper: BoxHe
         ) else captureView(mPhotoEditorView)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onPostExecute(saveResult: SaveResult) {
         super.onPostExecute(saveResult)
         if (TextUtils.isEmpty(saveResult.mImagePath)) {

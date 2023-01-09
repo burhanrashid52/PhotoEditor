@@ -17,6 +17,7 @@ import kotlin.math.min
  *
  *
  */
+@Suppress("DEPRECATION")
 internal class MultiTouchListener(
     deleteView: View?,
     photoEditorView: PhotoEditorView,
@@ -248,8 +249,8 @@ internal class MultiTouchListener(
     }
 
     init {
-        mScaleGestureDetector = ScaleGestureDetector(ScaleGestureListener())
-        mGestureListener = GestureDetector(GestureListener())
+        this.mScaleGestureDetector = ScaleGestureDetector(ScaleGestureListener())
+        this.mGestureListener = GestureDetector(GestureListener())
         this.deleteView = deleteView
         this.photoEditorView = photoEditorView
         this.photoEditImageView = photoEditImageView
