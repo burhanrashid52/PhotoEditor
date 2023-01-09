@@ -1,7 +1,6 @@
 package com.burhanrashid52.photoediting
 
 import android.Manifest
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
@@ -11,7 +10,6 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -26,7 +24,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
@@ -52,7 +49,6 @@ import ja.burhanrashid52.photoeditor.shape.ShapeType
 import java.io.File
 import java.io.IOException
 
-@Suppress("DEPRECATION")
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
     PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener,
     OnItemSelected, FilterListener {
@@ -99,11 +95,11 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mPropertiesBSFragment.setPropertiesChangeListener(this)
         mShapeBSFragment.setPropertiesChangeListener(this)
 
-        val llmTools = LinearLayoutManager(this, HORIZONTAL, false)
+        val llmTools = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         mRvTools.layoutManager = llmTools
         mRvTools.adapter = mEditingToolsAdapter
 
-        val llmFilters = LinearLayoutManager(this, HORIZONTAL, false)
+        val llmFilters = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         mRvFilters.layoutManager = llmFilters
         mRvFilters.adapter = mFilterViewAdapter
 
@@ -136,7 +132,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             Intent.ACTION_EDIT, ACTION_NEXTGEN_EDIT -> {
                 try {
                     val uri = intent.data
-                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
                     source.setImageBitmap(bitmap)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -234,14 +230,14 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             R.id.imgClose -> onBackPressed()
             R.id.imgShare -> shareImage()
             R.id.imgCamera -> {
-                val cameraIntent = Intent(ACTION_IMAGE_CAPTURE)
-                this.startActivityForResult(cameraIntent, CAMERA_REQUEST)
+                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(cameraIntent, CAMERA_REQUEST)
             }
             R.id.imgGallery -> {
                 val intent = Intent()
                 intent.type = "image/*"
                 intent.action = Intent.ACTION_GET_CONTENT
-                this.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST)
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST)
             }
         }
     }
@@ -272,18 +268,18 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         )
     }
 
-    @RequiresPermission(allOf = [WRITE_EXTERNAL_STORAGE])
+    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     private fun saveImage() {
         val fileName = System.currentTimeMillis().toString() + ".png"
         val hasStoragePermission = ContextCompat.checkSelfPermission(
             this,
-            WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED
         if (hasStoragePermission || FileSaveHelper.isSdkHigherThan28()) {
             showLoading("Saving...")
             mSaveFileHelper.createFile(fileName, object : FileSaveHelper.OnFileCreateResult {
 
-                @RequiresPermission(allOf = [WRITE_EXTERNAL_STORAGE])
+                @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
                 override fun onFileCreateResult(
                     created: Boolean,
                     filePath: String?,
@@ -322,13 +318,12 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 }
             })
         } else {
-            requestPermission(WRITE_EXTERNAL_STORAGE)
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
     }
 
     // TODO(lucianocheng): Replace onActivityResult with Result API from Google
     //                     See https://developer.android.com/training/basics/intents/result
-    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {

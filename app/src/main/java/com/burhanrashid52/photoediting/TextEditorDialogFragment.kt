@@ -23,7 +23,6 @@ import androidx.fragment.app.DialogFragment
 /**
  * Created by Burhanuddin Rashid on 1/16/2018.
  */
-@Suppress("DEPRECATION")
 class TextEditorDialogFragment : DialogFragment() {
     private var mAddTextEditText: EditText? = null
     private var mAddTextDoneTextView: TextView? = null
