@@ -17,6 +17,7 @@ import com.burhanrashid52.photoediting.PhotoApp.Companion.photoApp
 import java.lang.NumberFormatException
 import java.util.ArrayList
 
+@Suppress("DEPRECATION")
 class EmojiBSFragment : BottomSheetDialogFragment() {
     private var mEmojiListener: EmojiListener? = null
 

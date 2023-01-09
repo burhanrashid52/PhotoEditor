@@ -365,8 +365,8 @@ interface PhotoEditor {
          * @param photoEditorView [PhotoEditorView]
          */
         init {
-            imageView = photoEditorView?.source
-            drawingView = photoEditorView?.drawingView
+            imageView = photoEditorView.source
+            drawingView = photoEditorView.drawingView
         }
     }
 
