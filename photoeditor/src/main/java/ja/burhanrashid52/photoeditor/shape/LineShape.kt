@@ -1,5 +1,6 @@
 package ja.burhanrashid52.photoeditor.shape
 
+import android.content.Context
 import android.graphics.Path
 import android.util.Log
 import kotlin.math.PI
@@ -9,10 +10,12 @@ import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
-
 class LineShape(
+    context: Context,
     private val pointerLocation: ArrowPointerLocation? = null
 ) : AbstractShape("LineShape") {
+
+    private val maxArrowRadius = convertDpsToPixels(context, MAX_ARROW_RADIUS_DP).toFloat()
 
     private var lastX = 0f
     private var lastY = 0f
@@ -60,7 +63,7 @@ class LineShape(
         val yDistance = toY - fromY
 
         val lineAngle = atan2(yDistance, xDistance)
-        val arrowRadius = (hypot(xDistance, yDistance) / 2.0f).coerceAtMost(MAX_ARROW_RADIUS)
+        val arrowRadius = (hypot(xDistance, yDistance) / 2.0f).coerceAtMost(maxArrowRadius)
 
         val anglePointerA = lineAngle - ANGLE_RAD
         val anglePointerB = lineAngle + ANGLE_RAD
@@ -86,7 +89,14 @@ class LineShape(
 
         const val ARROW_ANGLE = 30.0
         const val ANGLE_RAD = (PI * ARROW_ANGLE / 180.0).toFloat()
-        const val MAX_ARROW_RADIUS = 80.0f
+        const val MAX_ARROW_RADIUS_DP = 32.0f
+
+        fun convertDpsToPixels(context: Context, sizeDp: Float): Int {
+            // Convert the dps to pixels
+            val scale = context.resources.displayMetrics.density
+            // Use sizePx as a size in pixels
+            return (sizeDp * scale + 0.5f).toInt()
+        }
 
     }
 

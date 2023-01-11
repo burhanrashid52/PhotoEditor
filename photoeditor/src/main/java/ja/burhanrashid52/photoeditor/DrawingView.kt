@@ -147,10 +147,10 @@ class DrawingView @JvmOverloads constructor(
                     shape = RectangleShape()
                 }
                 ShapeType.Line -> {
-                    shape = LineShape()
+                    shape = LineShape(context)
                 }
                 is ShapeType.Arrow -> {
-                    shape = LineShape(shapeType.pointerLocation)
+                    shape = LineShape(context, shapeType.pointerLocation)
                 }
             }
         }
