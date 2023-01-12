@@ -63,7 +63,7 @@ class LineShape(
         val yDistance = toY - fromY
 
         val lineAngle = atan2(yDistance, xDistance)
-        val arrowRadius = (hypot(xDistance, yDistance) / 2.0f).coerceAtMost(maxArrowRadius)
+        val arrowRadius = (hypot(xDistance, yDistance) / 2.5f).coerceAtMost(maxArrowRadius)
 
         val anglePointerA = lineAngle - ANGLE_RAD
         val anglePointerB = lineAngle + ANGLE_RAD
