@@ -2,7 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'com.burhanrashid52.photoediting'
     compileSdkVersion 31
+
     defaultConfig {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 14
