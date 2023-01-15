@@ -2,14 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-
+    namespace 'ja.burhanrashid52.photoeditor'
     compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 31
-        versionCode 7
-        versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // https://stackoverflow.com/a/69043734
