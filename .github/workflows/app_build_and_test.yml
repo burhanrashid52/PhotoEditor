@@ -36,6 +36,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - name: set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
 
       - name: run ui tests
         uses: reactivecircus/android-emulator-runner@v2
