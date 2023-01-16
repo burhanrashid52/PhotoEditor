@@ -31,6 +31,7 @@ internal class ImageFilterView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : GLSurfaceView(context, attrs), GLSurfaceView.Renderer {
+
     private val mTextures = IntArray(2)
     private var mEffectContext: EffectContext? = null
     private var mEffect: Effect? = null
@@ -50,7 +51,7 @@ internal class ImageFilterView @JvmOverloads constructor(
         setFilterEffect(PhotoFilter.NONE)
     }
 
-    fun setSourceBitmap(sourceBitmap: Bitmap?) {
+    internal fun setSourceBitmap(sourceBitmap: Bitmap?) {
         /* if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
             //mCurrentEffect = NONE;
         }*/
@@ -85,18 +86,18 @@ internal class ImageFilterView @JvmOverloads constructor(
         }
     }
 
-    fun setFilterEffect(effect: PhotoFilter) {
+    internal fun setFilterEffect(effect: PhotoFilter) {
         mCurrentEffect = effect
         mCustomEffect = null
         requestRender()
     }
 
-    fun setFilterEffect(customEffect: CustomEffect?) {
+    internal fun setFilterEffect(customEffect: CustomEffect?) {
         mCustomEffect = customEffect
         requestRender()
     }
 
-    fun saveBitmap(onBitmapReady: ((Bitmap) -> Unit)) {
+    internal fun saveBitmap(onBitmapReady: ((Bitmap) -> Unit)) {
         mOnBitmapReady = onBitmapReady
         requestRender()
     }
