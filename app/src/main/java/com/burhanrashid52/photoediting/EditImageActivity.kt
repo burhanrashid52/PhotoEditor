@@ -362,7 +362,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mTxtCurrentTool.setText(R.string.label_brush)
     }
 
-    override fun onShapePicked(shapeType: ShapeType?) {
+    override fun onShapePicked(shapeType: ShapeType) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeType(shapeType))
     }
 
@@ -393,11 +393,11 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         builder.create().show()
     }
 
-    override fun onFilterSelected(photoFilter: PhotoFilter?) {
+    override fun onFilterSelected(photoFilter: PhotoFilter) {
         mPhotoEditor.setFilterEffect(photoFilter)
     }
 
-    override fun onToolSelected(toolType: ToolType?) {
+    override fun onToolSelected(toolType: ToolType) {
         when (toolType) {
             ToolType.SHAPE -> {
                 mPhotoEditor.setBrushDrawingMode(true)
