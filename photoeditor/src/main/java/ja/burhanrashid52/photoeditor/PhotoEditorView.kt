@@ -28,9 +28,12 @@ class PhotoEditorView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : RelativeLayout(context, attrs, defStyle) {
+
     private var mImgSource: FilterImageView = FilterImageView(context)
-    var drawingView: DrawingView
+
+    internal var drawingView: DrawingView
         private set
+
     private var mImageFilterView: ImageFilterView
     private var clipSourceImage = false
 
@@ -140,23 +143,23 @@ class PhotoEditorView @JvmOverloads constructor(
         }
     }
 
-    suspend fun saveFilter() = suspendCoroutine<Bitmap> { continuation ->
+    internal suspend fun saveFilter() = suspendCoroutine<Bitmap> { continuation ->
         saveFilter { continuation.resume(it) }
     }
 
-    fun setFilterEffect(filterType: PhotoFilter) {
+    internal fun setFilterEffect(filterType: PhotoFilter) {
         mImageFilterView.visibility = VISIBLE
         mImageFilterView.setSourceBitmap(mImgSource.bitmap)
         mImageFilterView.setFilterEffect(filterType)
     }
 
-    fun setFilterEffect(customEffect: CustomEffect?) {
+    internal fun setFilterEffect(customEffect: CustomEffect?) {
         mImageFilterView.visibility = VISIBLE
         mImageFilterView.setSourceBitmap(mImgSource.bitmap)
         mImageFilterView.setFilterEffect(customEffect)
     }
 
-    fun setClipSourceImage(clip: Boolean) {
+    internal fun setClipSourceImage(clip: Boolean) {
         clipSourceImage = clip
         val param = setupImageSource(null)
         mImgSource.layoutParams = param
