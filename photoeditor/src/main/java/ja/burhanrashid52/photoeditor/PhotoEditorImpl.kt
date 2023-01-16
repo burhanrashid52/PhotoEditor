@@ -14,10 +14,8 @@ import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
 import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

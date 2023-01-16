@@ -83,6 +83,7 @@ internal object BitmapUtil {
         val bitmapSource = IntArray(w * h)
         val intBuffer = IntBuffer.wrap(bitmapBuffer)
         intBuffer.position(0)
+
         gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer)
         var offset1: Int
         var offset2: Int
@@ -97,6 +98,8 @@ internal object BitmapUtil {
                 bitmapSource[offset2 + j] = pixel
             }
         }
+
         return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888)
     }
+
 }

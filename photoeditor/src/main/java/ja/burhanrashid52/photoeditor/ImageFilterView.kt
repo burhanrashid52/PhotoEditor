@@ -9,13 +9,17 @@ import android.media.effect.EffectFactory
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import ja.burhanrashid52.photoeditor.BitmapUtil.createBitmapFromGLSurface
 import ja.burhanrashid52.photoeditor.GLToolbox.initTexParams
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  *
@@ -42,7 +46,8 @@ internal class ImageFilterView @JvmOverloads constructor(
     private var mCurrentEffect: PhotoFilter = PhotoFilter.NONE
     private var mSourceBitmap: Bitmap? = null
     private var mCustomEffect: CustomEffect? = null
-    private var mOnBitmapReady: ((Bitmap) -> Unit)? = null
+    private var bitmapReadyContinuation: Continuation<Bitmap>? = null
+    private val mutex = Mutex()
 
     init {
         setEGLContextClientVersion(2)
@@ -65,24 +70,42 @@ internal class ImageFilterView @JvmOverloads constructor(
     }
 
     override fun onDrawFrame(gl: GL10) {
-        if (!mInitialized) {
-            //Only need to do this once
-            mEffectContext = EffectContext.createWithCurrentGlContext()
-            mTexRenderer.init()
-            loadTextures()
-            mInitialized = true
+        try {
+            if (!mInitialized) {
+                //Only need to do this once
+                mEffectContext = EffectContext.createWithCurrentGlContext()
+                mTexRenderer.init()
+                loadTextures()
+                mInitialized = true
+            }
+            if (mCurrentEffect != PhotoFilter.NONE || mCustomEffect != null) {
+                //if an effect is chosen initialize it and apply it to the texture
+                initEffect()
+                applyEffect()
+            }
+            renderResult()
+        } catch (t: Throwable) {
+            val continuation = bitmapReadyContinuation
+            if (continuation != null) {
+                bitmapReadyContinuation = null
+                continuation.resumeWithException(t)
+            } else {
+                throw t
+            }
         }
-        if (mCurrentEffect != PhotoFilter.NONE || mCustomEffect != null) {
-            //if an effect is chosen initialize it and apply it to the texture
-            initEffect()
-            applyEffect()
-        }
-        renderResult()
 
-        mOnBitmapReady?.also { onBitmapReady ->
-            mOnBitmapReady = null
-            val filterBitmap = createBitmapFromGLSurface(this, gl)
-            Handler(Looper.getMainLooper()).post { onBitmapReady.invoke(filterBitmap) }
+        val continuation = bitmapReadyContinuation
+        if (continuation != null) {
+            bitmapReadyContinuation = null
+
+            val filterBitmap = try {
+                createBitmapFromGLSurface(this, gl)
+            } catch (t: Throwable) {
+                continuation.resumeWithException(t)
+                null
+            }
+
+            if (filterBitmap != null) continuation.resume(filterBitmap)
         }
     }
 
@@ -97,9 +120,11 @@ internal class ImageFilterView @JvmOverloads constructor(
         requestRender()
     }
 
-    internal fun saveBitmap(onBitmapReady: ((Bitmap) -> Unit)) {
-        mOnBitmapReady = onBitmapReady
-        requestRender()
+    internal suspend fun saveBitmap(): Bitmap = mutex.withLock {
+        suspendCoroutine { continuation ->
+            bitmapReadyContinuation = continuation
+            requestRender()
+        }
     }
 
     private fun loadTextures() {
