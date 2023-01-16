@@ -41,11 +41,11 @@ class LineShape(
     private fun createLinePath(): Path {
         val path = Path()
 
-        if (pointerLocation == ArrowPointerLocation.START || pointerLocation == ArrowPointerLocation.BOTH) {
+        if (pointerLocation == ArrowPointerLocation.BOTH || pointerLocation == ArrowPointerLocation.START) {
             drawArrow(path, right, bottom, left, top)
         }
 
-        if (pointerLocation == ArrowPointerLocation.END || pointerLocation == ArrowPointerLocation.BOTH) {
+        if (pointerLocation == ArrowPointerLocation.BOTH || pointerLocation == ArrowPointerLocation.END) {
             drawArrow(path, left, top, right, bottom)
         }
 
