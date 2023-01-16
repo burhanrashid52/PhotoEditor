@@ -19,7 +19,7 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
         fun onColorChanged(colorCode: Int)
         fun onOpacityChanged(opacity: Int)
         fun onShapeSizeChanged(shapeSize: Int)
-        fun onShapePicked(shapeType: ShapeType?)
+        fun onShapePicked(shapeType: ShapeType)
     }
 
     override fun onCreateView(
