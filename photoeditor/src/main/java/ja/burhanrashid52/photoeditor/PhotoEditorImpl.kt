@@ -73,14 +73,13 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     override fun addText(text: String?, styleBuilder: TextStyleBuilder?) {
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(isTextPinchScalable)
-        val textGraphic =
-            Text(
-                photoEditorView,
-                multiTouchListener,
-                viewState,
-                mDefaultTextTypeface,
-                mGraphicManager
-            )
+        val textGraphic = Text(
+            photoEditorView,
+            multiTouchListener,
+            viewState,
+            mDefaultTextTypeface,
+            mGraphicManager
+        )
         textGraphic.buildView(text, styleBuilder)
         addToEditor(textGraphic)
     }
@@ -117,14 +116,13 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     override fun addEmoji(emojiTypeface: Typeface?, emojiName: String?) {
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(true)
-        val emoji =
-            Emoji(
-                photoEditorView,
-                multiTouchListener,
-                viewState,
-                mGraphicManager,
-                mDefaultEmojiTypeface
-            )
+        val emoji = Emoji(
+            photoEditorView,
+            multiTouchListener,
+            viewState,
+            mGraphicManager,
+            mDefaultEmojiTypeface
+        )
         emoji.buildView(emojiTypeface, emojiName)
         addToEditor(emoji)
     }
