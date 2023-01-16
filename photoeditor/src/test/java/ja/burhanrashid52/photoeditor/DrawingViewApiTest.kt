@@ -26,7 +26,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
             assertEquals(strokeJoin, Paint.Join.ROUND)
             assertEquals(strokeCap, Paint.Cap.ROUND)
             assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
-            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
             TestCase.assertTrue(xfermode is PorterDuffXfermode)
         } ?: AssertionError("The paint is null")
 
@@ -45,7 +45,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
             assertEquals(strokeJoin, Paint.Join.ROUND)
             assertEquals(strokeCap, Paint.Cap.ROUND)
             assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
-            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
             TestCase.assertTrue(xfermode is PorterDuffXfermode)
             val spyPaint = Mockito.spy(this)
             Mockito.verify(spyPaint, Mockito.times(0)).color =
@@ -111,7 +111,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
                 drawingView.currentShapeBuilder?.shapeOpacity,
                 ShapeBuilder.DEFAULT_SHAPE_OPACITY
             )
-            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
         } ?: AssertionError("The paint is null")
     }
 

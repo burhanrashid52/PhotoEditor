@@ -54,8 +54,10 @@ class DrawingView @JvmOverloads constructor(
         // apply shape builder parameters
         currentShapeBuilder?.apply {
             paint.strokeWidth = this.shapeSize
-            paint.alpha = this.shapeOpacity
+            // 'paint.color' must be called before 'paint.alpha',
+            // otherwise 'paint.alpha' value will be overwritten.
             paint.color = this.shapeColor
+            shapeOpacity?.also { paint.alpha = it }
         }
 
         return paint
