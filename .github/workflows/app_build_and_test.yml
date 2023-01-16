@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: set up JDK 1.8
+    - name: set up JDK 17
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 17
     - name: Build with Gradle
       run: ./gradlew build
 
@@ -24,10 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: set up JDK 1.8
+      - name: set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 17
       - name: Run unit tests
         run: ./gradlew test --stacktrace
 
