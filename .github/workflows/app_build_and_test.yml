@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 17
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
     - name: Build with Gradle
       run: ./gradlew build
 
@@ -28,6 +30,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Run unit tests
         run: ./gradlew test --stacktrace
 
@@ -40,7 +44,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: run ui tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
