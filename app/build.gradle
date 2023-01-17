@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.burhanrashid52.photoediting'
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 14
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 7
         versionName "2.0.0"
         multiDexEnabled = true
