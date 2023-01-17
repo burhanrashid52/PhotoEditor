@@ -30,6 +30,12 @@
             android:text="@string/label_line" />
 
         <RadioButton
+            android:id="@+id/arrowRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_arrow" />
+
+        <RadioButton
             android:id="@+id/ovalRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

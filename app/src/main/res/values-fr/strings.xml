@@ -5,6 +5,7 @@
     <string name="label_oval">Ovale</string>
     <string name="label_rectangle">Rectangle</string>
     <string name="label_line">Ligne</string>
+    <string name="label_arrow">Flèche</string>
     <string name="label_emoji">Frimousses</string>
     <string name="label_sticker">Autocollant</string>
     <string name="label_eraser">Gomme</string>

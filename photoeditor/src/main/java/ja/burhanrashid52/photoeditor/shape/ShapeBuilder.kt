@@ -11,7 +11,7 @@ import androidx.annotation.ColorInt
  */
 class ShapeBuilder {
 
-    var shapeType: ShapeType = ShapeType.BRUSH
+    var shapeType: ShapeType = ShapeType.Brush
         private set
 
     var shapeSize: Float = DEFAULT_SHAPE_SIZE
