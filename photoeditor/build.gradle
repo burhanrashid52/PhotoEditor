@@ -8,14 +8,9 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 33
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // https://stackoverflow.com/a/69043734
-        configurations.all {
-            resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
-        }
-
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -35,27 +30,24 @@ android {
         options.addStringOption('charSet', 'UTF-8')
         failOnError false
     }
-
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    testImplementation 'androidx.test:core-ktx:1.4.0'
-
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.8.0'
-    testImplementation 'org.robolectric:robolectric:4.9.2'
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation "androidx.core:core-ktx:1.9.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
 
+    testImplementation 'androidx.test:core-ktx:1.5.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.9.2'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
+    // Mockito
+    testImplementation 'org.mockito:mockito-core:5.0.0'
+    // androidTestImplementation 'org.mockito:mockito-android:5.0.0'
+}
 
 ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'

@@ -2,7 +2,7 @@
 apply plugin: 'io.codearte.nexus-staging'
 
 buildscript {
-    ext.kotlin_version = '1.6.21'
+    ext.kotlin_version = '1.7.21'
 
     repositories {
         google()
