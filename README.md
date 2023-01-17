@@ -1,7 +1,7 @@
 # PhotoEditor
 
 ![Github Action](https://github.com/burhanrashid52/PhotoEditor/actions/workflows/app_build_and_test.yml/badge.svg)
-[![Downloads](https://img.shields.io/badge/Download-2.0.0-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/2.0.0/aar) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-2.0.0-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/2.0.0/aar) ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -110,14 +110,14 @@ We can customize our brush and paint with different set of property. To start dr
 
 ![](https://i.imgur.com/INi5LIy.gif)
 
-| Type  | Method |
-| ------------- | ------------- |
-| Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
-| Shape (brush, line, oval, rectangle)  | `mPhotoEditor.addShape(shape)` |
-| Shape size (px)  | `mPhotoEditor.setBrushSize(brushSize)` or through the a ShapeBuilder |
-| Shape opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)` or through the a ShapeBuilder |
-| Shape color | `mPhotoEditor.setBrushColor(colorCode)` or through the a ShapeBuilder |
-| Brush Eraser  | `mPhotoEditor.brushEraser()` |
+| Type                                         | Method                                                                 |
+|----------------------------------------------|------------------------------------------------------------------------|
+| Enable/Disable                               | `mPhotoEditor.setBrushDrawingMode(true);`                              |
+| Shape (brush, line, oval, rectangle, arrow)  | `mPhotoEditor.addShape(shape)`                                         |
+| Shape size (px)                              | `mPhotoEditor.setBrushSize(brushSize)` or through the a ShapeBuilder   |
+| Shape opacity (In %)                         | `mPhotoEditor.setOpacity(opacity)` or through the a ShapeBuilder       |
+| Shape color                                  | `mPhotoEditor.setBrushColor(colorCode)` or through the a ShapeBuilder  |
+| Brush Eraser                                 | `mPhotoEditor.brushEraser()`                                           |
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 
@@ -126,15 +126,15 @@ We can draw shapes from [v.1.5.0](https://github.com/burhanrashid52/PhotoEditor/
 
 ![](https://im2.ezgif.com/tmp/ezgif-2-5d5f7ddbe72e.gif)
 
-```java
-mShapeBuilder = new ShapeBuilder()
-         .withShapeOpacity(100)
-         .withShapeType(ShapeType.OVAL)
-         .withShapeSize(50);
+```kotlin
+val shapeBuilder = ShapeBuilder()
+    .withShapeOpacity(100)
+    .withShapeType(ShapeType.Oval)
+    .withShapeSize(50f);
 
-mPhotoEditor.setShape(mShapeBuilder)
+photoEditor.setShape(mShapeBuilder)
 ```
-For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.java).
+For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.kt).
 
 ## Filter Effect
 We can apply inbuild filter to the source images using 
@@ -212,14 +212,26 @@ It will take default fonts provided in the builder. If we want different Emoji f
 
 ## Deleting
   For deleting a Text/Emoji/Image we can click on the view to toggle the view highlighter box which will have a close icon. So, by clicking on the icon we can delete the view.
-  
-  
-  
 
 ## Saving
-   
-   We need to provide a file with callback method when edited image is saved
-   
+
+The code below saves an image to a file.
+
+```kotlin
+// Please note that if you call this from a fragment, you should call
+// 'viewLifecycleOwner.lifecycleScope.launch' instead.
+lifecycleScope.launch {
+    val result = photoEditor.saveAsFile(filePath)
+    if (result is SaveFileResult.Success) {
+        showSnackbar("Image saved!")
+    } else {
+        showSnackbar("Couldn't save image")
+    }
+}
+```
+
+You can also save an image to a file from Java. We need to provide a file with callback method when edited image is saved.
+
    ```java
     mPhotoEditor.saveAsFile(filePath, new PhotoEditor.OnSaveListener() {
                     @Override
@@ -233,8 +245,9 @@ It will take default fonts provided in the builder. If we want different Emoji f
                     }
                 });
 ```
-For more detail check [Saving](https://github.com/burhanrashid52/PhotoEditor/wiki/Saving)
-    
+
+For more details see [Saving](https://github.com/burhanrashid52/PhotoEditor/wiki/Saving)
+
 ## How to contribute?
 * Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
 
