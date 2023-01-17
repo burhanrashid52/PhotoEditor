@@ -192,7 +192,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         photoEditorView.setFilterEffect(customEffect)
     }
 
-    override fun setFilterEffect(filterType: PhotoFilter?) {
+    override fun setFilterEffect(filterType: PhotoFilter) {
         photoEditorView.setFilterEffect(filterType)
     }
 
@@ -257,7 +257,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         get() = viewState.addedViewsCount == 0 && viewState.redoViewsCount == 0
 
     // region Shape
-    override fun setShape(shapeBuilder: ShapeBuilder?) {
+    override fun setShape(shapeBuilder: ShapeBuilder) {
         drawingView?.currentShapeBuilder = shapeBuilder
     } // endregion
 

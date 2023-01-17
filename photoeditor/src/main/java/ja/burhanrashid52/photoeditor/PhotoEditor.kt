@@ -217,7 +217,7 @@ interface PhotoEditor {
      *
      * @param filterType type of filter want to apply [PhotoEditorImpl]
      */
-    fun setFilterEffect(filterType: PhotoFilter?)
+    fun setFilterEffect(filterType: PhotoFilter)
 
     /**
      * Save the edited image on given path
@@ -393,5 +393,5 @@ interface PhotoEditor {
      * Update the current shape to be drawn,
      * through the use of a ShapeBuilder.
      */
-    fun setShape(shapeBuilder: ShapeBuilder?) // endregion
+    fun setShape(shapeBuilder: ShapeBuilder) // endregion
 }

@@ -35,7 +35,7 @@ class DrawingView @JvmOverloads constructor(
     var isDrawingEnabled = false
         private set
     private var viewChangeListener: BrushViewChangeListener? = null
-    var currentShapeBuilder: ShapeBuilder? = null
+    var currentShapeBuilder: ShapeBuilder
 
     // eraser parameters
     private var isErasing = false
@@ -67,13 +67,6 @@ class DrawingView @JvmOverloads constructor(
         val paint = createPaint()
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         return paint
-    }
-
-    private fun setupBrushDrawing() {
-        //Caution: This line is to disable hardware acceleration to make eraser feature work properly
-        setLayerType(LAYER_TYPE_HARDWARE, null)
-        visibility = GONE
-        currentShapeBuilder = ShapeBuilder()
     }
 
     fun clearAll() {
@@ -138,7 +131,7 @@ class DrawingView @JvmOverloads constructor(
         if (isErasing) {
             paint = createEraserPaint()
         } else {
-            when (val shapeType = currentShapeBuilder?.shapeType) {
+            when (val shapeType = currentShapeBuilder.shapeType) {
                 ShapeType.Oval -> {
                     shape = OvalShape()
                 }
@@ -219,6 +212,9 @@ class DrawingView @JvmOverloads constructor(
 
     // region constructors
     init {
-        setupBrushDrawing()
+        //Caution: This line is to disable hardware acceleration to make eraser feature work properly
+        setLayerType(LAYER_TYPE_HARDWARE, null)
+        visibility = GONE
+        currentShapeBuilder = ShapeBuilder()
     }
 }

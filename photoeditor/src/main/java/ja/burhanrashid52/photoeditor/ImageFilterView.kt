@@ -39,7 +39,7 @@ internal class ImageFilterView @JvmOverloads constructor(
     private var mImageWidth = 0
     private var mImageHeight = 0
     private var mInitialized = false
-    private var mCurrentEffect: PhotoFilter? = null
+    private var mCurrentEffect: PhotoFilter = PhotoFilter.NONE
     private var mSourceBitmap: Bitmap? = null
     private var mCustomEffect: CustomEffect? = null
     private var mOnSaveBitmap: OnSaveBitmap? = null
@@ -87,7 +87,7 @@ internal class ImageFilterView @JvmOverloads constructor(
         }
     }
 
-    fun setFilterEffect(effect: PhotoFilter?) {
+    fun setFilterEffect(effect: PhotoFilter) {
         mCurrentEffect = effect
         mCustomEffect = null
         requestRender()

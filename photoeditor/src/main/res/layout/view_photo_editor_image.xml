@@ -25,7 +25,6 @@
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/app_name"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_remove" />
 
