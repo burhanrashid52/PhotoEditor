@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.burhanrashid52.photoediting"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 32
         versionCode 7
         versionName "2.0.0"
