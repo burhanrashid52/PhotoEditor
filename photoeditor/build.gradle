@@ -46,7 +46,7 @@ dependencies {
 
     // Mockito
     testImplementation 'org.mockito:mockito-core:5.0.0'
-    // androidTestImplementation 'org.mockito:mockito-android:5.0.0'
+    androidTestImplementation 'org.mockito:mockito-android:5.0.0'
 }
 
 ext {

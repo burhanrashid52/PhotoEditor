@@ -2,10 +2,10 @@ package ja.burhanrashid52.photoeditor
 
 import android.graphics.*
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import junit.framework.TestCase
 import android.view.MotionEvent
 import android.view.View
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.mockito.Mockito
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 import junit.framework.TestCase.assertEquals
@@ -14,7 +14,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers
 import java.lang.AssertionError
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 internal class DrawingViewApiTest : BaseDrawingViewTest() {
     @Test
     fun testDefaultPaintAttributes() {
@@ -26,7 +26,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
             assertEquals(strokeJoin, Paint.Join.ROUND)
             assertEquals(strokeCap, Paint.Cap.ROUND)
             assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
-            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?: DEFAULT_COLOR_ALPHA)
             TestCase.assertTrue(xfermode is PorterDuffXfermode)
         } ?: AssertionError("The paint is null")
 
@@ -45,7 +45,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
             assertEquals(strokeJoin, Paint.Join.ROUND)
             assertEquals(strokeCap, Paint.Cap.ROUND)
             assertEquals(strokeWidth, ShapeBuilder.DEFAULT_SHAPE_SIZE)
-            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?: DEFAULT_COLOR_ALPHA)
             TestCase.assertTrue(xfermode is PorterDuffXfermode)
             val spyPaint = Mockito.spy(this)
             Mockito.verify(spyPaint, Mockito.times(0)).color =
@@ -111,7 +111,7 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
                 drawingView.currentShapeBuilder?.shapeOpacity,
                 ShapeBuilder.DEFAULT_SHAPE_OPACITY
             )
-            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?:0)
+            assertEquals(alpha, ShapeBuilder.DEFAULT_SHAPE_OPACITY ?: DEFAULT_COLOR_ALPHA)
         } ?: AssertionError("The paint is null")
     }
 
@@ -171,4 +171,9 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
                 )
             )
     }
+
+    private companion object {
+        val DEFAULT_COLOR_ALPHA = Color.alpha(ShapeBuilder.DEFAULT_SHAPE_COLOR)
+    }
+
 }
