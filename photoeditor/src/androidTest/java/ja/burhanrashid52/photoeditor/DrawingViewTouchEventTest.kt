@@ -1,14 +1,14 @@
 package ja.burhanrashid52.photoeditor
 
 import android.view.MotionEvent
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito
 import junit.framework.TestCase
 import junit.framework.TestCase.assertFalse
 import org.junit.Test
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
     @Test
     fun testDrawingShouldNotWorkWhenDisabled() {
