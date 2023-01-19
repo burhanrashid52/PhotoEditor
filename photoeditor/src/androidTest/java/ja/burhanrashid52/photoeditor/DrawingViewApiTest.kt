@@ -122,6 +122,48 @@ internal class DrawingViewApiTest : BaseDrawingViewTest() {
     }
 
     @Test
+    fun testCorrectAlphaAndColorValues() {
+        val drawingView = setupDrawingView()
+        val currentShapeBuilder = drawingView.currentShapeBuilder
+
+        val shapeOpacity = 120
+        val colorAlpha1 = 11
+        val colorAlpha2 = 22
+
+        currentShapeBuilder.withShapeColor(Color.argb(colorAlpha1, 33, 44, 55))
+        touchView(drawingView, MotionEvent.ACTION_DOWN)
+
+        drawingView.currentShape!!.paint.also { paint ->
+            assertEquals(colorAlpha1, paint.alpha)
+            assertEquals(Color.argb(colorAlpha1, 33, 44, 55), paint.color)
+        }
+
+        currentShapeBuilder.withShapeOpacity(shapeOpacity)
+        touchView(drawingView, MotionEvent.ACTION_DOWN)
+
+        drawingView.currentShape!!.paint.also { paint ->
+            assertEquals(shapeOpacity, paint.alpha)
+            assertEquals(Color.argb(shapeOpacity, 33, 44, 55), paint.color)
+        }
+
+        currentShapeBuilder.withShapeColor(Color.argb(colorAlpha2, 44, 55, 66))
+        touchView(drawingView, MotionEvent.ACTION_DOWN)
+
+        drawingView.currentShape!!.paint.also { paint ->
+            assertEquals(shapeOpacity, paint.alpha)
+            assertEquals(Color.argb(shapeOpacity, 44, 55, 66), paint.color)
+        }
+
+        currentShapeBuilder.withShapeOpacity(null)
+        touchView(drawingView, MotionEvent.ACTION_DOWN)
+
+        drawingView.currentShape!!.paint.also { paint ->
+            assertEquals(colorAlpha2, paint.alpha)
+            assertEquals(Color.argb(colorAlpha2, 44, 55, 66), paint.color)
+        }
+    }
+
+    @Test
     fun testDefaultBrushColorValue() {
         val drawingView = setupDrawingView()
         touchView(drawingView, MotionEvent.ACTION_DOWN)
