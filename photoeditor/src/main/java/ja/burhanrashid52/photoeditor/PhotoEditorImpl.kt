@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Typeface
+import android.os.Looper
 import android.text.TextUtils
 import android.view.GestureDetector
 import android.view.View
@@ -12,11 +13,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
+import androidx.annotation.WorkerThread
 import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -218,12 +221,29 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         return@withContext photoSaverTask.saveImageAsFile(imagePath)
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
+    @WorkerThread
+    override fun saveAsFileBlocking(imagePath: String, saveSettings: SaveSettings): SaveFileResult {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw RuntimeException("Can't be called from the main thread")
+        }
+        return runBlocking { saveAsFile(imagePath, saveSettings) }
+    }
+
     override suspend fun saveAsBitmap(
         saveSettings: SaveSettings
     ): Bitmap = withContext(Dispatchers.Main) {
         photoEditorView.saveFilter()
         val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper, saveSettings)
         return@withContext photoSaverTask.saveImageAsBitmap()
+    }
+
+    @WorkerThread
+    override fun saveAsBitmapBlocking(saveSettings: SaveSettings): Bitmap {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw RuntimeException("Can't be called from the main thread")
+        }
+        return runBlocking { saveAsBitmap(saveSettings) }
     }
 
     @Deprecated(

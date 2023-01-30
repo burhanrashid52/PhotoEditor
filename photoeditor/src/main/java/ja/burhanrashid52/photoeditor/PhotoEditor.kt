@@ -10,6 +10,7 @@ import android.widget.ImageView
 import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
 import androidx.annotation.UiThread
+import androidx.annotation.WorkerThread
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 
 /**
@@ -232,11 +233,32 @@ interface PhotoEditor {
     ): SaveFileResult
 
     /**
+     * Save the edited image on given path
+     *
+     * @param imagePath      path on which image to be saved
+     * @param saveSettings   builder for multiple save options [SaveSettings]
+     */
+    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
+    @WorkerThread
+    fun saveAsFileBlocking(
+        imagePath: String,
+        saveSettings: SaveSettings = SaveSettings.Builder().build()
+    ): SaveFileResult
+
+    /**
      * Save the edited image as bitmap
      *
      * @param saveSettings builder for multiple save options [SaveSettings]
      */
     suspend fun saveAsBitmap(saveSettings: SaveSettings = SaveSettings.Builder().build()): Bitmap
+
+    /**
+     * Save the edited image as bitmap
+     *
+     * @param saveSettings builder for multiple save options [SaveSettings]
+     */
+    @WorkerThread
+    fun saveAsBitmapBlocking(saveSettings: SaveSettings = SaveSettings.Builder().build()): Bitmap
 
     @Deprecated(
         "This function is deprecated and will be removed in a future release.",
