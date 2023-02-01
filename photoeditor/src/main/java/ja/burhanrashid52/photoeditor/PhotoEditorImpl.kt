@@ -226,10 +226,6 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         return@withContext photoSaverTask.saveImageAsBitmap()
     }
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsFile(imagePath, saveSettings)")
-    )
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     override fun saveAsFile(
         imagePath: String,
@@ -244,19 +240,11 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         }
     }
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsFile(imagePath)")
-    )
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     override fun saveAsFile(imagePath: String, onSaveListener: PhotoEditor.OnSaveListener) {
         saveAsFile(imagePath, SaveSettings.Builder().build(), onSaveListener)
     }
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsBitmap(saveSettings)")
-    )
     override fun saveAsBitmap(saveSettings: SaveSettings, onSaveBitmap: OnSaveBitmap) {
         GlobalScope.launch(Dispatchers.Main) {
             val bitmap = saveAsBitmap(saveSettings)
@@ -264,10 +252,6 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         }
     }
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsBitmap()")
-    )
     override fun saveAsBitmap(onSaveBitmap: OnSaveBitmap) {
         saveAsBitmap(SaveSettings.Builder().build(), onSaveBitmap)
     }
