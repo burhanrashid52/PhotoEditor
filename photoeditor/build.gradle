@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
@@ -47,8 +47,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
     // Mockito
-    testImplementation 'org.mockito:mockito-core:5.0.0'
-    androidTestImplementation 'org.mockito:mockito-android:5.0.0'
+    testImplementation 'org.mockito:mockito-core:5.1.1'
+    androidTestImplementation 'org.mockito:mockito-android:5.1.1'
 }
 
 ext {
