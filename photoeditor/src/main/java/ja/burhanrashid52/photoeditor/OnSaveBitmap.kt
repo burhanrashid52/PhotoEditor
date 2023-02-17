@@ -7,7 +7,6 @@ import android.graphics.Bitmap
  * @version 0.1.2
  * @since 5/21/2018
  */
-@Deprecated("This interface is deprecated and will be removed in a future release.")
 interface OnSaveBitmap {
     fun onBitmapReady(saveBitmap: Bitmap?)
     fun onFailure(e: Exception?)

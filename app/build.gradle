@@ -9,8 +9,8 @@ android {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 7
-        versionName "2.0.0"
+        versionCode 8
+        versionName "3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,7 +31,7 @@ dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to facilitate testing, and for the integration tests
     //                     to work on locally modified code.
-    //implementation 'com.burhanrashid52:photoeditor:2.0.0'
+    //implementation 'com.burhanrashid52:photoeditor:3.0.0'
     implementation project(':photoeditor')
 
     implementation 'androidx.appcompat:appcompat:1.6.0'

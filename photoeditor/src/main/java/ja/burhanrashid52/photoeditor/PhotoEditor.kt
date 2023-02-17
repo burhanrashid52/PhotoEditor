@@ -238,28 +238,12 @@ interface PhotoEditor {
      */
     suspend fun saveAsBitmap(saveSettings: SaveSettings = SaveSettings.Builder().build()): Bitmap
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsFile(imagePath, saveSettings)")
-    )
     fun saveAsFile(imagePath: String, saveSettings: SaveSettings, onSaveListener: OnSaveListener)
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsFile(imagePath)")
-    )
     fun saveAsFile(imagePath: String, onSaveListener: OnSaveListener)
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsBitmap(saveSettings)")
-    )
     fun saveAsBitmap(saveSettings: SaveSettings, onSaveBitmap: OnSaveBitmap)
 
-    @Deprecated(
-        "This function is deprecated and will be removed in a future release.",
-        ReplaceWith("saveAsBitmap()")
-    )
     fun saveAsBitmap(onSaveBitmap: OnSaveBitmap)
 
     /**
@@ -373,7 +357,6 @@ interface PhotoEditor {
     /**
      * A callback to save the edited image asynchronously
      */
-    @Deprecated("This interface is deprecated and will be removed in a future release.")
     interface OnSaveListener {
         /**
          * Call when edited image is saved successfully on given path
