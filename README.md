@@ -215,7 +215,7 @@ It will take default fonts provided in the builder. If we want different Emoji f
 
 ## Saving
 
-The code below saves an image to a file.
+In [v.3.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.3.0.0) onward, we can save an image to a file using coroutines:
 
 ```kotlin
 // Please note that if you call this from a fragment, you should call

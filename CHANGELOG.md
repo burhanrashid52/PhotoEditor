@@ -90,5 +90,5 @@ new TextStyleBuilder()
 - New : Arrow shape
 - Change : (Breaking Change) `minSdkVersion` changed to `21`
 - Change : (Breaking Change) Shape names are no longer UPPERCASE
-- Change : `saveAsFile(String, [SaveSettings,] OnSaveListener)` and `saveAsBitmap([SaveSettings,] OnSaveBitmap)` are deprecated use `saveAsFile(String[, SaveSettings])` and `saveAsBitmap([SaveSettings])`
+- New : Suspending functions for saving images: `saveAsFile(String[, SaveSettings])` and `saveAsBitmap([SaveSettings])`
 - Fixed : #374 `IndexOutOfBoundsException` when saving bitmap
