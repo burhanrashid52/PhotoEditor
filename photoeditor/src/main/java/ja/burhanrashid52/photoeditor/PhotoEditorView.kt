@@ -145,13 +145,11 @@ class PhotoEditorView @JvmOverloads constructor(
 
     internal fun setFilterEffect(filterType: PhotoFilter) {
         mImageFilterView.visibility = VISIBLE
-        mImageFilterView.setSourceBitmap(mImgSource.bitmap)
         mImageFilterView.setFilterEffect(filterType)
     }
 
     internal fun setFilterEffect(customEffect: CustomEffect?) {
         mImageFilterView.visibility = VISIBLE
-        mImageFilterView.setSourceBitmap(mImgSource.bitmap)
         mImageFilterView.setFilterEffect(customEffect)
     }
 
