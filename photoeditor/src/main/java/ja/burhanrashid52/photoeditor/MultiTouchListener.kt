@@ -110,14 +110,14 @@ internal class MultiTouchListener(
 
     private fun firePhotoEditorSDKListener(view: View, isStart: Boolean) {
         val viewTag = view.tag
-        if (mOnPhotoEditorListener != null && viewTag != null && viewTag is ViewType) {
-            if (isStart) mOnPhotoEditorListener.onStartViewChangeListener(
-                view,
-                viewTag
-            ) else mOnPhotoEditorListener.onStopViewChangeListener(
-                view,
-                viewTag
-            )
+        if (mOnPhotoEditorListener == null || viewTag == null || viewTag !is ViewType) {
+            return
+        }
+
+        if (isStart) {
+            mOnPhotoEditorListener.onStartViewChangeListener(view, viewTag)
+        } else {
+            mOnPhotoEditorListener.onStopViewChangeListener(view, viewTag)
         }
     }
 

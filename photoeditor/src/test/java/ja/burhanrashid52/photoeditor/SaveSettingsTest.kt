@@ -11,15 +11,15 @@ class SaveSettingsTest {
     fun testByDefaultTransparentAndClearViewFlagSettingIsEnabled() {
         val saveSettings = SaveSettings.Builder().build()
         TestCase.assertTrue(saveSettings.isClearViewsEnabled)
-        TestCase.assertTrue(saveSettings.isTransparencyEnabled)
+        TestCase.assertTrue(saveSettings.isCropToContent)
     }
 
     @Test
     fun testWhenTransparentSettingIsDisabled() {
         val saveSettings = SaveSettings.Builder()
-            .setTransparencyEnabled(false)
+            .setCropToContent(false)
             .build()
-        assertFalse(saveSettings.isTransparencyEnabled)
+        assertFalse(saveSettings.isCropToContent)
         TestCase.assertTrue(saveSettings.isClearViewsEnabled)
     }
 
@@ -29,17 +29,17 @@ class SaveSettingsTest {
             .setClearViewsEnabled(false)
             .build()
         assertFalse(saveSettings.isClearViewsEnabled)
-        TestCase.assertTrue(saveSettings.isTransparencyEnabled)
+        TestCase.assertTrue(saveSettings.isCropToContent)
     }
 
     @Test
     fun testWhenBothTransparentClearViewAfterSaveSettingIsDisabled() {
         val saveSettings = SaveSettings.Builder()
             .setClearViewsEnabled(false)
-            .setTransparencyEnabled(false)
+            .setCropToContent(false)
             .build()
         assertFalse(saveSettings.isClearViewsEnabled)
-        assertFalse(saveSettings.isTransparencyEnabled)
+        assertFalse(saveSettings.isCropToContent)
     }
 
     @Test

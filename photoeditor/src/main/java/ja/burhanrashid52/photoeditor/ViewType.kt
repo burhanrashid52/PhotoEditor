@@ -11,9 +11,9 @@ package ja.burhanrashid52.photoeditor
  * @since 18/01/2017.
  */
 sealed interface ViewType {
-    object BrushDrawer : ViewType
+    object Brush : ViewType
     object Text : ViewType
     object Image : ViewType
     object Emoji : ViewType
-    data class Custom<T>(val data: T) : ViewType
+    data class Custom<T : Any>(val data: T) : ViewType
 }

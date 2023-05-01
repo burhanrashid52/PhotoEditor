@@ -9,26 +9,34 @@ import androidx.annotation.IntRange
  * Builder Class to apply multiple save options
  */
 class SaveSettings private constructor(builder: Builder) {
-    val isTransparencyEnabled: Boolean
+    val isCropToContent: Boolean
     val isClearViewsEnabled: Boolean
     val compressFormat: CompressFormat
     val compressQuality: Int
 
     class Builder {
-        @JvmField var isTransparencyEnabled = true
+        @JvmField var isCropToContent = true
         @JvmField var isClearViewsEnabled = true
         @JvmField var compressFormat = CompressFormat.PNG
         @JvmField var compressQuality = 100
 
         /**
-         * Define a flag to enable transparency while saving image
+         * Define a flag to crop the image to the content
+         *
+         * This flag will remove transparent edges of the result picture, keeping only a rectangle,
+         * that starts and ends at populated pixels.
+         *
+         * For example, if our original image is a transparent rectangle, with a size of 800x400,
+         * that contains (only) a little sticker in the center, with a size of 48x48,
+         * the result image will be cropped to the edges of the sticker with a size of 48x48.
+         * This means the aspect ratio is also prone to change.
          *
          * @param transparencyEnabled true if enabled
          * @return Builder
          * @see BitmapUtil.removeTransparency
          */
-        fun setTransparencyEnabled(transparencyEnabled: Boolean): Builder {
-            isTransparencyEnabled = transparencyEnabled
+        fun setCropToContent(transparencyEnabled: Boolean): Builder {
+            isCropToContent = transparencyEnabled
             return this
         }
 
@@ -72,7 +80,7 @@ class SaveSettings private constructor(builder: Builder) {
 
     init {
         isClearViewsEnabled = builder.isClearViewsEnabled
-        isTransparencyEnabled = builder.isTransparencyEnabled
+        isCropToContent = builder.isCropToContent
         compressFormat = builder.compressFormat
         compressQuality = builder.compressQuality
     }

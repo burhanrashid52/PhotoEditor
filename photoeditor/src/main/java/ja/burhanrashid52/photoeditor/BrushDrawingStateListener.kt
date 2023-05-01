@@ -22,7 +22,7 @@ class BrushDrawingStateListener internal constructor(
         drawingView.post {
             mOnPhotoEditorListener?.onAddViewListener(
                 drawingView,
-                ViewType.BrushDrawer,
+                ViewType.Brush,
                 mViewState.addedViewsCount
             )
         }
@@ -40,17 +40,17 @@ class BrushDrawingStateListener internal constructor(
         }
         mOnPhotoEditorListener?.onRemoveViewListener(
             drawingView,
-            ViewType.BrushDrawer,
+            ViewType.Brush,
             mViewState.addedViewsCount
         )
     }
 
     override fun onStartDrawing(drawingView: DrawingView) {
-        mOnPhotoEditorListener?.onStartViewChangeListener(drawingView, ViewType.BrushDrawer)
+        mOnPhotoEditorListener?.onStartViewChangeListener(drawingView, ViewType.Brush)
 
     }
 
     override fun onStopDrawing(drawingView: DrawingView) {
-        mOnPhotoEditorListener?.onStopViewChangeListener(drawingView, ViewType.BrushDrawer)
+        mOnPhotoEditorListener?.onStopViewChangeListener(drawingView, ViewType.Brush)
     }
 }

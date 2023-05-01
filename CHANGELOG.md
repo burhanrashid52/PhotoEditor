@@ -96,3 +96,10 @@ new TextStyleBuilder()
 ### 3.0.1
 - New : #518 Fix Builder methods' return type in Java
 - Fixed : #522 Leak Graphics memory when changing filter
+
+### 4.0.0
+- New : Add `Custom<T>` as a new `ViewType` variant for adding customized views with specific use-cases
+- Change : (Breaking Change) Change `OnPhotoEditorListener` method signatures, introduce `rootView` parameter
+- Change : (Breaking Change) Change `ViewType` from `enum` to `sealed interface`
+- Change : (Breaking Change) Change `ViewType` options naming from **SNAKE_CASE** to **PascalCase**
+- Change : (Breaking Change) Rename `SaveSettings.setTransparencyEnabled` to `SaveSettings.setCropToContent`

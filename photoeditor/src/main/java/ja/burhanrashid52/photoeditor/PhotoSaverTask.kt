@@ -70,7 +70,7 @@ internal class PhotoSaverTask(
     }
 
     private fun buildBitmap(): Bitmap {
-        return if (saveSettings.isTransparencyEnabled) {
+        return if (saveSettings.isCropToContent) {
             removeTransparency(captureView(photoEditorView))
         } else {
             captureView(photoEditorView)

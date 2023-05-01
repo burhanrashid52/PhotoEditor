@@ -299,7 +299,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                         if (created && filePath != null) {
                             val saveSettings = SaveSettings.Builder()
                                 .setClearViewsEnabled(true)
-                                .setTransparencyEnabled(true)
+                                .setCropToContent(true)
                                 .build()
 
                             val result = mPhotoEditor.saveAsFile(filePath, saveSettings)
