@@ -17,7 +17,7 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         val drawingView = setupDrawingViewWithChangeListener(brushViewChangeListener)
         drawingView.enableDrawing(false)
         touchView(drawingView, MotionEvent.ACTION_DOWN)
-        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStartDrawing()
+        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStartDrawing(drawingView)
     }
 
     @Test
@@ -26,7 +26,7 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         val drawingView = setupDrawingViewWithChangeListener(brushViewChangeListener)
 
         swipeView(drawingView)
-        Mockito.verify(brushViewChangeListener, Mockito.times(1)).onStartDrawing()
+        Mockito.verify(brushViewChangeListener, Mockito.times(1)).onStartDrawing(drawingView)
 
         val drawingPath = drawingView.drawingPath
         val drawnPath = drawingPath.first
@@ -41,8 +41,8 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         val drawingView = setupDrawingViewWithChangeListener(brushViewChangeListener)
         touchView(drawingView, MotionEvent.ACTION_MOVE)
 
-        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStartDrawing()
-        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStopDrawing()
+        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStartDrawing(drawingView)
+        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStopDrawing(drawingView)
         Mockito.verify(brushViewChangeListener, Mockito.times(0)).onViewAdd(drawingView)
         Mockito.verify(brushViewChangeListener, Mockito.times(0)).onViewRemoved(drawingView)
 
@@ -61,8 +61,8 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         val touchEventUp = MotionEvent.obtain(200, 300, MotionEvent.ACTION_UP, 150.0f, 100.0f, 0)
         drawingView.dispatchTouchEvent(touchEventUp)
 
-        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStartDrawing()
-        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStopDrawing()
+        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStartDrawing(drawingView)
+        Mockito.verify(brushViewChangeListener, Mockito.times(0)).onStopDrawing(drawingView)
         Mockito.verify(brushViewChangeListener, Mockito.times(0)).onViewAdd(drawingView)
         Mockito.verify(brushViewChangeListener, Mockito.times(0)).onViewRemoved(drawingView)
 
