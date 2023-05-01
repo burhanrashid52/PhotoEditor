@@ -25,12 +25,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlin {
-        jvmToolchain(8)
+        jvmToolchain(11)
     }
 
     tasks.withType(Javadoc) {
@@ -49,14 +49,14 @@ dependencies {
 
     testImplementation 'androidx.test:core-ktx:1.5.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.robolectric:robolectric:4.9.2'
+    testImplementation 'org.robolectric:robolectric:4.10'
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
     // Mockito
-    testImplementation 'org.mockito:mockito-core:5.1.1'
-    androidTestImplementation 'org.mockito:mockito-android:5.1.1'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    androidTestImplementation 'org.mockito:mockito-android:5.3.1'
 }
 
 ext {
