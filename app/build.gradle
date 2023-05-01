@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 8
-        versionName "3.0.1"
+        versionName "4.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,22 +25,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlin {
+        jvmToolchain(8)
+    }
 }
 
 dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to facilitate testing, and for the integration tests
     //                     to work on locally modified code.
-    //implementation 'com.burhanrashid52:photoeditor:3.0.1'
+    //implementation 'com.burhanrashid52:photoeditor:4.0.0'
     implementation project(':photoeditor')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.core:core-ktx:1.9.0"
-    implementation "androidx.fragment:fragment-ktx:1.5.5"
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation "androidx.core:core-ktx:1.10.0"
+    implementation "androidx.fragment:fragment-ktx:1.5.7"
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.google.android.material:material:1.8.0'
 
     testImplementation 'junit:junit:4.13.2'
 

@@ -93,7 +93,7 @@ new TextStyleBuilder()
 - New : Suspending functions for saving images: `saveAsFile(String[, SaveSettings])` and `saveAsBitmap([SaveSettings])`
 - Fixed : #374 `IndexOutOfBoundsException` when saving bitmap
 
-### 3.0.1
+### 4.0.0
 - New : #518 Fix Builder methods' return type in Java
 - Fixed : #522 Leak Graphics memory when changing filter
 
