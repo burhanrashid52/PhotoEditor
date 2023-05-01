@@ -1,10 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply plugin: 'io.codearte.nexus-staging'
 
 buildscript {
     ext.kotlin_version = '1.8.21'
 
     repositories {
+        mavenLocal()
         google()
         jcenter()
         mavenCentral()
@@ -20,11 +20,17 @@ buildscript {
     }
 }
 
+plugins {
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+}
+
+apply from: "${rootDir}/scripts/publish-maven-root.gradle"
+
 allprojects {
     repositories {
-        google()
-        jcenter()
+        mavenLocal()
         mavenCentral()
+        google()
     }
 }
 

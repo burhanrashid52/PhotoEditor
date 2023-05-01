@@ -35,8 +35,13 @@ dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to facilitate testing, and for the integration tests
     //                     to work on locally modified code.
+    //
+    // Note(attafitamim): Use MavenLocal if possible, add sign config to your local.properties, run
+    //                    :photoeditor:assemble of the lib, and then run the local publishing task
+    //                    :photoeditor:publishReleasePublicationToMavenLocalRepository
+    //
     //implementation 'com.burhanrashid52:photoeditor:4.0.0'
-    implementation project(':photoeditor')
+    implementation 'com.burhanrashid52:photoeditor:4.0.0'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -55,5 +60,6 @@ dependencies {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
