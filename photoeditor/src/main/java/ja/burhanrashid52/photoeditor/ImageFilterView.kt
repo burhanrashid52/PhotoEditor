@@ -9,14 +9,17 @@ import android.media.effect.EffectFactory
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import ja.burhanrashid52.photoeditor.BitmapUtil.createBitmapFromGLSurface
 import ja.burhanrashid52.photoeditor.GLToolbox.initTexParams
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  *
@@ -32,6 +35,7 @@ internal class ImageFilterView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : GLSurfaceView(context, attrs), GLSurfaceView.Renderer {
+
     private val mTextures = IntArray(2)
     private var mEffectContext: EffectContext? = null
     private var mEffect: Effect? = null
@@ -39,11 +43,11 @@ internal class ImageFilterView @JvmOverloads constructor(
     private var mImageWidth = 0
     private var mImageHeight = 0
     private var mInitialized = false
-    private var mCurrentEffect: PhotoFilter? = null
+    private var mCurrentEffect: PhotoFilter = PhotoFilter.NONE
     private var mSourceBitmap: Bitmap? = null
     private var mCustomEffect: CustomEffect? = null
-    private var mOnSaveBitmap: OnSaveBitmap? = null
-    private var isSaveImage = false
+    private var bitmapReadyContinuation: Continuation<Bitmap>? = null
+    private val mutex = Mutex()
 
     init {
         setEGLContextClientVersion(2)
@@ -52,7 +56,7 @@ internal class ImageFilterView @JvmOverloads constructor(
         setFilterEffect(PhotoFilter.NONE)
     }
 
-    fun setSourceBitmap(sourceBitmap: Bitmap?) {
+    internal fun setSourceBitmap(sourceBitmap: Bitmap?) {
         /* if (mSourceBitmap != null && mSourceBitmap.sameAs(sourceBitmap)) {
             //mCurrentEffect = NONE;
         }*/
@@ -66,42 +70,61 @@ internal class ImageFilterView @JvmOverloads constructor(
     }
 
     override fun onDrawFrame(gl: GL10) {
-        if (!mInitialized) {
-            //Only need to do this once
-            mEffectContext = EffectContext.createWithCurrentGlContext()
-            mTexRenderer.init()
-            loadTextures()
-            mInitialized = true
+        try {
+            if (!mInitialized) {
+                //Only need to do this once
+                mEffectContext = EffectContext.createWithCurrentGlContext()
+                mTexRenderer.init()
+                loadTextures()
+                mInitialized = true
+            }
+            if (mCurrentEffect != PhotoFilter.NONE || mCustomEffect != null) {
+                //if an effect is chosen initialize it and apply it to the texture
+                initEffect()
+                applyEffect()
+            }
+            renderResult()
+        } catch (t: Throwable) {
+            val continuation = bitmapReadyContinuation
+            if (continuation != null) {
+                bitmapReadyContinuation = null
+                continuation.resumeWithException(t)
+            } else {
+                throw t
+            }
         }
-        if (mCurrentEffect != PhotoFilter.NONE || mCustomEffect != null) {
-            //if an effect is chosen initialize it and apply it to the texture
-            initEffect()
-            applyEffect()
-        }
-        renderResult()
-        if (isSaveImage) {
-            val mFilterBitmap = createBitmapFromGLSurface(this, gl)
-            Log.e(TAG, "onDrawFrame: $mFilterBitmap")
-            isSaveImage = false
-            Handler(Looper.getMainLooper()).post { mOnSaveBitmap?.onBitmapReady(mFilterBitmap) }
+
+        val continuation = bitmapReadyContinuation
+        if (continuation != null) {
+            bitmapReadyContinuation = null
+
+            val filterBitmap = try {
+                createBitmapFromGLSurface(this, gl)
+            } catch (t: Throwable) {
+                continuation.resumeWithException(t)
+                null
+            }
+
+            if (filterBitmap != null) continuation.resume(filterBitmap)
         }
     }
 
-    fun setFilterEffect(effect: PhotoFilter?) {
+    internal fun setFilterEffect(effect: PhotoFilter) {
         mCurrentEffect = effect
         mCustomEffect = null
         requestRender()
     }
 
-    fun setFilterEffect(customEffect: CustomEffect?) {
+    internal fun setFilterEffect(customEffect: CustomEffect?) {
         mCustomEffect = customEffect
         requestRender()
     }
 
-    fun saveBitmap(onSaveBitmap: OnSaveBitmap?) {
-        mOnSaveBitmap = onSaveBitmap
-        isSaveImage = true
-        requestRender()
+    internal suspend fun saveBitmap(): Bitmap = mutex.withLock {
+        suspendCoroutine { continuation ->
+            bitmapReadyContinuation = continuation
+            requestRender()
+        }
     }
 
     private fun loadTextures() {

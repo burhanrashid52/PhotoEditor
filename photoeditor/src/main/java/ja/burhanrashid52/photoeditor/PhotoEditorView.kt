@@ -26,9 +26,12 @@ class PhotoEditorView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : RelativeLayout(context, attrs, defStyle) {
+
     private var mImgSource: FilterImageView = FilterImageView(context)
-    var drawingView: DrawingView
+
+    internal var drawingView: DrawingView
         private set
+
     private var mImageFilterView: ImageFilterView
     private var clipSourceImage = false
 
@@ -125,40 +128,32 @@ class PhotoEditorView @JvmOverloads constructor(
     val source: ImageView
         get() = mImgSource
 
-    fun saveFilter(onSaveBitmap: OnSaveBitmap) {
-        if (mImageFilterView.visibility == VISIBLE) {
-            mImageFilterView.saveBitmap(object : OnSaveBitmap {
-                override fun onBitmapReady(saveBitmap: Bitmap?) {
-                    Log.e(TAG, "saveFilter: $saveBitmap")
-                    saveBitmap?.let {
-                        mImgSource.setImageBitmap(it)
-                    }
-                    mImageFilterView.visibility = GONE
-                    onSaveBitmap.onBitmapReady(saveBitmap)
-                }
-
-                override fun onFailure(e: Exception?) {
-                    onSaveBitmap.onFailure(e)
-                }
-            })
+    internal suspend fun saveFilter(): Bitmap {
+        return if (mImageFilterView.visibility == VISIBLE) {
+            val saveBitmap = try {
+                mImageFilterView.saveBitmap()
+            } catch (t: Throwable) {
+                throw RuntimeException("Couldn't save bitmap with filter", t)
+            }
+            mImgSource.setImageBitmap(saveBitmap)
+            mImageFilterView.visibility = GONE
+            saveBitmap
         } else {
-            onSaveBitmap.onBitmapReady(mImgSource.bitmap)
+            mImgSource.bitmap!!
         }
     }
 
-    fun setFilterEffect(filterType: PhotoFilter?) {
+    internal fun setFilterEffect(filterType: PhotoFilter) {
         mImageFilterView.visibility = VISIBLE
-        mImageFilterView.setSourceBitmap(mImgSource.bitmap)
         mImageFilterView.setFilterEffect(filterType)
     }
 
-    fun setFilterEffect(customEffect: CustomEffect?) {
+    internal fun setFilterEffect(customEffect: CustomEffect?) {
         mImageFilterView.visibility = VISIBLE
-        mImageFilterView.setSourceBitmap(mImgSource.bitmap)
         mImageFilterView.setFilterEffect(customEffect)
     }
 
-    fun setClipSourceImage(clip: Boolean) {
+    internal fun setClipSourceImage(clip: Boolean) {
         clipSourceImage = clip
         val param = setupImageSource(null)
         mImgSource.layoutParams = param

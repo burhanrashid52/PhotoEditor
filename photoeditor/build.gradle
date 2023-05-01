@@ -2,22 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-
-    compileSdkVersion 31
+    namespace 'ja.burhanrashid52.photoeditor'
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 31
-        versionCode 8
-        versionName "2.1.0-alpha01"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // https://stackoverflow.com/a/69043734
-        configurations.all {
-            resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
-        }
-
+        minSdkVersion 21
+        targetSdkVersion 33
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -37,31 +30,29 @@ android {
         options.addStringOption('charSet', 'UTF-8')
         failOnError false
     }
-
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation "androidx.core:core-ktx:1.9.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    implementation 'androidx.test:core-ktx:1.4.0'
-
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
+    testImplementation 'androidx.test:core-ktx:1.5.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.8.0'
-    testImplementation 'org.robolectric:robolectric:4.5.1'
-    implementation "androidx.core:core-ktx:1.7.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
+    testImplementation 'org.robolectric:robolectric:4.9.2'
 
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
+    // Mockito
+    testImplementation 'org.mockito:mockito-core:5.1.1'
+    androidTestImplementation 'org.mockito:mockito-android:5.1.1'
+}
 
 ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'
-    PUBLISH_VERSION = '2.1.0-alpha01'
+    PUBLISH_VERSION = '3.0.1'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
 }
 

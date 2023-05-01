@@ -1,14 +1,17 @@
 package ja.burhanrashid52.photoeditor
 
+import android.content.Context
 import android.view.MotionEvent
+import androidx.test.core.app.ApplicationProvider
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
-import org.robolectric.RuntimeEnvironment
 
 internal open class BaseDrawingViewTest {
-    protected var mContext = RuntimeEnvironment.systemContext
+
+    protected var context: Context = ApplicationProvider.getApplicationContext()
+
     protected fun setupDrawingView(): DrawingView {
-        // create view and ShapeBuilder
-        val drawingView = DrawingView(mContext)
+        // Create view and ShapeBuilder
+        val drawingView = DrawingView(context)
         drawingView.enableDrawing(true)
         val shapeBuilder = ShapeBuilder()
         drawingView.currentShapeBuilder = shapeBuilder
@@ -45,7 +48,9 @@ internal open class BaseDrawingViewTest {
             100.0f,
             0
         )
+
         drawingView.dispatchTouchEvent(actionDown)
+
         for (i in 0..99) {
             val actionMove = MotionEvent.obtain(
                 200,
@@ -57,6 +62,7 @@ internal open class BaseDrawingViewTest {
             )
             drawingView.dispatchTouchEvent(actionMove)
         }
+
         val actionUp = MotionEvent.obtain(
             200,
             300,
@@ -65,6 +71,7 @@ internal open class BaseDrawingViewTest {
             100.0f,
             0
         )
+
         drawingView.dispatchTouchEvent(actionUp)
     }
 }

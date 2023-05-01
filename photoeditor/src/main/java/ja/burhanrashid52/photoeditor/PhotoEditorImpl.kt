@@ -6,16 +6,18 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.text.TextUtils
-import android.util.Log
 import android.view.GestureDetector
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
-import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
 import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  *
@@ -76,8 +78,13 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     override fun addText(text: String?, styleBuilder: TextStyleBuilder?) {
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(isTextPinchScalable)
-        val textGraphic =
-            Text(photoEditorView, multiTouchListener, viewState, mDefaultTextTypeface, mGraphicManager)
+        val textGraphic = Text(
+            photoEditorView,
+            multiTouchListener,
+            viewState,
+            mDefaultTextTypeface,
+            mGraphicManager
+        )
         textGraphic.buildView(text, styleBuilder)
         addToEditor(textGraphic)
     }
@@ -114,8 +121,13 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     override fun addEmoji(emojiTypeface: Typeface?, emojiName: String?) {
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(true)
-        val emoji =
-            Emoji(photoEditorView, multiTouchListener, viewState, mGraphicManager, mDefaultEmojiTypeface)
+        val emoji = Emoji(
+            photoEditorView,
+            multiTouchListener,
+            viewState,
+            mGraphicManager,
+            mDefaultEmojiTypeface
+        )
         emoji.buildView(emojiTypeface, emojiName)
         addToEditor(emoji)
     }
@@ -199,59 +211,56 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         photoEditorView.setFilterEffect(customEffect)
     }
 
-    override fun setFilterEffect(filterType: PhotoFilter?) {
+    override fun setFilterEffect(filterType: PhotoFilter) {
         photoEditorView.setFilterEffect(filterType)
     }
 
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
-    override fun saveAsFile(imagePath: String, onSaveListener: OnSaveListener) {
-        saveAsFile(imagePath, SaveSettings.Builder().build(), onSaveListener)
+    override suspend fun saveAsFile(
+        imagePath: String,
+        saveSettings: SaveSettings
+    ): SaveFileResult = withContext(Dispatchers.Main) {
+        photoEditorView.saveFilter()
+        val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper, saveSettings)
+        return@withContext photoSaverTask.saveImageAsFile(imagePath)
     }
 
-    @SuppressLint("StaticFieldLeak")
+    override suspend fun saveAsBitmap(
+        saveSettings: SaveSettings
+    ): Bitmap = withContext(Dispatchers.Main) {
+        photoEditorView.saveFilter()
+        val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper, saveSettings)
+        return@withContext photoSaverTask.saveImageAsBitmap()
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     override fun saveAsFile(
         imagePath: String,
         saveSettings: SaveSettings,
-        onSaveListener: OnSaveListener
+        onSaveListener: PhotoEditor.OnSaveListener
     ) {
-        Log.d(TAG, "Image Path: $imagePath")
-        photoEditorView.saveFilter(object : OnSaveBitmap {
-            override fun onBitmapReady(saveBitmap: Bitmap?) {
-                val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper)
-                photoSaverTask.setOnSaveListener(onSaveListener)
-                photoSaverTask.setSaveSettings(saveSettings)
-                photoSaverTask.execute(imagePath)
+        GlobalScope.launch(Dispatchers.Main) {
+            when (val result = saveAsFile(imagePath, saveSettings)) {
+                is SaveFileResult.Success -> onSaveListener.onSuccess(imagePath)
+                is SaveFileResult.Failure -> onSaveListener.onFailure(result.exception)
             }
+        }
+    }
 
-            override fun onFailure(e: Exception?) {
-                e?.run {
-                    onSaveListener.onFailure(this)
-                }
-            }
-        })
+    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
+    override fun saveAsFile(imagePath: String, onSaveListener: PhotoEditor.OnSaveListener) {
+        saveAsFile(imagePath, SaveSettings.Builder().build(), onSaveListener)
+    }
+
+    override fun saveAsBitmap(saveSettings: SaveSettings, onSaveBitmap: OnSaveBitmap) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val bitmap = saveAsBitmap(saveSettings)
+            onSaveBitmap.onBitmapReady(bitmap)
+        }
     }
 
     override fun saveAsBitmap(onSaveBitmap: OnSaveBitmap) {
         saveAsBitmap(SaveSettings.Builder().build(), onSaveBitmap)
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    override fun saveAsBitmap(
-        saveSettings: SaveSettings,
-        onSaveBitmap: OnSaveBitmap
-    ) {
-        photoEditorView.saveFilter(object : OnSaveBitmap {
-            override fun onBitmapReady(saveBitmap: Bitmap?) {
-                val photoSaverTask = PhotoSaverTask(photoEditorView, mBoxHelper)
-                photoSaverTask.setOnSaveBitmap(onSaveBitmap)
-                photoSaverTask.setSaveSettings(saveSettings)
-                photoSaverTask.saveBitmap()
-            }
-
-            override fun onFailure(e: Exception?) {
-                onSaveBitmap.onFailure(e)
-            }
-        })
     }
 
     override fun setOnPhotoEditorListener(onPhotoEditorListener: OnPhotoEditorListener) {
@@ -264,7 +273,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         get() = viewState.addedViewsCount == 0 && viewState.redoViewsCount == 0
 
     // region Shape
-    override fun setShape(shapeBuilder: ShapeBuilder?) {
+    override fun setShape(shapeBuilder: ShapeBuilder) {
         drawingView?.currentShapeBuilder = shapeBuilder
     } // endregion
 

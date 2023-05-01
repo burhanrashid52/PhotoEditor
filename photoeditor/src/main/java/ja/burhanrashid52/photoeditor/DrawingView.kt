@@ -35,7 +35,7 @@ class DrawingView @JvmOverloads constructor(
     var isDrawingEnabled = false
         private set
     private var viewChangeListener: BrushViewChangeListener? = null
-    var currentShapeBuilder: ShapeBuilder? = null
+    var currentShapeBuilder: ShapeBuilder
 
     // eraser parameters
     private var isErasing = false
@@ -54,8 +54,10 @@ class DrawingView @JvmOverloads constructor(
         // apply shape builder parameters
         currentShapeBuilder?.apply {
             paint.strokeWidth = this.shapeSize
-            paint.alpha = this.shapeOpacity
+            // 'paint.color' must be called before 'paint.alpha',
+            // otherwise 'paint.alpha' value will be overwritten.
             paint.color = this.shapeColor
+            shapeOpacity?.also { paint.alpha = it }
         }
 
         return paint
@@ -65,13 +67,6 @@ class DrawingView @JvmOverloads constructor(
         val paint = createPaint()
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         return paint
-    }
-
-    private fun setupBrushDrawing() {
-        //Caution: This line is to disable hardware acceleration to make eraser feature work properly
-        setLayerType(LAYER_TYPE_HARDWARE, null)
-        visibility = GONE
-        currentShapeBuilder = ShapeBuilder()
     }
 
     fun clearAll() {
@@ -136,18 +131,21 @@ class DrawingView @JvmOverloads constructor(
         if (isErasing) {
             paint = createEraserPaint()
         } else {
-            when(currentShapeBuilder?.shapeType){
-                ShapeType.OVAL -> {
+            when (val shapeType = currentShapeBuilder.shapeType) {
+                ShapeType.Oval -> {
                     shape = OvalShape()
                 }
-                ShapeType.BRUSH -> {
+                ShapeType.Brush -> {
                     shape = BrushShape()
                 }
-                ShapeType.RECTANGLE -> {
+                ShapeType.Rectangle -> {
                     shape = RectangleShape()
                 }
-                ShapeType.LINE -> {
-                    shape = LineShape()
+                ShapeType.Line -> {
+                    shape = LineShape(context)
+                }
+                is ShapeType.Arrow -> {
+                    shape = LineShape(context, shapeType.pointerLocation)
                 }
             }
         }
@@ -214,6 +212,9 @@ class DrawingView @JvmOverloads constructor(
 
     // region constructors
     init {
-        setupBrushDrawing()
+        //Caution: This line is to disable hardware acceleration to make eraser feature work properly
+        setLayerType(LAYER_TYPE_HARDWARE, null)
+        visibility = GONE
+        currentShapeBuilder = ShapeBuilder()
     }
 }

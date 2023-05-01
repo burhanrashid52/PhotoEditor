@@ -86,6 +86,13 @@ new TextStyleBuilder()
 ### 2.0.0
 - New : Migrated the app and library to Kotlin
 
-### 2.1.0-alpha01
-- New: Add custom ViewType
-- New: Add rootView to OnPhotoEditorListener events
+### 3.0.0
+- New : Arrow shape
+- Change : (Breaking Change) `minSdkVersion` changed to `21`
+- Change : (Breaking Change) Shape names are no longer UPPERCASE
+- New : Suspending functions for saving images: `saveAsFile(String[, SaveSettings])` and `saveAsBitmap([SaveSettings])`
+- Fixed : #374 `IndexOutOfBoundsException` when saving bitmap
+
+### 3.0.1
+- New : #518 Fix Builder methods' return type in Java
+- Fixed : #522 Leak Graphics memory when changing filter
