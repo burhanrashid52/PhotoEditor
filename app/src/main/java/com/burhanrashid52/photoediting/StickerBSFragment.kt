@@ -27,7 +27,7 @@ class StickerBSFragment : BottomSheetDialogFragment() {
     }
 
     interface StickerListener {
-        fun onStickerClick(bitmap: Bitmap?)
+        fun onStickerClick(bitmap: Bitmap)
     }
 
     private val mBottomSheetBehaviorCallback: BottomSheetCallback = object : BottomSheetCallback() {

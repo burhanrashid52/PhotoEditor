@@ -22,7 +22,7 @@ interface OnPhotoEditorListener {
      * @param text      current text set on the view
      * @param colorCode current color value set on view
      */
-    fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int)
+    fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int)
 
     /**
      * This is a callback when user adds any view on the [PhotoEditorView] it can be
@@ -32,7 +32,7 @@ interface OnPhotoEditorListener {
      * @param numberOfAddedViews number of views currently added
      * @see ViewType
      */
-    fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int)
+    fun onAddViewListener(viewType: ViewType, numberOfAddedViews: Int)
 
     /**
      * This is a callback when user remove any view on the [PhotoEditorView] it happens when usually
@@ -41,7 +41,7 @@ interface OnPhotoEditorListener {
      * @param viewType           enum which define type of view is added
      * @param numberOfAddedViews number of views currently added
      */
-    fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int)
+    fun onRemoveViewListener(viewType: ViewType, numberOfAddedViews: Int)
 
     /**
      * A callback when user start dragging a view which can be
@@ -49,7 +49,7 @@ interface OnPhotoEditorListener {
      *
      * @param viewType enum which define type of view is added
      */
-    fun onStartViewChangeListener(viewType: ViewType?)
+    fun onStartViewChangeListener(viewType: ViewType)
 
     /**
      * A callback when user stop/up touching a view which can be
@@ -57,12 +57,12 @@ interface OnPhotoEditorListener {
      *
      * @param viewType enum which define type of view is added
      */
-    fun onStopViewChangeListener(viewType: ViewType?)
+    fun onStopViewChangeListener(viewType: ViewType)
 
     /**
      * A callback when the user touches the screen.
      *
      * @param event the MotionEvent associated to the touch.
      */
-    fun onTouchSourceImage(event: MotionEvent?)
+    fun onTouchSourceImage(event: MotionEvent)
 }

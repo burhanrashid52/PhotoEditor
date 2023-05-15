@@ -19,7 +19,7 @@ internal abstract class Graphic(
 
     val rootView: View
 
-    open fun updateView(view: View?) {
+    open fun updateView(view: View) {
         //Optional for subclass to override
     }
 

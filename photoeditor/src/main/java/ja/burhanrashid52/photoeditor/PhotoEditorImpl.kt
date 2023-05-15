@@ -35,9 +35,9 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
 ) : PhotoEditor {
     private val photoEditorView: PhotoEditorView = builder.photoEditorView
     private val viewState: PhotoEditorViewState = PhotoEditorViewState()
-    private val imageView: ImageView? = builder.imageView
+    private val imageView: ImageView = builder.imageView
     private val deleteView: View? = builder.deleteView
-    private val drawingView: DrawingView? = builder.drawingView
+    private val drawingView: DrawingView = builder.drawingView
     private val mBrushDrawingStateListener: BrushDrawingStateListener =
         BrushDrawingStateListener(builder.photoEditorView, viewState)
     private val mBoxHelper: BoxHelper = BoxHelper(builder.photoEditorView, viewState)
@@ -48,18 +48,18 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     private val mGraphicManager: GraphicManager = GraphicManager(builder.photoEditorView, viewState)
     private val context: Context = builder.context
 
-    override fun addImage(desiredImage: Bitmap?) {
+    override fun addImage(desiredImage: Bitmap) {
         val multiTouchListener = getMultiTouchListener(true)
         val sticker = Sticker(photoEditorView, multiTouchListener, viewState, mGraphicManager)
         sticker.buildView(desiredImage)
         addToEditor(sticker)
     }
 
-    override fun addText(text: String?, colorCodeTextView: Int) {
+    override fun addText(text: String, colorCodeTextView: Int) {
         addText(null, text, colorCodeTextView)
     }
 
-    override fun addText(textTypeface: Typeface?, text: String?, colorCodeTextView: Int) {
+    override fun addText(textTypeface: Typeface?, text: String, colorCodeTextView: Int) {
         val styleBuilder = TextStyleBuilder()
         styleBuilder.withTextColor(colorCodeTextView)
         if (textTypeface != null) {
@@ -68,7 +68,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         addText(text, styleBuilder)
     }
 
-    override fun addText(text: String?, styleBuilder: TextStyleBuilder?) {
+    override fun addText(text: String, styleBuilder: TextStyleBuilder?) {
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(isTextPinchScalable)
         val textGraphic = Text(
@@ -82,11 +82,11 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         addToEditor(textGraphic)
     }
 
-    override fun editText(view: View, inputText: String?, colorCode: Int) {
+    override fun editText(view: View, inputText: String, colorCode: Int) {
         editText(view, null, inputText, colorCode)
     }
 
-    override fun editText(view: View, textTypeface: Typeface?, inputText: String?, colorCode: Int) {
+    override fun editText(view: View, textTypeface: Typeface?, inputText: String, colorCode: Int) {
         val styleBuilder = TextStyleBuilder()
         styleBuilder.withTextColor(colorCode)
         if (textTypeface != null) {
@@ -95,7 +95,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         editText(view, inputText, styleBuilder)
     }
 
-    override fun editText(view: View, inputText: String?, styleBuilder: TextStyleBuilder?) {
+    override fun editText(view: View, inputText: String, styleBuilder: TextStyleBuilder?) {
         val inputTextView = view.findViewById<TextView>(R.id.tvPhotoEditorText)
         if (inputTextView != null && viewState.containsAddedView(view) && !TextUtils.isEmpty(
                 inputText
@@ -107,11 +107,11 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         }
     }
 
-    override fun addEmoji(emojiName: String?) {
+    override fun addEmoji(emojiName: String) {
         addEmoji(null, emojiName)
     }
 
-    override fun addEmoji(emojiTypeface: Typeface?, emojiName: String?) {
+    override fun addEmoji(emojiTypeface: Typeface?, emojiName: String) {
         drawingView?.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(true)
         val emoji = Emoji(

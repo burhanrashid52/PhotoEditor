@@ -96,3 +96,6 @@ new TextStyleBuilder()
 ### 3.0.1
 - New : #518 Fix Builder methods' return type in Java
 - Fixed : #522 Leak Graphics memory when changing filter
+
+### 3.x.x
+- Change : (Breaking Change) Change some nullable values to non-null values

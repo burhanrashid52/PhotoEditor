@@ -22,7 +22,9 @@ internal class Text(
     viewType = ViewType.TEXT,
     layoutId = R.layout.view_photo_editor_text
 ) {
+
     private var mTextView: TextView? = null
+
     fun buildView(text: String?, styleBuilder: TextStyleBuilder?) {
         mTextView?.apply {
             this.text = text
@@ -45,7 +47,7 @@ internal class Text(
         }
     }
 
-    override fun updateView(view: View?) {
+    override fun updateView(view: View) {
         val textInput = mTextView?.text.toString()
         val currentTextColor = mTextView?.currentTextColor ?: 0
         val photoEditorListener = mGraphicManager.onPhotoEditorListener
