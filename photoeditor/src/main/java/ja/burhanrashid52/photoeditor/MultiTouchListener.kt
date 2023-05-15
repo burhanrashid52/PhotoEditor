@@ -172,8 +172,8 @@ internal class MultiTouchListener(
     }
 
     internal interface OnMultiTouchListener {
-        fun onEditTextClickListener(text: String?, colorCode: Int)
-        fun onRemoveViewListener(removedView: View?)
+        fun onEditTextClickListener(text: String, colorCode: Int)
+        fun onRemoveViewListener(removedView: View)
     }
 
     internal interface OnGestureControl {

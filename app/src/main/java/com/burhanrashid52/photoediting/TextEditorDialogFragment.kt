@@ -23,14 +23,15 @@ import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickList
  * Created by Burhanuddin Rashid on 1/16/2018.
  */
 class TextEditorDialogFragment : DialogFragment() {
-    private var mAddTextEditText: EditText? = null
-    private var mAddTextDoneTextView: TextView? = null
-    private var mInputMethodManager: InputMethodManager? = null
+
+    private lateinit var mAddTextEditText: EditText
+    private lateinit var mAddTextDoneTextView: TextView
+    private lateinit var mInputMethodManager: InputMethodManager
     private var mColorCode = 0
     private var mTextEditorListener: TextEditorListener? = null
 
     interface TextEditorListener {
-        fun onDone(inputText: String?, colorCode: Int)
+        fun onDone(inputText: String, colorCode: Int)
     }
 
     override fun onStart() {
@@ -75,7 +76,7 @@ class TextEditorDialogFragment : DialogFragment() {
         colorPickerAdapter.setOnColorPickerClickListener(object : OnColorPickerClickListener {
             override fun onColorPickerClickListener(colorCode: Int) {
                 mColorCode = colorCode
-                mAddTextEditText!!.setTextColor(colorCode)
+                mAddTextEditText.setTextColor(colorCode)
             }
         })
 
@@ -83,18 +84,19 @@ class TextEditorDialogFragment : DialogFragment() {
 
         val arguments = requireArguments()
 
-        mAddTextEditText!!.setText(arguments.getString(EXTRA_INPUT_TEXT))
+        mAddTextEditText.setText(arguments.getString(EXTRA_INPUT_TEXT))
         mColorCode = arguments.getInt(EXTRA_COLOR_CODE)
-        mAddTextEditText!!.setTextColor(mColorCode)
-        mInputMethodManager!!.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        mAddTextEditText.setTextColor(mColorCode)
+        mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
         //Make a callback on activity when user is done with text editing
-        mAddTextDoneTextView!!.setOnClickListener { onClickListenerView ->
-            mInputMethodManager!!.hideSoftInputFromWindow(onClickListenerView.windowToken, 0)
+        mAddTextDoneTextView.setOnClickListener { onClickListenerView ->
+            mInputMethodManager.hideSoftInputFromWindow(onClickListenerView.windowToken, 0)
             dismiss()
-            val inputText = mAddTextEditText!!.text.toString()
-            if (!TextUtils.isEmpty(inputText) && mTextEditorListener != null) {
-                mTextEditorListener!!.onDone(inputText, mColorCode)
+            val inputText = mAddTextEditText.text.toString()
+            val textEditorListener = mTextEditorListener
+            if (inputText.isNotEmpty() && textEditorListener != null) {
+                textEditorListener.onDone(inputText, mColorCode)
             }
         }
     }

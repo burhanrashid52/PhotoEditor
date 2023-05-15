@@ -24,7 +24,7 @@ interface PhotoEditor {
      *
      * @param desiredImage bitmap image you want to add
      */
-    fun addImage(desiredImage: Bitmap?)
+    fun addImage(desiredImage: Bitmap)
 
     /**
      * This add the text on the [PhotoEditorView] with provided parameters
@@ -34,7 +34,7 @@ interface PhotoEditor {
      * @param colorCodeTextView text color to be displayed
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun addText(text: String?, colorCodeTextView: Int)
+    fun addText(text: String, colorCodeTextView: Int)
 
     /**
      * This add the text on the [PhotoEditorView] with provided parameters
@@ -45,7 +45,7 @@ interface PhotoEditor {
      * @param colorCodeTextView text color to be displayed
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun addText(textTypeface: Typeface?, text: String?, colorCodeTextView: Int)
+    fun addText(textTypeface: Typeface?, text: String, colorCodeTextView: Int)
 
     /**
      * This add the text on the [PhotoEditorView] with provided parameters
@@ -55,7 +55,7 @@ interface PhotoEditor {
      * @param styleBuilder text style builder with your style
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun addText(text: String?, styleBuilder: TextStyleBuilder?)
+    fun addText(text: String, styleBuilder: TextStyleBuilder?)
 
     /**
      * This will update text and color on provided view
@@ -64,7 +64,7 @@ interface PhotoEditor {
      * @param inputText text to update [TextView]
      * @param colorCode color to update on [TextView]
      */
-    fun editText(view: View, inputText: String?, colorCode: Int)
+    fun editText(view: View, inputText: String, colorCode: Int)
 
     /**
      * This will update the text and color on provided view
@@ -74,7 +74,7 @@ interface PhotoEditor {
      * @param inputText    text to update [TextView]
      * @param colorCode    color to update on [TextView]
      */
-    fun editText(view: View, textTypeface: Typeface?, inputText: String?, colorCode: Int)
+    fun editText(view: View, textTypeface: Typeface?, inputText: String, colorCode: Int)
 
     /**
      * This will update the text and color on provided view
@@ -83,7 +83,7 @@ interface PhotoEditor {
      * @param inputText    text to update [TextView]
      * @param styleBuilder style to apply on [TextView]
      */
-    fun editText(view: View, inputText: String?, styleBuilder: TextStyleBuilder?)
+    fun editText(view: View, inputText: String, styleBuilder: TextStyleBuilder?)
 
     /**
      * Adds emoji to the [PhotoEditorView] which you drag,rotate and scale using pinch
@@ -91,7 +91,7 @@ interface PhotoEditor {
      *
      * @param emojiName unicode in form of string to display emoji
      */
-    fun addEmoji(emojiName: String?)
+    fun addEmoji(emojiName: String)
 
     /**
      * Adds emoji to the [PhotoEditorView] which you drag,rotate and scale using pinch
@@ -100,7 +100,7 @@ interface PhotoEditor {
      * @param emojiTypeface typeface for custom font to show emoji unicode in specific font
      * @param emojiName     unicode in form of string to display emoji
      */
-    fun addEmoji(emojiTypeface: Typeface?, emojiName: String?)
+    fun addEmoji(emojiTypeface: Typeface?, emojiName: String)
 
     /**
      * Enable/Disable drawing mode to draw on [PhotoEditorView]
@@ -264,14 +264,15 @@ interface PhotoEditor {
      * Builder pattern to define [PhotoEditor] Instance
      */
     class Builder(var context: Context, var photoEditorView: PhotoEditorView) {
+
         @JvmField
-        var imageView: ImageView? = null
+        var imageView: ImageView = photoEditorView.source
 
         @JvmField
         var deleteView: View? = null
 
         @JvmField
-        var drawingView: DrawingView? = null
+        var drawingView: DrawingView = photoEditorView.drawingView
 
         @JvmField
         var textTypeface: Typeface? = null
@@ -341,17 +342,6 @@ interface PhotoEditor {
             return this
         }
 
-        /**
-         * Building a PhotoEditor which requires a Context and PhotoEditorView
-         * which we have setup in our xml layout
-         *
-         * @param context         context
-         * @param photoEditorView [PhotoEditorView]
-         */
-        init {
-            imageView = photoEditorView?.source
-            drawingView = photoEditorView?.drawingView
-        }
     }
 
     /**

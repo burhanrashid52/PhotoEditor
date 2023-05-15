@@ -140,6 +140,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     e.printStackTrace()
                 }
             }
+
             else -> {
                 val intentType = intent.type
                 if (intentType != null && intentType.startsWith("image/")) {
@@ -181,45 +182,43 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         imgShare.setOnClickListener(this)
     }
 
-    override fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int) {
+    override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
         val textEditorDialogFragment =
             TextEditorDialogFragment.show(this, text.toString(), colorCode)
         textEditorDialogFragment.setOnTextEditorListener(object :
             TextEditorDialogFragment.TextEditorListener {
-            override fun onDone(inputText: String?, colorCode: Int) {
+            override fun onDone(inputText: String, colorCode: Int) {
                 val styleBuilder = TextStyleBuilder()
                 styleBuilder.withTextColor(colorCode)
-                if (rootView != null) {
-                    mPhotoEditor.editText(rootView, inputText, styleBuilder)
-                }
+                mPhotoEditor.editText(rootView, inputText, styleBuilder)
                 mTxtCurrentTool.setText(R.string.label_text)
             }
         })
     }
 
-    override fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
+    override fun onAddViewListener(viewType: ViewType, numberOfAddedViews: Int) {
         Log.d(
             TAG,
             "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
         )
     }
 
-    override fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
+    override fun onRemoveViewListener(viewType: ViewType, numberOfAddedViews: Int) {
         Log.d(
             TAG,
             "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
         )
     }
 
-    override fun onStartViewChangeListener(viewType: ViewType?) {
+    override fun onStartViewChangeListener(viewType: ViewType) {
         Log.d(TAG, "onStartViewChangeListener() called with: viewType = [$viewType]")
     }
 
-    override fun onStopViewChangeListener(viewType: ViewType?) {
+    override fun onStopViewChangeListener(viewType: ViewType) {
         Log.d(TAG, "onStopViewChangeListener() called with: viewType = [$viewType]")
     }
 
-    override fun onTouchSourceImage(event: MotionEvent?) {
+    override fun onTouchSourceImage(event: MotionEvent) {
         Log.d(TAG, "onTouchView() called with: event = [$event]")
     }
 
@@ -235,6 +234,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 startActivityForResult(cameraIntent, CAMERA_REQUEST)
             }
+
             R.id.imgGallery -> {
                 val intent = Intent()
                 intent.type = "image/*"
@@ -330,6 +330,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     val photo = data?.extras?.get("data") as Bitmap?
                     mPhotoEditorView.source.setImageBitmap(photo)
                 }
+
                 PICK_REQUEST -> try {
                     mPhotoEditor.clearAllViews()
                     val uri = data?.data
@@ -363,12 +364,12 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mPhotoEditor.setShape(mShapeBuilder.withShapeType(shapeType))
     }
 
-    override fun onEmojiClick(emojiUnicode: String?) {
+    override fun onEmojiClick(emojiUnicode: String) {
         mPhotoEditor.addEmoji(emojiUnicode)
         mTxtCurrentTool.setText(R.string.label_emoji)
     }
 
-    override fun onStickerClick(bitmap: Bitmap?) {
+    override fun onStickerClick(bitmap: Bitmap) {
         mPhotoEditor.addImage(bitmap)
         mTxtCurrentTool.setText(R.string.label_sticker)
     }
@@ -403,11 +404,12 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 mTxtCurrentTool.setText(R.string.label_shape)
                 showBottomSheetDialogFragment(mShapeBSFragment)
             }
+
             ToolType.TEXT -> {
                 val textEditorDialogFragment = TextEditorDialogFragment.show(this)
                 textEditorDialogFragment.setOnTextEditorListener(object :
                     TextEditorDialogFragment.TextEditorListener {
-                    override fun onDone(inputText: String?, colorCode: Int) {
+                    override fun onDone(inputText: String, colorCode: Int) {
                         val styleBuilder = TextStyleBuilder()
                         styleBuilder.withTextColor(colorCode)
                         mPhotoEditor.addText(inputText, styleBuilder)
@@ -415,14 +417,17 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     }
                 })
             }
+
             ToolType.ERASER -> {
                 mPhotoEditor.brushEraser()
                 mTxtCurrentTool.setText(R.string.label_eraser_mode)
             }
+
             ToolType.FILTER -> {
                 mTxtCurrentTool.setText(R.string.label_filter)
                 showFilter(true)
             }
+
             ToolType.EMOJI -> showBottomSheetDialogFragment(mEmojiBSFragment)
             ToolType.STICKER -> showBottomSheetDialogFragment(mStickerBSFragment)
         }

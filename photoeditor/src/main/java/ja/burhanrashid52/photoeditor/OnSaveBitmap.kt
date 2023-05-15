@@ -8,6 +8,5 @@ import android.graphics.Bitmap
  * @since 5/21/2018
  */
 interface OnSaveBitmap {
-    fun onBitmapReady(saveBitmap: Bitmap?)
-    fun onFailure(e: Exception?)
+    fun onBitmapReady(saveBitmap: Bitmap)
 }

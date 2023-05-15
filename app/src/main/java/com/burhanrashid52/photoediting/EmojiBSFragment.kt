@@ -21,7 +21,7 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
     private var mEmojiListener: EmojiListener? = null
 
     interface EmojiListener {
-        fun onEmojiClick(emojiUnicode: String?)
+        fun onEmojiClick(emojiUnicode: String)
     }
 
     private val mBottomSheetBehaviorCallback: BottomSheetCallback = object : BottomSheetCallback() {
