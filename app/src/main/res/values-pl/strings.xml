@@ -1,21 +1,21 @@
 <resources>
     <string name="app_name">Photo Editor</string>
-    <string name="label_brush">Pędzle</string>
-    <string name="label_shape">Kształty</string>
+    <string name="label_brush">Pędzel</string>
+    <string name="label_shape">Kształt</string>
     <string name="label_oval">Elipsa</string>
     <string name="label_rectangle">Prostokąt</string>
     <string name="label_line">Linia</string>
     <string name="label_arrow">Strzałka</string>
     <string name="label_emoji">Emoji</string>
-    <string name="label_sticker">Naklejki</string>
+    <string name="label_sticker">Naklejka</string>
     <string name="label_eraser">Gumka</string>
-    <string name="label_eraser_mode">Gumka</string>
+    <string name="label_eraser_mode">Tryb gumki</string>
     <string name="label_text">Tekst</string>
-    <string name="label_filter">Filtry</string>
+    <string name="label_filter">Filtr</string>
     <string name="label_adjust">Dostosuj</string>
     <string name="msg_save_image">Czy na pewno chcesz wyjść bez zapisywania?</string>
     <string name="app_intent_name">PhotoEditor</string>
-    <string name="msg_save_image_to_share">Aby udostępnić należy najpierw zapisać obraz</string>
+    <string name="msg_save_image_to_share">Zapisz obraz, aby udostępnić</string>
     <string name="msg_share_image">Udostępnij</string>
 
 </resources>
