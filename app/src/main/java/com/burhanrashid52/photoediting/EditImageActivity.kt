@@ -19,6 +19,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -31,8 +33,7 @@ import androidx.transition.TransitionManager
 import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
 import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
 import com.burhanrashid52.photoediting.base.BaseActivity
-import com.burhanrashid52.photoediting.filters.FilterListener
-import com.burhanrashid52.photoediting.filters.FilterViewAdapter
+import com.burhanrashid52.photoediting.tools.FilerImageList
 import com.burhanrashid52.photoediting.tools.EditingToolsAdapter
 import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
 import com.burhanrashid52.photoediting.tools.ToolType
@@ -40,7 +41,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.PhotoFilter
 import ja.burhanrashid52.photoeditor.SaveFileResult
 import ja.burhanrashid52.photoeditor.SaveSettings
 import ja.burhanrashid52.photoeditor.TextStyleBuilder
@@ -53,7 +53,7 @@ import java.io.IOException
 
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
     PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener,
-    OnItemSelected, FilterListener {
+    OnItemSelected {
 
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
@@ -65,9 +65,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private lateinit var mTxtCurrentTool: TextView
     private lateinit var mWonderFont: Typeface
     private lateinit var mRvTools: RecyclerView
-    private lateinit var mRvFilters: RecyclerView
+    private lateinit var composeFilter: ComposeView
     private val mEditingToolsAdapter = EditingToolsAdapter(this)
-    private val mFilterViewAdapter = FilterViewAdapter(this)
     private lateinit var mRootView: ConstraintLayout
     private val mConstraintSet = ConstraintSet()
     private var mIsFilterVisible = false
@@ -101,9 +100,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mRvTools.layoutManager = llmTools
         mRvTools.adapter = mEditingToolsAdapter
 
-        val llmFilters = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        mRvFilters.layoutManager = llmFilters
-        mRvFilters.adapter = mFilterViewAdapter
+        composeFilter.setContent {
+            MaterialTheme {
+                FilerImageList { filter ->
+                    mPhotoEditor.setFilterEffect(filter)
+                }
+            }
+        }
 
         // NOTE(lucianocheng): Used to set integration testing parameters to PhotoEditor
         val pinchTextScalable = intent.getBooleanExtra(PINCH_TEXT_SCALABLE_INTENT_KEY, true)
@@ -157,7 +160,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mPhotoEditorView = findViewById(R.id.photoEditorView)
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool)
         mRvTools = findViewById(R.id.rvConstraintTools)
-        mRvFilters = findViewById(R.id.rvFilterView)
+        composeFilter = findViewById(R.id.composeFilter)
         mRootView = findViewById(R.id.rootView)
 
         val imgUndo: ImageView = findViewById(R.id.imgUndo)
@@ -264,9 +267,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         val path: String = uri.path ?: throw IllegalArgumentException("URI Path Expected")
 
         return FileProvider.getUriForFile(
-            this,
-            FILE_PROVIDER_AUTHORITY,
-            File(path)
+            this, FILE_PROVIDER_AUTHORITY, File(path)
         )
     }
 
@@ -274,8 +275,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private fun saveImage() {
         val fileName = System.currentTimeMillis().toString() + ".png"
         val hasStoragePermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            this, Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED
         if (hasStoragePermission || FileSaveHelper.isSdkHigherThan28()) {
             showLoading("Saving...")
@@ -283,17 +283,12 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
                 @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
                 override fun onFileCreateResult(
-                    created: Boolean,
-                    filePath: String?,
-                    error: String?,
-                    uri: Uri?
+                    created: Boolean, filePath: String?, error: String?, uri: Uri?
                 ) {
                     lifecycleScope.launch {
                         if (created && filePath != null) {
-                            val saveSettings = SaveSettings.Builder()
-                                .setClearViewsEnabled(true)
-                                .setTransparencyEnabled(true)
-                                .build()
+                            val saveSettings = SaveSettings.Builder().setClearViewsEnabled(true)
+                                .setTransparencyEnabled(true).build()
 
                             val result = mPhotoEditor.saveAsFile(filePath, saveSettings)
 
@@ -391,10 +386,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         builder.create().show()
     }
 
-    override fun onFilterSelected(photoFilter: PhotoFilter) {
-        mPhotoEditor.setFilterEffect(photoFilter)
-    }
-
     override fun onToolSelected(toolType: ToolType) {
         when (toolType) {
             ToolType.SHAPE -> {
@@ -444,22 +435,19 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mIsFilterVisible = isVisible
         mConstraintSet.clone(mRootView)
 
-        val rvFilterId: Int = mRvFilters.id
+        val rvFilterId: Int = composeFilter.id
 
         if (isVisible) {
             mConstraintSet.clear(rvFilterId, ConstraintSet.START)
             mConstraintSet.connect(
-                rvFilterId, ConstraintSet.START,
-                ConstraintSet.PARENT_ID, ConstraintSet.START
+                rvFilterId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START
             )
             mConstraintSet.connect(
-                rvFilterId, ConstraintSet.END,
-                ConstraintSet.PARENT_ID, ConstraintSet.END
+                rvFilterId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END
             )
         } else {
             mConstraintSet.connect(
-                rvFilterId, ConstraintSet.START,
-                ConstraintSet.PARENT_ID, ConstraintSet.END
+                rvFilterId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.END
             )
             mConstraintSet.clear(rvFilterId, ConstraintSet.END)
         }

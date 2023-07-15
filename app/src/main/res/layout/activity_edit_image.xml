@@ -92,17 +92,14 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/row_editing_tools" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFilterView"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeFilter"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/tool_bg"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@+id/rvConstraintTools"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rvConstraintTools"
-        tools:listitem="@layout/row_filter_view" />
+        app:layout_constraintTop_toTopOf="@+id/rvConstraintTools" />
 
     <TextView
         android:id="@+id/txtCurrentTool"
