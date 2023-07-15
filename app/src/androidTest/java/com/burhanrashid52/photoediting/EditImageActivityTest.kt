@@ -31,10 +31,14 @@ import org.junit.Test
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class EditImageActivityTest {
-    @Rule @JvmField
+    @Rule
+    @JvmField
     var mActivityRule = ActivityTestRule(
         EditImageActivity::class.java, false, false
     )
+
+    @get:Rule
+    val composeTestRule = createEmptyComposeRule()
 
     @Test
     fun checkIfActivityIsLaunched() {
@@ -51,7 +55,7 @@ class EditImageActivityTest {
         val editImageActivity = mActivityRule.launchActivity(null)
         assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode, false)
         Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
-        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode ,true)
+        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode, true)
     }
 
     @Test
@@ -82,7 +86,7 @@ class EditImageActivityTest {
         val emojis = EmojiBSFragment.getEmojis(context)
         val emojiPosition = 1
         val emojiUnicode = emojis[emojiPosition]
-        Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
+        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     ViewMatchers.hasDescendant(
@@ -117,7 +121,7 @@ class EditImageActivityTest {
     fun checkIfDiscardDialogIsDisplayedWhenCacheIsNotEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
         TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
-        Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
+        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     ViewMatchers.hasDescendant(
@@ -145,7 +149,7 @@ class EditImageActivityTest {
     fun checkIfUndoRedoIsWorkingCorrectWhenClickedOnUndoRedo() {
         val editImageActivity = mActivityRule.launchActivity(null)
         val emojisUnicodes = EmojiBSFragment.getEmojis(editImageActivity)
-        Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
+        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     ViewMatchers.hasDescendant(
@@ -214,7 +218,7 @@ class EditImageActivityTest {
 
         // Open the emoji menu (delay to give time to load lower menu)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
+        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     ViewMatchers.hasDescendant(
@@ -236,7 +240,8 @@ class EditImageActivityTest {
 
         // Select the emoji (delay to give time for the RecyclerView to close)
         Thread.sleep(1000)
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
+            .perform(ViewActions.click())
 
         // Capture the scale of the emoji
         var emojiFrameParentView =
@@ -245,7 +250,8 @@ class EditImageActivityTest {
         val emojiScaleYBeforePinching = emojiFrameParentView.scaleY
 
         // Scale the emoji up by pinching
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(PinchTestHelper.pinchOut())
+        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
+            .perform(PinchTestHelper.pinchOut())
 
         // Check if the emoji scaled up after pinching.
         emojiFrameParentView =
@@ -254,7 +260,8 @@ class EditImageActivityTest {
         assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.scaleY)
 
         // Remove the emoji from the screen.
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose))
+            .perform(ViewActions.click())
 
         // Add a text to the image.
         Espresso.onView(ViewMatchers.withText(R.string.label_text)).perform(ViewActions.click())
@@ -342,7 +349,7 @@ class EditImageActivityTest {
         mActivityRule.launchActivity(null)
 
         // Add the first emoji to the editor
-        Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
+        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     ViewMatchers.hasDescendant(
@@ -362,7 +369,8 @@ class EditImageActivityTest {
         // Move the first emoji to the left.
         // NOTE(lucianocheng): I tried to do a SwipeAction here, but using the swipe to move
         //                     the element turned out to be very difficult in practice.
-        val firstEmojiStickerFrameBorder = mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder)
+        val firstEmojiStickerFrameBorder =
+            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder)
         (firstEmojiStickerFrameBorder.parent as FrameLayout).x = 0f
 
         // Add the second emoji to the editor
@@ -378,7 +386,12 @@ class EditImageActivityTest {
             )
 
         // Assert that the first emoji is not selected (frame background is null)
-        Espresso.onView(withIndex(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 0))
+        Espresso.onView(
+            withIndex(
+                ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
+                0
+            )
+        )
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
                 assertNull(
                     view.background
@@ -386,7 +399,12 @@ class EditImageActivityTest {
             }
 
         // Assert that the second emoji is selected (frame background is not null)
-        Espresso.onView(withIndex(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 1))
+        Espresso.onView(
+            withIndex(
+                ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
+                1
+            )
+        )
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
                 TestCase.assertNotNull(
                     null,

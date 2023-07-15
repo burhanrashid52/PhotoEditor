@@ -26,16 +26,13 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
 import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
 import com.burhanrashid52.photoediting.base.BaseActivity
+import com.burhanrashid52.photoediting.tools.EditingToolList
 import com.burhanrashid52.photoediting.tools.FilerImageList
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
 import com.burhanrashid52.photoediting.tools.ToolType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
@@ -52,8 +49,7 @@ import java.io.File
 import java.io.IOException
 
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
-    PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener,
-    OnItemSelected {
+    PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener {
 
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
@@ -64,9 +60,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private lateinit var mStickerBSFragment: StickerBSFragment
     private lateinit var mTxtCurrentTool: TextView
     private lateinit var mWonderFont: Typeface
-    private lateinit var mRvTools: RecyclerView
+    private lateinit var composeTools: ComposeView
     private lateinit var composeFilter: ComposeView
-    private val mEditingToolsAdapter = EditingToolsAdapter(this)
     private lateinit var mRootView: ConstraintLayout
     private val mConstraintSet = ConstraintSet()
     private var mIsFilterVisible = false
@@ -96,15 +91,15 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mPropertiesBSFragment.setPropertiesChangeListener(this)
         mShapeBSFragment.setPropertiesChangeListener(this)
 
-        val llmTools = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        mRvTools.layoutManager = llmTools
-        mRvTools.adapter = mEditingToolsAdapter
-
         composeFilter.setContent {
             MaterialTheme {
-                FilerImageList { filter ->
-                    mPhotoEditor.setFilterEffect(filter)
-                }
+                FilerImageList(mPhotoEditor::setFilterEffect)
+            }
+        }
+
+        composeTools.setContent {
+            MaterialTheme {
+                EditingToolList(::onToolSelected)
             }
         }
 
@@ -159,7 +154,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private fun initViews() {
         mPhotoEditorView = findViewById(R.id.photoEditorView)
         mTxtCurrentTool = findViewById(R.id.txtCurrentTool)
-        mRvTools = findViewById(R.id.rvConstraintTools)
+        composeTools = findViewById(R.id.composeTools)
         composeFilter = findViewById(R.id.composeFilter)
         mRootView = findViewById(R.id.rootView)
 
@@ -386,7 +381,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         builder.create().show()
     }
 
-    override fun onToolSelected(toolType: ToolType) {
+    fun onToolSelected(toolType: ToolType) {
         when (toolType) {
             ToolType.SHAPE -> {
                 mPhotoEditor.setBrushDrawingMode(true)
