@@ -3,8 +3,7 @@ package com.burhanrashid52.photoediting
 import android.content.Context
 import org.junit.runner.RunWith
 import androidx.test.rule.ActivityTestRule
-import junit.framework.TestCase
-import androidx.test.espresso.contrib.RecyclerViewActions
+import junit.framework.TestCase.*
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.Throws
 import android.content.Intent
@@ -12,14 +11,27 @@ import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.runner.AndroidJUnit4
-import junit.framework.TestCase.*
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -43,9 +55,9 @@ class EditImageActivityTest {
     @Test
     fun checkIfActivityIsLaunched() {
         mActivityRule.launchActivity(null)
-        Espresso.onView(ViewMatchers.withText(R.string.app_name)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+        onView(withText(R.string.app_name)).check(
+            matches(
+                isDisplayed()
             )
         )
     }
@@ -53,31 +65,23 @@ class EditImageActivityTest {
     @Test
     fun checkIfBrushIsEnabledWhenClickedOnBrushTool() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode, false)
-        Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
-        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode, true)
+        assertEquals(editImageActivity.mPhotoEditor.brushDrawableMode, false)
+        composeTestRule.onNodeWithText("Shape").performClick()
+        assertEquals(editImageActivity.mPhotoEditor.brushDrawableMode, true)
     }
 
     @Test
     fun checkIfEraserIsEnabledWhenClickedOnEraserTool() {
         mActivityRule.launchActivity(null)
-        Espresso.onView(ViewMatchers.withText(R.string.label_eraser)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.label_eraser_mode)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
-            )
-        )
+        composeTestRule.onNodeWithText("Eraser").performClick()
+        onView(withText(R.string.label_eraser_mode)).check(matches(isDisplayed()))
     }
 
     @Test
     fun checkIfShapeIsEnabledWhenClickedOnBrushTool() {
-        val editImageActivity = mActivityRule.launchActivity(null)
-        Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.label_shape)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
-            )
-        )
+        mActivityRule.launchActivity(null)
+        composeTestRule.onNodeWithText("Shape").performClick()
+        composeTestRule.onNodeWithText("Shape").assertIsDisplayed()
     }
 
     @Test
@@ -86,115 +90,65 @@ class EditImageActivityTest {
         val emojis = EmojiBSFragment.getEmojis(context)
         val emojiPosition = 1
         val emojiUnicode = emojis[emojiPosition]
-        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    ViewMatchers.hasDescendant(
-                        ViewMatchers.withText(R.string.label_emoji)
-                    )
-                )
-            )
-        Espresso.onView(ViewMatchers.withText(R.string.label_emoji)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.rvEmoji))
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    emojiPosition,
-                    ViewActions.click()
-                )
-            )
-        Espresso.onView(ViewMatchers.withText(emojiUnicode)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+        composeTestRule.onNodeWithText("Emoji").performClick()
+        onView(withId(R.id.rvEmoji)).perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                emojiPosition, click()
             )
         )
+        Thread.sleep(500)
+        onView(withText(emojiUnicode)).check(matches(isDisplayed()))
     }
 
     @Ignore("Flacky test. Need to optimize")
     fun checkIfDiscardDialogIsNotDisplayedWhenCacheIsEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
-        Espresso.onView(ViewMatchers.withId(R.id.imgClose)).perform(ViewActions.click())
-        TestCase.assertTrue(editImageActivity.isDestroyed)
+        assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
+        onView(withId(R.id.imgClose)).perform(click())
+        assertTrue(editImageActivity.isDestroyed)
     }
 
     @Test
     fun checkIfDiscardDialogIsDisplayedWhenCacheIsNotEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
-        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    ViewMatchers.hasDescendant(
-                        ViewMatchers.withText(R.string.label_emoji)
-                    )
-                )
-            )
-        Espresso.onView(ViewMatchers.withText(R.string.label_emoji)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.rvEmoji))
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    ViewActions.click()
-                )
-            )
-        Espresso.onView(ViewMatchers.withId(R.id.imgClose)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.msg_save_image)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
-            )
-        )
+        assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
+        composeTestRule.onNodeWithText("Text").performClick()
+
+        onView(withId(R.id.add_text_edit_text)).perform(click())
+        onView(withId(R.id.add_text_edit_text))
+            .perform(ViewActions.typeText("Test Text"))
+        onView(withId(R.id.add_text_done_tv)).perform(click())
+
+        onView(withId(R.id.imgClose)).perform(click())
+        onView(withText(R.string.msg_save_image)).check(matches(isDisplayed()))
     }
 
     @Test
     fun checkIfUndoRedoIsWorkingCorrectWhenClickedOnUndoRedo() {
         val editImageActivity = mActivityRule.launchActivity(null)
         val emojisUnicodes = EmojiBSFragment.getEmojis(editImageActivity)
-        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    ViewMatchers.hasDescendant(
-                        ViewMatchers.withText(R.string.label_emoji)
-                    )
-                )
-            )
-        //Add Emoji
-        Espresso.onView(ViewMatchers.withText(R.string.label_emoji)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.rvEmoji)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                0,
-                ViewActions.click()
-            )
+
+        composeTestRule.onNodeWithText("Emoji").performClick()
+        onView(withId(R.id.rvEmoji)).perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
         )
-        Espresso.onView(
-            ViewMatchers.withText(
-                emojisUnicodes[0]
-            )
-        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        // Thread.sleep(500)
+        onView(withText(emojisUnicodes[0])).check(matches(isDisplayed()))
 
         // Undo the Emoji
-        Espresso.onView(ViewMatchers.withId(R.id.imgUndo)).perform(ViewActions.click())
-        Espresso.onView(
-            ViewMatchers.withText(
-                emojisUnicodes[0]
-            )
-        ).check(ViewAssertions.doesNotExist())
+        onView(withId(R.id.imgUndo)).perform(click())
+        onView(withText(emojisUnicodes[0])).check(doesNotExist())
 
         // Redo the Emoji
-        Espresso.onView(ViewMatchers.withId(R.id.imgRedo)).perform(ViewActions.click())
-        Espresso.onView(
-            ViewMatchers.withText(
-                emojisUnicodes[0]
-            )
-        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.imgRedo)).perform(click())
+        onView(withText(emojisUnicodes[0])).check(matches(isDisplayed()))
     }
 
     @Test
     fun testWhenNoImageIsSavedThanToastIsVisibleOnClickedOnShareButton() {
         mActivityRule.launchActivity(null)
-        Espresso.onView(ViewMatchers.withId(R.id.imgShare)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.msg_save_image_to_share)).check(
-            ViewAssertions.matches(ViewMatchers.isDisplayed())
-        )
+        onView(withId(R.id.imgShare)).perform(click())
+        onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()))
     }
 
     @Ignore("Need to Fix this test")
@@ -203,7 +157,7 @@ class EditImageActivityTest {
         val editImageActivity = mActivityRule.launchActivity(null)
         editImageActivity.mSaveImageUri = Uri.parse("somethurl")
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.imgShare)).perform(ViewActions.click())
+        onView(withId(R.id.imgShare)).perform(click())
         //onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()));
     }
 
@@ -218,30 +172,22 @@ class EditImageActivityTest {
 
         // Open the emoji menu (delay to give time to load lower menu)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    ViewMatchers.hasDescendant(
-                        ViewMatchers.withText(R.string.label_emoji)
-                    )
-                )
-            )
-        Espresso.onView(ViewMatchers.withText(R.string.label_emoji)).perform(ViewActions.click())
+        composeTestRule.onNodeWithText("Emoji").performClick()
 
         // Add an emoji from the menu (delay to give time for the RecyclerView to open)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.rvEmoji))
+        onView(withId(R.id.rvEmoji))
             .perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     1,
-                    ViewActions.click()
+                    click()
                 )
             )
 
         // Select the emoji (delay to give time for the RecyclerView to close)
         Thread.sleep(1000)
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
-            .perform(ViewActions.click())
+        onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
+            .perform(click())
 
         // Capture the scale of the emoji
         var emojiFrameParentView =
@@ -250,7 +196,7 @@ class EditImageActivityTest {
         val emojiScaleYBeforePinching = emojiFrameParentView.scaleY
 
         // Scale the emoji up by pinching
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
+        onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
             .perform(PinchTestHelper.pinchOut())
 
         // Check if the emoji scaled up after pinching.
@@ -260,22 +206,23 @@ class EditImageActivityTest {
         assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.scaleY)
 
         // Remove the emoji from the screen.
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose))
-            .perform(ViewActions.click())
+        onView(withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose))
+            .perform(click())
 
         // Add a text to the image.
-        Espresso.onView(ViewMatchers.withText(R.string.label_text)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.add_text_edit_text)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.add_text_edit_text))
+        composeTestRule.onNodeWithText("Text").performClick()
+
+        onView(withId(R.id.add_text_edit_text)).perform(click())
+        onView(withId(R.id.add_text_edit_text))
             .perform(ViewActions.typeText("Test Text"))
 
         // Select the text (delay to give time for the text imput screen to close)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.add_text_done_tv)).perform(ViewActions.click())
+        onView(withId(R.id.add_text_done_tv)).perform(click())
 
         // Select the text box
-        val testTextBox = ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
-        Espresso.onView(testTextBox).perform(ViewActions.click())
+        val testTextBox = withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
+        onView(testTextBox).perform(click())
 
         // Capture the current scale of the text box
         var textFrameParentView =
@@ -284,7 +231,7 @@ class EditImageActivityTest {
         val textScaleYBeforeScaling = textFrameParentView.scaleY
 
         // Attempt to scale the text box by pinching
-        Espresso.onView(testTextBox).perform(PinchTestHelper.pinchOut())
+        onView(testTextBox).perform(PinchTestHelper.pinchOut())
 
         // Validate that the text box did not scale by pinching.
         textFrameParentView =
@@ -312,21 +259,21 @@ class EditImageActivityTest {
 
         // Open the emoji menu (delay to give time to load lower menu)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withText(R.string.label_text)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.add_text_edit_text)).perform(ViewActions.click())
+        composeTestRule.onNodeWithText("Text").performClick()
+        onView(withId(R.id.add_text_edit_text)).perform(click())
 
         // Type the text (delay to allow keyboard to load)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.add_text_edit_text))
+        onView(withId(R.id.add_text_edit_text))
             .perform(ViewActions.typeText("Test Text"))
 
         // Select the text (delay to give time for the text imput screen to close)
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.add_text_done_tv)).perform(ViewActions.click())
+        onView(withId(R.id.add_text_done_tv)).perform(click())
 
         // Select the text box
-        val testTextBox = ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
-        Espresso.onView(testTextBox).perform(ViewActions.click())
+        val testTextBox = withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
+        onView(testTextBox).perform(click())
 
         // Capture the current scale of the text box
         var textFrameParentView =
@@ -335,7 +282,7 @@ class EditImageActivityTest {
         val textScaleYBeforeScaling = textFrameParentView.scaleY
 
         // Attempt to scale the text box by pinching
-        Espresso.onView(testTextBox).perform(PinchTestHelper.pinchOut())
+        onView(testTextBox).perform(PinchTestHelper.pinchOut())
 
         // Validate that the text box did not scale by pinching.
         textFrameParentView =
@@ -349,20 +296,12 @@ class EditImageActivityTest {
         mActivityRule.launchActivity(null)
 
         // Add the first emoji to the editor
-        Espresso.onView(ViewMatchers.withId(R.id.composeTools))
+        composeTestRule.onNodeWithText("Emoji").performClick()
+        onView(withId(R.id.rvEmoji))
             .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    ViewMatchers.hasDescendant(
-                        ViewMatchers.withText(R.string.label_emoji)
-                    )
-                )
-            )
-        Espresso.onView(ViewMatchers.withText(R.string.label_emoji)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.rvEmoji))
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     0,
-                    ViewActions.click()
+                    click()
                 )
             )
 
@@ -374,21 +313,23 @@ class EditImageActivityTest {
         (firstEmojiStickerFrameBorder.parent as FrameLayout).x = 0f
 
         // Add the second emoji to the editor
-        Espresso.onView(withIndex(ViewMatchers.withText(R.string.label_emoji), 1)).perform(
+        /*Espresso.onView(withIndex(ViewMatchers.withText(R.string.label_emoji), 1)).perform(
             ViewActions.click()
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.rvEmoji))
+        )*/
+        composeTestRule.onNodeWithText("Emoji").performClick()
+
+        onView(withId(R.id.rvEmoji))
             .perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     1,
-                    ViewActions.click()
+                    click()
                 )
             )
 
         // Assert that the first emoji is not selected (frame background is null)
-        Espresso.onView(
+        onView(
             withIndex(
-                ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
+                withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
                 0
             )
         )
@@ -399,14 +340,14 @@ class EditImageActivityTest {
             }
 
         // Assert that the second emoji is selected (frame background is not null)
-        Espresso.onView(
+        onView(
             withIndex(
-                ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
+                withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
                 1
             )
         )
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
-                TestCase.assertNotNull(
+                assertNotNull(
                     null,
                     view.background
                 )
