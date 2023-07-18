@@ -1,11 +1,6 @@
 package com.burhanrashid52.photoediting
 
 import android.content.Context
-import org.junit.runner.RunWith
-import androidx.test.rule.ActivityTestRule
-import junit.framework.TestCase.*
-import androidx.recyclerview.widget.RecyclerView
-import kotlin.Throws
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -13,25 +8,22 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
+import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -39,6 +31,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -87,15 +80,11 @@ class EditImageActivityTest {
     @Test
     fun checkIfEmojiIsDisplayedWhenEmojiIsSelected() {
         val context: Context = mActivityRule.launchActivity(null)
-        val emojis = EmojiBSFragment.getEmojis(context)
+        val emojis = getEmojis(context)
         val emojiPosition = 1
         val emojiUnicode = emojis[emojiPosition]
         composeTestRule.onNodeWithText("Emoji").performClick()
-        onView(withId(R.id.rvEmoji)).perform(
-            actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                emojiPosition, click()
-            )
-        )
+        composeTestRule.onNodeWithTag("emoji_1").performClick()
         Thread.sleep(500)
         onView(withText(emojiUnicode)).check(matches(isDisplayed()))
     }
@@ -115,8 +104,7 @@ class EditImageActivityTest {
         composeTestRule.onNodeWithText("Text").performClick()
 
         onView(withId(R.id.add_text_edit_text)).perform(click())
-        onView(withId(R.id.add_text_edit_text))
-            .perform(ViewActions.typeText("Test Text"))
+        onView(withId(R.id.add_text_edit_text)).perform(ViewActions.typeText("Test Text"))
         onView(withId(R.id.add_text_done_tv)).perform(click())
 
         onView(withId(R.id.imgClose)).perform(click())
@@ -126,13 +114,10 @@ class EditImageActivityTest {
     @Test
     fun checkIfUndoRedoIsWorkingCorrectWhenClickedOnUndoRedo() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        val emojisUnicodes = EmojiBSFragment.getEmojis(editImageActivity)
+        val emojisUnicodes = getEmojis(editImageActivity)
 
         composeTestRule.onNodeWithText("Emoji").performClick()
-        onView(withId(R.id.rvEmoji)).perform(
-            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
-        )
-        // Thread.sleep(500)
+        composeTestRule.onNodeWithTag("emoji_0").performClick()
         onView(withText(emojisUnicodes[0])).check(matches(isDisplayed()))
 
         // Undo the Emoji
@@ -176,18 +161,12 @@ class EditImageActivityTest {
 
         // Add an emoji from the menu (delay to give time for the RecyclerView to open)
         Thread.sleep(2000)
-        onView(withId(R.id.rvEmoji))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    1,
-                    click()
-                )
-            )
+        composeTestRule.onNodeWithTag("emoji_1").performClick()
+
 
         // Select the emoji (delay to give time for the RecyclerView to close)
         Thread.sleep(1000)
-        onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
-            .perform(click())
+        onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(click())
 
         // Capture the scale of the emoji
         var emojiFrameParentView =
@@ -196,8 +175,7 @@ class EditImageActivityTest {
         val emojiScaleYBeforePinching = emojiFrameParentView.scaleY
 
         // Scale the emoji up by pinching
-        onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder))
-            .perform(PinchTestHelper.pinchOut())
+        onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(PinchTestHelper.pinchOut())
 
         // Check if the emoji scaled up after pinching.
         emojiFrameParentView =
@@ -206,15 +184,13 @@ class EditImageActivityTest {
         assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.scaleY)
 
         // Remove the emoji from the screen.
-        onView(withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose))
-            .perform(click())
+        onView(withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose)).perform(click())
 
         // Add a text to the image.
         composeTestRule.onNodeWithText("Text").performClick()
 
         onView(withId(R.id.add_text_edit_text)).perform(click())
-        onView(withId(R.id.add_text_edit_text))
-            .perform(ViewActions.typeText("Test Text"))
+        onView(withId(R.id.add_text_edit_text)).perform(ViewActions.typeText("Test Text"))
 
         // Select the text (delay to give time for the text imput screen to close)
         Thread.sleep(2000)
@@ -237,14 +213,10 @@ class EditImageActivityTest {
         textFrameParentView =
             mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
         assertEquals(
-            textScaleXBeforeScaling.toDouble(),
-            textFrameParentView.scaleX.toDouble(),
-            0.01
+            textScaleXBeforeScaling.toDouble(), textFrameParentView.scaleX.toDouble(), 0.01
         )
         assertEquals(
-            textScaleYBeforeScaling.toDouble(),
-            textFrameParentView.scaleY.toDouble(),
-            0.01
+            textScaleYBeforeScaling.toDouble(), textFrameParentView.scaleY.toDouble(), 0.01
         )
     }
 
@@ -264,8 +236,7 @@ class EditImageActivityTest {
 
         // Type the text (delay to allow keyboard to load)
         Thread.sleep(2000)
-        onView(withId(R.id.add_text_edit_text))
-            .perform(ViewActions.typeText("Test Text"))
+        onView(withId(R.id.add_text_edit_text)).perform(ViewActions.typeText("Test Text"))
 
         // Select the text (delay to give time for the text imput screen to close)
         Thread.sleep(2000)
@@ -297,14 +268,7 @@ class EditImageActivityTest {
 
         // Add the first emoji to the editor
         composeTestRule.onNodeWithText("Emoji").performClick()
-        onView(withId(R.id.rvEmoji))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    click()
-                )
-            )
-
+        composeTestRule.onNodeWithTag("emoji_1").performClick()
         // Move the first emoji to the left.
         // NOTE(lucianocheng): I tried to do a SwipeAction here, but using the swipe to move
         //                     the element turned out to be very difficult in practice.
@@ -313,45 +277,30 @@ class EditImageActivityTest {
         (firstEmojiStickerFrameBorder.parent as FrameLayout).x = 0f
 
         // Add the second emoji to the editor
-        /*Espresso.onView(withIndex(ViewMatchers.withText(R.string.label_emoji), 1)).perform(
-            ViewActions.click()
-        )*/
         composeTestRule.onNodeWithText("Emoji").performClick()
-
-        onView(withId(R.id.rvEmoji))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    1,
-                    click()
-                )
-            )
+        composeTestRule.onNodeWithTag("emoji_1").performClick()
 
         // Assert that the first emoji is not selected (frame background is null)
         onView(
             withIndex(
-                withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
-                0
+                withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 0
             )
-        )
-            .check { view: View, noViewFoundException: NoMatchingViewException? ->
-                assertNull(
-                    view.background
-                )
-            }
+        ).check { view: View, noViewFoundException: NoMatchingViewException? ->
+            assertNull(
+                view.background
+            )
+        }
 
         // Assert that the second emoji is selected (frame background is not null)
         onView(
             withIndex(
-                withId(ja.burhanrashid52.photoeditor.R.id.frmBorder),
-                1
+                withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 1
             )
-        )
-            .check { view: View, noViewFoundException: NoMatchingViewException? ->
-                assertNotNull(
-                    null,
-                    view.background
-                )
-            }
+        ).check { view: View, noViewFoundException: NoMatchingViewException? ->
+            assertNotNull(
+                null, view.background
+            )
+        }
     }
 
     companion object {

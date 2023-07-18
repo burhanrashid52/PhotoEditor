@@ -12,15 +12,15 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
-import com.burhanrashid52.photoediting.PhotoApp.Companion.photoApp
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -68,53 +68,44 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
     fun setEmojiListener(emojiListener: EmojiListener?) {
         mEmojiListener = emojiListener
     }
+}
 
-    companion object {
-        var emojisList = getEmojis(photoApp)
+internal fun getEmojis(context: Context?): List<String> {
+    val convertedEmojiList = ArrayList<String>()
+    val emojiList = context!!.resources.getStringArray(R.array.photo_editor_emoji)
+    for (emojiUnicode in emojiList) {
+        convertedEmojiList.add(convertEmoji(emojiUnicode))
+    }
+    return convertedEmojiList
+}
 
-        /**
-         * Provide the list of emoji in form of unicode string
-         *
-         * @param context context
-         * @return list of emoji unicode
-         */
-        fun getEmojis(context: Context?): List<String> {
-            val convertedEmojiList = ArrayList<String>()
-            val emojiList = context!!.resources.getStringArray(R.array.photo_editor_emoji)
-            for (emojiUnicode in emojiList) {
-                convertedEmojiList.add(convertEmoji(emojiUnicode))
-            }
-            return convertedEmojiList
-        }
-
-        private fun convertEmoji(emoji: String): String {
-            return try {
-                val convertEmojiToInt = emoji.substring(2).toInt(16)
-                String(Character.toChars(convertEmojiToInt))
-            } catch (e: NumberFormatException) {
-                ""
-            }
-        }
+private fun convertEmoji(emoji: String): String {
+    return try {
+        val convertEmojiToInt = emoji.substring(2).toInt(16)
+        String(Character.toChars(convertEmojiToInt))
+    } catch (e: NumberFormatException) {
+        ""
     }
 }
 
 @Composable
 fun EmojiList(onSelect: (String) -> Unit) {
-    val emojiList = EmojiBSFragment.emojisList
+    val emojiList = getEmojis(LocalContext.current)
     LazyVerticalGrid(
         columns = GridCells.Fixed(5)
     ) {
         itemsIndexed(emojiList) { index, emoji ->
-            key("emoji_$index") {
-                Text(emoji,
-                    fontSize = 35.sp,
-                    color = Color.White,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clickable {
-                            onSelect(emoji)
-                        })
-            }
+            Text(
+                emoji,
+                fontSize = 35.sp,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .testTag("emoji_$index")
+                    .clickable {
+                        onSelect(emoji)
+                    },
+            )
         }
     }
 }
