@@ -3,19 +3,27 @@ package com.burhanrashid52.photoediting
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.core.view.isVisible
 import com.burhanrashid52.photoediting.PhotoApp.Companion.photoApp
-import java.lang.NumberFormatException
-import java.util.ArrayList
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class EmojiBSFragment : BottomSheetDialogFragment() {
     private var mEmojiListener: EmojiListener? = null
@@ -45,50 +53,24 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
             behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
-        val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
-        val gridLayoutManager = GridLayoutManager(activity, 5)
-        rvEmoji.layoutManager = gridLayoutManager
-        val emojiAdapter = EmojiAdapter()
-        rvEmoji.adapter = emojiAdapter
-        rvEmoji.setHasFixedSize(true)
-        rvEmoji.setItemViewCacheSize(emojisList.size)
-    }
-
-    fun setEmojiListener(emojiListener: EmojiListener?) {
-        mEmojiListener = emojiListener
-    }
-
-    inner class EmojiAdapter : RecyclerView.Adapter<EmojiAdapter.ViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.row_emoji, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.txtEmoji.text = emojisList[position]
-        }
-
-        override fun getItemCount(): Int {
-            return emojisList.size
-        }
-
-        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val txtEmoji: TextView = itemView.findViewById(R.id.txtEmoji)
-
-            init {
-                itemView.setOnClickListener {
-                    if (mEmojiListener != null) {
-                        mEmojiListener!!.onEmojiClick(emojisList[layoutPosition])
-                    }
+        val composeEmoji: ComposeView = contentView.findViewById(R.id.composeEmoji)
+        composeEmoji.isVisible = true
+        composeEmoji.setContent {
+            MaterialTheme {
+                EmojiList {
+                    mEmojiListener?.onEmojiClick(it)
                     dismiss()
                 }
             }
         }
     }
 
+    fun setEmojiListener(emojiListener: EmojiListener?) {
+        mEmojiListener = emojiListener
+    }
+
     companion object {
-        private var emojisList = getEmojis(photoApp)
+        var emojisList = getEmojis(photoApp)
 
         /**
          * Provide the list of emoji in form of unicode string
@@ -96,7 +78,7 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
          * @param context context
          * @return list of emoji unicode
          */
-        fun getEmojis(context: Context?): ArrayList<String> {
+        fun getEmojis(context: Context?): List<String> {
             val convertedEmojiList = ArrayList<String>()
             val emojiList = context!!.resources.getStringArray(R.array.photo_editor_emoji)
             for (emojiUnicode in emojiList) {
@@ -111,6 +93,27 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
                 String(Character.toChars(convertEmojiToInt))
             } catch (e: NumberFormatException) {
                 ""
+            }
+        }
+    }
+}
+
+@Composable
+fun EmojiList(onSelect: (String) -> Unit) {
+    val emojiList = EmojiBSFragment.emojisList
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(5)
+    ) {
+        itemsIndexed(emojiList) { index, emoji ->
+            key("emoji_$index") {
+                Text(emoji,
+                    fontSize = 35.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .clickable {
+                            onSelect(emoji)
+                        })
             }
         }
     }
