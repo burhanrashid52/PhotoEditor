@@ -4,15 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
-import android.widget.SeekBar
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
+import androidx.compose.material.Slider
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.burhanrashid52.photoediting.tools.ColorPickerList
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.shape.ShapeType
 
-class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeListener {
+class ShapeBSFragment : BottomSheetDialogFragment() {
     private var mProperties: Properties? = null
 
     interface Properties {
@@ -23,53 +40,72 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_bottom_shapes_dialog, container, false)
     }
 
+    var brushValue = 25f
+    var opacityValue = 100f
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val composeShapeColor: ComposeView = view.findViewById(R.id.composeShareColors)
-        val sbOpacity = view.findViewById<SeekBar>(R.id.shapeOpacity)
-        val sbBrushSize = view.findViewById<SeekBar>(R.id.shapeSize)
-        val shapeGroup = view.findViewById<RadioGroup>(R.id.shapeRadioGroup)
-
-        // shape picker
-        shapeGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
-            when (checkedId) {
-                R.id.lineRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.Line)
-                }
-
-                R.id.arrowRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.Arrow())
-                }
-
-                R.id.ovalRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.Oval)
-                }
-
-                R.id.rectRadioButton -> {
-                    mProperties!!.onShapePicked(ShapeType.Rectangle)
-                }
-
-                else -> {
-                    mProperties!!.onShapePicked(ShapeType.Brush)
-                }
-            }
-        }
-        sbOpacity.setOnSeekBarChangeListener(this)
-        sbBrushSize.setOnSeekBarChangeListener(this)
-
         composeShapeColor.setContent {
             MaterialTheme {
-                ColorPickerList {
-                    mProperties?.run {
-                        dismiss()
-                        onColorChanged(it)
+                val brushSize = remember { mutableStateOf(brushValue) }
+                val opacitySize = remember { mutableStateOf(opacityValue) }
+                Column {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        "Shape",
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Medium
+                    )
+                    ShapeSelection(ShapeType.Brush) {
+                        mProperties?.run {
+                            onShapePicked(it)
+                            dismiss()
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        "Brush",
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Slider(
+                        value = brushSize.value,
+                        onValueChange = {
+                            brushSize.value = it
+                            brushValue = it
+                            mProperties?.onShapeSizeChanged(it.toInt())
+                        },
+                        valueRange = 0f..100f,
+                        steps = 100,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        "Opacity",
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Slider(
+                        value = opacitySize.value,
+                        onValueChange = {
+                            opacitySize.value = it
+                            opacityValue = it
+                            mProperties?.onOpacityChanged(it.toInt())
+                        },
+                        valueRange = 0f..100f,
+                        steps = 100,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ColorPickerList {
+                        mProperties?.run {
+                            onColorChanged(it)
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -79,19 +115,37 @@ class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeList
     fun setPropertiesChangeListener(properties: Properties?) {
         mProperties = properties
     }
+}
 
-    override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-        when (seekBar.id) {
-            R.id.shapeOpacity -> if (mProperties != null) {
-                mProperties!!.onOpacityChanged(i)
+private val shapes = listOf(
+    ShapeType.Brush,
+    ShapeType.Line,
+    ShapeType.Arrow(),
+    ShapeType.Oval,
+    ShapeType.Rectangle,
+)
+
+@Composable
+fun ShapeSelection(filledShape: ShapeType, onSelect: (shape: ShapeType) -> Unit) {
+    val selectedShape = remember { mutableStateOf(filledShape) }
+    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+        for (shape in shapes) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(48.dp)
+            ) {
+                RadioButton(
+                    selected = selectedShape.value == shape, onClick = {
+                        selectedShape.value = shape
+                        onSelect(shape)
+                    }, Modifier.size(20.dp)
+                )
+                Text(
+                    text = shape::class.java.simpleName,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
             }
 
-            R.id.shapeSize -> if (mProperties != null) {
-                mProperties!!.onShapeSizeChanged(i)
-            }
         }
     }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar) {}
-    override fun onStopTrackingTouch(seekBar: SeekBar) {}
 }

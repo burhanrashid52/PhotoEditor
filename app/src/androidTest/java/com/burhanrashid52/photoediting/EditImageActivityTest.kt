@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -74,7 +75,8 @@ class EditImageActivityTest {
     fun checkIfShapeIsEnabledWhenClickedOnBrushTool() {
         mActivityRule.launchActivity(null)
         composeTestRule.onNodeWithText("Shape").performClick()
-        composeTestRule.onNodeWithText("Shape").assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("Shape")[0].assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("Shape")[1].assertIsDisplayed()
     }
 
     @Test
