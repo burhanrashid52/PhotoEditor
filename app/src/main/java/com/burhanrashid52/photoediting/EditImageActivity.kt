@@ -49,11 +49,10 @@ import java.io.File
 import java.io.IOException
 
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
-    PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiListener, StickerListener {
+    ShapeBSFragment.Properties, EmojiListener, StickerListener {
 
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
-    private lateinit var mPropertiesBSFragment: PropertiesBSFragment
     private lateinit var mShapeBSFragment: ShapeBSFragment
     private lateinit var mShapeBuilder: ShapeBuilder
     private lateinit var mEmojiBSFragment: EmojiBSFragment
@@ -82,13 +81,11 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
 
-        mPropertiesBSFragment = PropertiesBSFragment()
         mEmojiBSFragment = EmojiBSFragment()
         mStickerBSFragment = StickerBSFragment()
         mShapeBSFragment = ShapeBSFragment()
         mStickerBSFragment.setStickerListener(this)
         mEmojiBSFragment.setEmojiListener(this)
-        mPropertiesBSFragment.setPropertiesChangeListener(this)
         mShapeBSFragment.setPropertiesChangeListener(this)
 
         composeFilter.setContent {
