@@ -381,7 +381,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         builder.create().show()
     }
 
-    fun onToolSelected(toolType: ToolType) {
+    private fun onToolSelected(toolType: ToolType) {
         when (toolType) {
             ToolType.SHAPE -> {
                 mPhotoEditor.setBrushDrawingMode(true)

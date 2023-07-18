@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.ui:ui-tooling"
     implementation "com.google.accompanist:accompanist-themeadapter-material:0.28.0"
+    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
 
     androidTestImplementation "androidx.compose.ui:ui-test-junit4"
     debugImplementation "androidx.compose.ui:ui-test-manifest"
