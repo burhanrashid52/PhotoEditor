@@ -28,11 +28,13 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
-import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
-import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
+import com.burhanrashid52.photoediting.base.BaseBSFragment
 import com.burhanrashid52.photoediting.base.BaseActivity
 import com.burhanrashid52.photoediting.tools.EditingToolList
+import com.burhanrashid52.photoediting.tools.EmojiList
 import com.burhanrashid52.photoediting.tools.FilerImageList
+import com.burhanrashid52.photoediting.tools.ShapeAndPropertiesSelection
+import com.burhanrashid52.photoediting.tools.StickerList
 import com.burhanrashid52.photoediting.tools.ToolType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
@@ -48,15 +50,14 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 
-class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
-    ShapeBSFragment.Properties, EmojiListener, StickerListener {
+class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener {
 
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
-    private lateinit var mShapeBSFragment: ShapeBSFragment
+    private lateinit var mShapeBSFragment: BaseBSFragment
     private lateinit var mShapeBuilder: ShapeBuilder
-    private lateinit var mEmojiBSFragment: EmojiBSFragment
-    private lateinit var mStickerBSFragment: StickerBSFragment
+    private lateinit var emojiBSDialog: BaseBSFragment
+    private lateinit var tickerBSDialog: BaseBSFragment
     private lateinit var mTxtCurrentTool: TextView
     private lateinit var mWonderFont: Typeface
     private lateinit var composeTools: ComposeView
@@ -81,12 +82,44 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
 
-        mEmojiBSFragment = EmojiBSFragment()
-        mStickerBSFragment = StickerBSFragment()
-        mShapeBSFragment = ShapeBSFragment()
-        mStickerBSFragment.setStickerListener(this)
-        mEmojiBSFragment.setEmojiListener(this)
-        mShapeBSFragment.setPropertiesChangeListener(this)
+        emojiBSDialog = BaseBSFragment()
+        emojiBSDialog.setComposeContent {
+            EmojiList {
+                onEmojiClick(it)
+                emojiBSDialog.dismiss()
+            }
+        }
+
+        tickerBSDialog = BaseBSFragment()
+        tickerBSDialog.setComposeContent {
+            StickerList {
+                onStickerClick(it)
+                tickerBSDialog.dismiss()
+            }
+        }
+
+        mShapeBSFragment = BaseBSFragment()
+        mShapeBSFragment.setComposeContent {
+            ShapeAndPropertiesSelection(
+                25f, 100f,
+                onShapePicked = {
+                    onShapePicked(it)
+                    mShapeBSFragment.dismiss()
+                },
+                onShapeSizeChange = {
+                    onShapeSizeChanged(it.toInt())
+                    mShapeBSFragment.dismiss()
+                },
+                onOpacityChange = {
+                    onOpacityChanged(it.toInt())
+                },
+                onColorChange = {
+                    onColorChanged(it)
+                    mShapeBSFragment.dismiss()
+                },
+            )
+
+        }
 
         composeFilter.setContent {
             MaterialTheme {
@@ -332,31 +365,31 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         }
     }
 
-    override fun onColorChanged(colorCode: Int) {
+    private fun onColorChanged(colorCode: Int) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeColor(colorCode))
         mTxtCurrentTool.setText(R.string.label_brush)
     }
 
-    override fun onOpacityChanged(opacity: Int) {
+    private fun onOpacityChanged(opacity: Int) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeOpacity(opacity))
         mTxtCurrentTool.setText(R.string.label_brush)
     }
 
-    override fun onShapeSizeChanged(shapeSize: Int) {
+    private fun onShapeSizeChanged(shapeSize: Int) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeSize(shapeSize.toFloat()))
         mTxtCurrentTool.setText(R.string.label_brush)
     }
 
-    override fun onShapePicked(shapeType: ShapeType) {
+    private fun onShapePicked(shapeType: ShapeType) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeType(shapeType))
     }
 
-    override fun onEmojiClick(emojiUnicode: String) {
+    private fun onEmojiClick(emojiUnicode: String) {
         mPhotoEditor.addEmoji(emojiUnicode)
         mTxtCurrentTool.setText(R.string.label_emoji)
     }
 
-    override fun onStickerClick(bitmap: Bitmap) {
+    private fun onStickerClick(bitmap: Bitmap) {
         mPhotoEditor.addImage(bitmap)
         mTxtCurrentTool.setText(R.string.label_sticker)
     }
@@ -411,8 +444,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 showFilter(true)
             }
 
-            ToolType.EMOJI -> showBottomSheetDialogFragment(mEmojiBSFragment)
-            ToolType.STICKER -> showBottomSheetDialogFragment(mStickerBSFragment)
+            ToolType.EMOJI -> showBottomSheetDialogFragment(emojiBSDialog)
+            ToolType.STICKER -> showBottomSheetDialogFragment(tickerBSDialog)
         }
     }
 

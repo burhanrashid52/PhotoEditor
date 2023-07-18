@@ -24,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
+import com.burhanrashid52.photoediting.tools.getEmojis
 import junit.framework.TestCase.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher

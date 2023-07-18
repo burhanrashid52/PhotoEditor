@@ -58,7 +58,7 @@ class TextEditorDialogFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.add_text_dialog, container, false)
+        return inflater.inflate(R.layout.compose_view_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +67,7 @@ class TextEditorDialogFragment : DialogFragment() {
         val intentColorCode: Int = arguments?.getInt(EXTRA_COLOR_CODE) ?: Color.White.value.toInt()
 
         //Setup the color picker for text color
-        val composeColors: ComposeView = view.findViewById(R.id.composeColors)
+        val composeColors: ComposeView = view.findViewById(R.id.composeView)
         composeColors.setContent {
             MaterialTheme {
                 val focusManager = LocalFocusManager.current

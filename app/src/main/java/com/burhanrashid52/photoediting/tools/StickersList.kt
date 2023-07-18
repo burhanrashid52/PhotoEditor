@@ -1,76 +1,22 @@
-package com.burhanrashid52.photoediting
+package com.burhanrashid52.photoediting.tools
 
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.view.View
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import coil.compose.AsyncImage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-
-class StickerBSFragment : BottomSheetDialogFragment() {
-    private var mStickerListener: StickerListener? = null
-    fun setStickerListener(stickerListener: StickerListener?) {
-        mStickerListener = stickerListener
-    }
-
-    interface StickerListener {
-        fun onStickerClick(bitmap: Bitmap)
-    }
-
-    private val mBottomSheetBehaviorCallback: BottomSheetCallback = object : BottomSheetCallback() {
-        override fun onStateChanged(bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                dismiss()
-            }
-        }
-
-        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-    }
-
-    @SuppressLint("RestrictedApi")
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
-        val contentView = View.inflate(context, R.layout.fragment_bottom_sticker_emoji_dialog, null)
-        dialog.setContentView(contentView)
-        val params = (contentView.parent as View).layoutParams as CoordinatorLayout.LayoutParams
-        val behavior = params.behavior
-        if (behavior != null && behavior is BottomSheetBehavior<*>) {
-            behavior.setBottomSheetCallback(mBottomSheetBehaviorCallback)
-        }
-        (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
-        val composeEmoji: ComposeView = contentView.findViewById(R.id.compose)
-        composeEmoji.setContent {
-            MaterialTheme {
-                StickerList {
-                    mStickerListener?.run {
-                        onStickerClick(it)
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
 
 // Image Urls from flaticon(https://www.flaticon.com/stickers-pack/food-289)
 private val stickerPathList = arrayOf(
