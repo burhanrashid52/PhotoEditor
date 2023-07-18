@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,11 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
+import com.burhanrashid52.photoediting.tools.ColorPickerList
 
 /**
  * Created by Burhanuddin Rashid on 1/16/2018.
@@ -65,22 +64,15 @@ class TextEditorDialogFragment : DialogFragment() {
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv)
 
         //Setup the color picker for text color
-        val addTextColorPickerRecyclerView: RecyclerView =
-            view.findViewById(R.id.add_text_color_picker_recycler_view)
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        addTextColorPickerRecyclerView.layoutManager = layoutManager
-        addTextColorPickerRecyclerView.setHasFixedSize(true)
-        val colorPickerAdapter = ColorPickerAdapter(activity)
-
-        //This listener will change the text color when clicked on any color from picker
-        colorPickerAdapter.setOnColorPickerClickListener(object : OnColorPickerClickListener {
-            override fun onColorPickerClickListener(colorCode: Int) {
-                mColorCode = colorCode
-                mAddTextEditText.setTextColor(colorCode)
+        val composeColors: ComposeView = view.findViewById(R.id.composeColors)
+        composeColors.setContent {
+            MaterialTheme {
+                ColorPickerList {
+                    mColorCode = it
+                    mAddTextEditText.setTextColor(it)
+                }
             }
-        })
-
-        addTextColorPickerRecyclerView.adapter = colorPickerAdapter
+        }
 
         val arguments = requireArguments()
 

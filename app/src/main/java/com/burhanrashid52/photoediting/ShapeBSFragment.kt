@@ -8,6 +8,7 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
+import com.burhanrashid52.photoediting.tools.ColorPickerList
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.shape.ShapeType
 
