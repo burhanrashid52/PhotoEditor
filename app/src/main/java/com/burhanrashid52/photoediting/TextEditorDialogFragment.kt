@@ -1,19 +1,32 @@
 package com.burhanrashid52.photoediting
 
-import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.burhanrashid52.photoediting.tools.ColorPickerList
@@ -23,9 +36,6 @@ import com.burhanrashid52.photoediting.tools.ColorPickerList
  */
 class TextEditorDialogFragment : DialogFragment() {
 
-    private lateinit var mAddTextEditText: EditText
-    private lateinit var mAddTextDoneTextView: TextView
-    private lateinit var mInputMethodManager: InputMethodManager
     private var mColorCode = 0
     private var mTextEditorListener: TextEditorListener? = null
 
@@ -41,54 +51,62 @@ class TextEditorDialogFragment : DialogFragment() {
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.MATCH_PARENT
             dialog.window!!.setLayout(width, height)
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.add_text_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val activity = requireActivity()
-
-        mAddTextEditText = view.findViewById(R.id.add_text_edit_text)
-        mInputMethodManager =
-            activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv)
+        val intentText = arguments?.getString(EXTRA_INPUT_TEXT) ?: ""
+        val intentColorCode: Int = arguments?.getInt(EXTRA_COLOR_CODE) ?: Color.White.value.toInt()
 
         //Setup the color picker for text color
         val composeColors: ComposeView = view.findViewById(R.id.composeColors)
         composeColors.setContent {
             MaterialTheme {
-                ColorPickerList {
-                    mColorCode = it
-                    mAddTextEditText.setTextColor(it)
+                val focusManager = LocalFocusManager.current
+                val text = remember { mutableStateOf(intentText) }
+                val colorCode = remember { mutableStateOf(intentColorCode) }
+                Box(Modifier.fillMaxSize()) {
+                    TextField(
+                        value = text.value, onValueChange = {
+                            text.value = it
+                        }, textStyle = LocalTextStyle.current.copy(
+                            fontSize = 40.sp,
+                            textAlign = TextAlign.Center,
+                            color = Color(colorCode.value),
+                        ), modifier = Modifier
+                            .fillMaxHeight()
+                            .testTag("add_text_edit_text")
+                    )
+                    Box(Modifier.align(Alignment.BottomCenter)) {
+                        ColorPickerList {
+                            colorCode.value = it
+                        }
+                    }
+                    OutlinedButton(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp),
+                        onClick = {
+                            focusManager.clearFocus()
+                            dismiss()
+                            mTextEditorListener?.run {
+                                if (text.value.isNotEmpty()) {
+                                    onDone(text.value, mColorCode)
+                                }
+                            }
+                        },
+                    ) {
+                        Text("Done")
+                    }
                 }
-            }
-        }
-
-        val arguments = requireArguments()
-
-        mAddTextEditText.setText(arguments.getString(EXTRA_INPUT_TEXT))
-        mColorCode = arguments.getInt(EXTRA_COLOR_CODE)
-        mAddTextEditText.setTextColor(mColorCode)
-        mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-
-        //Make a callback on activity when user is done with text editing
-        mAddTextDoneTextView.setOnClickListener { onClickListenerView ->
-            mInputMethodManager.hideSoftInputFromWindow(onClickListenerView.windowToken, 0)
-            dismiss()
-            val inputText = mAddTextEditText.text.toString()
-            val textEditorListener = mTextEditorListener
-            if (inputText.isNotEmpty() && textEditorListener != null) {
-                textEditorListener.onDone(inputText, mColorCode)
             }
         }
     }

@@ -12,9 +12,9 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextReplacement
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -87,7 +87,6 @@ class EditImageActivityTest {
         val emojiUnicode = emojis[emojiPosition]
         composeTestRule.onNodeWithText("Emoji").performClick()
         composeTestRule.onNodeWithTag("emoji_1").performClick()
-        Thread.sleep(500)
         onView(withText(emojiUnicode)).check(matches(isDisplayed()))
     }
 
@@ -105,9 +104,9 @@ class EditImageActivityTest {
         assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
         composeTestRule.onNodeWithText("Text").performClick()
 
-        onView(withId(R.id.add_text_edit_text)).perform(click())
-        onView(withId(R.id.add_text_edit_text)).perform(ViewActions.typeText("Test Text"))
-        onView(withId(R.id.add_text_done_tv)).perform(click())
+        composeTestRule.onNodeWithTag("add_text_edit_text").performClick()
+        composeTestRule.onNodeWithTag("add_text_edit_text").performTextReplacement("Test Text")
+        composeTestRule.onNodeWithText("Done").performClick()
 
         onView(withId(R.id.imgClose)).perform(click())
         onView(withText(R.string.msg_save_image)).check(matches(isDisplayed()))
@@ -143,9 +142,8 @@ class EditImageActivityTest {
     fun testShareIntentWhenImageIsAvailableOnClickedOnShareButton() {
         val editImageActivity = mActivityRule.launchActivity(null)
         editImageActivity.mSaveImageUri = Uri.parse("somethurl")
-        Thread.sleep(2000)
         onView(withId(R.id.imgShare)).perform(click())
-        //onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()));
+        onView(withText(R.string.msg_save_image_to_share)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -158,16 +156,13 @@ class EditImageActivityTest {
         mActivityRule.launchActivity(intent)
 
         // Open the emoji menu (delay to give time to load lower menu)
-        Thread.sleep(2000)
         composeTestRule.onNodeWithText("Emoji").performClick()
 
         // Add an emoji from the menu (delay to give time for the RecyclerView to open)
-        Thread.sleep(2000)
         composeTestRule.onNodeWithTag("emoji_1").performClick()
 
 
         // Select the emoji (delay to give time for the RecyclerView to close)
-        Thread.sleep(1000)
         onView(withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(click())
 
         // Capture the scale of the emoji
@@ -191,12 +186,10 @@ class EditImageActivityTest {
         // Add a text to the image.
         composeTestRule.onNodeWithText("Text").performClick()
 
-        onView(withId(R.id.add_text_edit_text)).perform(click())
-        onView(withId(R.id.add_text_edit_text)).perform(ViewActions.typeText("Test Text"))
-
+        composeTestRule.onNodeWithTag("add_text_edit_text").performClick()
+        composeTestRule.onNodeWithTag("add_text_edit_text").performTextReplacement("Test Text")
         // Select the text (delay to give time for the text imput screen to close)
-        Thread.sleep(2000)
-        onView(withId(R.id.add_text_done_tv)).perform(click())
+        composeTestRule.onNodeWithText("Done").performClick()
 
         // Select the text box
         val testTextBox = withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
@@ -232,17 +225,11 @@ class EditImageActivityTest {
         mActivityRule.launchActivity(intent)
 
         // Open the emoji menu (delay to give time to load lower menu)
-        Thread.sleep(2000)
         composeTestRule.onNodeWithText("Text").performClick()
-        onView(withId(R.id.add_text_edit_text)).perform(click())
-
         // Type the text (delay to allow keyboard to load)
-        Thread.sleep(2000)
-        onView(withId(R.id.add_text_edit_text)).perform(ViewActions.typeText("Test Text"))
-
-        // Select the text (delay to give time for the text imput screen to close)
-        Thread.sleep(2000)
-        onView(withId(R.id.add_text_done_tv)).perform(click())
+        composeTestRule.onNodeWithTag("add_text_edit_text").performClick()
+        composeTestRule.onNodeWithTag("add_text_edit_text").performTextReplacement("Test Text")
+        composeTestRule.onNodeWithText("Done").performClick()
 
         // Select the text box
         val testTextBox = withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)

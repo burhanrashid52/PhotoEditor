@@ -101,7 +101,7 @@ class ShapeBSFragment : BottomSheetDialogFragment() {
                         steps = 100,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    ColorPickerList {
+                    ColorPickerList{
                         mProperties?.run {
                             onColorChanged(it)
                             dismiss()
