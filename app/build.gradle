@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.burhanrashid52.photoediting'
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 34
         versionCode 8
         versionName "3.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -70,7 +70,8 @@ dependencies {
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.foundation:foundation-layout"
-    implementation "androidx.compose.material:material"
+    //implementation "androidx.compose.material:material"
+    implementation "androidx.compose.material3:material3:1.2.0-alpha03"
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.ui:ui-tooling"
     implementation "com.google.accompanist:accompanist-themeadapter-material:0.28.0"

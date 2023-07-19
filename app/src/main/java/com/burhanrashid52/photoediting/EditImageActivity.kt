@@ -19,7 +19,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -30,6 +31,7 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.burhanrashid52.photoediting.base.BaseBSFragment
 import com.burhanrashid52.photoediting.base.BaseActivity
+import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
 import com.burhanrashid52.photoediting.tools.EditingToolList
 import com.burhanrashid52.photoediting.tools.EmojiList
 import com.burhanrashid52.photoediting.tools.FilerImageList
@@ -71,6 +73,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
     private lateinit var mSaveFileHelper: FileSaveHelper
 
+    @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeFullScreen()

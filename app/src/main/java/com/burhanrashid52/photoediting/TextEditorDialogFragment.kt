@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -85,10 +85,8 @@ class TextEditorDialogFragment : DialogFragment() {
                             .fillMaxHeight()
                             .testTag("add_text_edit_text")
                     )
-                    Box(Modifier.align(Alignment.BottomCenter)) {
-                        ColorPickerList {
-                            colorCode.value = it
-                        }
+                    ColorPickerList(modifier = Modifier.align(Alignment.BottomCenter)) {
+                        colorCode.value = it
                     }
                     OutlinedButton(
                         modifier = Modifier

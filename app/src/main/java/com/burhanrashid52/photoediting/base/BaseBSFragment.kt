@@ -3,7 +3,7 @@ package com.burhanrashid52.photoediting.base
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.view.View
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout

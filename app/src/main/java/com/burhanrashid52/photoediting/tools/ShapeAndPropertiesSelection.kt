@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Slider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,12 +46,12 @@ fun ShapeAndPropertiesSelection(
         Column(Modifier.padding(8.dp)) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Shape", style = MaterialTheme.typography.body1, fontWeight = FontWeight.Medium
+                "Shape", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium
             )
             ShapeSelection(ShapeType.Brush, onShapePicked)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Brush", style = MaterialTheme.typography.body1, fontWeight = FontWeight.Medium
+                "Brush", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium
             )
             Slider(
                 value = brushSize.value,
@@ -64,7 +64,9 @@ fun ShapeAndPropertiesSelection(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Opacity", style = MaterialTheme.typography.body1, fontWeight = FontWeight.Medium
+                "Opacity",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
             )
             Slider(
                 value = opacitySize.value,
@@ -76,7 +78,7 @@ fun ShapeAndPropertiesSelection(
                 steps = 100,
             )
             Spacer(modifier = Modifier.height(16.dp))
-            ColorPickerList(onColorChange)
+            ColorPickerList(onSelect = onColorChange)
         }
     }
 }
