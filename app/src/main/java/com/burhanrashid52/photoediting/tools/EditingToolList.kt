@@ -1,22 +1,15 @@
 package com.burhanrashid52.photoediting.tools
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.burhanrashid52.photoediting.R
-import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
 import ja.burhanrashid52.photoeditor.shape.ShapeType
 
 /**
@@ -39,10 +31,10 @@ private val toolList = listOf(
     ToolModel("Text", R.drawable.ic_text, ToolType.TEXT),
     ToolModel("Eraser", R.drawable.ic_eraser, ToolType.ERASER),
     ToolModel("Filter", R.drawable.ic_photo_filter, ToolType.FILTER),
-    ToolModel("Sticker", R.drawable.ic_sticker, ToolType.STICKER),
 )
 private val shapeModel = ToolModel("Shape", R.drawable.ic_oval, ToolType.SHAPE)
 private val emojiModel = ToolModel("Emoji", R.drawable.ic_insert_emoticon, ToolType.EMOJI)
+private val stickerModel = ToolModel("Sticker", R.drawable.ic_sticker, ToolType.STICKER)
 
 private data class ToolModel(
     val name: String, val icon: Int, val type: ToolType
@@ -57,6 +49,7 @@ fun EditingToolList(
     onOpacityChange: (size: Int) -> Unit,
     onColorChange: (size: Int) -> Unit,
     onEmojiSelect: (size: String) -> Unit,
+    onStickerSelect: (bitmap: Bitmap) -> Unit
 ) {
     LazyRow {
         item {
@@ -81,10 +74,19 @@ fun EditingToolList(
                 icon = { toggle ->
                     ToolIcon(emojiModel) {
                         toggle()
-                        onSelect(shapeModel.type)
+                        onSelect(emojiModel.type)
                     }
                 },
                 onEmojiSelect = onEmojiSelect,
+            )
+            StickerToolIcon(
+                icon = { toggle ->
+                    ToolIcon(stickerModel) {
+                        toggle()
+                        onSelect(stickerModel.type)
+                    }
+                },
+                onStickerSelect = onStickerSelect,
             )
         }
     }

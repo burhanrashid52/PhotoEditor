@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,6 +18,7 @@ import coil.compose.AsyncImage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
 
 // Image Urls from flaticon(https://www.flaticon.com/stickers-pack/food-289)
 private val stickerPathList = arrayOf(
@@ -30,6 +32,24 @@ private val stickerPathList = arrayOf(
     "https://cdn-icons-png.flaticon.com/256/4392/4392471.png",
     "https://cdn-icons-png.flaticon.com/256/4392/4392522.png",
 )
+
+@ExperimentalMaterial3Api
+@Composable
+fun StickerToolIcon(
+    icon: @Composable (toggle: () -> Unit) -> Unit,
+    onStickerSelect: (bitmap: Bitmap) -> Unit,
+) {
+    BaseBottomSheetDialog(sheetContent = { close ->
+        StickerList(
+            onSelect = {
+                onStickerSelect(it)
+                close()
+            },
+        )
+    }) { toggle ->
+        icon(toggle)
+    }
+}
 
 @Composable
 fun StickerList(onSelect: (Bitmap) -> Unit) {

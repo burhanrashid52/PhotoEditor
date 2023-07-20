@@ -19,8 +19,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -29,16 +29,10 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
-import com.burhanrashid52.photoediting.base.BaseBSFragment
 import com.burhanrashid52.photoediting.base.BaseActivity
-import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
 import com.burhanrashid52.photoediting.tools.EditingToolList
-import com.burhanrashid52.photoediting.tools.EmojiList
 import com.burhanrashid52.photoediting.tools.FilerImageList
-import com.burhanrashid52.photoediting.tools.ShapeAndPropertiesSelection
-import com.burhanrashid52.photoediting.tools.StickerList
 import com.burhanrashid52.photoediting.tools.ToolType
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
@@ -57,9 +51,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
     private lateinit var mShapeBuilder: ShapeBuilder
-
-    //private lateinit var emojiBSDialog: BaseBSFragment
-    private lateinit var tickerBSDialog: BaseBSFragment
     private lateinit var mTxtCurrentTool: TextView
     private lateinit var mWonderFont: Typeface
     private lateinit var composeTools: ComposeView
@@ -85,22 +76,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
 
-        /*emojiBSDialog = BaseBSFragment()
-        emojiBSDialog.setComposeContent {
-            EmojiList {
-                onEmojiClick(it)
-                emojiBSDialog.dismiss()
-            }
-        }*/
-
-        tickerBSDialog = BaseBSFragment()
-        tickerBSDialog.setComposeContent {
-            StickerList {
-                onStickerClick(it)
-                tickerBSDialog.dismiss()
-            }
-        }
-
         composeFilter.setContent {
             MaterialTheme {
                 FilerImageList(mPhotoEditor::setFilterEffect)
@@ -116,6 +91,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     onOpacityChange = ::onOpacityChanged,
                     onColorChange = ::onColorChanged,
                     onEmojiSelect = ::onEmojiClick,
+                    onStickerSelect = ::onStickerClick,
                 )
             }
         }
@@ -199,7 +175,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
     override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
         val textEditorDialogFragment =
-            TextEditorDialogFragment.show(this, text.toString(), colorCode)
+            TextEditorDialogFragment.show(this, text, colorCode)
         textEditorDialogFragment.setOnTextEditorListener(object :
             TextEditorDialogFragment.TextEditorListener {
             override fun onDone(inputText: String, colorCode: Int) {
@@ -430,19 +406,9 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 showFilter(true)
             }
 
-            ToolType.EMOJI -> {
-                mTxtCurrentTool.setText(R.string.label_emoji)
-            }
-
-            ToolType.STICKER -> showBottomSheetDialogFragment(tickerBSDialog)
+            ToolType.EMOJI -> {}
+            ToolType.STICKER -> {}
         }
-    }
-
-    private fun showBottomSheetDialogFragment(fragment: BottomSheetDialogFragment?) {
-        if (fragment == null || fragment.isAdded) {
-            return
-        }
-        fragment.show(supportFragmentManager, fragment.tag)
     }
 
     private fun showFilter(isVisible: Boolean) {
