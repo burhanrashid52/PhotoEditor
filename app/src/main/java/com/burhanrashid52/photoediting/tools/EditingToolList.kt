@@ -39,10 +39,10 @@ private val toolList = listOf(
     ToolModel("Text", R.drawable.ic_text, ToolType.TEXT),
     ToolModel("Eraser", R.drawable.ic_eraser, ToolType.ERASER),
     ToolModel("Filter", R.drawable.ic_photo_filter, ToolType.FILTER),
-    ToolModel("Emoji", R.drawable.ic_insert_emoticon, ToolType.EMOJI),
     ToolModel("Sticker", R.drawable.ic_sticker, ToolType.STICKER),
 )
 private val shapeModel = ToolModel("Shape", R.drawable.ic_oval, ToolType.SHAPE)
+private val emojiModel = ToolModel("Emoji", R.drawable.ic_insert_emoticon, ToolType.EMOJI)
 
 private data class ToolModel(
     val name: String, val icon: Int, val type: ToolType
@@ -56,6 +56,7 @@ fun EditingToolList(
     onShapeSizeChange: (size: Int) -> Unit,
     onOpacityChange: (size: Int) -> Unit,
     onColorChange: (size: Int) -> Unit,
+    onEmojiSelect: (size: String) -> Unit,
 ) {
     LazyRow {
         item {
@@ -76,7 +77,15 @@ fun EditingToolList(
                     onSelect(tool.type)
                 }
             }
-
+            EmojiToolIcon(
+                icon = { toggle ->
+                    ToolIcon(emojiModel) {
+                        toggle()
+                        onSelect(shapeModel.type)
+                    }
+                },
+                onEmojiSelect = onEmojiSelect,
+            )
         }
     }
 }

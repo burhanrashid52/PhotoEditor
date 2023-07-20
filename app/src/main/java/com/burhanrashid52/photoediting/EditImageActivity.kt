@@ -57,7 +57,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
     private lateinit var mShapeBuilder: ShapeBuilder
-    private lateinit var emojiBSDialog: BaseBSFragment
+
+    //private lateinit var emojiBSDialog: BaseBSFragment
     private lateinit var tickerBSDialog: BaseBSFragment
     private lateinit var mTxtCurrentTool: TextView
     private lateinit var mWonderFont: Typeface
@@ -84,13 +85,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
 
-        emojiBSDialog = BaseBSFragment()
+        /*emojiBSDialog = BaseBSFragment()
         emojiBSDialog.setComposeContent {
             EmojiList {
                 onEmojiClick(it)
                 emojiBSDialog.dismiss()
             }
-        }
+        }*/
 
         tickerBSDialog = BaseBSFragment()
         tickerBSDialog.setComposeContent {
@@ -114,6 +115,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     onShapeSizeChange = ::onShapeSizeChanged,
                     onOpacityChange = ::onOpacityChanged,
                     onColorChange = ::onColorChanged,
+                    onEmojiSelect = ::onEmojiClick,
                 )
             }
         }
@@ -403,7 +405,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 mShapeBuilder = ShapeBuilder()
                 mPhotoEditor.setShape(mShapeBuilder)
                 mTxtCurrentTool.setText(R.string.label_shape)
-                // showBottomSheetDialogFragment(mShapeBSFragment)
             }
 
             ToolType.TEXT -> {
@@ -429,7 +430,10 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 showFilter(true)
             }
 
-            ToolType.EMOJI -> showBottomSheetDialogFragment(emojiBSDialog)
+            ToolType.EMOJI -> {
+                mTxtCurrentTool.setText(R.string.label_emoji)
+            }
+
             ToolType.STICKER -> showBottomSheetDialogFragment(tickerBSDialog)
         }
     }

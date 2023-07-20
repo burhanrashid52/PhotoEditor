@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +16,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.burhanrashid52.photoediting.R
+import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
+import ja.burhanrashid52.photoeditor.shape.ShapeType
 
 /**
  * Created by Burhanuddin Rashid on 18/07/23.
@@ -35,6 +38,24 @@ private fun convertEmoji(emoji: String): String {
         String(Character.toChars(convertEmojiToInt))
     } catch (e: NumberFormatException) {
         ""
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun EmojiToolIcon(
+    icon: @Composable (toggle: () -> Unit) -> Unit,
+    onEmojiSelect: (size: String) -> Unit,
+) {
+    BaseBottomSheetDialog(sheetContent = { close ->
+        EmojiList(
+            onSelect = {
+                onEmojiSelect(it)
+                close()
+            },
+        )
+    }) { toggle ->
+        icon(toggle)
     }
 }
 
