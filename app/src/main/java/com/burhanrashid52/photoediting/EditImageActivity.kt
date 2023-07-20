@@ -56,7 +56,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
-    private lateinit var mShapeBSFragment: BaseBSFragment
     private lateinit var mShapeBuilder: ShapeBuilder
     private lateinit var emojiBSDialog: BaseBSFragment
     private lateinit var tickerBSDialog: BaseBSFragment
@@ -101,29 +100,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             }
         }
 
-        mShapeBSFragment = BaseBSFragment()
-        mShapeBSFragment.setComposeContent {
-            ShapeAndPropertiesSelection(
-                25f, 100f,
-                onShapePicked = {
-                    onShapePicked(it)
-                    mShapeBSFragment.dismiss()
-                },
-                onShapeSizeChange = {
-                    onShapeSizeChanged(it.toInt())
-                    mShapeBSFragment.dismiss()
-                },
-                onOpacityChange = {
-                    onOpacityChanged(it.toInt())
-                },
-                onColorChange = {
-                    onColorChanged(it)
-                    mShapeBSFragment.dismiss()
-                },
-            )
-
-        }
-
         composeFilter.setContent {
             MaterialTheme {
                 FilerImageList(mPhotoEditor::setFilterEffect)
@@ -132,7 +108,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         composeTools.setContent {
             MaterialTheme {
-                EditingToolList(::onToolSelected)
+                EditingToolList(
+                    onSelect = ::onToolSelected,
+                    onShapePicked = ::onShapePicked,
+                    onShapeSizeChange = ::onShapeSizeChanged,
+                    onOpacityChange = ::onOpacityChanged,
+                    onColorChange = ::onColorChanged,
+                )
             }
         }
 
@@ -421,7 +403,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 mShapeBuilder = ShapeBuilder()
                 mPhotoEditor.setShape(mShapeBuilder)
                 mTxtCurrentTool.setText(R.string.label_shape)
-                showBottomSheetDialogFragment(mShapeBSFragment)
+                // showBottomSheetDialogFragment(mShapeBSFragment)
             }
 
             ToolType.TEXT -> {

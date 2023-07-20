@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
 import ja.burhanrashid52.photoeditor.shape.ShapeType
 
 private val shapes = listOf(
@@ -31,13 +33,42 @@ private val shapes = listOf(
     ShapeType.Rectangle,
 )
 
+@ExperimentalMaterial3Api
+@Composable
+fun ShapeToolIcon(
+    icon: @Composable (toggle: () -> Unit) -> Unit,
+    onShapePicked: (shape: ShapeType) -> Unit,
+    onShapeSizeChange: (size: Int) -> Unit,
+    onOpacityChange: (size: Int) -> Unit,
+    onColorChange: (size: Int) -> Unit,
+) {
+    BaseBottomSheetDialog(sheetContent = { close ->
+        ShapeAndPropertiesSelection(
+            brushValue = 25f,
+            opacityValue = 100f,
+            onShapePicked = {
+                onShapePicked(it)
+                close()
+            },
+            onShapeSizeChange = onShapeSizeChange,
+            onOpacityChange = onOpacityChange,
+            onColorChange = {
+                onColorChange(it)
+                close()
+            },
+        )
+    }) { toggle ->
+        icon(toggle)
+    }
+}
+
 @Composable
 fun ShapeAndPropertiesSelection(
     brushValue: Float,
     opacityValue: Float,
     onShapePicked: (shape: ShapeType) -> Unit,
-    onShapeSizeChange: (size: Float) -> Unit,
-    onOpacityChange: (size: Float) -> Unit,
+    onShapeSizeChange: (size: Int) -> Unit,
+    onOpacityChange: (size: Int) -> Unit,
     onColorChange: (size: Int) -> Unit,
 ) {
     Surface {
@@ -57,7 +88,7 @@ fun ShapeAndPropertiesSelection(
                 value = brushSize.value,
                 onValueChange = {
                     brushSize.value = it
-                    onShapeSizeChange(it)
+                    onShapeSizeChange(it.toInt())
                 },
                 valueRange = 0f..100f,
                 steps = 100,
@@ -72,7 +103,7 @@ fun ShapeAndPropertiesSelection(
                 value = opacitySize.value,
                 onValueChange = {
                     opacitySize.value = it
-                    onOpacityChange(it);
+                    onOpacityChange(it.toInt())
                 },
                 valueRange = 0f..100f,
                 steps = 100,

@@ -1,5 +1,6 @@
 package com.burhanrashid52.photoediting.base
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.launch
 
 /**
@@ -28,45 +30,32 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun BaseBottomSheetDialog(
-    sheetContent: @Composable () -> Unit, openContent: @Composable (toggle: () -> Unit) -> Unit
+    sheetContent: @Composable (close: () -> Unit) -> Unit,
+    openContent: @Composable (toggle: () -> Unit) -> Unit,
 ) {
     val openBottomSheet = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState()
 
-    Button(onClick = { openBottomSheet.value = !openBottomSheet.value }) {
-        Text(text = "Show Bottom Sheet")
-    }
+    val onToggle = {
+        openBottomSheet.value = !openBottomSheet.value
 
-    // Sheet content
+    }
+    val onClose = {
+        scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+            if (!bottomSheetState.isVisible) {
+                openBottomSheet.value = false
+            }
+        }
+    }
+    openContent(onToggle)
+
     if (openBottomSheet.value) {
         ModalBottomSheet(
             onDismissRequest = { openBottomSheet.value = false },
             sheetState = bottomSheetState,
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Button(
-                    // Note: If you provide logic outside of onDismissRequest to remove the sheet,
-                    // you must additionally handle intended state cleanup, if any.
-                    onClick = {
-                        scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                            if (!bottomSheetState.isVisible) {
-                                openBottomSheet.value = false
-                            }
-                        }
-                    }) {
-                    Text("Hide Bottom Sheet")
-                }
-            }
-            LazyColumn {
-                items(50) {
-                    ListItem(headlineContent = { Text("Item $it") }, leadingContent = {
-                        Icon(
-                            Icons.Default.Favorite, contentDescription = "Localized description"
-                        )
-                    })
-                }
-            }
+            sheetContent(onClose)
         }
     }
 }
