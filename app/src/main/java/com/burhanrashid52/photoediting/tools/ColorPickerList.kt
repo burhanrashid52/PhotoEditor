@@ -15,35 +15,22 @@ import androidx.core.content.ContextCompat
 import com.burhanrashid52.photoediting.R
 
 fun getDefaultColors(context: Context): List<Int> {
-    val colorPickerColors = ArrayList<Int>()
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.blue_color_picker))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.brown_color_picker))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.green_color_picker))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.orange_color_picker))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.red_color_picker))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.black))
-    colorPickerColors.add(
-        ContextCompat.getColor(
-            (context),
-            R.color.red_orange_color_picker
-        )
-    )
-    colorPickerColors.add(
-        ContextCompat.getColor(
-            (context),
-            R.color.sky_blue_color_picker
-        )
-    )
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.violet_color_picker))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.white))
-    colorPickerColors.add(ContextCompat.getColor((context), R.color.yellow_color_picker))
-    colorPickerColors.add(
-        ContextCompat.getColor(
-            (context),
-            R.color.yellow_green_color_picker
-        )
-    )
-    return colorPickerColors
+    return listOf(
+        R.color.blue_color_picker,
+        R.color.brown_color_picker,
+        R.color.green_color_picker,
+        R.color.orange_color_picker,
+        R.color.red_color_picker,
+        R.color.black,
+        R.color.red_orange_color_picker,
+        R.color.sky_blue_color_picker,
+        R.color.violet_color_picker,
+        R.color.white,
+        R.color.yellow_color_picker,
+        R.color.yellow_green_color_picker,
+    ).map { colorId ->
+        ContextCompat.getColor(context, colorId)
+    }
 }
 
 @Composable
