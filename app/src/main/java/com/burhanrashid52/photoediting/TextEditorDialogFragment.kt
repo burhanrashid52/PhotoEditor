@@ -8,14 +8,15 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
 import com.burhanrashid52.photoediting.tools.ColorPickerList
 
 /**
@@ -36,7 +38,6 @@ import com.burhanrashid52.photoediting.tools.ColorPickerList
  */
 class TextEditorDialogFragment : DialogFragment() {
 
-    private var mColorCode = 0
     private var mTextEditorListener: TextEditorListener? = null
 
     interface TextEditorListener {
@@ -70,39 +71,10 @@ class TextEditorDialogFragment : DialogFragment() {
         val composeColors: ComposeView = view.findViewById(R.id.composeView)
         composeColors.setContent {
             MaterialTheme {
-                val focusManager = LocalFocusManager.current
-                val text = remember { mutableStateOf(intentText) }
-                val colorCode = remember { mutableStateOf(intentColorCode) }
-                Box(Modifier.fillMaxSize()) {
-                    TextField(
-                        value = text.value, onValueChange = {
-                            text.value = it
-                        }, textStyle = LocalTextStyle.current.copy(
-                            fontSize = 40.sp,
-                            textAlign = TextAlign.Center,
-                            color = Color(colorCode.value),
-                        ), modifier = Modifier
-                            .fillMaxHeight()
-                            .testTag("add_text_edit_text")
-                    )
-                    ColorPickerList(modifier = Modifier.align(Alignment.BottomCenter)) {
-                        colorCode.value = it
-                    }
-                    OutlinedButton(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(16.dp),
-                        onClick = {
-                            focusManager.clearFocus()
-                            dismiss()
-                            mTextEditorListener?.run {
-                                if (text.value.isNotEmpty()) {
-                                    onDone(text.value, mColorCode)
-                                }
-                            }
-                        },
-                    ) {
-                        Text("Done")
+                TextUpdateView(intentText, intentColorCode) { text, color ->
+                    dismiss()
+                    mTextEditorListener?.run {
+                        onDone(text, color)
                     }
                 }
             }
@@ -134,6 +106,67 @@ class TextEditorDialogFragment : DialogFragment() {
             fragment.arguments = args
             fragment.show(appCompatActivity.supportFragmentManager, TAG)
             return fragment
+        }
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun AddTextIcon(
+    icon: @Composable (toggle: () -> Unit) -> Unit,
+    text: String = "",
+    color: Int = Color.White.value.toInt(),
+    onTextAdd: (text: String, color: Int) -> Unit,
+) {
+    BaseBottomSheetDialog(sheetContent = { close ->
+        TextUpdateView(text, color) { text, color ->
+            close()
+            onTextAdd(text, color)
+        }
+    }) { toggle ->
+        icon(toggle)
+    }
+}
+
+@Composable
+private fun TextUpdateView(
+    defaultText: String,
+    defaultColor: Int,
+    onDone: (text: String, color: Int) -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+    val text = remember { mutableStateOf(defaultText) }
+    val colorCode = remember { mutableStateOf(defaultColor) }
+    Box(Modifier.fillMaxSize()) {
+        TextField(
+            value = text.value,
+            onValueChange = {
+                text.value = it
+            },
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 40.sp,
+                textAlign = TextAlign.Center,
+                color = Color(colorCode.value),
+            ),
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag("add_text_edit_text"),
+        )
+        ColorPickerList(modifier = Modifier.align(Alignment.BottomCenter)) {
+            colorCode.value = it
+        }
+        OutlinedButton(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp),
+            onClick = {
+                focusManager.clearFocus()
+                if (text.value.isNotEmpty()) {
+                    onDone(text.value, colorCode.value)
+                }
+            },
+        ) {
+            Text("Done")
         }
     }
 }

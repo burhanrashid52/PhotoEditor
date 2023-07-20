@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.burhanrashid52.photoediting.R
 import com.burhanrashid52.photoediting.base.BaseBottomSheetDialog
-import ja.burhanrashid52.photoeditor.shape.ShapeType
 
 /**
  * Created by Burhanuddin Rashid on 18/07/23.

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.burhanrashid52.photoediting.AddTextIcon
 import com.burhanrashid52.photoediting.R
 import ja.burhanrashid52.photoeditor.shape.ShapeType
 
@@ -27,12 +28,10 @@ import ja.burhanrashid52.photoeditor.shape.ShapeType
  * Created by Burhanuddin Rashid on 16/07/23.
  * @author  <https://github.com/burhanrashid52>
  */
-private val toolList = listOf(
-    ToolModel("Text", R.drawable.ic_text, ToolType.TEXT),
-    ToolModel("Eraser", R.drawable.ic_eraser, ToolType.ERASER),
-    ToolModel("Filter", R.drawable.ic_photo_filter, ToolType.FILTER),
-)
 private val shapeModel = ToolModel("Shape", R.drawable.ic_oval, ToolType.SHAPE)
+private val textModel = ToolModel("Text", R.drawable.ic_text, ToolType.TEXT)
+private val eraserModel = ToolModel("Eraser", R.drawable.ic_eraser, ToolType.ERASER)
+private val filterModel = ToolModel("Filter", R.drawable.ic_photo_filter, ToolType.FILTER)
 private val emojiModel = ToolModel("Emoji", R.drawable.ic_insert_emoticon, ToolType.EMOJI)
 private val stickerModel = ToolModel("Sticker", R.drawable.ic_sticker, ToolType.STICKER)
 
@@ -49,15 +48,16 @@ fun EditingToolList(
     onOpacityChange: (size: Int) -> Unit,
     onColorChange: (size: Int) -> Unit,
     onEmojiSelect: (size: String) -> Unit,
-    onStickerSelect: (bitmap: Bitmap) -> Unit
+    onStickerSelect: (bitmap: Bitmap) -> Unit,
+    onTextAdd: (text: String, color: Int) -> Unit,
 ) {
     LazyRow {
         item {
             ShapeToolIcon(
                 icon = { toggle ->
                     ToolIcon(shapeModel) {
-                        toggle()
                         onSelect(shapeModel.type)
+                        toggle()
                     }
                 },
                 onShapePicked = onShapePicked,
@@ -65,10 +65,20 @@ fun EditingToolList(
                 onOpacityChange = onOpacityChange,
                 onColorChange = onColorChange,
             )
-            for (tool in toolList) {
-                ToolIcon(tool) {
-                    onSelect(tool.type)
-                }
+            AddTextIcon(
+                icon = { toggle ->
+                    ToolIcon(textModel) {
+                        toggle()
+                        onSelect(textModel.type)
+                    }
+                },
+                onTextAdd = onTextAdd,
+            )
+            ToolIcon(eraserModel) {
+                onSelect(eraserModel.type)
+            }
+            ToolIcon(filterModel) {
+                onSelect(filterModel.type)
             }
             EmojiToolIcon(
                 icon = { toggle ->

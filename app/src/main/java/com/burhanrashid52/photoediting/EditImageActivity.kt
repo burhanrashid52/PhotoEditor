@@ -92,6 +92,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     onColorChange = ::onColorChanged,
                     onEmojiSelect = ::onEmojiClick,
                     onStickerSelect = ::onStickerClick,
+                    onTextAdd = ::onTextAdded,
                 )
             }
         }
@@ -174,17 +175,22 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
-        val textEditorDialogFragment =
-            TextEditorDialogFragment.show(this, text, colorCode)
+        val textEditorDialogFragment = TextEditorDialogFragment.show(this, text, colorCode)
         textEditorDialogFragment.setOnTextEditorListener(object :
             TextEditorDialogFragment.TextEditorListener {
             override fun onDone(inputText: String, colorCode: Int) {
-                val styleBuilder = TextStyleBuilder()
-                styleBuilder.withTextColor(colorCode)
-                mPhotoEditor.editText(rootView, inputText, styleBuilder)
-                mTxtCurrentTool.setText(R.string.label_text)
+                onTextUpdate(colorCode, rootView, inputText)
             }
         })
+    }
+
+    private fun onTextUpdate(
+        colorCode: Int, rootView: View, inputText: String
+    ) {
+        val styleBuilder = TextStyleBuilder()
+        styleBuilder.withTextColor(colorCode)
+        mPhotoEditor.editText(rootView, inputText, styleBuilder)
+        mTxtCurrentTool.setText(R.string.label_text)
     }
 
     override fun onAddViewListener(viewType: ViewType, numberOfAddedViews: Int) {
@@ -383,18 +389,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 mTxtCurrentTool.setText(R.string.label_shape)
             }
 
-            ToolType.TEXT -> {
-                val textEditorDialogFragment = TextEditorDialogFragment.show(this)
-                textEditorDialogFragment.setOnTextEditorListener(object :
-                    TextEditorDialogFragment.TextEditorListener {
-                    override fun onDone(inputText: String, colorCode: Int) {
-                        val styleBuilder = TextStyleBuilder()
-                        styleBuilder.withTextColor(colorCode)
-                        mPhotoEditor.addText(inputText, styleBuilder)
-                        mTxtCurrentTool.setText(R.string.label_text)
-                    }
-                })
-            }
+            ToolType.TEXT -> {}
 
             ToolType.ERASER -> {
                 mPhotoEditor.brushEraser()
@@ -409,6 +404,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             ToolType.EMOJI -> {}
             ToolType.STICKER -> {}
         }
+    }
+
+    private fun onTextAdded(inputText: String, colorCode: Int) {
+        val styleBuilder = TextStyleBuilder()
+        styleBuilder.withTextColor(colorCode)
+        mPhotoEditor.addText(inputText, styleBuilder)
+        mTxtCurrentTool.setText(R.string.label_text)
     }
 
     private fun showFilter(isVisible: Boolean) {
