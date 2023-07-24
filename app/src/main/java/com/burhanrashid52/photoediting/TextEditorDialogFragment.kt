@@ -2,6 +2,8 @@ package com.burhanrashid52.photoediting
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,8 +126,9 @@ fun AddTextIcon(
         skipPartiallyExpanded = true,
         sheetContent = { close ->
             TextUpdateView(text, color) { text, color ->
-                close()
                 onTextAdd(text, color)
+                //To avoid the screen stuck. Not sure why this happens
+                Handler(Looper.getMainLooper()).postDelayed(close, 250)
             }
         },
     ) { toggle ->

@@ -187,6 +187,7 @@ class EditImageActivityTest {
         composeTestRule.onNodeWithTag("add_text_edit_text").performTextReplacement("Test Text")
         // Select the text (delay to give time for the text imput screen to close)
         composeTestRule.onNodeWithText("Done").performClick()
+        Thread.sleep(500)
 
         // Select the text box
         val testTextBox = withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
@@ -227,6 +228,7 @@ class EditImageActivityTest {
         composeTestRule.onNodeWithTag("add_text_edit_text").performClick()
         composeTestRule.onNodeWithTag("add_text_edit_text").performTextReplacement("Test Text")
         composeTestRule.onNodeWithText("Done").performClick()
+        Thread.sleep(500)
 
         // Select the text box
         val testTextBox = withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
