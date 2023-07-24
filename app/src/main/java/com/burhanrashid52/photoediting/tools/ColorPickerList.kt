@@ -34,7 +34,7 @@ fun getDefaultColors(context: Context): List<Int> {
 }
 
 @Composable
-fun ColorPickerList(modifier: Modifier = Modifier, onSelect: (colorCode: Int) -> Unit) {
+fun ColorPickerList(modifier: Modifier = Modifier, onSelect: (colorCode: Color) -> Unit) {
     val colors = getDefaultColors(LocalContext.current)
     LazyRow(modifier) {
         item {
@@ -44,7 +44,7 @@ fun ColorPickerList(modifier: Modifier = Modifier, onSelect: (colorCode: Int) ->
                         .size(40.dp, 50.dp)
                         .background(Color(color))
                         .clickable {
-                            onSelect(color)
+                            onSelect(Color(color))
                         },
                 )
             }

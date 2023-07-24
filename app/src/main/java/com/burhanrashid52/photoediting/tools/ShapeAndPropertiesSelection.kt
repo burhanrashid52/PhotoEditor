@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +41,7 @@ fun ShapeToolIcon(
     onShapePicked: (shape: ShapeType) -> Unit,
     onShapeSizeChange: (size: Int) -> Unit,
     onOpacityChange: (size: Int) -> Unit,
-    onColorChange: (size: Int) -> Unit,
+    onColorChange: (color: Color) -> Unit,
 ) {
     BaseBottomSheetDialog(sheetContent = { close ->
         ShapeAndPropertiesSelection(
@@ -69,7 +70,7 @@ fun ShapeAndPropertiesSelection(
     onShapePicked: (shape: ShapeType) -> Unit,
     onShapeSizeChange: (size: Int) -> Unit,
     onOpacityChange: (size: Int) -> Unit,
-    onColorChange: (size: Int) -> Unit,
+    onColorChange: (color: Color) -> Unit,
 ) {
     Surface {
         val brushSize = remember { mutableStateOf(brushValue) }

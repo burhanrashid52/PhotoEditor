@@ -43,8 +43,9 @@ private fun convertEmoji(emoji: String): String {
 @ExperimentalMaterial3Api
 @Composable
 fun EmojiToolIcon(
-    icon: @Composable (toggle: () -> Unit) -> Unit,
+    modifier: Modifier = Modifier,
     onEmojiSelect: (size: String) -> Unit,
+    icon: @Composable (toggle: () -> Unit) -> Unit,
 ) {
     BaseBottomSheetDialog(sheetContent = { close ->
         EmojiList(

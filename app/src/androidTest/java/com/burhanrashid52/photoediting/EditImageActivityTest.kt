@@ -50,11 +50,7 @@ class EditImageActivityTest {
     @Test
     fun checkIfActivityIsLaunched() {
         mActivityRule.launchActivity(null)
-        onView(withText(R.string.app_name)).check(
-            matches(
-                isDisplayed()
-            )
-        )
+        composeTestRule.onNodeWithText("Photo Editor").assertIsDisplayed()
     }
 
     @Test
@@ -69,7 +65,7 @@ class EditImageActivityTest {
     fun checkIfEraserIsEnabledWhenClickedOnEraserTool() {
         mActivityRule.launchActivity(null)
         composeTestRule.onNodeWithText("Eraser").performClick()
-        onView(withText(R.string.label_eraser_mode)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Eraser Mode").assertIsDisplayed()
     }
 
     @Test
@@ -95,7 +91,7 @@ class EditImageActivityTest {
     fun checkIfDiscardDialogIsNotDisplayedWhenCacheIsEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
         assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
-        onView(withId(R.id.imgClose)).perform(click())
+        composeTestRule.onNodeWithTag("icon_close").performClick()
         assertTrue(editImageActivity.isDestroyed)
     }
 
@@ -109,7 +105,7 @@ class EditImageActivityTest {
         composeTestRule.onNodeWithTag("add_text_edit_text").performTextReplacement("Test Text")
         composeTestRule.onNodeWithText("Done").performClick()
 
-        onView(withId(R.id.imgClose)).perform(click())
+        composeTestRule.onNodeWithTag("icon_close").performClick()
         onView(withText(R.string.msg_save_image)).check(matches(isDisplayed()))
     }
 
@@ -267,7 +263,7 @@ class EditImageActivityTest {
         (firstEmojiStickerFrameBorder.parent as FrameLayout).x = 0f
 
         // Add the second emoji to the editor
-        composeTestRule.onNodeWithText("Emoji").performClick()
+        composeTestRule.onNodeWithTag("tool_Emoji").performClick()
         composeTestRule.onNodeWithTag("emoji_1").performClick()
 
         // Assert that the first emoji is not selected (frame background is null)

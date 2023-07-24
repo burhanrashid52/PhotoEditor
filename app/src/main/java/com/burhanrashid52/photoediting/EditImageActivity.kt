@@ -15,17 +15,37 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.testTag
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
@@ -51,7 +71,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     lateinit var mPhotoEditor: PhotoEditor
     private lateinit var mPhotoEditorView: PhotoEditorView
     private lateinit var mShapeBuilder: ShapeBuilder
-    private lateinit var mTxtCurrentTool: TextView
     private lateinit var mWonderFont: Typeface
     private lateinit var composeTools: ComposeView
     private lateinit var composeFilter: ComposeView
@@ -67,6 +86,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         makeFullScreen()
         setContentView(R.layout.activity_edit_image)
 
@@ -84,16 +104,31 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         composeTools.setContent {
             MaterialTheme {
-                EditingToolList(
-                    onSelect = ::onToolSelected,
-                    onShapePicked = ::onShapePicked,
-                    onShapeSizeChange = ::onShapeSizeChanged,
-                    onOpacityChange = ::onOpacityChanged,
-                    onColorChange = ::onColorChanged,
-                    onEmojiSelect = ::onEmojiClick,
-                    onStickerSelect = ::onStickerClick,
-                    onTextAdd = ::onTextAdded,
-                )
+                val currentTool = remember {
+                    mutableStateOf(getString(R.string.app_name))
+                }
+                Box(Modifier.navigationBarsPadding()) {
+                    Column(Modifier.fillMaxWidth()) {
+                        EditingToolList(
+                            onSelect = {
+                                currentTool.value = getString(it.label)
+                                onToolSelected(it.type)
+                            },
+                            onShapePicked = ::onShapePicked,
+                            onShapeSizeChange = ::onShapeSizeChanged,
+                            onOpacityChange = ::onOpacityChanged,
+                            onColorChange = ::onColorChanged,
+                            onEmojiSelect = ::onEmojiClick,
+                            onStickerSelect = ::onStickerClick,
+                            onTextAdd = ::onTextAdded,
+                        )
+                        CurrentToolOption(
+                            currentTool = currentTool.value,
+                            onClose = ::onBackPressed,
+                            onSave = ::saveImage,
+                        )
+                    }
+                }
             }
         }
 
@@ -147,7 +182,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
     private fun initViews() {
         mPhotoEditorView = findViewById(R.id.photoEditorView)
-        mTxtCurrentTool = findViewById(R.id.txtCurrentTool)
         composeTools = findViewById(R.id.composeTools)
         composeFilter = findViewById(R.id.composeFilter)
         mRootView = findViewById(R.id.rootView)
@@ -164,12 +198,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         val imgGallery: ImageView = findViewById(R.id.imgGallery)
         imgGallery.setOnClickListener(this)
 
-        val imgSave: ImageView = findViewById(R.id.imgSave)
-        imgSave.setOnClickListener(this)
-
-        val imgClose: ImageView = findViewById(R.id.imgClose)
-        imgClose.setOnClickListener(this)
-
         val imgShare: ImageView = findViewById(R.id.imgShare)
         imgShare.setOnClickListener(this)
     }
@@ -178,8 +206,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         val textEditorDialogFragment = TextEditorDialogFragment.show(this, text, colorCode)
         textEditorDialogFragment.setOnTextEditorListener(object :
             TextEditorDialogFragment.TextEditorListener {
-            override fun onDone(inputText: String, colorCode: Int) {
-                onTextUpdate(colorCode, rootView, inputText)
+            override fun onDone(inputText: String, colorCode: Color) {
+                onTextUpdate(colorCode.toArgb(), rootView, inputText)
             }
         })
     }
@@ -190,7 +218,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         val styleBuilder = TextStyleBuilder()
         styleBuilder.withTextColor(colorCode)
         mPhotoEditor.editText(rootView, inputText, styleBuilder)
-        mTxtCurrentTool.setText(R.string.label_text)
     }
 
     override fun onAddViewListener(viewType: ViewType, numberOfAddedViews: Int) {
@@ -224,8 +251,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         when (view.id) {
             R.id.imgUndo -> mPhotoEditor.undo()
             R.id.imgRedo -> mPhotoEditor.redo()
-            R.id.imgSave -> saveImage()
-            R.id.imgClose -> onBackPressed()
             R.id.imgShare -> shareImage()
             R.id.imgCamera -> {
                 val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -334,19 +359,16 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         }
     }
 
-    private fun onColorChanged(colorCode: Int) {
-        mPhotoEditor.setShape(mShapeBuilder.withShapeColor(colorCode))
-        mTxtCurrentTool.setText(R.string.label_brush)
+    private fun onColorChanged(colorCode: Color) {
+        mPhotoEditor.setShape(mShapeBuilder.withShapeColor(colorCode.value.toInt()))
     }
 
     private fun onOpacityChanged(opacity: Int) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeOpacity(opacity))
-        mTxtCurrentTool.setText(R.string.label_brush)
     }
 
     private fun onShapeSizeChanged(shapeSize: Int) {
         mPhotoEditor.setShape(mShapeBuilder.withShapeSize(shapeSize.toFloat()))
-        mTxtCurrentTool.setText(R.string.label_brush)
     }
 
     private fun onShapePicked(shapeType: ShapeType) {
@@ -355,12 +377,10 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
     private fun onEmojiClick(emojiUnicode: String) {
         mPhotoEditor.addEmoji(emojiUnicode)
-        mTxtCurrentTool.setText(R.string.label_emoji)
     }
 
     private fun onStickerClick(bitmap: Bitmap) {
         mPhotoEditor.addImage(bitmap)
-        mTxtCurrentTool.setText(R.string.label_sticker)
     }
 
     @SuppressLint("MissingPermission")
@@ -386,18 +406,15 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 mPhotoEditor.setBrushDrawingMode(true)
                 mShapeBuilder = ShapeBuilder()
                 mPhotoEditor.setShape(mShapeBuilder)
-                mTxtCurrentTool.setText(R.string.label_shape)
             }
 
             ToolType.TEXT -> {}
 
             ToolType.ERASER -> {
                 mPhotoEditor.brushEraser()
-                mTxtCurrentTool.setText(R.string.label_eraser_mode)
             }
 
             ToolType.FILTER -> {
-                mTxtCurrentTool.setText(R.string.label_filter)
                 showFilter(true)
             }
 
@@ -406,11 +423,10 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         }
     }
 
-    private fun onTextAdded(inputText: String, colorCode: Int) {
+    private fun onTextAdded(inputText: String, colorCode: Color) {
         val styleBuilder = TextStyleBuilder()
-        styleBuilder.withTextColor(colorCode)
+        styleBuilder.withTextColor(colorCode.toArgb())
         mPhotoEditor.addText(inputText, styleBuilder)
-        mTxtCurrentTool.setText(R.string.label_text)
     }
 
     private fun showFilter(isVisible: Boolean) {
@@ -445,7 +461,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     override fun onBackPressed() {
         if (mIsFilterVisible) {
             showFilter(false)
-            mTxtCurrentTool.setText(R.string.app_name)
+            //mTxtCurrentTool.setText(R.string.app_name)
         } else if (!mPhotoEditor.isCacheEmpty) {
             showSaveDialog()
         } else {
@@ -462,5 +478,34 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         private const val PICK_REQUEST = 53
         const val ACTION_NEXTGEN_EDIT = "action_nextgen_edit"
         const val PINCH_TEXT_SCALABLE_INTENT_KEY = "PINCH_TEXT_SCALABLE"
+    }
+}
+
+@Composable
+fun CurrentToolOption(
+    currentTool: String,
+    onClose: () -> Unit,
+    onSave: () -> Unit,
+) {
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onClose, Modifier.testTag("icon_close")) {
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "",
+                tint = Color.White,
+            )
+        }
+        Text(text = currentTool, color = Color.White)
+        IconButton(onClick = onSave, Modifier.testTag("icon_save")) {
+            Icon(
+                Icons.Default.Download,
+                contentDescription = "",
+                tint = Color.White,
+            )
+        }
     }
 }

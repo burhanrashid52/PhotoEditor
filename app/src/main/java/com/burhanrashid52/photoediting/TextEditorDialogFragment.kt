@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -41,7 +43,7 @@ class TextEditorDialogFragment : DialogFragment() {
     private var mTextEditorListener: TextEditorListener? = null
 
     interface TextEditorListener {
-        fun onDone(inputText: String, colorCode: Int)
+        fun onDone(inputText: String, colorCode: Color)
     }
 
     override fun onStart() {
@@ -71,7 +73,7 @@ class TextEditorDialogFragment : DialogFragment() {
         val composeColors: ComposeView = view.findViewById(R.id.composeView)
         composeColors.setContent {
             MaterialTheme {
-                TextUpdateView(intentText, intentColorCode) { text, color ->
+                TextUpdateView(intentText, Color(intentColorCode)) { text, color ->
                     dismiss()
                     mTextEditorListener?.run {
                         onDone(text, color)
@@ -115,24 +117,37 @@ class TextEditorDialogFragment : DialogFragment() {
 fun AddTextIcon(
     icon: @Composable (toggle: () -> Unit) -> Unit,
     text: String = "",
-    color: Int = Color.White.value.toInt(),
-    onTextAdd: (text: String, color: Int) -> Unit,
+    color: Color = Color.White,
+    onTextAdd: (text: String, color: Color) -> Unit,
 ) {
-    BaseBottomSheetDialog(sheetContent = { close ->
-        TextUpdateView(text, color) { text, color ->
-            close()
-            onTextAdd(text, color)
-        }
-    }) { toggle ->
+    BaseBottomSheetDialog(
+        skipPartiallyExpanded = true,
+        sheetContent = { close ->
+            TextUpdateView(text, color) { text, color ->
+                close()
+                onTextAdd(text, color)
+            }
+        },
+    ) { toggle ->
         icon(toggle)
+    }
+}
+
+@Preview
+@Composable
+fun AddText() {
+    MaterialTheme {
+        TextUpdateView(
+            defaultText = "Hello",
+            defaultColor = Color.Red,
+        ) { text, color ->
+        }
     }
 }
 
 @Composable
 private fun TextUpdateView(
-    defaultText: String,
-    defaultColor: Int,
-    onDone: (text: String, color: Int) -> Unit
+    defaultText: String, defaultColor: Color, onDone: (text: String, color: Color) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val text = remember { mutableStateOf(defaultText) }
@@ -146,11 +161,17 @@ private fun TextUpdateView(
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 40.sp,
                 textAlign = TextAlign.Center,
-                color = Color(colorCode.value),
+                color = colorCode.value,
             ),
             modifier = Modifier
                 .fillMaxSize()
+                .align(Alignment.Center)
                 .testTag("add_text_edit_text"),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Black.copy(0.5f),
+                unfocusedContainerColor = Color.Black.copy(0.5f),
+                focusedTextColor = colorCode.value,
+            ),
         )
         ColorPickerList(modifier = Modifier.align(Alignment.BottomCenter)) {
             colorCode.value = it
