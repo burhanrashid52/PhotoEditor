@@ -68,16 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_height="50dp" />
-
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/composeFilter"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/tool_bg"
-        app:layout_constraintBottom_toBottomOf="@+id/composeTools"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/composeTools" />
+        tools:layout_height="90dp" />
 
     <ImageView
         android:id="@+id/imgShare"

@@ -2,6 +2,7 @@ package com.burhanrashid52.photoediting
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,16 +14,21 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ImageView
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresPermission
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -33,22 +39,23 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
 import com.burhanrashid52.photoediting.base.BaseActivity
 import com.burhanrashid52.photoediting.tools.EditingToolList
 import com.burhanrashid52.photoediting.tools.FilerImageList
@@ -73,9 +80,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private lateinit var mShapeBuilder: ShapeBuilder
     private lateinit var mWonderFont: Typeface
     private lateinit var composeTools: ComposeView
-    private lateinit var composeFilter: ComposeView
     private lateinit var mRootView: ConstraintLayout
-    private val mConstraintSet = ConstraintSet()
     private var mIsFilterVisible = false
 
     @VisibleForTesting
@@ -96,35 +101,53 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
 
-        composeFilter.setContent {
-            MaterialTheme {
-                FilerImageList(mPhotoEditor::setFilterEffect)
-            }
-        }
-
+        val appName = getString(R.string.app_name)
         composeTools.setContent {
             MaterialTheme {
-                val currentTool = remember {
-                    mutableStateOf(getString(R.string.app_name))
+                val context = LocalContext.current
+                var currentTool by remember { mutableStateOf(appName) }
+                var isFilterVisible by remember { mutableStateOf(false) }
+                val handleBackPress = {
+                    if (isFilterVisible) {
+                        isFilterVisible = false
+                        currentTool = appName
+                    } else if (!mPhotoEditor.isCacheEmpty) {
+                        showSaveDialog()
+                    } else if (context is Activity) {
+                        context.onBackPressed()
+                    }
                 }
+                BackHandler(enabled = true, onBack = handleBackPress)
                 Box(Modifier.navigationBarsPadding()) {
-                    Column(Modifier.fillMaxWidth()) {
-                        EditingToolList(
-                            onSelect = {
-                                currentTool.value = getString(it.label)
-                                onToolSelected(it.type)
-                            },
-                            onShapePicked = ::onShapePicked,
-                            onShapeSizeChange = ::onShapeSizeChanged,
-                            onOpacityChange = ::onOpacityChanged,
-                            onColorChange = ::onColorChanged,
-                            onEmojiSelect = ::onEmojiClick,
-                            onStickerSelect = ::onStickerClick,
-                            onTextAdd = ::onTextAdded,
-                        )
+                    Column {
+                        Box(Modifier.height(90.dp)) {
+                            EditingToolList(
+                                onSelect = {
+                                    currentTool = getString(it.label)
+                                    val isFilter = it.name == "Filter"
+                                    mIsFilterVisible = isFilter
+                                    isFilterVisible = isFilter
+                                    if (!isFilter) onToolSelected(it.type)
+                                },
+                                onShapePicked = ::onShapePicked,
+                                onShapeSizeChange = ::onShapeSizeChanged,
+                                onOpacityChange = ::onOpacityChanged,
+                                onColorChange = ::onColorChanged,
+                                onEmojiSelect = ::onEmojiClick,
+                                onStickerSelect = ::onStickerClick,
+                                onTextAdd = ::onTextAdded,
+                            )
+                            this@Column.AnimatedVisibility(
+                                visible = isFilterVisible,
+                                enter = slideInHorizontally(animationSpec = tween(durationMillis = 500)) { it },
+                                exit = slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { it },
+                            ) {
+                                FilerImageList(mPhotoEditor::setFilterEffect)
+                            }
+                        }
                         CurrentToolOption(
-                            currentTool = currentTool.value,
-                            onClose = ::onBackPressed,
+                            currentTool = currentTool,
+                            onClose = handleBackPress,
                             onSave = ::saveImage,
                         )
                     }
@@ -183,7 +206,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private fun initViews() {
         mPhotoEditorView = findViewById(R.id.photoEditorView)
         composeTools = findViewById(R.id.composeTools)
-        composeFilter = findViewById(R.id.composeFilter)
         mRootView = findViewById(R.id.rootView)
 
         val imgUndo: ImageView = findViewById(R.id.imgUndo)
@@ -261,7 +283,9 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 val intent = Intent()
                 intent.type = "image/*"
                 intent.action = Intent.ACTION_GET_CONTENT
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST)
+                startActivityForResult(
+                    Intent.createChooser(intent, "Select Picture"), PICK_REQUEST
+                )
             }
         }
     }
@@ -312,7 +336,9 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                             val result = mPhotoEditor.saveAsFile(filePath, saveSettings)
 
                             if (result is SaveFileResult.Success) {
-                                mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(contentResolver)
+                                mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(
+                                    contentResolver
+                                )
                                 hideLoading()
                                 showSnackbar("Image Saved Successfully")
                                 mSaveImageUri = uri
@@ -408,16 +434,12 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                 mPhotoEditor.setShape(mShapeBuilder)
             }
 
-            ToolType.TEXT -> {}
-
             ToolType.ERASER -> {
                 mPhotoEditor.brushEraser()
             }
 
-            ToolType.FILTER -> {
-                showFilter(true)
-            }
-
+            ToolType.TEXT -> {}
+            ToolType.FILTER -> {}
             ToolType.EMOJI -> {}
             ToolType.STICKER -> {}
         }
@@ -427,46 +449,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         val styleBuilder = TextStyleBuilder()
         styleBuilder.withTextColor(colorCode.toArgb())
         mPhotoEditor.addText(inputText, styleBuilder)
-    }
-
-    private fun showFilter(isVisible: Boolean) {
-        mIsFilterVisible = isVisible
-        mConstraintSet.clone(mRootView)
-
-        val rvFilterId: Int = composeFilter.id
-
-        if (isVisible) {
-            mConstraintSet.clear(rvFilterId, ConstraintSet.START)
-            mConstraintSet.connect(
-                rvFilterId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START
-            )
-            mConstraintSet.connect(
-                rvFilterId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END
-            )
-        } else {
-            mConstraintSet.connect(
-                rvFilterId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.END
-            )
-            mConstraintSet.clear(rvFilterId, ConstraintSet.END)
-        }
-
-        val changeBounds = ChangeBounds()
-        changeBounds.duration = 350
-        changeBounds.interpolator = AnticipateOvershootInterpolator(1.0f)
-        TransitionManager.beginDelayedTransition(mRootView, changeBounds)
-
-        mConstraintSet.applyTo(mRootView)
-    }
-
-    override fun onBackPressed() {
-        if (mIsFilterVisible) {
-            showFilter(false)
-            //mTxtCurrentTool.setText(R.string.app_name)
-        } else if (!mPhotoEditor.isCacheEmpty) {
-            showSaveDialog()
-        } else {
-            super.onBackPressed()
-        }
     }
 
     companion object {
