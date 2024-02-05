@@ -53,7 +53,7 @@ internal class GraphicManager(
                 mViewState.addedViewsCount - 1
             )
             if (removeView is DrawingView) {
-                return removeView.undo()
+                return removeView.undo() || (mViewState.addedViewsCount != 0)
             } else {
                 mViewState.removeAddedView(mViewState.addedViewsCount - 1)
                 mPhotoEditorView.removeView(removeView)
@@ -75,7 +75,7 @@ internal class GraphicManager(
                 mViewState.redoViewsCount - 1
             )
             if (redoView is DrawingView) {
-                return redoView.redo()
+                return redoView.redo() && (mViewState.redoViewsCount != 0)
             } else {
                 mViewState.popRedoView()
                 mPhotoEditorView.addView(redoView)
