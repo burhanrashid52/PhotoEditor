@@ -23,6 +23,10 @@ internal class GraphicManager(
         mPhotoEditorView.addView(view, params)
         mViewState.addAddedView(view)
 
+        if(mViewState.redoViewsCount > 0) {
+            mViewState.clearRedoViews()
+        }
+
         onPhotoEditorListener?.onAddViewListener(
             graphic.viewType,
             mViewState.addedViewsCount
@@ -75,7 +79,8 @@ internal class GraphicManager(
                 mViewState.redoViewsCount - 1
             )
             if (redoView is DrawingView) {
-                return redoView.redo() && (mViewState.redoViewsCount != 0)
+                val result = redoView.redo()
+                return result || (mViewState.redoViewsCount != 0)
             } else {
                 mViewState.popRedoView()
                 mPhotoEditorView.addView(redoView)

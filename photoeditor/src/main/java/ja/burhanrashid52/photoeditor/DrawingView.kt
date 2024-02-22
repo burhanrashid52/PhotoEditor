@@ -163,6 +163,9 @@ class DrawingView @JvmOverloads constructor(
         }
         viewChangeListener?.apply {
             onStopDrawing()
+            if(redoShapes.isNotEmpty()) {
+                redoShapes.clear()
+            }
             onViewAdd(this@DrawingView)
         }
     }
