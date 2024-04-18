@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -8,7 +8,7 @@ import android.graphics.PorterDuffXfermode
 import android.view.MotionEvent
 import android.view.View
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
+import ja.mhdxbilal007.photoeditor.shape.ShapeBuilder
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import org.junit.Assert.assertTrue

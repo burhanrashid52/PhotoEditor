@@ -1,13 +1,13 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.text.TextUtils
-import ja.burhanrashid52.photoeditor.CustomEffect.Builder
+import ja.mhdxbilal007.photoeditor.CustomEffect.Builder
 import java.util.*
 
 /**
  * Define your custom effect using [Builder] class
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 5/22/2018
  */

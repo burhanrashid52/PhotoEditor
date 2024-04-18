@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoediting
+package com.mhdxbilal007.photoediting
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,9 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.burhanrashid52.photoediting.ColorPickerAdapter.OnColorPickerClickListener
+import com.mhdxbilal007.photoediting.ColorPickerAdapter.OnColorPickerClickListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import ja.burhanrashid52.photoeditor.shape.ShapeType
+import ja.mhdxbilal007.photoeditor.shape.ShapeType
 
 class ShapeBSFragment : BottomSheetDialogFragment(), SeekBar.OnSeekBarChangeListener {
     private var mProperties: Properties? = null

@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,8 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
-import ja.burhanrashid52.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
+import ja.mhdxbilal007.photoeditor.PhotoEditorImageViewListener.OnSingleTapUpCallback
+import ja.mhdxbilal007.photoeditor.shape.ShapeBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
  * editing attributes
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.1
  * @since 18/01/2017
  */

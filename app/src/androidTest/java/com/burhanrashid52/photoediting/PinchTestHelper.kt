@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoediting
+package com.mhdxbilal007.photoediting
 
 import android.graphics.Point
 import android.os.SystemClock

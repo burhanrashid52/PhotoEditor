@@ -1,8 +1,8 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 /**
  * Created on 1/17/2018.
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  *
  *
  */

@@ -1,10 +1,10 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.view.MotionEvent
 import android.view.View
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.1
  * @since 18/01/2017
  *

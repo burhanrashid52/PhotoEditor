@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -14,7 +14,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 5/21/2018
  */

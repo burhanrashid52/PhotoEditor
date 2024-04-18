@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import android.widget.RelativeLayout
 /**
  * Created by Burhanuddin Rashid on 15/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/mhdxbilal007>
  */
 internal class GraphicManager(
     private val mPhotoEditorView: PhotoEditorView,

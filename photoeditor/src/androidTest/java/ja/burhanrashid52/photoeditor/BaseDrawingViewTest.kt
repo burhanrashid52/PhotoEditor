@@ -1,9 +1,9 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.content.Context
 import android.view.MotionEvent
 import androidx.test.core.app.ApplicationProvider
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
+import ja.mhdxbilal007.photoeditor.shape.ShapeBuilder
 
 internal open class BaseDrawingViewTest {
 

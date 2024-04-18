@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.view.MotionEvent
 import androidx.test.ext.junit.runners.AndroidJUnit4

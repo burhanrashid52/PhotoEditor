@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="?attr/actionBarSize" />
 
-    <ja.burhanrashid52.photoeditor.PhotoEditorView
+    <ja.mhdxbilal007.photoeditor.PhotoEditorView
         android:id="@+id/photoEditorView"
         android:layout_width="0dp"
         android:layout_height="0dp"

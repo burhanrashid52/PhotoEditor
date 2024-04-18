@@ -50,7 +50,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: com.burhanrashid52.photoediting
+          packageName: com.mhdxbilal007.photoediting
           releaseFile: ReleaseApk/app-release-unsigned-signed.apk
           track: production
           userFraction: 0.99

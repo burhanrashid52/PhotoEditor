@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.graphics.Bitmap
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/mhdxbilal007>
  */
 internal class Sticker(
     private val mPhotoEditorView: PhotoEditorView,

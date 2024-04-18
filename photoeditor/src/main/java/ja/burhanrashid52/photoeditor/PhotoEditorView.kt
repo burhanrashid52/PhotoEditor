@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,7 +8,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
+import ja.mhdxbilal007.photoeditor.FilterImageView.OnImageChangedListener
 
 /**
  *
@@ -17,7 +17,7 @@ import ja.burhanrashid52.photoeditor.FilterImageView.OnImageChangedListener
  * which our source image
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.1
  * @since 1/18/2018
  */

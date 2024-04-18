@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoediting
+package com.mhdxbilal007.photoediting
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test

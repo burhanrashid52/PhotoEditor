@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.graphics.Rect
 import android.view.GestureDetector
@@ -13,7 +13,7 @@ import kotlin.math.min
 /**
  * Created on 18/01/2017.
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  *
  *
  */

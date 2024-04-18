@@ -1,9 +1,9 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
-import ja.burhanrashid52.photoeditor.BitmapUtil.removeTransparency
+import ja.mhdxbilal007.photoeditor.BitmapUtil.removeTransparency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -13,7 +13,7 @@ import java.io.IOException
 /**
  * Created by Burhanuddin Rashid on 18/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/mhdxbilal007>
  */
 internal class PhotoSaverTask(
     private val photoEditorView: PhotoEditorView,

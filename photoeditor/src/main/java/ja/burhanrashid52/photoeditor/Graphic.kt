@@ -1,15 +1,15 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import ja.burhanrashid52.photoeditor.MultiTouchListener.OnGestureControl
+import ja.mhdxbilal007.photoeditor.MultiTouchListener.OnGestureControl
 
 /**
  * Created by Burhanuddin Rashid on 14/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/mhdxbilal007>
  */
 internal abstract class Graphic(
     val context: Context,

@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent

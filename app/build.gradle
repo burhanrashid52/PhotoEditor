@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace 'com.burhanrashid52.photoediting'
+    namespace 'com.mhdxbilal007.photoediting'
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.burhanrashid52.photoediting"
+        applicationId "com.mhdxbilal007.photoediting"
         minSdkVersion 21
         targetSdkVersion 32
         versionCode 8
@@ -35,7 +35,7 @@ dependencies {
     // NOTE(lucianocheng): Using the local photoeditor implementation instead of the published
     //                     maven package to facilitate testing, and for the integration tests
     //                     to work on locally modified code.
-    //implementation 'com.burhanrashid52:photoeditor:3.0.2'
+    //implementation 'com.mhdxbilal007:photoeditor:3.0.2'
     implementation project(':photoeditor')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'

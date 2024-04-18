@@ -1,7 +1,7 @@
 # PhotoEditor
 
-![Github Action](https://github.com/burhanrashid52/PhotoEditor/actions/workflows/app_build_and_test.yml/badge.svg)
-[![Downloads](https://img.shields.io/badge/Download-3.0.2-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/3.0.2/aar) ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+![Github Action](https://github.com/mhdxbilal007/PhotoEditor/actions/workflows/app_build_and_test.yml/badge.svg)
+[![Downloads](https://img.shields.io/badge/Download-3.0.2-blue.svg)](https://search.maven.org/artifact/com.mhdxbilal007/photoeditor/3.0.2/aar) ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://mhdxbilal007.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -17,7 +17,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 
 <a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-photoeditor-2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
-<a href="https://www.buymeacoffee.com/burhanrashid52" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+<a href="https://www.buymeacoffee.com/mhdxbilal007" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 ## Features
 
@@ -43,22 +43,22 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 ## Getting Started
 To start with this, we need to simply add the dependencies from `mavenCentral()` in the gradle file of our app module like this
 ```groovy
-implementation 'com.burhanrashid52:photoeditor:3.0.2'
+implementation 'com.mhdxbilal007:photoeditor:3.0.2'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
 ## Migrations
 ### AndroidX
-PhotoEditor [v.1.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.0.0) is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to [v.0.4.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.0.4.0). Any fix in PR are Welcome :)
+PhotoEditor [v.1.0.0](https://github.com/mhdxbilal007/PhotoEditor/releases/tag/v.1.0.0) is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to [v.0.4.0](https://github.com/mhdxbilal007/PhotoEditor/releases/tag/v.0.4.0). Any fix in PR are Welcome :)
 
 ### Kotlin
-PhotoEditor [v.2.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.2.0.0) is fully migrated to Kotlin. You can use [v.1.5.1](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.5.1) for the Java version. There are no breaking API changes in these two versions.
+PhotoEditor [v.2.0.0](https://github.com/mhdxbilal007/PhotoEditor/releases/tag/v.2.0.0) is fully migrated to Kotlin. You can use [v.1.5.1](https://github.com/mhdxbilal007/PhotoEditor/releases/tag/v.1.5.1) for the Java version. There are no breaking API changes in these two versions.
 
 ## Setting up the View
 First we need to add `PhotoEditorView` in our xml layout
 
 ```xml
- <ja.burhanrashid52.photoeditor.PhotoEditorView
+ <ja.mhdxbilal007.photoeditor.PhotoEditorView
         android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -122,7 +122,7 @@ We can customize our brush and paint with different set of property. To start dr
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 
 ## Shapes
-We can draw shapes from [v.1.5.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.5.0). We use `ShapeBuilder` to define shape and other properties.
+We can draw shapes from [v.1.5.0](https://github.com/mhdxbilal007/PhotoEditor/releases/tag/v.1.5.0). We use `ShapeBuilder` to define shape and other properties.
 
 ![](https://im2.ezgif.com/tmp/ezgif-2-5d5f7ddbe72e.gif)
 
@@ -134,7 +134,7 @@ val shapeBuilder = ShapeBuilder()
 
 photoEditor.setShape(mShapeBuilder)
 ```
-For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.kt).
+For more details check [ShapeBuilder](https://github.com/mhdxbilal007/PhotoEditor/blob/master/photoeditor/src/main/java/ja/mhdxbilal007/photoeditor/shape/ShapeBuilder.kt).
 
 ## Filter Effect
 We can apply inbuild filter to the source images using 
@@ -145,7 +145,7 @@ We can apply inbuild filter to the source images using
 
 We can also apply custom effect using `Custom.Builder`
 
-For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoEditor/wiki/Filter-Effect)
+For more details check [Custom Filters](https://github.com/mhdxbilal007/PhotoEditor/wiki/Filter-Effect)
 
 
 
@@ -215,7 +215,7 @@ It will take default fonts provided in the builder. If we want different Emoji f
 
 ## Saving
 
-In [v.3.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.3.0.0) onward, we can save an image to a file using coroutines:
+In [v.3.0.0](https://github.com/mhdxbilal007/PhotoEditor/releases/tag/v.3.0.0) onward, we can save an image to a file using coroutines:
 
 ```kotlin
 // Please note that if you call this from a fragment, you should call
@@ -246,15 +246,15 @@ You can also save an image to a file from Java. We need to provide a file with c
                 });
 ```
 
-For more details see [Saving](https://github.com/burhanrashid52/PhotoEditor/wiki/Saving)
+For more details see [Saving](https://github.com/mhdxbilal007/PhotoEditor/wiki/Saving)
 
 ## How to contribute?
-* Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
+* Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/mhdxbilal007/PhotoEditor/blob/master/CONTRIBUTING.md)
 
 
 ## Questions?🤔
-Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40burhanrashid52-blue.svg)](https://twitter.com/burhanrashid52)
-[![Medium](https://img.shields.io/badge/Medium-%40burhanrashid52-brightgreen.svg)](https://medium.com/@burhanrashid52)
+Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40mhdxbilal007-blue.svg)](https://twitter.com/mhdxbilal007)
+[![Medium](https://img.shields.io/badge/Medium-%40mhdxbilal007-brightgreen.svg)](https://medium.com/@mhdxbilal007)
 [![Facebook](https://img.shields.io/badge/Facebook-Burhanuddin%20Rashid-blue.svg)](https://www.facebook.com/Bursid)
 
 ## FAQ
@@ -269,7 +269,7 @@ Yes. It's an open-source library and free to use. If this library has saved your
 <details><summary>Does it support the CROP feature?</summary>
 <p>
 
-Currently, No. I started to build in branch [PE-79](https://github.com/burhanrashid52/PhotoEditor/issues/79). But due to time constraint, I drop the idea. Any PR related to CROP is welcomed :)
+Currently, No. I started to build in branch [PE-79](https://github.com/mhdxbilal007/PhotoEditor/issues/79). But due to time constraint, I drop the idea. Any PR related to CROP is welcomed :)
 
 </p>
 </details>
@@ -277,7 +277,7 @@ Currently, No. I started to build in branch [PE-79](https://github.com/burhanras
 <details><summary>Facing issues in applying Filter?</summary>
 <p>
 
-The filter effect is applied using `GlSurfaceView` and the implementation of this feature causing a lot of issues. Need to think of some other alternative solution. Here is the issue [list](https://github.com/burhanrashid52/PhotoEditor/issues?q=is%3Aissue+is%3Aopen+filter).
+The filter effect is applied using `GlSurfaceView` and the implementation of this feature causing a lot of issues. Need to think of some other alternative solution. Here is the issue [list](https://github.com/mhdxbilal007/PhotoEditor/issues?q=is%3Aissue+is%3Aopen+filter).
 
 </p>
 </details>
@@ -285,7 +285,7 @@ The filter effect is applied using `GlSurfaceView` and the implementation of thi
 <details><summary>Does is support in other platforms (iOS, Web, Flutter)?</summary>
 <p>
 
-No. Currently, the focus is on making the android library better. We don't have any plans for [other Platform](https://github.com/burhanrashid52/PhotoEditor/issues/24).
+No. Currently, the focus is on making the android library better. We don't have any plans for [other Platform](https://github.com/mhdxbilal007/PhotoEditor/issues/24).
 
 </p>
 </details>
@@ -293,8 +293,8 @@ No. Currently, the focus is on making the android library better. We don't have 
 <details><summary>Other Know Issues</summary>
 <p>
 
-[Image Scaling](https://github.com/burhanrashid52/PhotoEditor/issues/10).
-<br>[Memory Issue in Filter](https://github.com/burhanrashid52/PhotoEditor/issues/48).
+[Image Scaling](https://github.com/mhdxbilal007/PhotoEditor/issues/10).
+<br>[Memory Issue in Filter](https://github.com/mhdxbilal007/PhotoEditor/issues/48).
 
 </p>
 </details>
@@ -312,13 +312,13 @@ This project is inspired from [PhotoEditorSDK](https://github.com/eventtus/photo
 
 ## Buy a cup of coffee
 If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of ☕️
-[BuyMeACoffee](https://www.buymeacoffee.com/burhanrashid52)
+[BuyMeACoffee](https://www.buymeacoffee.com/mhdxbilal007)
 
 <a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-review&utm_medium=badge&utm_souce=badge-photoeditor-2#discussion-body" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/review.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 ## Lesson Learned from building successful android library PhotoEditor: Droidcon Berlin 2021
 
-[![Lesson Learned from building successful android library PhotoEditor](https://burhanrashid52.com/wp-content/uploads/2021/11/246719409_10220774611897971_6342954485444508610_n-940x510.jpg)](https://player.vimeo.com/video/643904719 "Lesson Learned from building successful android library PhotoEditor")
+[![Lesson Learned from building successful android library PhotoEditor](https://mhdxbilal007.com/wp-content/uploads/2021/11/246719409_10220774611897971_6342954485444508610_n-940x510.jpg)](https://player.vimeo.com/video/643904719 "Lesson Learned from building successful android library PhotoEditor")
 
 ### [Open source Support](https://jb.gg/OpenSourceSupport) by [JetBrains](https://www.jetbrains.com)
 

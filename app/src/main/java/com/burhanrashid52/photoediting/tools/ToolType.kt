@@ -1,7 +1,7 @@
-package com.burhanrashid52.photoediting.tools
+package com.mhdxbilal007.photoediting.tools
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 5/23/2018
  */

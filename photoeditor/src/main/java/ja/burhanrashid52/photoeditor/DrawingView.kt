@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,7 @@ import android.util.AttributeSet
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
-import ja.burhanrashid52.photoeditor.shape.*
+import ja.mhdxbilal007.photoeditor.shape.*
 import java.util.*
 
 /**
@@ -20,7 +20,7 @@ import java.util.*
  * as per attributes provided to the paint
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.1
  * @since 12/1/18
  */

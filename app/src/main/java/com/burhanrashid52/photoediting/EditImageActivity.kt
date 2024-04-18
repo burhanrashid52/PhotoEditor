@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoediting
+package com.mhdxbilal007.photoediting
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -28,25 +28,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
-import com.burhanrashid52.photoediting.EmojiBSFragment.EmojiListener
-import com.burhanrashid52.photoediting.StickerBSFragment.StickerListener
-import com.burhanrashid52.photoediting.base.BaseActivity
-import com.burhanrashid52.photoediting.filters.FilterListener
-import com.burhanrashid52.photoediting.filters.FilterViewAdapter
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter
-import com.burhanrashid52.photoediting.tools.EditingToolsAdapter.OnItemSelected
-import com.burhanrashid52.photoediting.tools.ToolType
+import com.mhdxbilal007.photoediting.EmojiBSFragment.EmojiListener
+import com.mhdxbilal007.photoediting.StickerBSFragment.StickerListener
+import com.mhdxbilal007.photoediting.base.BaseActivity
+import com.mhdxbilal007.photoediting.filters.FilterListener
+import com.mhdxbilal007.photoediting.filters.FilterViewAdapter
+import com.mhdxbilal007.photoediting.tools.EditingToolsAdapter
+import com.mhdxbilal007.photoediting.tools.EditingToolsAdapter.OnItemSelected
+import com.mhdxbilal007.photoediting.tools.ToolType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
-import ja.burhanrashid52.photoeditor.PhotoEditor
-import ja.burhanrashid52.photoeditor.PhotoEditorView
-import ja.burhanrashid52.photoeditor.PhotoFilter
-import ja.burhanrashid52.photoeditor.SaveFileResult
-import ja.burhanrashid52.photoeditor.SaveSettings
-import ja.burhanrashid52.photoeditor.TextStyleBuilder
-import ja.burhanrashid52.photoeditor.ViewType
-import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
-import ja.burhanrashid52.photoeditor.shape.ShapeType
+import ja.mhdxbilal007.photoeditor.OnPhotoEditorListener
+import ja.mhdxbilal007.photoeditor.PhotoEditor
+import ja.mhdxbilal007.photoeditor.PhotoEditorView
+import ja.mhdxbilal007.photoeditor.PhotoFilter
+import ja.mhdxbilal007.photoeditor.SaveFileResult
+import ja.mhdxbilal007.photoeditor.SaveSettings
+import ja.mhdxbilal007.photoeditor.TextStyleBuilder
+import ja.mhdxbilal007.photoeditor.ViewType
+import ja.mhdxbilal007.photoeditor.shape.ShapeBuilder
+import ja.mhdxbilal007.photoeditor.shape.ShapeType
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -487,7 +487,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
         private const val TAG = "EditImageActivity"
 
-        const val FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoediting.fileprovider"
+        const val FILE_PROVIDER_AUTHORITY = "com.mhdxbilal007.photoediting.fileprovider"
         private const val CAMERA_REQUEST = 52
         private const val PICK_REQUEST = 53
         const val ACTION_NEXTGEN_EDIT = "action_nextgen_edit"

@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10
  * Bitmap utility class to perform different transformation on bitmap
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 5/21/2018
  */

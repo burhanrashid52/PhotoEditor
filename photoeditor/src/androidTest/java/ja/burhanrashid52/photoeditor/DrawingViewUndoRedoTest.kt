@@ -1,7 +1,7 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import ja.burhanrashid52.photoeditor.shape.ShapeAndPaint
+import ja.mhdxbilal007.photoeditor.shape.ShapeAndPaint
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import org.junit.Test

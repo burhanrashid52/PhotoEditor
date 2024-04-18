@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import ja.burhanrashid52.photoeditor.ScaleGestureDetector.OnScaleGestureListener
+import ja.mhdxbilal007.photoeditor.ScaleGestureDetector.OnScaleGestureListener
 import kotlin.math.sqrt
 
 /**

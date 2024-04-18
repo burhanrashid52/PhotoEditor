@@ -1,9 +1,9 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 /**
  * Created by Burhanuddin Rashid on 17/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/mhdxbilal007>
  */
 class BrushDrawingStateListener internal constructor(
     private val mPhotoEditorView: PhotoEditorView,

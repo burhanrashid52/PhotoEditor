@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoediting.filters
+package com.mhdxbilal007.photoediting.filters
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,13 +10,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.burhanrashid52.photoediting.R
-import ja.burhanrashid52.photoeditor.PhotoFilter
+import com.mhdxbilal007.photoediting.R
+import ja.mhdxbilal007.photoeditor.PhotoFilter
 import java.io.IOException
 import java.util.ArrayList
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 5/23/2018
  */

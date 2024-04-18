@@ -1,10 +1,10 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.graphics.Bitmap.CompressFormat
 import androidx.annotation.IntRange
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @since 8/8/2018
  * Builder Class to apply multiple save options
  */

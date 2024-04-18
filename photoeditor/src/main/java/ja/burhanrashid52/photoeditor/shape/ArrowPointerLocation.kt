@@ -1,3 +1,3 @@
-package ja.burhanrashid52.photoeditor.shape
+package ja.mhdxbilal007.photoeditor.shape
 
 enum class ArrowPointerLocation { START, END, BOTH }

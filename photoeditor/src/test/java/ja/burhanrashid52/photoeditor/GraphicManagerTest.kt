@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.content.Context
 import org.junit.runner.RunWith
@@ -11,7 +11,7 @@ import org.junit.Test
 /**
  * Created by Burhanuddin Rashid on 15/05/21.
  *
- * @author <https:></https:>//github.com/burhanrashid52>
+ * @author <https:></https:>//github.com/mhdxbilal007>
  */
 @RunWith(RobolectricTestRunner::class)
 class GraphicManagerTest {

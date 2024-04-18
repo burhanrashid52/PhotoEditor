@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.opengl.GLES20
-import ja.burhanrashid52.photoeditor.GLToolbox.checkGlError
-import ja.burhanrashid52.photoeditor.GLToolbox.createProgram
+import ja.mhdxbilal007.photoeditor.GLToolbox.checkGlError
+import ja.mhdxbilal007.photoeditor.GLToolbox.createProgram
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer

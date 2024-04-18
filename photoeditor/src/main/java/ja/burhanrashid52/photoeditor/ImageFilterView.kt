@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor
+package ja.mhdxbilal007.photoeditor
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,8 +10,8 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
 import android.util.AttributeSet
-import ja.burhanrashid52.photoeditor.BitmapUtil.createBitmapFromGLSurface
-import ja.burhanrashid52.photoeditor.GLToolbox.initTexParams
+import ja.mhdxbilal007.photoeditor.BitmapUtil.createBitmapFromGLSurface
+import ja.mhdxbilal007.photoeditor.GLToolbox.initTexParams
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.microedition.khronos.egl.EGLConfig
@@ -27,7 +27,7 @@ import kotlin.coroutines.suspendCoroutine
  * Filter Images using ImageFilterView
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/burhanrashid52)
+ * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 2/14/2018
  */

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace 'ja.burhanrashid52.photoeditor'
+    namespace 'ja.mhdxbilal007.photoeditor'
     compileSdkVersion 33
 
     defaultConfig {
@@ -60,7 +60,7 @@ dependencies {
 }
 
 ext {
-    PUBLISH_GROUP_ID = 'com.burhanrashid52'
+    PUBLISH_GROUP_ID = 'com.mhdxbilal007'
     PUBLISH_VERSION = '3.0.2'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
 }

@@ -1,4 +1,4 @@
-package ja.burhanrashid52.photoeditor.shape
+package ja.mhdxbilal007.photoeditor.shape
 
 /**
  * The different kind of known Shapes.

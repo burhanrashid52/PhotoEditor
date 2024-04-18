@@ -72,7 +72,7 @@ publishing {
             pom {
                 name = PUBLISH_ARTIFACT_ID
                 description = 'A Photo Editor library with simple, easy support for image editing using Paints, Text, Filters, Emoji and Sticker like stories.'
-                url = 'https://github.com/burhanrashid52/PhotoEditor'
+                url = 'https://github.com/mhdxbilal007/PhotoEditor'
                 licenses {
                     license {
                         name = 'MIT License'
@@ -81,17 +81,17 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'burhanrashid52'
+                        id = 'mhdxbilal007'
                         name = 'Burhanuddin Rashid'
-                        email = 'burhanrashid5253@gmail.com'
+                        email = 'mhdxbilal00753@gmail.com'
                     }
                 }
 
                 // Version control info
                 scm {
-                    connection = 'scm:git:github.com/burhanrashid52/PhotoEditor.git'
-                    developerConnection = 'scm:git:ssh://github.com/burhanrashid52/PhotoEditor.git'
-                    url = 'https://github.com/burhanrashid52/PhotoEditor/tree/master'
+                    connection = 'scm:git:github.com/mhdxbilal007/PhotoEditor.git'
+                    developerConnection = 'scm:git:ssh://github.com/mhdxbilal007/PhotoEditor.git'
+                    url = 'https://github.com/mhdxbilal007/PhotoEditor/tree/master'
                 }
             }
         }

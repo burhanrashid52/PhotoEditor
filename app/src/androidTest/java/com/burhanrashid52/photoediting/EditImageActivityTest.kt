@@ -1,4 +1,4 @@
-package com.burhanrashid52.photoediting
+package com.mhdxbilal007.photoediting
 
 import android.content.Context
 import org.junit.runner.RunWith
@@ -236,25 +236,25 @@ class EditImageActivityTest {
 
         // Select the emoji (delay to give time for the RecyclerView to close)
         Thread.sleep(1000)
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.frmBorder)).perform(ViewActions.click())
 
         // Capture the scale of the emoji
         var emojiFrameParentView =
-            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
+            mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder).parent as ViewGroup
         val emojiScaleXBeforePinching = emojiFrameParentView.scaleX
         val emojiScaleYBeforePinching = emojiFrameParentView.scaleY
 
         // Scale the emoji up by pinching
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder)).perform(PinchTestHelper.pinchOut())
+        Espresso.onView(ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.frmBorder)).perform(PinchTestHelper.pinchOut())
 
         // Check if the emoji scaled up after pinching.
         emojiFrameParentView =
-            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
+            mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder).parent as ViewGroup
         assertNotEquals(emojiScaleXBeforePinching, emojiFrameParentView.scaleX)
         assertNotEquals(emojiScaleYBeforePinching, emojiFrameParentView.scaleY)
 
         // Remove the emoji from the screen.
-        Espresso.onView(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.imgPhotoEditorClose)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.imgPhotoEditorClose)).perform(ViewActions.click())
 
         // Add a text to the image.
         Espresso.onView(ViewMatchers.withText(R.string.label_text)).perform(ViewActions.click())
@@ -267,12 +267,12 @@ class EditImageActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.add_text_done_tv)).perform(ViewActions.click())
 
         // Select the text box
-        val testTextBox = ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
+        val testTextBox = ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.tvPhotoEditorText)
         Espresso.onView(testTextBox).perform(ViewActions.click())
 
         // Capture the current scale of the text box
         var textFrameParentView =
-            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
+            mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder).parent as ViewGroup
         val textScaleXBeforeScaling = textFrameParentView.scaleX
         val textScaleYBeforeScaling = textFrameParentView.scaleY
 
@@ -281,7 +281,7 @@ class EditImageActivityTest {
 
         // Validate that the text box did not scale by pinching.
         textFrameParentView =
-            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
+            mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder).parent as ViewGroup
         assertEquals(
             textScaleXBeforeScaling.toDouble(),
             textFrameParentView.scaleX.toDouble(),
@@ -318,12 +318,12 @@ class EditImageActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.add_text_done_tv)).perform(ViewActions.click())
 
         // Select the text box
-        val testTextBox = ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.tvPhotoEditorText)
+        val testTextBox = ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.tvPhotoEditorText)
         Espresso.onView(testTextBox).perform(ViewActions.click())
 
         // Capture the current scale of the text box
         var textFrameParentView =
-            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
+            mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder).parent as ViewGroup
         val textScaleXBeforeScaling = textFrameParentView.scaleX
         val textScaleYBeforeScaling = textFrameParentView.scaleY
 
@@ -332,7 +332,7 @@ class EditImageActivityTest {
 
         // Validate that the text box did not scale by pinching.
         textFrameParentView =
-            mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder).parent as ViewGroup
+            mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder).parent as ViewGroup
         assertNotEquals(textScaleXBeforeScaling, textFrameParentView.scaleX)
         assertNotEquals(textScaleYBeforeScaling, textFrameParentView.scaleY)
     }
@@ -362,7 +362,7 @@ class EditImageActivityTest {
         // Move the first emoji to the left.
         // NOTE(lucianocheng): I tried to do a SwipeAction here, but using the swipe to move
         //                     the element turned out to be very difficult in practice.
-        val firstEmojiStickerFrameBorder = mActivityRule.activity.findViewById<View>(ja.burhanrashid52.photoeditor.R.id.frmBorder)
+        val firstEmojiStickerFrameBorder = mActivityRule.activity.findViewById<View>(ja.mhdxbilal007.photoeditor.R.id.frmBorder)
         (firstEmojiStickerFrameBorder.parent as FrameLayout).x = 0f
 
         // Add the second emoji to the editor
@@ -378,7 +378,7 @@ class EditImageActivityTest {
             )
 
         // Assert that the first emoji is not selected (frame background is null)
-        Espresso.onView(withIndex(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 0))
+        Espresso.onView(withIndex(ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.frmBorder), 0))
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
                 assertNull(
                     view.background
@@ -386,7 +386,7 @@ class EditImageActivityTest {
             }
 
         // Assert that the second emoji is selected (frame background is not null)
-        Espresso.onView(withIndex(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 1))
+        Espresso.onView(withIndex(ViewMatchers.withId(ja.mhdxbilal007.photoeditor.R.id.frmBorder), 1))
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
                 TestCase.assertNotNull(
                     null,
