@@ -18,7 +18,7 @@
             android:layout_margin="4dp"
             android:textColor="#000000"
             android:textSize="18sp"
-            tools:text="Burhanuddin"
+            tools:text="mhdxbilal007"
             tools:textColor="@android:color/black" />
 
     </FrameLayout>

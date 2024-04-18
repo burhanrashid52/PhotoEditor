@@ -255,7 +255,7 @@ For more details see [Saving](https://github.com/mhdxbilal007/PhotoEditor/wiki/S
 ## Questions?🤔
 Hit me on twitter [![Twitter](https://img.shields.io/badge/Twitter-%40mhdxbilal007-blue.svg)](https://twitter.com/mhdxbilal007)
 [![Medium](https://img.shields.io/badge/Medium-%40mhdxbilal007-brightgreen.svg)](https://medium.com/@mhdxbilal007)
-[![Facebook](https://img.shields.io/badge/Facebook-Burhanuddin%20Rashid-blue.svg)](https://www.facebook.com/Bursid)
+[![Facebook](https://img.shields.io/badge/Facebook-mhdxbilal007%20Rashid-blue.svg)](https://www.facebook.com/Bursid)
 
 ## FAQ
 <details><summary>Can I use this library in my app for free?</summary>
