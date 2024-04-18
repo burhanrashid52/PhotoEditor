@@ -11,10 +11,6 @@
 
 A Photo Editor library with simple, easy support for image editing using Paints, Text, Filters, Emoji and Sticker like stories.
 
-[Download link](https://drive.google.com/drive/folders/1pw_iZ_PIyOSJzCWR_uLnoe7PKCDTgosp?usp=sharing)
-
-![](https://i.imgur.com/ZYtLHTZ.png)
-
 <a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-photoeditor-2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 <a href="https://www.buymeacoffee.com/mhdxbilal007" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
@@ -108,7 +104,6 @@ That's it we are done with setting up our library
 ## Drawing
 We can customize our brush and paint with different set of property. To start drawing on image we need to enable the drawing mode
 
-![](https://i.imgur.com/INi5LIy.gif)
 
 | Type                                         | Method                                                                 |
 |----------------------------------------------|------------------------------------------------------------------------|
