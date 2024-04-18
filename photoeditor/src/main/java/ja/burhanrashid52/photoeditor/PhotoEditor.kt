@@ -13,7 +13,7 @@ import androidx.annotation.UiThread
 import ja.mhdxbilal007.photoeditor.shape.ShapeBuilder
 
 /**
- * Created by Burhanuddin Rashid on 14/05/21.
+ * Created by mhdxbilal007 on 14/05/21.
  *
  * @author <https:></https:>//github.com/mhdxbilal007>
  */

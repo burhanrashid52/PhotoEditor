@@ -4,7 +4,7 @@ import android.view.MotionEvent
 import android.view.View
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
+ * @author [mhdxbilal007](https://github.com/mhdxbilal007)
  * @version 0.1.1
  * @since 18/01/2017
  *

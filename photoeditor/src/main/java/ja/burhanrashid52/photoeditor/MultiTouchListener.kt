@@ -13,7 +13,7 @@ import kotlin.math.min
 /**
  * Created on 18/01/2017.
  *
- * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
+ * @author [mhdxbilal007](https://github.com/mhdxbilal007)
  *
  *
  */

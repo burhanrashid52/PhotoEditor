@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mhdxbilal007.photoediting.ColorPickerAdapter.OnColorPickerClickListener
 
 /**
- * Created by Burhanuddin Rashid on 1/16/2018.
+ * Created by mhdxbilal007 on 1/16/2018.
  */
 class TextEditorDialogFragment : DialogFragment() {
 

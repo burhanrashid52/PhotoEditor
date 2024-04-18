@@ -4,7 +4,7 @@ import android.graphics.Bitmap.CompressFormat
 import androidx.annotation.IntRange
 
 /**
- * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
+ * @author [mhdxbilal007](https://github.com/mhdxbilal007)
  * @since 8/8/2018
  * Builder Class to apply multiple save options
  */

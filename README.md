@@ -325,7 +325,7 @@ If you found this project helpful or you learned something from the source code 
 
 ## MIT License
 
-Copyright (c) 2022 Burhanuddin Rashid
+Copyright (c) 2022 mhdxbilal007
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,7 +1,7 @@
 package ja.mhdxbilal007.photoeditor
 
 /**
- * Created by Burhanuddin Rashid on 17/05/21.
+ * Created by mhdxbilal007 on 17/05/21.
  *
  * @author <https:></https:>//github.com/mhdxbilal007>
  */

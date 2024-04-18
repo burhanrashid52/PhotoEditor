@@ -12,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10
  * Bitmap utility class to perform different transformation on bitmap
  *
  *
- * @author [Burhanuddin Rashid](https://github.com/mhdxbilal007)
+ * @author [mhdxbilal007](https://github.com/mhdxbilal007)
  * @version 0.1.2
  * @since 5/21/2018
  */

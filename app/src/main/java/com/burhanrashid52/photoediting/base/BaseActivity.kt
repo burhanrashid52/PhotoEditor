@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 
 /**
- * Created by Burhanuddin Rashid on 1/17/2018.
+ * Created by mhdxbilal007 on 1/17/2018.
  */
 open class BaseActivity : AppCompatActivity() {
     private var mProgressDialog: ProgressDialog? = null
