@@ -47,6 +47,9 @@ class BrushDrawingStateListener internal constructor(
     }
 
     override fun onStopDrawing() {
+        if (mViewState.redoViewsCount > 0) {
+            mViewState.clearRedoViews()
+        }
         mOnPhotoEditorListener?.onStopViewChangeListener(ViewType.BRUSH_DRAWING)
     }
 }
