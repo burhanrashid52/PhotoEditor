@@ -194,6 +194,13 @@ interface PhotoEditor {
     fun redo(): Boolean
 
     /**
+     * How many redo operations are available.
+     *
+     * @return size of redo stack
+     */
+    val redoStackCount: Int
+
+    /**
      * Removes all the edited operations performed [PhotoEditorView]
      * This will also clear the undo and redo stack
      */
