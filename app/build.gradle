@@ -9,7 +9,7 @@ android {
         applicationId "com.burhanrashid52.photoediting"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 8
+        versionCode 10
         versionName "3.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
