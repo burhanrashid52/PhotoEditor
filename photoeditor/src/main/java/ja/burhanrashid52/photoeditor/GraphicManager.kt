@@ -13,7 +13,12 @@ internal class GraphicManager(
     private val mPhotoEditorView: PhotoEditorView,
     private val mViewState: PhotoEditorViewState
 ) {
+
     var onPhotoEditorListener: OnPhotoEditorListener? = null
+
+    val redoStackCount
+        get() = mViewState.redoViewsCount
+
     fun addView(graphic: Graphic) {
         val view = graphic.rootView
         val params = RelativeLayout.LayoutParams(
@@ -23,7 +28,7 @@ internal class GraphicManager(
         mPhotoEditorView.addView(view, params)
         mViewState.addAddedView(view)
 
-        if(mViewState.redoViewsCount > 0) {
+        if (redoStackCount > 0) {
             mViewState.clearRedoViews()
         }
 
@@ -74,25 +79,24 @@ internal class GraphicManager(
     }
 
     fun redoView(): Boolean {
-        if (mViewState.redoViewsCount > 0) {
-            val redoView = mViewState.getRedoView(
-                mViewState.redoViewsCount - 1
-            )
+        if (redoStackCount > 0) {
+            val redoView = mViewState.getRedoView(redoStackCount - 1)
+
             if (redoView is DrawingView) {
                 val result = redoView.redo()
-                return result || (mViewState.redoViewsCount != 0)
+                return result || redoStackCount > 0
             } else {
                 mViewState.popRedoView()
                 mPhotoEditorView.addView(redoView)
                 mViewState.addAddedView(redoView)
             }
-            when (val viewTag = redoView.tag) {
-                is ViewType -> onPhotoEditorListener?.onAddViewListener(
-                    viewTag,
-                    mViewState.addedViewsCount
-                )
+
+            val viewTag = redoView.tag
+            if (viewTag is ViewType) {
+                onPhotoEditorListener?.onAddViewListener(viewTag, mViewState.addedViewsCount)
             }
         }
-        return mViewState.redoViewsCount != 0
+
+        return redoStackCount > 0
     }
 }

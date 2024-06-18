@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:background="@color/semi_black_transparent"
         android:padding="8dp"
-        android:src="@drawable/ic_undo"
+        android:src="@drawable/undo"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
         app:layout_constraintEnd_toStartOf="@+id/imgRedo" />
 
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:background="@color/semi_black_transparent"
         android:padding="8dp"
-        android:src="@drawable/ic_redo"
+        android:src="@drawable/redo"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
         app:layout_constraintEnd_toEndOf="parent" />
 

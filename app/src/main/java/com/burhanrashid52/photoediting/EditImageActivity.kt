@@ -66,6 +66,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private lateinit var mWonderFont: Typeface
     private lateinit var mRvTools: RecyclerView
     private lateinit var mRvFilters: RecyclerView
+    private lateinit var mImgUndo: View
+    private lateinit var mImgRedo: View
     private val mEditingToolsAdapter = EditingToolsAdapter(this)
     private val mFilterViewAdapter = FilterViewAdapter(this)
     private lateinit var mRootView: ConstraintLayout
@@ -160,11 +162,13 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mRvFilters = findViewById(R.id.rvFilterView)
         mRootView = findViewById(R.id.rootView)
 
-        val imgUndo: ImageView = findViewById(R.id.imgUndo)
-        imgUndo.setOnClickListener(this)
+        mImgUndo = findViewById(R.id.imgUndo)
+        mImgUndo.setOnClickListener(this)
+        mImgUndo.isEnabled = false
 
-        val imgRedo: ImageView = findViewById(R.id.imgRedo)
-        imgRedo.setOnClickListener(this)
+        mImgRedo = findViewById(R.id.imgRedo)
+        mImgRedo.setOnClickListener(this)
+        mImgRedo.isEnabled = false
 
         val imgCamera: ImageView = findViewById(R.id.imgCamera)
         imgCamera.setOnClickListener(this)
@@ -201,6 +205,9 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             TAG,
             "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
         )
+
+        mImgUndo.isEnabled = !mPhotoEditor.isCacheEmpty
+        mImgRedo.isEnabled = mPhotoEditor.redoStackCount > 0
     }
 
     override fun onRemoveViewListener(viewType: ViewType, numberOfAddedViews: Int) {
@@ -208,6 +215,9 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             TAG,
             "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
         )
+
+        mImgUndo.isEnabled = !mPhotoEditor.isCacheEmpty
+        mImgRedo.isEnabled = mPhotoEditor.redoStackCount > 0
     }
 
     override fun onStartViewChangeListener(viewType: ViewType) {
@@ -225,8 +235,16 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     @SuppressLint("NonConstantResourceId", "MissingPermission")
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.imgUndo -> mPhotoEditor.undo()
-            R.id.imgRedo -> mPhotoEditor.redo()
+            R.id.imgUndo -> {
+                mImgUndo.isEnabled = mPhotoEditor.undo()
+                mImgRedo.isEnabled = mPhotoEditor.redoStackCount > 0
+            }
+
+            R.id.imgRedo -> {
+                mImgUndo.isEnabled = !mPhotoEditor.isCacheEmpty
+                mImgRedo.isEnabled = mPhotoEditor.redo()
+            }
+
             R.id.imgSave -> saveImage()
             R.id.imgClose -> onBackPressed()
             R.id.imgShare -> shareImage()
