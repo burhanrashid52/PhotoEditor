@@ -126,10 +126,6 @@ internal class MultiTouchListener(
         } ?: false
     }
 
-    fun setOnMultiTouchListener(onMultiTouchListener: OnMultiTouchListener?) {
-        this.onMultiTouchListener = onMultiTouchListener
-    }
-
     private inner class ScaleGestureListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         private var mPivotX = 0f
         private var mPivotY = 0f
@@ -172,7 +168,6 @@ internal class MultiTouchListener(
     }
 
     internal interface OnMultiTouchListener {
-        fun onEditTextClickListener(text: String, colorCode: Int)
         fun onRemoveViewListener(removedView: View)
     }
 

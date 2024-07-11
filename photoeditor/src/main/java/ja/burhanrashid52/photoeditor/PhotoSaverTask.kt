@@ -84,8 +84,4 @@ internal class PhotoSaverTask(
         return bitmap
     }
 
-    companion object {
-        const val TAG = "PhotoSaverTask"
-    }
-
 }

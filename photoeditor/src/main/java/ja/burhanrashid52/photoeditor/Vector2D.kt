@@ -5,8 +5,8 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 internal class Vector2D : PointF {
-    constructor() : super() {}
-    constructor(x: Float, y: Float) : super(x, y) {}
+    constructor() : super()
+    constructor(x: Float, y: Float) : super(x, y)
 
     private fun normalize() {
         val length = sqrt((x * x + y * y).toDouble()).toFloat()

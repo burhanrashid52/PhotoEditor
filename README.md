@@ -130,7 +130,7 @@ We can draw shapes from [v.1.5.0](https://github.com/burhanrashid52/PhotoEditor/
 val shapeBuilder = ShapeBuilder()
     .withShapeOpacity(100)
     .withShapeType(ShapeType.Oval)
-    .withShapeSize(50f);
+    .withShapeSize(50f)
 
 photoEditor.setShape(mShapeBuilder)
 ```

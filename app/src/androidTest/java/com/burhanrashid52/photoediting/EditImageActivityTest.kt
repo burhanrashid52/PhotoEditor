@@ -1,23 +1,20 @@
 package com.burhanrashid52.photoediting
 
 import android.content.Context
-import org.junit.runner.RunWith
-import androidx.test.rule.ActivityTestRule
-import junit.framework.TestCase
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.recyclerview.widget.RecyclerView
-import kotlin.Throws
 import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.filters.LargeTest
+import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import junit.framework.TestCase.*
 import org.hamcrest.Description
@@ -27,6 +24,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -49,9 +47,9 @@ class EditImageActivityTest {
     @Test
     fun checkIfBrushIsEnabledWhenClickedOnBrushTool() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode, false)
+        assertEquals(editImageActivity.mPhotoEditor.brushDrawableMode, false)
         Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
-        assertEquals(editImageActivity.mPhotoEditor?.brushDrawableMode ,true)
+        assertEquals(editImageActivity.mPhotoEditor.brushDrawableMode,true)
     }
 
     @Test
@@ -67,7 +65,7 @@ class EditImageActivityTest {
 
     @Test
     fun checkIfShapeIsEnabledWhenClickedOnBrushTool() {
-        val editImageActivity = mActivityRule.launchActivity(null)
+        mActivityRule.launchActivity(null)
         Espresso.onView(ViewMatchers.withText(R.string.label_shape)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.label_shape)).check(
             ViewAssertions.matches(
@@ -108,15 +106,15 @@ class EditImageActivityTest {
     @Ignore("Flacky test. Need to optimize")
     fun checkIfDiscardDialogIsNotDisplayedWhenCacheIsEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
+        assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
         Espresso.onView(ViewMatchers.withId(R.id.imgClose)).perform(ViewActions.click())
-        TestCase.assertTrue(editImageActivity.isDestroyed)
+        assertTrue(editImageActivity.isDestroyed)
     }
 
     @Test
     fun checkIfDiscardDialogIsDisplayedWhenCacheIsNotEmpty() {
         val editImageActivity = mActivityRule.launchActivity(null)
-        TestCase.assertTrue(editImageActivity.mPhotoEditor!!.isCacheEmpty)
+        assertTrue(editImageActivity.mPhotoEditor.isCacheEmpty)
         Espresso.onView(ViewMatchers.withId(R.id.rvConstraintTools))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
@@ -388,7 +386,7 @@ class EditImageActivityTest {
         // Assert that the second emoji is selected (frame background is not null)
         Espresso.onView(withIndex(ViewMatchers.withId(ja.burhanrashid52.photoeditor.R.id.frmBorder), 1))
             .check { view: View, noViewFoundException: NoMatchingViewException? ->
-                TestCase.assertNotNull(
+                assertNotNull(
                     null,
                     view.background
                 )

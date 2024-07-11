@@ -1,7 +1,6 @@
 package com.burhanrashid52.photoediting
 
 import android.app.Application
-import android.content.Context
 
 /**
  * Created by Burhanuddin Rashid on 1/23/2018.
