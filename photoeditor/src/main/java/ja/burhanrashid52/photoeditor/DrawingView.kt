@@ -52,7 +52,7 @@ class DrawingView @JvmOverloads constructor(
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
 
         // apply shape builder parameters
-        currentShapeBuilder?.apply {
+        currentShapeBuilder.apply {
             paint.strokeWidth = this.shapeSize
             // 'paint.color' must be called before 'paint.alpha',
             // otherwise 'paint.alpha' value will be overwritten.

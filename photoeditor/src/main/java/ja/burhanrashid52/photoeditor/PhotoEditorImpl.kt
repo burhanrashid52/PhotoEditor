@@ -69,7 +69,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     override fun addText(text: String, styleBuilder: TextStyleBuilder?) {
-        drawingView?.enableDrawing(false)
+        drawingView.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(isTextPinchScalable)
         val textGraphic = Text(
             photoEditorView,
@@ -112,7 +112,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     override fun addEmoji(emojiTypeface: Typeface?, emojiName: String) {
-        drawingView?.enableDrawing(false)
+        drawingView.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(true)
         val emoji = Emoji(
             photoEditorView,
@@ -150,7 +150,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     override fun setBrushDrawingMode(brushDrawingMode: Boolean) {
-        drawingView?.enableDrawing(brushDrawingMode)
+        drawingView.enableDrawing(brushDrawingMode)
     }
 
     override val brushDrawableMode: Boolean
@@ -159,29 +159,29 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     override fun setOpacity(@IntRange(from = 0, to = 100) opacity: Int) {
         var opacityValue = opacity
         opacityValue = (opacityValue / 100.0 * 255.0).toInt()
-        drawingView?.currentShapeBuilder?.withShapeOpacity(opacityValue)
+        drawingView.currentShapeBuilder.withShapeOpacity(opacityValue)
     }
 
     override var brushSize: Float
-        get() = drawingView?.currentShapeBuilder?.shapeSize ?: 0f
+        get() = drawingView.currentShapeBuilder.shapeSize
         set(size) {
-            drawingView?.currentShapeBuilder?.withShapeSize(size)
+            drawingView.currentShapeBuilder.withShapeSize(size)
         }
     override var brushColor: Int
-        get() = drawingView?.currentShapeBuilder?.shapeColor ?: 0
+        get() = drawingView.currentShapeBuilder.shapeColor
         set(color) {
-            drawingView?.currentShapeBuilder?.withShapeColor(color)
+            drawingView.currentShapeBuilder.withShapeColor(color)
         }
 
     override fun setBrushEraserSize(brushEraserSize: Float) {
-        drawingView?.eraserSize = brushEraserSize
+        drawingView.eraserSize = brushEraserSize
     }
 
     override val eraserSize: Float
-        get() = drawingView?.eraserSize ?: 0f
+        get() = drawingView.eraserSize
 
     override fun brushEraser() {
-        drawingView?.brushEraser()
+        drawingView.brushEraser()
     }
 
     override fun undo(): Boolean {
@@ -271,15 +271,11 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
 
     // region Shape
     override fun setShape(shapeBuilder: ShapeBuilder) {
-        drawingView?.currentShapeBuilder = shapeBuilder
+        drawingView.currentShapeBuilder = shapeBuilder
     } // endregion
 
-    companion object {
-        private const val TAG = "PhotoEditor"
-    }
-
     init {
-        drawingView?.setBrushViewChangeListener(mBrushDrawingStateListener)
+        drawingView.setBrushViewChangeListener(mBrushDrawingStateListener)
         val mDetector = GestureDetector(
             context,
             PhotoEditorImageViewListener(
@@ -291,7 +287,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
                 }
             )
         )
-        imageView?.setOnTouchListener { _, event ->
+        imageView.setOnTouchListener { _, event ->
             mOnPhotoEditorListener?.onTouchSourceImage(event)
             mDetector.onTouchEvent(event)
         }
