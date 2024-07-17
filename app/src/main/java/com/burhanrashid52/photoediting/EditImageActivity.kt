@@ -206,8 +206,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             "onAddViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
         )
 
-        mImgUndo.isEnabled = !mPhotoEditor.isCacheEmpty
-        mImgRedo.isEnabled = mPhotoEditor.redoStackCount > 0
+        mImgUndo.isEnabled = mPhotoEditor.isUndoAvailable
+        mImgRedo.isEnabled = mPhotoEditor.isRedoAvailable
     }
 
     override fun onRemoveViewListener(viewType: ViewType, numberOfAddedViews: Int) {
@@ -216,8 +216,8 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             "onRemoveViewListener() called with: viewType = [$viewType], numberOfAddedViews = [$numberOfAddedViews]"
         )
 
-        mImgUndo.isEnabled = !mPhotoEditor.isCacheEmpty
-        mImgRedo.isEnabled = mPhotoEditor.redoStackCount > 0
+        mImgUndo.isEnabled = mPhotoEditor.isUndoAvailable
+        mImgRedo.isEnabled = mPhotoEditor.isRedoAvailable
     }
 
     override fun onStartViewChangeListener(viewType: ViewType) {
@@ -237,11 +237,11 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         when (view.id) {
             R.id.imgUndo -> {
                 mImgUndo.isEnabled = mPhotoEditor.undo()
-                mImgRedo.isEnabled = mPhotoEditor.redoStackCount > 0
+                mImgRedo.isEnabled = mPhotoEditor.isRedoAvailable
             }
 
             R.id.imgRedo -> {
-                mImgUndo.isEnabled = !mPhotoEditor.isCacheEmpty
+                mImgUndo.isEnabled = mPhotoEditor.isUndoAvailable
                 mImgRedo.isEnabled = mPhotoEditor.redo()
             }
 
