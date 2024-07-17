@@ -188,12 +188,13 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         return mGraphicManager.undoView()
     }
 
+    override val undoStackCount: Int get() = viewState.addedViewsCount
+
     override fun redo(): Boolean {
         return mGraphicManager.redoView()
     }
 
-    override val redoStackCount: Int
-        get() = mGraphicManager.redoStackCount
+    override val redoStackCount: Int get() = mGraphicManager.redoStackCount
 
     override fun clearAllViews() {
         mBoxHelper.clearAllViews(drawingView)
@@ -266,7 +267,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     override val isCacheEmpty: Boolean
-        get() = viewState.addedViewsCount == 0 && viewState.redoViewsCount == 0
+        get() = !isUndoAvailable && !isRedoAvailable
 
     // region Shape
     override fun setShape(shapeBuilder: ShapeBuilder) {
