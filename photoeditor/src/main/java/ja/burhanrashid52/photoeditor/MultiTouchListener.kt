@@ -42,10 +42,10 @@ internal class MultiTouchListener(
     private val deleteView: View?
     private val photoEditImageView: ImageView?
     private val photoEditorView: PhotoEditorView
-    private var onMultiTouchListener: OnMultiTouchListener? = null
     private var mOnGestureControl: OnGestureControl? = null
     private val mOnPhotoEditorListener: OnPhotoEditorListener?
     private val viewState: PhotoEditorViewState
+
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         mScaleGestureDetector.onTouchEvent(view, event)
         mGestureListener.onTouchEvent(event)
@@ -83,9 +83,7 @@ internal class MultiTouchListener(
             MotionEvent.ACTION_CANCEL -> mActivePointerId = INVALID_POINTER_ID
             MotionEvent.ACTION_UP -> {
                 mActivePointerId = INVALID_POINTER_ID
-                if (deleteView != null && isViewInBounds(deleteView, x, y)) {
-                    onMultiTouchListener?.onRemoveViewListener(view)
-                } else if (!isViewInBounds(photoEditImageView, x, y)) {
+               if (!isViewInBounds(photoEditImageView, x, y)) {
                     view.animate().translationY(0f).translationY(0f)
                 }
                 if (deleteView != null) {
@@ -165,10 +163,6 @@ internal class MultiTouchListener(
         var pivotY = 0f
         var minimumScale = 0f
         var maximumScale = 0f
-    }
-
-    internal interface OnMultiTouchListener {
-        fun onRemoveViewListener(removedView: View)
     }
 
     internal interface OnGestureControl {
