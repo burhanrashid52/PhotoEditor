@@ -68,29 +68,27 @@ First we need to add `PhotoEditorView` in our xml layout
 We can define our drawable or color resource directly using `app:photo_src`
 
 We can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that we can load image from resources,file or (Picasso/Glide)
-```java
-PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
+```kotlin
+mPhotoEditorView = findViewById(R.id.photoEditorView)
 
-mPhotoEditorView.getSource().setImageResource(R.drawable.got);
+mPhotoEditorView.source.setImageResource(R.drawable.paris_tower)
 ```
 
 ## Building a PhotoEditor
 To use the image editing feature we need to build a PhotoEditor which requires a Context and PhotoEditorView which we have to setup in our xml layout
 
 
-```java
+```Kotlin
 //Use custom font using latest support library
-Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
-
+val mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium)
 //loading font from asset
-Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
+val mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf")
 
-mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
-         .setPinchTextScalable(true)
-         .setClipSourceImage(true)
-         .setDefaultTextTypeface(mTextRobotoTf)
-         .setDefaultEmojiTypeface(mEmojiTypeFace)
-         .build();
+mPhotoEditor = PhotoEditor.Builder(this, mPhotoEditorView)
+            .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
+            .setDefaultTextTypeface(mTextRobotoTf)
+            .setDefaultEmojiTypeface(mEmojiTypeFace)
+            .build() // build photo editor sdk
  ```
 We can customize the properties in the PhotoEditor as per our requirement
 
@@ -139,7 +137,7 @@ For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEdi
 ## Filter Effect
 We can apply inbuild filter to the source images using 
 
- `mPhotoEditor.setFilterEffect(PhotoFilter.BRIGHTNESS);`
+ `mPhotoEditor.setFilterEffect(PhotoFilter.BRIGHTNESS)`
 
 ![](https://i.imgur.com/xXTGcVC.gif)
 
