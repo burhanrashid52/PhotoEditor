@@ -188,13 +188,13 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         return mGraphicManager.undoView()
     }
 
-    override val undoStackCount: Int get() = viewState.addedViewsCount
+    override val isUndoAvailable get() = viewState.addedViewsCount > 0
 
     override fun redo(): Boolean {
         return mGraphicManager.redoView()
     }
 
-    override val redoStackCount: Int get() = mGraphicManager.redoStackCount
+    override val isRedoAvailable get() = mGraphicManager.redoStackCount > 0
 
     override fun clearAllViews() {
         mBoxHelper.clearAllViews(drawingView)

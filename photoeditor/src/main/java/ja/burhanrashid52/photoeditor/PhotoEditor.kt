@@ -187,18 +187,11 @@ interface PhotoEditor {
     fun undo(): Boolean
 
     /**
-     * How many undo operations are available.
-     *
-     * @return size of undo stack
-     */
-    val undoStackCount: Int
-
-    /**
      * Returns whether any undo operation is available.
      *
      * @return `true` if no undo operations available, `false` otherwise
      */
-    val isUndoAvailable get() = undoStackCount > 0
+    val isUndoAvailable: Boolean
 
     /**
      * Redo the last operation perform on the [PhotoEditor]
@@ -208,18 +201,11 @@ interface PhotoEditor {
     fun redo(): Boolean
 
     /**
-     * How many redo operations are available.
-     *
-     * @return size of redo stack
-     */
-    val redoStackCount: Int
-
-    /**
      * Returns whether any redo operation is available.
      *
      * @return `true` if no redo operations available, `false` otherwise
      */
-    val isRedoAvailable get() = redoStackCount > 0
+    val isRedoAvailable: Boolean
 
     /**
      * Removes all the edited operations performed [PhotoEditorView]
