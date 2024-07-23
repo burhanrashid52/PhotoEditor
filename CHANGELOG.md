@@ -99,3 +99,6 @@ new TextStyleBuilder()
 
 ### 3.0.2
 - Fixed : #460 Wrong return value of undo() method
+
+### 3.1.0
+- New : #555 Check is undo/redo availabe using `isUndoAvailable` and `isRedoAvailable`
