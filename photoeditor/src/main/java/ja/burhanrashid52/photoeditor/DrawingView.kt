@@ -66,6 +66,7 @@ class DrawingView @JvmOverloads constructor(
     private fun createEraserPaint(): Paint {
         val paint = createPaint()
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        paint.strokeWidth = eraserSize
         return paint
     }
 
