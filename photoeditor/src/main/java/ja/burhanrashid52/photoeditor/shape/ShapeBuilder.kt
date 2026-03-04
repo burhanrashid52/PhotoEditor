@@ -1,6 +1,7 @@
 package ja.burhanrashid52.photoeditor.shape
 
 import android.graphics.Color
+import android.graphics.Paint
 import androidx.annotation.ColorInt
 
 /**
@@ -26,6 +27,9 @@ class ShapeBuilder {
     var shapeColor: Int = DEFAULT_SHAPE_COLOR
         private set
 
+    var shapePaintStyle: Paint.Style = Paint.Style.STROKE
+        private set
+
     fun withShapeType(shapeType: ShapeType): ShapeBuilder {
         this.shapeType = shapeType
         return this
@@ -48,6 +52,11 @@ class ShapeBuilder {
 
     fun withShapeColor(@ColorInt color: Int): ShapeBuilder {
         shapeColor = color
+        return this
+    }
+
+    fun withShapePaintStyle(style: Paint.Style): ShapeBuilder {
+        shapePaintStyle = style
         return this
     }
 

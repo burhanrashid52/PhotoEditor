@@ -46,7 +46,7 @@ class DrawingView @JvmOverloads constructor(
         val paint = Paint()
         paint.isAntiAlias = true
         paint.isDither = true
-        paint.style = Paint.Style.STROKE
+        paint.style = currentShapeBuilder.shapePaintStyle
         paint.strokeJoin = Paint.Join.ROUND
         paint.strokeCap = Paint.Cap.ROUND
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
