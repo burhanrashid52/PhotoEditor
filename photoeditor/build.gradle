@@ -61,7 +61,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'com.burhanrashid52'
-    PUBLISH_VERSION = '3.0.2'
+    PUBLISH_VERSION = '3.1.0'
     PUBLISH_ARTIFACT_ID = 'photoeditor'
 }
 
