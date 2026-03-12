@@ -89,6 +89,30 @@ Include issue numbers where applicable (e.g., `#123`). Example:
 - Change : (Breaking Change) Renamed `setFilter` to `applyFilter`
 ```
 
+### GitHub Release Notes
+When releasing, also create a GitHub release using `gh release create`. The release notes must follow this structure:
+
+1. **What's Changed** - List each merged PR with author attribution and PR link
+2. **New Contributors** - List first-time contributors with their first PR link
+3. **Full Changelog** - Auto-generated comparison link between the previous and new tag
+
+Use the `--generate-notes` flag to auto-populate from merged PRs:
+```bash
+gh release create v.X.Y.Z --title "v.X.Y.Z" --generate-notes
+```
+
+Example release notes:
+```markdown
+## What's Changed
+* Added circle shape support by @contributor1 in https://github.com/nickhallx/PhotoEditor/pull/10
+* Fixed undo after filter by @contributor2 in https://github.com/nickhallx/PhotoEditor/pull/11
+
+## New Contributors
+* @contributor2 made their first contribution in https://github.com/nickhallx/PhotoEditor/pull/11
+
+**Full Changelog**: https://github.com/nickhallx/PhotoEditor/compare/v.3.1.0...v.3.2.0
+```
+
 ## Publishing
 - Maven Central via `scripts/publish-mavencentral.gradle`
 - CI/CD via GitHub Actions (`.github/workflows/`)
