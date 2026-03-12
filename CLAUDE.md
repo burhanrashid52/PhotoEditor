@@ -91,5 +91,4 @@ Include issue numbers where applicable (e.g., `#123`). Example:
 
 ## Publishing
 - Maven Central via `scripts/publish-mavencentral.gradle`
-- JitPack via `jitpack.yml` (signing stripped)
 - CI/CD via GitHub Actions (`.github/workflows/`)
