@@ -22,7 +22,7 @@ jobs:
           java-version: 17
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+        uses: gradle/actions/wrapper-validation@v4
 
       - name: Build with Gradle
         run: ./gradlew build
@@ -40,7 +40,7 @@ jobs:
           java-version: 17
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+        uses: gradle/actions/wrapper-validation@v4
 
       - name: Run all checks
         run: ./gradlew check --stacktrace
@@ -59,7 +59,7 @@ jobs:
           java-version: 17
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+        uses: gradle/actions/wrapper-validation@v4
 
       - name: Enable KVM
         run: |
@@ -68,7 +68,11 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: run ui tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v2.34.0
         with:
           api-level: 29
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
           script: ./gradlew connectedCheck
