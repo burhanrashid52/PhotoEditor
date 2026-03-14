@@ -36,7 +36,7 @@ jobs:
 
         # Runs upload, and then closes & releases the repository
       - name: Publish to MavenCentral
-        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository --max-workers 1
+        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository --max-workers 1 -PossrhUsernameV2=$OSSRH_USERNAME_V2 -PossrhPasswordV2=$OSSRH_PASSWORD_V2
         env:
           OSSRH_USERNAME_V2: ${{ secrets.OSSRH_USERNAME_V2 }}
           OSSRH_PASSWORD_V2: ${{ secrets.OSSRH_PASSWORD_V2 }}
