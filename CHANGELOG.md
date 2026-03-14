@@ -99,3 +99,11 @@ new TextStyleBuilder()
 
 ### 3.0.2
 - Fixed : #460 Wrong return value of undo() method
+
+### 3.1.0
+- New : Added `shapePaintStyle` to `ShapeBuilder` for stroke/fill control
+- New : Added `undoStackCount`, `redoStackCount`, `isUndoAvailable`, `isRedoAvailable` to `PhotoEditor`
+- Fixed : Clearing redo stack after brush drawing
+- Fixed : Using eraser size when in erasing mode
+- Change : Bumped Kotlin to 2.0.0, AGP to 8.5.1, Gradle to 8.9, target SDK to 34
+- Removed : Non-functional `OnMultiTouchListener` interface

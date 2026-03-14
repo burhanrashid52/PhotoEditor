@@ -1,5 +1,0 @@
-jdk:
-  - openjdk17
-before_install:
-  - sed -i "s|apply from.*publish-mavencentral.gradle.*||" photoeditor/build.gradle
-  - sed -i "/apply plugin: 'signing'/d" photoeditor/build.gradle
