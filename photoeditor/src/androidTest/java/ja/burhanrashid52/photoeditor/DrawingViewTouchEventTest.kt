@@ -1,8 +1,14 @@
 package ja.burhanrashid52.photoeditor
 
+import android.graphics.Paint
 import android.view.MotionEvent
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import ja.burhanrashid52.photoeditor.shape.OvalShape
+import ja.burhanrashid52.photoeditor.shape.RectangleShape
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
+import ja.burhanrashid52.photoeditor.shape.ShapeType
 import junit.framework.TestCase.assertFalse
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -71,6 +77,64 @@ internal class DrawingViewTouchEventTest : BaseDrawingViewTest() {
         val redoPaths = drawingPath.second
         assertTrue(drawnPath.empty())
         assertTrue(redoPaths.empty())
+    }
+
+    @Test
+    fun testTapWithOvalDrawsUniformFilledCircle() {
+        val drawingView = setupDrawingView()
+        drawingView.currentShapeBuilder = ShapeBuilder().withShapeType(ShapeType.Oval)
+
+        tapView(drawingView, 150.0f, 100.0f)
+
+        val top = drawingView.drawingPath.first
+        assertFalse(top.empty())
+        assertTrue(top.peek()?.shape is OvalShape)
+        assertEquals(Paint.Style.FILL, top.peek()?.paint?.style)
+    }
+
+    @Test
+    fun testTapWithRectangleDrawsUniformFilledSquare() {
+        val drawingView = setupDrawingView()
+        drawingView.currentShapeBuilder = ShapeBuilder().withShapeType(ShapeType.Rectangle)
+
+        tapView(drawingView, 150.0f, 100.0f)
+
+        val top = drawingView.drawingPath.first
+        assertFalse(top.empty())
+        assertTrue(top.peek()?.shape is RectangleShape)
+        assertEquals(Paint.Style.FILL, top.peek()?.paint?.style)
+    }
+
+    @Test
+    fun testTapWithPointlessShapeDrawsNothing() {
+        for (shapeType in listOf(ShapeType.Line, ShapeType.Brush, ShapeType.Arrow())) {
+            val drawingView = setupDrawingView()
+            drawingView.currentShapeBuilder = ShapeBuilder().withShapeType(shapeType)
+
+            tapView(drawingView, 150.0f, 100.0f)
+
+            assertTrue("tap with $shapeType should draw nothing", drawingView.drawingPath.first.empty())
+        }
+    }
+
+    @Test
+    fun testTapWhileErasingDrawsNothing() {
+        val drawingView = setupDrawingView()
+        drawingView.brushEraser()
+
+        tapView(drawingView, 150.0f, 100.0f)
+
+        val drawnShapes = drawingView.drawingPath.first
+        assertTrue(drawnShapes.empty())
+    }
+
+    private fun tapView(drawingView: DrawingView, x: Float, y: Float) {
+        drawingView.dispatchTouchEvent(
+            MotionEvent.obtain(200, 300, MotionEvent.ACTION_DOWN, x, y, 0)
+        )
+        drawingView.dispatchTouchEvent(
+            MotionEvent.obtain(200, 300, MotionEvent.ACTION_UP, x, y, 0)
+        )
     }
 
     @Test

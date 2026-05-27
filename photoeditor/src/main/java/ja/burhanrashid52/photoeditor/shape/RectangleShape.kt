@@ -36,6 +36,15 @@ class RectangleShape : AbstractShape("RectangleShape") {
         return path
     }
 
+    /** Build a uniform square of half-side [halfSide] centered at ([cx], [cy]), used when tapped. */
+    fun drawSquare(cx: Float, cy: Float, halfSide: Float) {
+        left = cx - halfSide
+        top = cy - halfSide
+        right = cx + halfSide
+        bottom = cy + halfSide
+        path = createRectanglePath()
+    }
+
     override fun stopShape() {
         Log.d(tag, "stopShape")
     }

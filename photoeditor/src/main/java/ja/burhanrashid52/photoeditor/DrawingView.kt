@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import ja.burhanrashid52.photoeditor.shape.*
 import java.util.*
+import kotlin.math.abs
 
 /**
  *
@@ -40,6 +41,11 @@ class DrawingView @JvmOverloads constructor(
     // eraser parameters
     private var isErasing = false
     var eraserSize = DEFAULT_ERASER_SIZE
+
+    // tap detection: a touch that never moves beyond TAP_TOLERANCE is a tap, not a drag
+    private var touchDownX = 0f
+    private var touchDownY = 0f
+    private var hasMovedBeyondTap = false
 
     // endregion
     private fun createPaint(): Paint {
@@ -110,11 +116,17 @@ class DrawingView @JvmOverloads constructor(
     }
 
     private fun onTouchEventDown(touchX: Float, touchY: Float) {
+        touchDownX = touchX
+        touchDownY = touchY
+        hasMovedBeyondTap = false
         createShape()
         currentShape?.shape?.startShape(touchX, touchY)
     }
 
     private fun onTouchEventMove(touchX: Float, touchY: Float) {
+        if (abs(touchX - touchDownX) >= TAP_TOLERANCE || abs(touchY - touchDownY) >= TAP_TOLERANCE) {
+            hasMovedBeyondTap = true
+        }
         currentShape?.shape?.moveShape(touchX, touchY)
     }
 
@@ -157,10 +169,8 @@ class DrawingView @JvmOverloads constructor(
     }
 
     private fun endShape(touchX: Float, touchY: Float) {
-        if (currentShape?.shape?.hasBeenTapped() == true) {
-            // just a tap, this is not a shape, so remove it
-            drawShapes.remove(currentShape)
-            //handleTap(touchX, touchY);
+        if (!hasMovedBeyondTap) {
+            handleTap(touchX, touchY)
         }
         viewChangeListener?.apply {
             onStopDrawing()
@@ -169,6 +179,26 @@ class DrawingView @JvmOverloads constructor(
             }
             onViewAdd(this@DrawingView)
         }
+    }
+
+    /**
+     * A single tap (no drag) drops a uniform filled version of the selected shape, sized from the
+     * shape thickness: a circle for an oval, a square for a rectangle. Shapes that can't be derived
+     * from a single point (line, arrow, freehand) and taps while erasing draw nothing, so the
+     * half-formed shape from the touch-down is discarded.
+     */
+    private fun handleTap(touchX: Float, touchY: Float) {
+        drawShapes.remove(currentShape)
+        currentShape = null
+        if (isErasing) return
+        val size = currentShapeBuilder.shapeSize
+        val shape: AbstractShape = when (currentShapeBuilder.shapeType) {
+            ShapeType.Oval -> OvalShape().apply { drawCircle(touchX, touchY, size) }
+            ShapeType.Rectangle -> RectangleShape().apply { drawSquare(touchX, touchY, size) }
+            else -> return
+        }
+        currentShape = ShapeAndPaint(shape, createPaint().apply { style = Paint.Style.FILL })
+        drawShapes.push(currentShape)
     }
 
     fun undo(): Boolean {
@@ -212,6 +242,7 @@ class DrawingView @JvmOverloads constructor(
 
     companion object {
         const val DEFAULT_ERASER_SIZE = 50.0f
+        private const val TAP_TOLERANCE = 4f
     }
 
     // region constructors

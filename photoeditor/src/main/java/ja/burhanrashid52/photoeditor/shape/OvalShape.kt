@@ -36,6 +36,15 @@ class OvalShape : AbstractShape("OvalShape") {
         return path
     }
 
+    /** Build a uniform circle of [radius] centered at ([cx], [cy]), used when the shape is tapped. */
+    fun drawCircle(cx: Float, cy: Float, radius: Float) {
+        left = cx - radius
+        top = cy - radius
+        right = cx + radius
+        bottom = cy + radius
+        path = createOvalPath()
+    }
+
     override fun stopShape() {
         Log.d(tag, "stopShape")
     }
