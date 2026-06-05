@@ -13,6 +13,7 @@
     <string name="label_text">Texte</string>
     <string name="label_filter">Filtres</string>
     <string name="label_adjust">Ajuster</string>
+    <string name="msg_tap_image_for_text">Touchez l\'image pour placer votre texte</string>
     <string name="msg_save_image">Souhaitez-vous quitter sans enregistrer l\'image ?</string>
     <string name="app_intent_name">PhotoEditor</string>
     <string name="msg_save_image_to_share">Veuillez enregistrer l\'image pour la partager</string>
