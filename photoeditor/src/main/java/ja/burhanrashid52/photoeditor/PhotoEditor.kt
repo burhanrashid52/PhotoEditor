@@ -39,6 +39,9 @@ interface PhotoEditor {
     /**
      * This adds the text on the [PhotoEditorView] at the provided initial [position].
      * by default [TextView.setText] will be 18sp
+     * The default interface implementation preserves backward binary compatibility by
+     * delegating to the centered overload, so custom implementations should override this
+     * method to honor [position].
      *
      * @param text              text to display
      * @param colorCodeTextView text color to be displayed
@@ -63,6 +66,9 @@ interface PhotoEditor {
     /**
      * This adds the text on the [PhotoEditorView] at the provided initial [position].
      * by default [TextView.setText] will be 18sp
+     * The default interface implementation preserves backward binary compatibility by
+     * delegating to the centered overload, so custom implementations should override this
+     * method to honor [position].
      *
      * @param textTypeface      typeface for custom font in the text
      * @param text              text to display
@@ -87,6 +93,9 @@ interface PhotoEditor {
     /**
      * This adds the text on the [PhotoEditorView] at the provided initial [position].
      * by default [TextView.setText] will be 18sp
+     * The default interface implementation preserves backward binary compatibility by
+     * delegating to the centered overload, so custom implementations should override this
+     * method to honor [position].
      *
      * @param text         text to display
      * @param styleBuilder text style builder with your style

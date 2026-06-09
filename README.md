@@ -161,7 +161,7 @@ It will take default fonts provided in the builder. If we want different fonts f
 
 If you want the text to start at a specific location instead of the default centered position, use the overload with a `Position`:
 
-`mPhotoEditor.addText(inputText, colorCode, Position(80, 160));`
+`mPhotoEditor.addText(inputText, colorCode, new Position(80, 160));`
 
 After insertion, text can still be dragged, rotated, and scaled on the canvas.
 

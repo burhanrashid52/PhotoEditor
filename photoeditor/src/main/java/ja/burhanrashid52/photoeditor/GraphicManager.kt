@@ -27,7 +27,7 @@ internal class GraphicManager(
         if (position == null) {
             params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
         } else {
-            params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE)
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
             params.leftMargin = position.x
             params.topMargin = position.y
