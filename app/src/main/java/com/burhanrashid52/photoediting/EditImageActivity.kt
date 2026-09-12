@@ -524,7 +524,11 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             override fun onDone(inputText: String, colorCode: Int) {
                 val styleBuilder = TextStyleBuilder()
                 styleBuilder.withTextColor(colorCode)
-                mPhotoEditor.addText(inputText, styleBuilder, position)
+                mPhotoEditor.addText(
+                    text = inputText,
+                    styleBuilder = styleBuilder,
+                    position = position
+                )
                 mTxtCurrentTool.setText(R.string.label_text)
             }
         })

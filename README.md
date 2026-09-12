@@ -151,17 +151,40 @@ For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoE
 
 ![](https://i.imgur.com/491BmE8.gif)
 
-We can add the text with inputText and colorCode like this
+Use `addText` with named optional parameters:
 
-`mPhotoEditor.addText(inputText, colorCode);` 
+```kotlin
+photoEditor.addText(
+    text = inputText,
+    colorCodeTextView = colorCode
+)
+```
 
-It will take default fonts provided in the builder. If we want different fonts for different text we can set typeface with each text like this
+It uses the default font from the builder unless you provide a typeface:
 
-`mPhotoEditor.addText(mTypeface,inputText, colorCode);`
+```kotlin
+photoEditor.addText(
+    text = inputText,
+    textTypeface = mTypeface,
+    colorCodeTextView = colorCode
+)
+```
 
-If you want the text to start at a specific location instead of the default centered position, use the overload with a `Position`:
+To place text away from the default centre position, provide a `Position`:
 
-`mPhotoEditor.addText(inputText, colorCode, new Position(80, 160));`
+```kotlin
+photoEditor.addText(
+    text = inputText,
+    position = Position(80, 160),
+    colorCodeTextView = colorCode
+)
+```
+
+Java callers must provide all parameters explicitly:
+
+```java
+mPhotoEditor.addText(inputText, null, new Position(80, 160), null, colorCode);
+```
 
 After insertion, text can still be dragged, rotated, and scaled on the canvas.
 

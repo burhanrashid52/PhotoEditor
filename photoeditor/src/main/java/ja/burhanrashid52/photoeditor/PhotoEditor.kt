@@ -27,84 +27,23 @@ interface PhotoEditor {
     fun addImage(desiredImage: Bitmap)
 
     /**
-     * This add the text on the [PhotoEditorView] with provided parameters
+     * Adds text to the [PhotoEditorView].
      * by default [TextView.setText] will be 18sp
      *
      * @param text              text to display
-     * @param colorCodeTextView text color to be displayed
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    fun addText(text: String, colorCodeTextView: Int)
-
-    /**
-     * This adds the text on the [PhotoEditorView] at the provided initial [position].
-     * by default [TextView.setText] will be 18sp
-     * The default interface implementation preserves backward binary compatibility by
-     * delegating to the centered overload, so custom implementations should override this
-     * method to honor [position].
-     *
-     * @param text              text to display
-     * @param colorCodeTextView text color to be displayed
+     * @param styleBuilder      text style builder with your style
      * @param position          initial position in pixels from the top-left of the editor
+     * @param textTypeface      typeface to apply when [styleBuilder] is not provided
+     * @param colorCodeTextView text color to apply when [styleBuilder] is not provided
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun addText(text: String, colorCodeTextView: Int, position: Position) {
-        addText(text, colorCodeTextView)
-    }
-
-    /**
-     * This add the text on the [PhotoEditorView] with provided parameters
-     * by default [TextView.setText] will be 18sp
-     *
-     * @param textTypeface      typeface for custom font in the text
-     * @param text              text to display
-     * @param colorCodeTextView text color to be displayed
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    fun addText(textTypeface: Typeface?, text: String, colorCodeTextView: Int)
-
-    /**
-     * This adds the text on the [PhotoEditorView] at the provided initial [position].
-     * by default [TextView.setText] will be 18sp
-     * The default interface implementation preserves backward binary compatibility by
-     * delegating to the centered overload, so custom implementations should override this
-     * method to honor [position].
-     *
-     * @param textTypeface      typeface for custom font in the text
-     * @param text              text to display
-     * @param colorCodeTextView text color to be displayed
-     * @param position          initial position in pixels from the top-left of the editor
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    fun addText(textTypeface: Typeface?, text: String, colorCodeTextView: Int, position: Position) {
-        addText(textTypeface, text, colorCodeTextView)
-    }
-
-    /**
-     * This add the text on the [PhotoEditorView] with provided parameters
-     * by default [TextView.setText] will be 18sp
-     *
-     * @param text         text to display
-     * @param styleBuilder text style builder with your style
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    fun addText(text: String, styleBuilder: TextStyleBuilder?)
-
-    /**
-     * This adds the text on the [PhotoEditorView] at the provided initial [position].
-     * by default [TextView.setText] will be 18sp
-     * The default interface implementation preserves backward binary compatibility by
-     * delegating to the centered overload, so custom implementations should override this
-     * method to honor [position].
-     *
-     * @param text         text to display
-     * @param styleBuilder text style builder with your style
-     * @param position     initial position in pixels from the top-left of the editor
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    fun addText(text: String, styleBuilder: TextStyleBuilder?, position: Position) {
-        addText(text, styleBuilder)
-    }
+    fun addText(
+        text: String,
+        styleBuilder: TextStyleBuilder? = null,
+        position: Position? = null,
+        textTypeface: Typeface? = null,
+        colorCodeTextView: Int? = null
+    )
 
     /**
      * This will update text and color on provided view

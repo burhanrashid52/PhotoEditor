@@ -55,49 +55,24 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         addToEditor(sticker)
     }
 
-    override fun addText(text: String, colorCodeTextView: Int) {
-        addText(null, text, colorCodeTextView)
-    }
-
-    override fun addText(text: String, colorCodeTextView: Int, position: Position) {
-        addText(null, text, colorCodeTextView, position)
-    }
-
-    override fun addText(textTypeface: Typeface?, text: String, colorCodeTextView: Int) {
-        val styleBuilder = TextStyleBuilder()
-        styleBuilder.withTextColor(colorCodeTextView)
-        if (textTypeface != null) {
-            styleBuilder.withTextFont(textTypeface)
-        }
-        addTextInternal(text, styleBuilder)
-    }
-
     override fun addText(
-        textTypeface: Typeface?,
         text: String,
-        colorCodeTextView: Int,
-        position: Position
+        styleBuilder: TextStyleBuilder?,
+        position: Position?,
+        textTypeface: Typeface?,
+        colorCodeTextView: Int?
     ) {
-        val styleBuilder = TextStyleBuilder()
-        styleBuilder.withTextColor(colorCodeTextView)
-        if (textTypeface != null) {
-            styleBuilder.withTextFont(textTypeface)
+        val finalStyleBuilder = styleBuilder ?: TextStyleBuilder().apply {
+            textTypeface?.let(::withTextFont)
+            colorCodeTextView?.let(::withTextColor)
         }
-        addTextInternal(text, styleBuilder, position)
-    }
-
-    override fun addText(text: String, styleBuilder: TextStyleBuilder?) {
-        addTextInternal(text, styleBuilder)
-    }
-
-    override fun addText(text: String, styleBuilder: TextStyleBuilder?, position: Position) {
-        addTextInternal(text, styleBuilder, position)
+        addTextInternal(text, finalStyleBuilder, position)
     }
 
     private fun addTextInternal(
         text: String,
         styleBuilder: TextStyleBuilder?,
-        position: Position? = null
+        position: Position?
     ) {
         drawingView.enableDrawing(false)
         val multiTouchListener = getMultiTouchListener(isTextPinchScalable)

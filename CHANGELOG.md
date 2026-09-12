@@ -1,7 +1,7 @@
 # Change Logs
 
 ## 3.1.1
-- New : Add `Position` and `PhotoEditor.addText(..., position)` overloads for initial text placement
+- New : Add optional `Position` support to the canonical `PhotoEditor.addText` API for initial text placement
 - New : Sample app now lets users tap the image to place text before entering it
 - Test : Add targeted placement coverage in `GraphicManagerTest` and update sample app test flow for tap-to-place text
 - Docs : Update `README.md` with developer API usage and end-user sample app instructions, including adding multiple text labels
