@@ -27,14 +27,18 @@ interface PhotoEditor {
     fun addImage(desiredImage: Bitmap)
 
     /**
-     * Adds text to the [PhotoEditorView].
-     * by default [TextView.setText] will be 18sp
+     * Adds text to the [PhotoEditorView]. By default [TextView.setText] will be 18sp and the
+     * text is centred in the editor.
+     *
+     * A supplied [styleBuilder] is applied as-is. When it is not supplied, a style is created
+     * from [textTypeface] and [colorCodeTextView] when either value is provided.
      *
      * @param text              text to display
-     * @param styleBuilder      text style builder with your style
-     * @param position          initial position in pixels from the top-left of the editor
-     * @param textTypeface      typeface to apply when [styleBuilder] is not provided
-     * @param colorCodeTextView text color to apply when [styleBuilder] is not provided
+     * @param styleBuilder      text style builder to apply as-is
+     * @param position          initial position in pixels from the top-left of the editor; `null`
+     *                          centres the text
+     * @param textTypeface      typeface for the text when [styleBuilder] is not provided
+     * @param colorCodeTextView text color when [styleBuilder] is not provided
      */
     @SuppressLint("ClickableViewAccessibility")
     fun addText(
